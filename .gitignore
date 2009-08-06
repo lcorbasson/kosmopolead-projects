@@ -1,0 +1,6 @@
+/config/database.yml
+/db/schema.rb
+/log/development.log
+/nbproject/
+/public/plugin_assets/
+tmp/

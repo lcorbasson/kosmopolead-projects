@@ -45,7 +45,8 @@ module QueriesHelper
         when :project
           link_to(h(value), :controller => 'projects', :action => 'show', :id => value)
         when :assigned_to
-          link_to(h(value), :controller => 'account', :action => 'show', :id => value)
+          show_assigned_to(issue)
+          #link_to(h(value), :controller => 'account', :action => 'show', :id => value)
         when :author
           link_to(h(value), :controller => 'account', :action => 'show', :id => value)
         when :done_ratio

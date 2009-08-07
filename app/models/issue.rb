@@ -16,6 +16,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class Issue < ActiveRecord::Base
+
+  # -- relations
+  
   belongs_to :project
   belongs_to :tracker
   belongs_to :status, :class_name => 'IssueStatus', :foreign_key => 'status_id'
@@ -25,6 +28,7 @@ class Issue < ActiveRecord::Base
   belongs_to :priority, :class_name => 'Enumeration', :foreign_key => 'priority_id'
   belongs_to :category, :class_name => 'IssueCategory', :foreign_key => 'category_id'
 
+  has_many :assignments,:dependent => :destroy
   has_many :journals, :as => :journalized, :dependent => :destroy
   has_many :time_entries, :dependent => :delete_all
   has_and_belongs_to_many :changesets, :order => "#{Changeset.table_name}.committed_on ASC, #{Changeset.table_name}.id ASC"

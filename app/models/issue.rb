@@ -16,6 +16,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class Issue < ActiveRecord::Base
+
+  # -- relations
+
+  belongs_to :type, :class_name => 'IssueType', :foreign_key => 'issue_types_id'
+  has_and_belongs_to_many :issues,:foreign_key => 'parent_id'
   belongs_to :project
   belongs_to :tracker
   belongs_to :status, :class_name => 'IssueStatus', :foreign_key => 'status_id'
@@ -25,6 +30,7 @@ class Issue < ActiveRecord::Base
   belongs_to :priority, :class_name => 'Enumeration', :foreign_key => 'priority_id'
   belongs_to :category, :class_name => 'IssueCategory', :foreign_key => 'category_id'
 
+  has_many :assignments,:dependent => :destroy
   has_many :journals, :as => :journalized, :dependent => :destroy
   has_many :time_entries, :dependent => :delete_all
   has_and_belongs_to_many :changesets, :order => "#{Changeset.table_name}.committed_on ASC, #{Changeset.table_name}.id ASC"
@@ -40,7 +46,7 @@ class Issue < ActiveRecord::Base
                      :include => [:project, :journals],
                      # sort by id so that limited eager loading doesn't break with postgresql
                      :order_column => "#{table_name}.id"
-  acts_as_event :title => Proc.new {|o| "#{o.tracker.name} ##{o.id}: #{o.subject}"},
+  acts_as_event :title => Proc.new {|o| "#{o.tracker.name if o.tracker} ##{o.id}: #{o.subject}"},
                 :url => Proc.new {|o| {:controller => 'issues', :action => 'show', :id => o.id}}                
   
   acts_as_activity_provider :find_options => {:include => [:project, :author, :tracker]},
@@ -50,6 +56,10 @@ class Issue < ActiveRecord::Base
   validates_length_of :subject, :maximum => 255
   validates_inclusion_of :done_ratio, :in => 0..100
   validates_numericality_of :estimated_hours, :allow_nil => true
+
+  named_scope :stages, :conditions=>["issue_types_id = ?", IssueType.find(:first,:conditions=>["name = 'STAGE'"]).id]
+  named_scope :milestones, :conditions=>["issue_types_id = ?", IssueType.find(:first,:conditions=>["name = 'MILESTONE'"]).id]
+  named_scope :issues, :conditions=>["issue_types_id = ?", IssueType.find(:first,:conditions=>["name = 'ISSUE'"]).id]
 
   def after_initialize
     if new_record?
@@ -266,6 +276,18 @@ class Issue < ActiveRecord::Base
   
   def to_s
     "#{tracker} ##{id}: #{subject}"
+  end
+
+  def is_issue?()  
+    self.type.name == "ISSUE"
+  end
+
+  def is_milestone?()
+    self.type.name == "MILESTONE"
+  end
+  
+  def is_stage?()
+    self._type.name == "STAGE"
   end
   
   private

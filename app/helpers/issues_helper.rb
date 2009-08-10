@@ -196,4 +196,15 @@ module IssuesHelper
     export
   end
 
+  def show_assigned_to(issue)
+    return "-" if issue.assignments.nil?
+    html =""
+    issue.assignments.each_with_index do |assignment,index|
+      user = assignment.user     
+      html += avatar(user, :size => "14") ? avatar(user, :size => "14") : ""
+      html += link_to_user(user)
+      html += (index==issue.assignments.size-1)? "":","
+    end
+    return html
+  end
 end

@@ -93,14 +93,7 @@ class ProjectsController < ApplicationController
     @trackers = @project.rolled_up_trackers
     
     cond = @project.project_condition(Setting.display_subprojects_issues?)
-    Issue.visible_by(User.current) do
-      @open_issues_by_tracker = Issue.count(:group => :tracker,
-                                            :include => [:project, :status, :tracker],
-                                            :conditions => ["(#{cond}) AND #{IssueStatus.table_name}.is_closed=?", false])
-      @total_issues_by_tracker = Issue.count(:group => :tracker,
-                                            :include => [:project, :status, :tracker],
-                                            :conditions => cond)
-    end
+   
     TimeEntry.visible_by(User.current) do
       @total_hours = TimeEntry.sum(:hours, 
                                    :include => :project,

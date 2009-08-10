@@ -164,7 +164,7 @@ class Query < ActiveRecord::Base
       # members of the user's projects
       user_values += User.current.projects.collect(&:users).flatten.uniq.sort.collect{|s| [s.name, s.id.to_s] }
     end
-    @available_filters["assigned_to_id"] = { :type => :list_optional, :order => 4, :values => user_values } unless user_values.empty?
+    @available_filters["assigned_to_id"] = { :type => :list, :order => 4, :values => user_values } unless user_values.empty?
     @available_filters["author_id"] = { :type => :list, :order => 5, :values => user_values } unless user_values.empty?
   
     if project
@@ -290,11 +290,12 @@ class Query < ActiveRecord::Base
     filters_clauses = []
     filters.each_key do |field|
       next if field == "subproject_id"
+      
       v = values_for(field).clone
       next unless v and !v.empty?
             
-      sql = ''
-      is_custom_filter = false
+      sql = ''      
+      is_custom_filter = false    
       if field =~ /^cf_(\d+)$/
         # custom field
         db_table = CustomValue.table_name
@@ -302,14 +303,22 @@ class Query < ActiveRecord::Base
         is_custom_filter = true
         sql << "#{Issue.table_name}.id IN (SELECT #{Issue.table_name}.id FROM #{Issue.table_name} LEFT OUTER JOIN #{db_table} ON #{db_table}.customized_type='Issue' AND #{db_table}.customized_id=#{Issue.table_name}.id AND #{db_table}.custom_field_id=#{$1} WHERE "
       else
-        # regular field
-        db_table = Issue.table_name
-        db_field = field
-        sql << '('
+        if (field == "assigned_to_id")
+          # custom field
+          db_table = Assignment.table_name
+          db_field = 'user_id'
+          sql << "#{Issue.table_name}.id IN (SELECT #{Issue.table_name}.id FROM #{Issue.table_name} LEFT OUTER JOIN #{db_table} ON #{db_table}.issue_id=#{Issue.table_name}.id WHERE  "
+          
+        else
+          # regular field
+          db_table = Issue.table_name
+          db_field = field
+          sql << '('
+        end
       end
       
       # "me" value subsitution
-      if %w(assigned_to_id author_id).include?(field)
+      if %w(assigned_to_id author_id).include?(field) 
         v.push(User.current.logged? ? User.current.id.to_s : "0") if v.delete("me")
       end
       

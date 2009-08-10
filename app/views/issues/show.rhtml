@@ -7,8 +7,12 @@
 <%= link_to_if_authorized l(:button_delete), {:controller => 'issues', :action => 'destroy', :id => @issue}, :confirm => l(:text_are_you_sure), :method => :post, :class => 'icon icon-del' %>
 </div>
 
-<h2><%= @issue.tracker.name %> #<%= @issue.id %></h2>
-
+<% case @issue.type.name
+   when "ISSUE" %>
+    <h2><%= @issue.tracker.name %> #<%= @issue.id %></h2>
+  <% else %>
+    <h2><%= @issue.type.name %> #<%= @issue.id %></h2>
+<% end %>
 <div class="<%= css_issue_classes(@issue) %> details">
         <%= avatar(@issue.author, :size => "64") %>
         <h3><%=h @issue.subject %></h3>
@@ -27,7 +31,7 @@
     <td class="due-date"><b><%=l(:field_due_date)%>:</b></td><td class="due-date"><%= format_date(@issue.due_date) %></td>
 </tr>
 <tr>
-    <td class="assigned-to"><b><%=l(:field_assigned_to)%>:</b></td><td><%= avatar(@issue.assigned_to, :size => "14") %><%= @issue.assigned_to ? link_to_user(@issue.assigned_to) : "-" %></td>
+    <td class="assigned-to"><b><%=l(:field_assigned_to)%>:</b></td><td><%= show_assigned_to(@issue) %></td>
     <td class="progress"><b><%=l(:field_done_ratio)%>:</b></td><td class="progress"><%= progress_bar @issue.done_ratio, :width => '80px', :legend => "#{@issue.done_ratio}%" %></td>
 </tr>
 <tr>
@@ -116,7 +120,15 @@ end %>
 <span><%= link_to 'PDF', {:format => 'pdf'}, :class => 'pdf' %></span>
 </p>
 
-<% html_title "#{@issue.tracker.name} ##{@issue.id}: #{@issue.subject}" %>
+<% case @issue.type.name
+   when "ISSUE" %>
+   <% html_title "#{@issue.tracker.name} ##{@issue.id}: #{@issue.subject}" %>
+  <% else %>
+   <% html_title "#{@issue.type.name} ##{@issue.id}: #{@issue.subject}" %>
+<% end %>
+
+
+
 
 <% content_for :sidebar do %>
     <%= render :partial => 'issues/sidebar' %>

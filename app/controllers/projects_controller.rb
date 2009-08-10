@@ -43,13 +43,13 @@ class ProjectsController < ApplicationController
   
   # Lists visible projects
   def index
-    projects = Project.find :all,
+    @projects = Project.find :all,
                             :conditions => Project.visible_by(User.current),
                             :include => :parent
     respond_to do |format|
       format.html { 
-        @project_tree = projects.group_by {|p| p.parent || p}
-        @project_tree.keys.each {|p| @project_tree[p] -= [p]} 
+#        @project_tree = projects.group_by {|p| p.parent || p}
+#        @project_tree.keys.each {|p| @project_tree[p] -= [p]}
       }
       format.atom {
         render_feed(projects.sort_by(&:created_on).reverse.slice(0, Setting.feeds_limit.to_i), 
@@ -63,7 +63,7 @@ class ProjectsController < ApplicationController
     @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
     @trackers = Tracker.all
     @root_projects = Project.find(:all,
-                                  :conditions => "parent_id IS NULL AND status = #{Project::STATUS_ACTIVE}",
+                                  :conditions => "status = #{Project::STATUS_ACTIVE}",
                                   :order => 'name')
     @project = Project.new(params[:project])
     if request.get?
@@ -111,7 +111,7 @@ class ProjectsController < ApplicationController
 
   def settings
     @root_projects = Project.find(:all,
-                                  :conditions => ["parent_id IS NULL AND status = #{Project::STATUS_ACTIVE} AND id <> ?", @project.id],
+                                  :conditions => ["status = #{Project::STATUS_ACTIVE} AND id <> ?", @project.id],
                                   :order => 'name')
     @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
     @issue_category ||= IssueCategory.new

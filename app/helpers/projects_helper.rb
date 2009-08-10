@@ -33,4 +33,5 @@ module ProjectsHelper
             ]
     tabs.select {|tab| User.current.allowed_to?(tab[:action], @project)}     
   end
+
 end

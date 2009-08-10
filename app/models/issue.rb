@@ -31,7 +31,8 @@ class Issue < ActiveRecord::Base
   
   has_many :relations_from, :class_name => 'IssueRelation', :foreign_key => 'issue_from_id', :dependent => :delete_all
   has_many :relations_to, :class_name => 'IssueRelation', :foreign_key => 'issue_to_id', :dependent => :delete_all
-  
+
+  acts_as_tree :order => "subject", :counter_cache => true
   acts_as_attachable :after_remove => :attachment_removed
   acts_as_customizable
   acts_as_watchable

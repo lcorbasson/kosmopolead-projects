@@ -1,0 +1,22 @@
+/* 
+    Document   : uneek
+    Created on : Aug 6, 2009, 2:41:17 PM
+    Author     : zouko
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+ul li{
+    list-style:none;
+}
+.tree_img:hover{
+    cursor:pointer
+}

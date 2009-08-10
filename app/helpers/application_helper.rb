@@ -617,6 +617,142 @@ module ApplicationHelper
     end
   end
 
+  def tree_ul(action, acts_as_tree_set, have_parent, init=true, &block)
+    if acts_as_tree_set.size > 0
+      if !have_parent
+          ret = '<ul style="display:none;">'
+      else
+          ret = '<ul>'
+      end
+      acts_as_tree_set.collect do |item|
+        next if item.parent_id && init
+        if item.send("#{action}_count") == 0
+          ret += '<li id="' + "#{action}" + '_id_' + "#{item.id}" + '">&nbsp;&nbsp;&nbsp;&nbsp;'
+        else
+          ret += '<li id="' + "#{action}" + '_id_' + "#{item.id}" + '"><img class="tree_img"src="/images/plus.png" onClick="showChildrenProject(\'' + "#{action}" + '_id_' + "#{item.id}" + '\')" />&nbsp;&nbsp;'
+        end
+        ret += yield item
+        #ret += "#{item.children}"
+        have_parent = false
+        ret += tree_ul(action, item.children, have_parent, false, &block) if item.children.size > 0
+        ret += '</li>'
+      end
+      ret += '</ul>'
+    end
+  end
+
+#  def tree_ul(action, acts_as_tree_set, have_parent, init=true, &block)
+#    if acts_as_tree_set.size > 0
+#      if !have_parent
+#          ret = '<table style="display:none;">'
+#      else
+#          ret = '<table>'
+#      end
+#      acts_as_tree_set.collect do |item|
+#        next if item.parent_id && init
+#        if item.send("#{action}_count") == 0
+#          ret += '<tr><td id="' + "#{action}" + '_id_' + "#{item.id}" + '">&nbsp;&nbsp;&nbsp;'
+#        else
+#          ret += '<td id="' + "#{action}" + '_id_' + "#{item.id}" + '"><img src="/images/plus.png" onClick="showChildrenProject(\'' + "#{action}" + '_id_' + "#{item.id}" + '\')" />&nbsp;&nbsp;'
+#        end
+#        ret += yield item
+#        ret += "#{item.children}"
+#        have_parent = false
+#        ret += tree_ul(action, item.children, have_parent, false, &block) if item.children.size > 0
+#        ret += '</tr>'
+#      end
+#      ret += '</table>'
+#    end
+#  end
+
+#  def tree_ul(action, acts_as_tree_set, have_parent, init=true, &block)
+#    if acts_as_tree_set.size > 0
+#      if !have_parent
+#          ret = '<table style="display:none;">'
+#      else
+#          ret = '<table>'
+#      end
+#      acts_as_tree_set.collect do |item|
+#        next if item.parent_id && init
+#        if item.send("#{action}_count") == 0
+#          ret += '<tr><td id="' + "#{action}" + '_id_' + "#{item.id}" + '">&nbsp;&nbsp;&nbsp;'
+#        else
+#          ret += '<td id="' + "#{action}" + '_id_' + "#{item.id}" + '"><img class="tree_img" src="/images/plus.png" onClick="showChildrenProject(\'' + "#{action}" + '_id_' + "#{item.id}" + '\')" />&nbsp;&nbsp;'
+#        end
+#        ret += yield item
+#        ret += '</td><td>koko</td>'
+#        have_parent = false
+#        ret += tree_ul(action, item.children, have_parent, false, &block) if item.children.size > 0
+#        ret += '</tr>'
+#      end
+#      ret += '</table>'
+#    end
+#  end
+
+#  def tree_house_zouko(issues)
+#    issues.collect do |issue|
+#      if issue.parent_id.nil?
+#        ret = '<tr><td>' + "#{issue.subject}" + '</td><td>' + "#{issue.status}" + '</td></tr>'
+#        ret += tree_children(issue.children) if issue.children.size > 0
+#      end
+#    end
+#  end
+#
+#  def tree_children(parent)
+#    ret = parent.subject
+#    if parent.children.size >0
+#      tree_children(parent.children)
+#    end
+#  end
+
+  # Qui marche
+#  def tree_table(tab_issue, padding)
+#    padding += 10
+#    tab_issue.collect do |issue|
+#      ret = '<tr><td style="padding-left:' + "#{padding}" + 'px;">' + "#{issue.subject}" + '</td><td>' + "#{issue.status}" + '</td></tr>'
+#      ret += "#{tree_table(issue.children, padding) if issue.children.size > 0}"
+#    end
+#  end
+
+  def init_tree_table(issues)
+    issues.collect do |issue|
+      if issue.parent_id.nil?
+        ret = '<tr><td>'
+        ret += '<img class="tree_img" src="/images/plus.png" onClick="showChildrenProject(' + "#{issue.id}" + ')" />' if issue.children.size > 0
+        ret += '<img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
+        ret += "#{issue.subject}" + '</td>'
+        ret += '<td>' + "#{issue.tracker}" + '</td>'
+        ret += '<td>' + "#{issue.status}" + '</td>'
+        ret += '<td>' + "#{issue.priority}" + '</td>'
+        ret += '<td>' + "#{issue.assigned_to_id}" + '</td>'
+        ret += '<td>' + "#{issue.updated_on}" + '</td>'
+        ret += '<td>' + "#{issue.done_ratio}" + '</td>'
+
+        ret += '</tr>'
+        ret += "#{tree_table(issue.children, 1)}"
+      end
+    end
+  end
+
+  def tree_table(tab_issue, padding)
+    padding += 1
+    tab_issue.collect do |issue|
+        ret = '<tr class="tree_id_parent_' + "#{issue.parent_id}" + '" style="display:none;" ><td style="padding-left:' + "#{padding}" + 'em;" >'
+        ret += '<img class="tree_img" src="/images/plus.png" onClick="showChildrenProject(' + "#{issue.id}" + ')" />' if issue.children.size > 0
+        ret += '<img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
+        ret += "#{issue.subject}" + '</td>'
+        ret += '<td>' + "#{issue.tracker}" + '</td>'
+        ret += '<td>' + "#{issue.status}" + '</td>'
+        ret += '<td>' + "#{issue.priority}" + '</td>'
+        ret += '<td>' + "#{issue.assigned_to_id}" + '</td>'
+        ret += '<td>' + "#{issue.updated_on}" + '</td>'
+        ret += '<td>' + "#{issue.done_ratio}" + '</td>'
+
+        ret += '</tr>'
+      ret += "#{tree_table(issue.children, padding) if issue.children.size > 0}"
+    end
+  end
+
   private
 
   def wiki_helper

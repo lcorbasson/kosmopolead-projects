@@ -75,7 +75,7 @@ function toggle_multi_select(field) {
     <div id="div_values_<%= field %>" style="display:none;">    
     <% case options[:type] 
     when :list, :list_optional, :list_status, :list_subprojects %>
-        <select multiple=true name="values[<%= field %>][]" id="values_<%= field %>" class="select-small" style="vertical-align: top;">
+        <select <%= "multiple=true" if query.values_for(field) and query.values_for(field).length > 1 %> name="values[<%= field %>][]" id="values_<%= field %>" class="select-small" style="vertical-align: top;">
         <%= options_for_select options[:values], query.values_for(field) %>        
         </select>
         <%= link_to_function image_tag('bullet_toggle_plus.png'), "toggle_multi_select('#{field}');", :style => "vertical-align: bottom;" %>

@@ -718,9 +718,9 @@ module ApplicationHelper
     issues.collect do |issue|
       if issue.parent_id.nil?
         ret = '<tr><td>'
-        ret += '<img class="tree_img" src="/images/plus.png" onClick="showChildrenProject(' + "#{issue.id}" + ')" />' if issue.children.size > 0
+        ret += '<img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
         ret += '<img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
-        ret += "#{issue.subject}" + '</td>'
+        ret += "#{link_to "#{issue.subject}", {:controller => "issues", :action => "show", :id => issue}}</td>"
         ret += '<td>' + "#{issue.tracker}" + '</td>'
         ret += '<td>' + "#{issue.status}" + '</td>'
         ret += '<td>' + "#{issue.priority}" + '</td>'
@@ -729,18 +729,20 @@ module ApplicationHelper
         ret += '<td>' + "#{issue.done_ratio}" + '</td>'
 
         ret += '</tr>'
-        ret += "#{tree_table(issue.children, 1)}"
+        ret += "#{tree_table(issue.children, 1, '')}"
       end
     end
   end
 
-  def tree_table(tab_issue, padding)
+  def tree_table(tab_issue, padding, parent_class)
     padding += 1
     tab_issue.collect do |issue|
-        ret = '<tr class="tree_id_parent_' + "#{issue.parent_id}" + '" style="display:none;" ><td style="padding-left:' + "#{padding}" + 'em;" >'
-        ret += '<img class="tree_img" src="/images/plus.png" onClick="showChildrenProject(' + "#{issue.id}" + ')" />' if issue.children.size > 0
+      class_tr = "#{parent_class}" + " tree_class_parent_#{issue.parent_id}"
+        #ret = '<tr value="0" class="' + "#{class_tr}" + '" style="display:none;" ><td style="padding-left:' + "#{padding}" + 'em;" >'
+        ret = '<tr value="' + "#{issue.parent_id}" + '" class="' + "#{class_tr}" + '" style="display:none;" ><td style="padding-left:' + "#{padding}" + 'em;" >'
+        ret += '<img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
         ret += '<img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
-        ret += "#{issue.subject}" + '</td>'
+        ret += "#{link_to "#{issue.subject}", {:controller => "issues", :action => "show", :id => issue}}</td>"
         ret += '<td>' + "#{issue.tracker}" + '</td>'
         ret += '<td>' + "#{issue.status}" + '</td>'
         ret += '<td>' + "#{issue.priority}" + '</td>'
@@ -749,7 +751,7 @@ module ApplicationHelper
         ret += '<td>' + "#{issue.done_ratio}" + '</td>'
 
         ret += '</tr>'
-      ret += "#{tree_table(issue.children, padding) if issue.children.size > 0}"
+        ret += "#{tree_table(issue.children, padding, class_tr) if issue.children.size > 0}"
     end
   end
 

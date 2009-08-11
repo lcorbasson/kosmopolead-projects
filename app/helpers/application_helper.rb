@@ -717,16 +717,18 @@ module ApplicationHelper
   def init_tree_table(issues)
     issues.collect do |issue|
       if issue.parent_id.nil?
-        ret = '<tr><td>'
-        ret += '<img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
-        ret += '<img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
+        ret = '<tr>'
+        ret += '<td class="checkbox">' + "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
+        ret += '<td>' + "#{issue.id}" + '</td>'
+        ret += '<td><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
+        ret += '<td><img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
         ret += "#{link_to "#{issue.subject}", {:controller => "issues", :action => "show", :id => issue}}</td>"
         ret += '<td>' + "#{issue.tracker}" + '</td>'
         ret += '<td>' + "#{issue.status}" + '</td>'
         ret += '<td>' + "#{issue.priority}" + '</td>'
-        ret += '<td>' + "#{issue.assigned_to_id}" + '</td>'
+        ret += '<td>' + "#{show_assigned_to(issue)}" + '</td>'
         ret += '<td>' + "#{issue.updated_on}" + '</td>'
-        ret += '<td>' + "#{issue.done_ratio}" + '</td>'
+        ret += '<td>' + "#{progress_bar issue.done_ratio, :width => '80px', :legend => "#{issue.done_ratio}%"}" + '</td>'
 
         ret += '</tr>'
         ret += "#{tree_table(issue.children, 1, '')}"
@@ -739,16 +741,18 @@ module ApplicationHelper
     tab_issue.collect do |issue|
       class_tr = "#{parent_class}" + " tree_class_parent_#{issue.parent_id}"
         #ret = '<tr value="0" class="' + "#{class_tr}" + '" style="display:none;" ><td style="padding-left:' + "#{padding}" + 'em;" >'
-        ret = '<tr value="' + "#{issue.parent_id}" + '" class="' + "#{class_tr}" + '" style="display:none;" ><td style="padding-left:' + "#{padding}" + 'em;" >'
-        ret += '<img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
-        ret += '<img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
+        ret = '<tr value="' + "#{issue.parent_id}" + '" class="' + "#{class_tr}" + '" style="display:none;" >'
+        ret += '<td class="checkbox">' + "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
+        ret += '<td>' + "#{issue.id}" + '</td>'
+        ret += '<td style="padding-left:' + "#{padding}" + 'em;" ><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
+        ret += '<td style="padding-left:' + "#{padding}" + 'em;" ><img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
         ret += "#{link_to "#{issue.subject}", {:controller => "issues", :action => "show", :id => issue}}</td>"
         ret += '<td>' + "#{issue.tracker}" + '</td>'
         ret += '<td>' + "#{issue.status}" + '</td>'
         ret += '<td>' + "#{issue.priority}" + '</td>'
         ret += '<td>' + "#{issue.assigned_to_id}" + '</td>'
         ret += '<td>' + "#{issue.updated_on}" + '</td>'
-        ret += '<td>' + "#{issue.done_ratio}" + '</td>'
+        ret += '<td>' + "#{progress_bar issue.done_ratio, :width => '80px', :legend => "#{issue.done_ratio}%"}" + '</td>'
 
         ret += '</tr>'
         ret += "#{tree_table(issue.children, padding, class_tr) if issue.children.size > 0}"

@@ -1,6 +1,44 @@
+<% if @query.new_record? %>
+    <h2><%=l(:label_issue_plural)%></h2>
+    <% html_title(l(:label_issue_plural)) %>
+
+    <% form_tag({ :controller => 'queries', :action => 'new' }, :id => 'query_form') do %>
+    <%= hidden_field_tag('project_id', @project.id) if @project %>
+    <fieldset id="filters"><legend><%= l(:label_filter_plural) %></legend>
+    <%= render :partial => 'queries/filters', :locals => {:query => @query} %>
+    <p class="buttons">
+    <%= link_to_remote l(:button_apply),
+                       { :url => { :set_filter => 1 },
+                         :update => "content",
+                         :with => "Form.serialize('query_form')"
+                       }, :class => 'icon icon-checked' %>
+
+    <%= link_to_remote l(:button_clear),
+                       { :url => { :set_filter => 1 },
+                         :update => "content",
+                       }, :class => 'icon icon-reload'  %>
+    <% if User.current.allowed_to?(:save_queries, @project, :global => true) %>
+    <%= link_to l(:button_save), {}, :onclick => "$('query_form').submit(); return false;", :class => 'icon icon-save' %>
+    <% end %>
+    </p>
+    </fieldset>
+    <% end %>
+<% end %>
+
+
+
+
+
+
+
+
+
+
 <table class="list" style="text-align:left;">
   <thead>
     <tr>
+      <th><%= link_to image_tag('toggle_check.png'), {}, :onclick => 'toggleIssuesSelection(Element.up(this, "form")); return false;', :title => "#{l(:button_check_all)}/#{l(:button_uncheck_all)}" %></th>
+      <th>#</th>
       <th>subject</th>
       <th>Tracker</th>
       <th>statut</th>
@@ -14,3 +52,4 @@
     <%= init_tree_table(@issues) %>
   </tbody>
 </table>
+<p class="pagination"><%= pagination_links_full @issue_pages, @issue_count %></p>

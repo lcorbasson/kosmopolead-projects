@@ -346,7 +346,10 @@ class IssuesController < ApplicationController
     retrieve_query
     if @query.valid?
       events = []
-      
+
+     
+
+
       # Issues that have start and due dates
       events += Issue.find(:all, 
                            :order => "start_date, due_date",

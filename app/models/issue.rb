@@ -38,7 +38,7 @@ class Issue < ActiveRecord::Base
   has_many :relations_from, :class_name => 'IssueRelation', :foreign_key => 'issue_from_id', :dependent => :delete_all
   has_many :relations_to, :class_name => 'IssueRelation', :foreign_key => 'issue_to_id', :dependent => :delete_all
 
-  acts_as_tree :order => "subject", :counter_cache => true
+  acts_as_tree :order => "subject",:foreign_key=>"parent_id"
   acts_as_attachable :after_remove => :attachment_removed
   acts_as_customizable
   acts_as_watchable
@@ -287,8 +287,23 @@ class Issue < ActiveRecord::Base
   end
   
   def is_stage?()
-    self._type.name == "STAGE"
+    self.type.name == "STAGE"
   end
+
+ 
+
+  def level
+    parent = self.parent
+    issue = self
+    level = 0
+    while(!parent.nil?)
+      issue = parent
+      parent = issue.parent
+      level= level+1
+    end
+    return level
+  end
+
   
   private
   

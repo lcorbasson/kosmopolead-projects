@@ -83,7 +83,7 @@ t_height = g_height + headers_height
 #
 top = headers_height + 8 %>
 <div style="position:absolute;top:62px;">
-<%= tree_gantt_list(top, Issue.find(:all,:conditions=>["parent_id is null"])) %>
+<%= tree_gantt_list(top, @gantt.events) %>
 </div>
 </div>
 </td>
@@ -167,7 +167,7 @@ end %>
 # Tasks
 #
 top = headers_height + 10 %>
-<%= tree_gantt(top, @gantt,zoom,Issue.find(:all,:conditions=>["parent_id is null"]), true) %>
+<%= tree_gantt(top, @gantt,zoom,@gantt.events, true) %>
 
 
 <%

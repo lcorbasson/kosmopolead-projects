@@ -5,9 +5,9 @@
                                      :with => "Form.serialize('issue-form')" %>
 
 
-<p><%= f.select :parent_id, @issues_stage.collect {|t| [t.subject, t.id]}, :required => true %></p>
+<p><%= check_box 'type', 'type' %> <%= f.select :parent_id, @issues_stage.collect {|t| [t.subject, t.id]}, :required => true if false %></p>
 
-<p><%= f.select :parent_id, @issues_sub.collect {|t| [t.subject, t.id]}, :required => true %></p>
+<p><%= check_box 'type', 'type' %> <%= f.select :parent_id, @issues_sub.collect {|t| [t.subject, t.id]}, :required => true if false%></p>
 
 <hr />
 

@@ -717,7 +717,7 @@ module ApplicationHelper
   def init_tree_table(issues)
     issues.collect do |issue|
       if issue.parent_id.nil?
-        ret = '<tr id="issue-' + "#{issue.id}" + '">'
+        ret = "<tr id='#{issue.id}' class='hascontextmenu #{cycle('odd', 'even')}'>"
         ret += '<td class="checkbox">' + "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
         ret += '<td>' + "#{issue.id}" + '</td>'
         ret += '<td><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
@@ -741,7 +741,7 @@ module ApplicationHelper
     tab_issue.collect do |issue|
       class_tr = "#{parent_class}" + " tree_class_parent_#{issue.parent_id}"
         #ret = '<tr value="0" class="' + "#{class_tr}" + '" style="display:none;" ><td style="padding-left:' + "#{padding}" + 'em;" >'
-        ret = '<tr value="' + "#{issue.parent_id}" + '" class="' + "#{class_tr}" + '" style="display:none;" >'
+        ret = '<tr id='"#{issue.id}"' value="' + "#{issue.parent_id}" + '" class="' + "#{class_tr}" + '" style="display:none;" >'
         ret += '<td class="checkbox">' + "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
         ret += '<td>' + "#{issue.id}" + '</td>'
         ret += '<td style="padding-left:' + "#{padding}" + 'em;" ><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0

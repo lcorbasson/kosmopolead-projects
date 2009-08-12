@@ -37,34 +37,5 @@
     <%= stylesheet_link_tag 'context_menu' %>
 <% end %>
 
-<<<<<<< HEAD:app/views/issues/index.rhtml
-
-
-
-
-
-<table  class="list issues" style="text-align:left;">
-  <thead>
-    <tr>
-      <th><%= link_to image_tag('toggle_check.png'), {}, :onclick => 'toggleIssuesSelection(Element.up(this, "form")); return false;', :title => "#{l(:button_check_all)}/#{l(:button_uncheck_all)}" %></th>
-      <th>#</th>
-      <th>subject</th>
-      <th>Tracker</th>
-      <th>statut</th>
-      <th>Priority</th>
-      <th>Asign to</th>
-      <th>Update on</th>
-      <th>Realise</th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= init_tree_table(@issues) %>
-  </tbody>
-</table>
-<p class="pagination"><%= pagination_links_full @issue_pages, @issue_count %></p>
-<div id="context-menu" style="display: none;"></div>
-
-=======
 <div id="context-menu" style="display: none;"></div>
 <%= javascript_tag "new ContextMenu('#{url_for(:controller => 'issues', :action => 'context_menu')}')" %>
->>>>>>> 4e23dc5fce4fa44925672c6c0d7fbdd9ace3d736:app/views/issues/index.rhtml

@@ -24,3 +24,4 @@
 <% end -%>
 <%= call_hook(:view_issues_sidebar_queries_bottom) %>
 <% end -%>
+<%= javascript_tag "new ContextMenu('#{url_for(:controller => 'issues', :action => 'context_menu')}')" %>

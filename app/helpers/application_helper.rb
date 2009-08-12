@@ -720,16 +720,15 @@ module ApplicationHelper
         ret = "<tr id='#{issue.id}' class='hascontextmenu #{cycle('odd', 'even')}'>"
         ret += '<td class="checkbox">' + "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
         ret += '<td>' + "#{issue.id}" + '</td>'
+        ret += '<td class="tracker">' + "#{issue.tracker}" + '</td>'
+        ret += '<td class="status">' + "#{issue.status}" + '</td>'
+        ret += '<td class="priority">' + "#{issue.priority}" + '</td>'
         ret += '<td><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
         ret += '<td><img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
         ret += "#{link_to "#{issue.subject}", {:controller => "issues", :action => "show", :id => issue}}</td>"
-        ret += '<td>' + "#{issue.tracker}" + '</td>'
-        ret += '<td>' + "#{issue.status}" + '</td>'
-        ret += '<td>' + "#{issue.priority}" + '</td>'
-        ret += '<td>' + "#{show_assigned_to(issue)}" + '</td>'
-        ret += '<td>' + "#{issue.updated_on}" + '</td>'
+        ret += '<td class="assigned_to">' + "#{show_assigned_to(issue)}" + '</td>'
+        ret += '<td class="updated_on">' + "#{issue.updated_on}" + '</td>'
         ret += '<td>' + "#{progress_bar issue.done_ratio, :width => '80px', :legend => "#{issue.done_ratio}%"}" + '</td>'
-
         ret += '</tr>'
         ret += "#{tree_table(issue.children, 1, '')}"
       end
@@ -741,19 +740,18 @@ module ApplicationHelper
     tab_issue.collect do |issue|
       class_tr = "#{parent_class}" + " tree_class_parent_#{issue.parent_id}"
         #ret = '<tr value="0" class="' + "#{class_tr}" + '" style="display:none;" ><td style="padding-left:' + "#{padding}" + 'em;" >'
-        ret = '<tr id='"#{issue.id}"' value="' + "#{issue.parent_id}" + '" class="' + "#{class_tr}" + '" style="display:none;" >'
+        ret = '<tr id='"#{issue.id}"' value="' + "#{issue.parent_id}" + '" class="' + "#{class_tr}" + " hascontextmenu #{cycle('odd', 'even')}" +'" style="display:none;" >'
         ret += '<td class="checkbox">' + "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
         ret += '<td>' + "#{issue.id}" + '</td>'
+        ret += '<td class="tracker">' + "#{issue.tracker}" + '</td>'
+        ret += '<td class="status">' + "#{issue.status}" + '</td>'
+        ret += '<td class="priority">' + "#{issue.priority}" + '</td>'
         ret += '<td style="padding-left:' + "#{padding}" + 'em;" ><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
         ret += '<td style="padding-left:' + "#{padding}" + 'em;" ><img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
         ret += "#{link_to "#{issue.subject}", {:controller => "issues", :action => "show", :id => issue}}</td>"
-        ret += '<td>' + "#{issue.tracker}" + '</td>'
-        ret += '<td>' + "#{issue.status}" + '</td>'
-        ret += '<td>' + "#{issue.priority}" + '</td>'
-        ret += '<td>' + "#{issue.assigned_to_id}" + '</td>'
-        ret += '<td>' + "#{issue.updated_on}" + '</td>'
+        ret += '<td class="assigned_to>' + "#{show_assigned_to(issue)}" + '</td>'
+        ret += '<td class="updated_on">' + "#{issue.updated_on}" + '</td>'
         ret += '<td>' + "#{progress_bar issue.done_ratio, :width => '80px', :legend => "#{issue.done_ratio}%"}" + '</td>'
-
         ret += '</tr>'
         ret += "#{tree_table(issue.children, padding, class_tr) if issue.children.size > 0}"
     end

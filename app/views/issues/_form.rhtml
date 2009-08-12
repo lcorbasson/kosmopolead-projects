@@ -1,9 +1,14 @@
 <% if @issue.new_record? %>
-
 <p><%= f.select :issue_types_id, @issue_types.collect {|t| [t.name, t.id]}, :required => true %></p>
 <%= observe_field :issue_issue_types_id, :url => { :action => :new },
                                      :update => :content,
                                      :with => "Form.serialize('issue-form')" %>
+
+
+<p><%= check_box 'type', 'type' %> <%= f.select :parent_id, @issues_stage.collect {|t| [t.subject, t.id]}, :required => true if false %></p>
+
+<p><%= check_box 'type', 'type' %> <%= f.select :parent_id, @issues_sub.collect {|t| [t.subject, t.id]}, :required => true if false%></p>
+
 <hr />
 
 <% if @issue.type.name == "ISSUE" %>

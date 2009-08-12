@@ -72,7 +72,7 @@
 
     <% if @issue.new_record? %>
     <p><label><%=l(:label_attachment_plural)%></label><%= render :partial => 'attachments/form' %></p>
-    <% end %>
+    <% end %>s
 
     <% if @issue.new_record? && User.current.allowed_to?(:add_issue_watchers, @project) -%>
     <p><label><%= l(:label_issue_watchers) %></label>

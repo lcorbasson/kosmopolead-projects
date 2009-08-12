@@ -210,11 +210,11 @@ module IssuesHelper
     return html
   end
 
-  def tree_gantt_list(top,events)
+  def tree_gantt_list(events)
     ret = ""   
-    events.collect do |event|      
-        ret = "<div style='height:20px;padding-left:#{event.level*20}px'>"
+    events.collect do |event| 
         if event.class ==  Issue
+          ret = "<div style='height:20px;padding-left:#{event.level*20}px'>"
           if event.is_issue?
             ret += "Tache :  "            
           else
@@ -223,15 +223,18 @@ module IssuesHelper
             end
           end
           ret += "#{link_to_issue event}:	#{h event.subject}<br/>"
+          ret += "</div>"
+          ret += "#{tree_gantt_list(event.children) if event.children.size>0}" 
         else
+          ret = "<div style='height:20px;>"
           ret += "<span class='icon icon-package'>"
           ret += "#{h(event.project)}-"
           ret += "#{link_to_version event}"
           ret += "</span>"
+          ret += "</div>"
         end
-        ret += "</div>"
-        top = top+20        
-        ret += "#{tree_gantt_list(top,event.children) if event.children.size>0}"    
+                    
+           
     end
   end
 
@@ -241,11 +244,12 @@ module IssuesHelper
       @@top = top
     end
     events.collect do |i|
-        if i.class == Issue
+      if i.class == Issue and (i.is_issue? or i.is_stage?)
           i_start_date = (i.start_date >= gantt.date_from ? i.start_date : gantt.date_from )
-          i_end_date = (i.due_before <= gantt.date_to ? i.due_before : gantt.date_to )
-
-          i_done_date = i.start_date + ((i.due_before - i.start_date+1)*i.done_ratio/100).floor
+          i_end_date = (i.due_before and i.due_before <= gantt.date_to ? i.due_before : gantt.date_to )
+          
+          
+          i_done_date = i.start_date + ((i_end_date - i.start_date+1)*i.done_ratio/100).floor
           i_done_date = (i_done_date <= gantt.date_from ? gantt.date_from : i_done_date )
           i_done_date = (i_done_date >= gantt.date_to ? gantt.date_to : i_done_date )
 
@@ -273,14 +277,14 @@ module IssuesHelper
           ret += "</span></div>"
         else
           i_left = ((i.start_date - gantt.date_from)*zoom).floor
-          ret += "<div style='top:#{@@top}px;left:#{i_left}px;width:15px;' class='task milestone'>&nbsp;</div>"
+          ret = "<div style='top:#{@@top}px;left:#{i_left}px;width:15px;' class='task milestone'>&nbsp;</div>"
           ret += "<div style='top:#{@@top}px;left:#{i_left + 12}px;background:#fff;' class='task'>"
           ret += "#{h(i.project)}"
           ret += "<strong>#{h i}</strong>"
           ret += "</div>"
         end
-        @@top = @@top + 20
-        ret += "#{tree_gantt(@@top,gantt, zoom, i.children, false) if i.children.size>0}"
+        @@top = @@top + 20        
+        ret += "#{tree_gantt(@@top,gantt, zoom, i.children, false) if i.class==Issue and i.children.size>0}"
       end 
   end
 

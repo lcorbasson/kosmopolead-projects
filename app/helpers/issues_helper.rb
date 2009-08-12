@@ -220,6 +220,10 @@ module IssuesHelper
           else
             if event.is_stage?
               ret += "Phase :  "
+            else
+              if event.is_milestone?
+                ret += "Jalon :  "
+              end
             end
           end
           ret += "#{link_to_issue event}:	#{h event.subject}<br/>"
@@ -228,7 +232,7 @@ module IssuesHelper
         else
           ret = "<div style='height:20px;>"
           ret += "<span class='icon icon-package'>"
-          ret += "#{h(event.project)}-"
+          ret += "Version :  "
           ret += "#{link_to_version event}"
           ret += "</span>"
           ret += "</div>"
@@ -246,7 +250,7 @@ module IssuesHelper
     events.collect do |i|
       if i.class == Issue and (i.is_issue? or i.is_stage?)
           i_start_date = (i.start_date >= gantt.date_from ? i.start_date : gantt.date_from )
-          i_end_date = (i.due_before and i.due_before <= gantt.date_to ? i.due_before : gantt.date_to )
+          i_end_date = ((i.due_before and i.due_before <= gantt.date_to) ? i.due_before : gantt.date_to )
           
           
           i_done_date = i.start_date + ((i_end_date - i.start_date+1)*i.done_ratio/100).floor

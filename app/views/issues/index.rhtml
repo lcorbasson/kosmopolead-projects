@@ -25,31 +25,17 @@
     <% end %>
 <% end %>
 
+<%= render :partial => 'issues/list', :locals => {:issues => @issues, :query => @query} %>
+<% content_for :sidebar do %>
+    <%= render :partial => 'issues/sidebar' %>
+<% end %>
 
+<% content_for :header_tags do %>
+    <%= auto_discovery_link_tag(:atom, {:query_id => @query, :format => 'atom', :page => nil, :key => User.current.rss_key}, :title => l(:label_issue_plural)) %>
+    <%= auto_discovery_link_tag(:atom, {:action => 'changes', :query_id => @query, :format => 'atom', :page => nil, :key => User.current.rss_key}, :title => l(:label_changes_details)) %>
+    <%= javascript_include_tag 'context_menu' %>
+    <%= stylesheet_link_tag 'context_menu' %>
+<% end %>
 
-
-
-
-
-
-
-
-<table class="list" style="text-align:left;">
-  <thead>
-    <tr>
-      <th><%= link_to image_tag('toggle_check.png'), {}, :onclick => 'toggleIssuesSelection(Element.up(this, "form")); return false;', :title => "#{l(:button_check_all)}/#{l(:button_uncheck_all)}" %></th>
-      <th>#</th>
-      <th>subject</th>
-      <th>Tracker</th>
-      <th>statut</th>
-      <th>Priority</th>
-      <th>Asign to</th>
-      <th>Update on</th>
-      <th>Realise</th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= init_tree_table(@issues) %>
-  </tbody>
-</table>
-<p class="pagination"><%= pagination_links_full @issue_pages, @issue_count %></p>
+<div id="context-menu" style="display: none;"></div>
+<%= javascript_tag "new ContextMenu('#{url_for(:controller => 'issues', :action => 'context_menu')}')" %>

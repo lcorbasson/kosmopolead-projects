@@ -24,6 +24,8 @@ class QueryColumn
     self.sortable = options[:sortable]
     self.default_order = options[:default_order]
   end
+
+
   
   def caption
     set_language_if_valid(User.current.language)
@@ -258,6 +260,8 @@ class Query < ActiveRecord::Base
   def has_default_columns?
     column_names.nil? || column_names.empty?
   end
+
+
   
   def project_statement
     project_clauses = []

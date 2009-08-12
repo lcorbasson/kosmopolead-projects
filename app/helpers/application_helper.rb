@@ -717,17 +717,17 @@ module ApplicationHelper
   def init_tree_table(issues)
     issues.collect do |issue|
       if issue.parent_id.nil?
-        ret = '<tr>'
+        ret = '<tr id="issue-' + "#{issue.id}" + '">'
         ret += '<td class="checkbox">' + "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
         ret += '<td>' + "#{issue.id}" + '</td>'
         ret += '<td><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
         ret += '<td><img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
         ret += "#{link_to "#{issue.subject}", {:controller => "issues", :action => "show", :id => issue}}</td>"
-        ret += '<td>' + "#{issue.tracker}" + '</td>'
-        ret += '<td>' + "#{issue.status}" + '</td>'
-        ret += '<td>' + "#{issue.priority}" + '</td>'
-        ret += '<td>' + "#{show_assigned_to(issue)}" + '</td>'
-        ret += '<td>' + "#{issue.updated_on}" + '</td>'
+        ret += '<td class="tracker">' + "#{issue.tracker}" + '</td>'
+        ret += '<td class="status">' + "#{issue.status}" + '</td>'
+        ret += '<td class="priority">' + "#{issue.priority}" + '</td>'
+        ret += '<td class="assigned_to">' + "#{show_assigned_to(issue)}" + '</td>'
+        ret += '<td class="updated_on">' + "#{issue.updated_on}" + '</td>'
         ret += '<td>' + "#{progress_bar issue.done_ratio, :width => '80px', :legend => "#{issue.done_ratio}%"}" + '</td>'
 
         ret += '</tr>'
@@ -750,7 +750,7 @@ module ApplicationHelper
         ret += '<td>' + "#{issue.tracker}" + '</td>'
         ret += '<td>' + "#{issue.status}" + '</td>'
         ret += '<td>' + "#{issue.priority}" + '</td>'
-        ret += '<td>' + "#{issue.assigned_to_id}" + '</td>'
+        ret += '<td>' + "#{show_assigned_to(issue)}" + '</td>'
         ret += '<td>' + "#{issue.updated_on}" + '</td>'
         ret += '<td>' + "#{progress_bar issue.done_ratio, :width => '80px', :legend => "#{issue.done_ratio}%"}" + '</td>'
 

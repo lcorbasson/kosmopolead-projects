@@ -32,9 +32,7 @@
 
 
 
-
-
-<table class="list" style="text-align:left;">
+<table  class="list issues" style="text-align:left;">
   <thead>
     <tr>
       <th><%= link_to image_tag('toggle_check.png'), {}, :onclick => 'toggleIssuesSelection(Element.up(this, "form")); return false;', :title => "#{l(:button_check_all)}/#{l(:button_uncheck_all)}" %></th>
@@ -53,3 +51,5 @@
   </tbody>
 </table>
 <p class="pagination"><%= pagination_links_full @issue_pages, @issue_count %></p>
+<div id="context-menu" style="display: none;"></div>
+

@@ -304,6 +304,15 @@ class Issue < ActiveRecord::Base
     return level
   end
 
+  def is_late?
+    if self.due_date
+      late = self.due_date < Date.today
+    else
+      late = false
+    end
+
+  end
+
   
   private
   

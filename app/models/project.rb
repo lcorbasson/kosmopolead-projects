@@ -19,7 +19,8 @@ class Project < ActiveRecord::Base
   # Project statuses
   STATUS_ACTIVE     = 1
   STATUS_ARCHIVED   = 9
-  
+
+  belongs_to :time_unit, :foreign_key=>"time_units_id"
   has_many :members, :include => :user, :conditions => "#{User.table_name}.status=#{User::STATUS_ACTIVE}"
   has_many :users, :through => :members
   has_many :enabled_modules, :dependent => :delete_all
@@ -256,6 +257,15 @@ class Project < ActiveRecord::Base
   def self.next_identifier
     p = Project.find(:first, :order => 'created_on DESC')
     p.nil? ? nil : p.identifier.to_s.succ
+  end
+
+  def time_unit_label
+     case self.time_unit.label
+      when "hours"
+        l(:field_hours)
+      when "days"
+        l(:field_days)
+      end
   end
 
 protected

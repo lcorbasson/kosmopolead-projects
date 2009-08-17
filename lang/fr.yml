@@ -171,6 +171,7 @@ field_url: URL
 field_start_page: Page de démarrage
 field_subproject: Sous-projet
 field_hours: Heures
+field_days: Jours
 field_activity: Activité
 field_spent_on: Date
 field_identifier: Identifiant

@@ -14,13 +14,13 @@
         </legend>
         <%= render :partial => (@edit_allowed ? 'form' : 'form_update'), :locals => {:f => f} %>
         </fieldset>
-    <% end %>
-    <% if @issue.type == "ISSUE" %>
+    <% end %>   
+    <% if @issue.is_issue? %>
     <% if authorize_for('timelog', 'edit') %>
         <fieldset class="tabular"><legend><%= l(:button_log_time) %></legend>
           <% fields_for :time_entry, @time_entry, { :builder => TabularFormBuilder, :lang => current_language} do |time_entry| %>
           <div class="splitcontentleft">
-          <p><%= time_entry.text_field :hours, :size => 6, :label => :label_spent_time %> <%= l(:field_hours) %></p>
+          <p><%= time_entry.text_field :hours, :size => 6, :label => :label_spent_time %> <%= @project.time_unit_label %></p>
           </div>
           <div class="splitcontentright">
           <p><%= time_entry.select :activity_id, activity_collection_for_select_options %></p>

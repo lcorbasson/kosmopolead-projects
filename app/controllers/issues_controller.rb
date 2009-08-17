@@ -161,16 +161,18 @@ class IssuesController < ApplicationController
             if !Assignment.exist?(@issue.id,assigned_to)
               Assignment.create(:issue_id=>@issue.id, :user_id=>assigned_to)
             end
-         end
-        end
 
+          end
+
+        end
+       end
         attach_files(@issue, params[:attachments])
         flash[:notice] = l(:notice_successful_create)
         Mailer.deliver_issue_add(@issue) if Setting.notified_events.include?('issue_added')
         redirect_to(params[:continue] ? { :action => 'new', :tracker_id => @issue.tracker } :
                                         { :action => 'show', :id => @issue })
         return
-      end		
+      		
     end	
     @priorities = Enumeration::get_values('IPRI')
     render :layout => !request.xhr?
@@ -195,12 +197,14 @@ class IssuesController < ApplicationController
       attrs.delete(:status_id) unless @allowed_statuses.detect {|s| s.id.to_s == attrs[:status_id].to_s}
       @issue.attributes = attrs
       if @issue.is_issue?
-        new_assignments = params[:assigned_to_id]
-        Assignment.delete(@issue, new_assignments)
-        #Création des assignations à la tâche
-        new_assignments.each do |assigned_to|
-          if !Assignment.exist?(@issue.id,assigned_to)
-            Assignment.create(:issue_id=>@issue.id, :user_id=>assigned_to)
+        if params[:assigned_to_id]
+          new_assignments = params[:assigned_to_id]
+          Assignment.delete(@issue, new_assignments)
+          #Création des assignations à la tâche
+          new_assignments.each do |assigned_to|
+            if !Assignment.exist?(@issue.id,assigned_to)
+              Assignment.create(:issue_id=>@issue.id, :user_id=>assigned_to)
+            end
           end
         end
       end

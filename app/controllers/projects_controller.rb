@@ -66,6 +66,7 @@ class ProjectsController < ApplicationController
                                   :conditions => "status = #{Project::STATUS_ACTIVE}",
                                   :order => 'name')
     @project = Project.new(params[:project])
+    @time_units = TimeUnit.find(:all)
     if request.get?
       @project.identifier = Project.next_identifier if Setting.sequential_project_identifiers?
       @project.trackers = Tracker.all
@@ -106,6 +107,7 @@ class ProjectsController < ApplicationController
     @root_projects = Project.find(:all,
                                   :conditions => ["status = #{Project::STATUS_ACTIVE} AND id <> ?", @project.id],
                                   :order => 'name')
+    @time_units = TimeUnit.find(:all)
     @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
     @issue_category ||= IssueCategory.new
     @member ||= @project.members.new
@@ -117,7 +119,7 @@ class ProjectsController < ApplicationController
   # Edit @project
   def edit
     if request.post?
-      @project.attributes = params[:project]
+      @project.attributes = params[:project]      
       if @project.save
         flash[:notice] = l(:notice_successful_update)
         redirect_to :action => 'settings', :id => @project

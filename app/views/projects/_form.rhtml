@@ -8,6 +8,11 @@
     <p><%= f.select :parent_id, (@root_projects.collect {|p| [p.name, p.id]}), { :include_blank => true } %></p>
 <% end %>
 
+<p><%= f.text_field :acronym, :required => true %></p>
+<p><%= f.select :author_id,  @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
+<p><%= f.select :watched_by, @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
+<p><%= f.select :build_by, @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
+
 <p><%= f.select :time_units_id, (@time_units.collect {|u| [u.label, u.id]}) %></p>
 
 <p><%= f.text_area :description, :rows => 5, :class => 'wiki-edit' %></p>

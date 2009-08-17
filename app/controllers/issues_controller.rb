@@ -120,8 +120,7 @@ class IssuesController < ApplicationController
     @issue.tracker ||= @project.trackers.find((params[:issue] && params[:issue][:tracker_id]) || params[:tracker_id] || :first)
     @issue.issue_types_id ||= IssueType.find((params[:issue] && params[:issue][:issue_type_id]) || params[:issue_type_id] || :first)
     @issue_types = IssueType.find(:all)
-    @issues_stage = Issue.stages
-    @issues_sub = Issue.all(:conditions => {:issue_types_id => '3'})
+    @users = User.all
     if @issue.tracker.nil?
       flash.now[:error] = 'No tracker is associated to this project. Please check the Project settings.'
       render :nothing => true, :layout => true
@@ -469,7 +468,6 @@ class IssuesController < ApplicationController
                     page << "jQuery('#type_relation').html('#{escape_javascript(render :partial=>'type_issue')}');"
                   end
                  if type == 'stage'
-                   page << "console.log(#{render:partial=>'type_stage'})"
                     page << "jQuery('#type_relation').html('#{escape_javascript(render :partial=>'type_stage')}');"
                  end
                  

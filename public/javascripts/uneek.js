@@ -25,3 +25,7 @@ function showChildrenIssue(id){
 //        jQuery(".tree_class_parent_" + id + ' img:first').attr('src', '/images/plus.png')
     }
 }
+
+function checkTypeRelation(t){
+    jQuery.ajax({dataType:'script', url:'type_event', data:'type=' + t.value,type: "get", success: function(msg){eval(msg)}});
+}

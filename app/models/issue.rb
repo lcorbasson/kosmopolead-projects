@@ -17,6 +17,10 @@
 
 class Issue < ActiveRecord::Base
 
+
+  RELATION_TYPE = [ 'stage', 'issue', 'none']
+
+
   # -- relations
 
   belongs_to :type, :class_name => 'IssueType', :foreign_key => 'issue_types_id'

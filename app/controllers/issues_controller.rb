@@ -16,12 +16,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class IssuesController < ApplicationController
+
   menu_item :new_issue, :only => :new
   
   before_filter :find_issue, :only => [:show, :edit, :reply]
   before_filter :find_issues, :only => [:bulk_edit, :move, :destroy]
   before_filter :find_project, :only => [:new, :update_form, :preview]
-  before_filter :authorize, :except => [:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
+  before_filter :authorize, :except => [:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu, :type_event]
   before_filter :find_optional_project, :only => [:index, :changes, :gantt, :calendar]
   accept_key_auth :index, :show, :changes
 
@@ -60,7 +61,7 @@ class IssuesController < ApplicationController
       @issue_pages = Paginator.new self, @issue_count, limit, params['page']
       @issues = Issue.find :all, :order => sort_clause,
                            :include => [ :parent, :assigned_to, :status, :tracker, :project, :priority, :category, :fixed_version ],
-                           :conditions => @query.statement,
+                           :conditions => "#{@query.statement} and issues.parent_id is NULL" ,
                            :limit  =>  limit,
                            :offset =>  @issue_pages.current.offset
       respond_to do |format|
@@ -147,15 +148,20 @@ class IssuesController < ApplicationController
       requested_status = IssueStatus.find_by_id(params[:issue][:status_id])
       # Check that the user is allowed to apply the requested status
       @issue.status = (@allowed_statuses.include? requested_status) ? requested_status : default_status
-     
+     if !params[:parent_id].nil?
+       @issue.parent_id = params[:parent_id]
+     end
+
       if @issue.save and @issue.is_issue?
-        new_assignments = params[:assigned_to_id]
-        Assignment.delete(@issue, new_assignments)
-        #Création des assignations à la tâche
-        new_assignments.each do |assigned_to|
-          if !Assignment.exist?(@issue.id,assigned_to)
-            Assignment.create(:issue_id=>@issue.id, :user_id=>assigned_to)
-          end
+        if params[:assigned_to_id]
+          new_assignments = params[:assigned_to_id]
+          Assignment.delete(@issue, new_assignments)
+          #Création des assignations à la tâche
+          new_assignments.each do |assigned_to|
+            if !Assignment.exist?(@issue.id,assigned_to)
+              Assignment.create(:issue_id=>@issue.id, :user_id=>assigned_to)
+            end
+         end
         end
 
         attach_files(@issue, params[:attachments])
@@ -443,6 +449,32 @@ class IssuesController < ApplicationController
     @attachements = @issue.attachments if @issue
     @text = params[:notes] || (params[:issue] ? params[:issue][:description] : nil)
     render :partial => 'common/preview'
+  end
+
+
+  def type_event
+    @issues_stage = Issue.stages
+    @issues_sub = Issue.all(:conditions => {:issue_types_id => '3'})
+    
+    # Instanciation de variable
+  type = params[:type]
+   respond_to do |format|
+        format.js {
+          render :update do |page|
+            if type ==  'issue'
+                    page << "jQuery('#type_relation').html('#{escape_javascript(render :partial=>'type_issue')}');"
+                  end
+                 if type == 'stage'
+                   page << "console.log(#{render:partial=>'type_stage'})"
+                    page << "jQuery('#type_relation').html('#{escape_javascript(render :partial=>'type_stage')}');"
+                 end
+                 
+                  if type == 'none'
+                    page << "jQuery('#type_relation').html('#{escape_javascript(render :partial=>'type_none')}');"
+                  end
+          end
+        }
+      end
   end
   
 private

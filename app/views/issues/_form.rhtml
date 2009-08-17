@@ -4,11 +4,15 @@
                                      :update => :content,
                                      :with => "Form.serialize('issue-form')" %>
 
-
-<p><%= check_box 'type', 'type' %> <%= f.select :parent_id, @issues_stage.collect {|t| [t.subject, t.id]}, :required => true if false %></p>
-
-<p><%= check_box 'type', 'type' %> <%= f.select :parent_id, @issues_sub.collect {|t| [t.subject, t.id]}, :required => true if false%></p>
-
+<%#*<p><%= select :choix_type,  Issue::RELATION_TYPE.collect{|issue| issue.id}, :required => true %></p>
+<%#= observe_field :issue_issue_types_id, :url => { :action => :new },
+                                     :update => :content,
+                                     :with => "Form.serialize('issue-form')" %>
+<%  Issue::RELATION_TYPE.each do |relation| %>
+<%= radio_button_tag :issue_relation_type, relation, relation, :onClick => "checkTypeRelation(this)" %><%= relation %>
+<%  end %>
+<span id="type_relation">
+</span>
 <hr />
 
 <% if @issue.type.name == "ISSUE" %>
@@ -72,7 +76,7 @@
 
     <% if @issue.new_record? %>
     <p><label><%=l(:label_attachment_plural)%></label><%= render :partial => 'attachments/form' %></p>
-    <% end %>s
+    <% end %>
 
     <% if @issue.new_record? && User.current.allowed_to?(:add_issue_watchers, @project) -%>
     <p><label><%= l(:label_issue_watchers) %></label>

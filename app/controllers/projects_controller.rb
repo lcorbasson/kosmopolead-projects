@@ -75,7 +75,9 @@ class ProjectsController < ApplicationController
     @project = Project.new(params[:project])
     @time_units = TimeUnit.find(:all)
 
+
     if !params[:project]
+
       @project.identifier = Project.next_identifier if Setting.sequential_project_identifiers?
       @project.trackers = Tracker.all
       @project.is_public = Setting.default_projects_public?
@@ -117,6 +119,7 @@ class ProjectsController < ApplicationController
     @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
     @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
     @trackers = @project.rolled_up_trackers
+    @users = User.all
     
     cond = @project.project_condition(Setting.display_subprojects_issues?)
    
@@ -147,12 +150,14 @@ class ProjectsController < ApplicationController
     @trackers = Tracker.all
     @repository ||= @project.repository
     @wiki ||= @project.wiki
+     @users = User.all
   end
   
   # Edit @project
   def edit
     if request.post?
-      @project.attributes = params[:project]      
+      @project.attributes = params[:project]
+      @users = User.all
       if @project.save
         flash[:notice] = l(:notice_successful_update)
         redirect_to :action => 'settings', :id => @project

@@ -10,13 +10,12 @@
           <% query.columns.each do |column| %>
             <%= column_header(column) %>
           <% end %>
-          <th>% Done</th>
         </tr>
       </tr>
     </thead>
     <% group = false %>
     <tbody>
-      <%= init_tree_table(@issues) %>
+      <%= init_tree_table(@issues, 1, '', query) %>
     </tbody>
   </table>
   <p class="pagination"><%= pagination_links_full @issue_pages, @issue_count %></p>

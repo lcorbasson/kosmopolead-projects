@@ -28,6 +28,7 @@ function showChildrenIssue(id){
 }
 
 
+
 //TOGGLE
 function runEffect(effect){ 
    //get effect type from
@@ -62,8 +63,13 @@ function initialize_toggle(toggle) {
     
 }
 
-//TOGGLE
+
 function activeProjectMenu(id){
     jQuery(".projects_list li a").removeClass("active");
     jQuery("#projects_id_"+id+" a:first").addClass("active");
 }
+
+function checkTypeRelation(t){
+    jQuery.ajax({dataType:'script', url:'type_event', data:'type=' + t.value,type: "get", success: function(msg){eval(msg)}});
+}
+

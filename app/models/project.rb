@@ -267,6 +267,18 @@ class Project < ActiveRecord::Base
         l(:field_days)
       end
   end
+  def level
+    parent = self.parent
+    project = self
+    level = 0
+    while(!parent.nil?)
+      project = parent
+      parent = project.parent
+      level= level+1
+    end
+    return level
+  end
+
 
 protected
   def validate

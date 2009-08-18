@@ -17,6 +17,7 @@
 
 class RolesController < ApplicationController
   before_filter :require_admin
+  menu_item :admin
 
   verify :method => :post, :only => [ :destroy, :move ],
          :redirect_to => { :action => :list }

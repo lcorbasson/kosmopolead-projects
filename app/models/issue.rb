@@ -313,6 +313,15 @@ class Issue < ActiveRecord::Base
 
   end
 
+  def date_range
+    if !self.due_date
+       date_range = "A partir du #{self.start_date}"
+    else
+      date_range = "Du #{self.start_date}<br/> au #{self.due_date}"
+     
+    end
+  end
+
   
   private
   

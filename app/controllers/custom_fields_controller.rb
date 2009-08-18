@@ -17,6 +17,7 @@
 
 class CustomFieldsController < ApplicationController
   before_filter :require_admin
+  menu_item :admin
 
   def index
     list

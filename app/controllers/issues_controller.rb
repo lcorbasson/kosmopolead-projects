@@ -16,11 +16,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class IssuesController < ApplicationController
-  menu_item :new_issue, :only => :new
+  menu_item :projects
+
   
   before_filter :find_issue, :only => [:show, :edit, :reply]
   before_filter :find_issues, :only => [:bulk_edit, :move, :destroy]
   before_filter :find_project, :only => [:new, :update_form, :preview]
+  before_filter :find_projects, :only => [:gantt, :index, :calendar,:new,:show]
   before_filter :authorize, :except => [:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
   before_filter :find_optional_project, :only => [:index, :changes, :gantt, :calendar]
   accept_key_auth :index, :show, :changes
@@ -44,10 +46,14 @@ class IssuesController < ApplicationController
   include Redmine::Export::PDF
 
   def index
+    if !params[:project_id]
+      @project = @projects.first
+    end
     retrieve_query
     sort_init 'id', 'desc'
     sort_update({'id' => "#{Issue.table_name}.id"}.merge(@query.columns.inject({}) {|h, c| h[c.name.to_s] = c.sortable; h}))
-    
+
+  
     if @query.valid?
       limit = per_page_option
       respond_to do |format|
@@ -68,6 +74,12 @@ class IssuesController < ApplicationController
         format.atom { render_feed(@issues, :title => "#{@project || Setting.app_title}: #{l(:label_issue_plural)}") }
         format.csv  { send_data(issues_to_csv(@issues, @project).read, :type => 'text/csv; header=present', :filename => 'export.csv') }
         format.pdf  { send_data(issues_to_pdf(@issues, @project), :type => 'application/pdf', :filename => 'export.pdf') }
+        format.js  {
+          render:update do |page|
+            page << "jQuery('#content').html('#{escape_javascript(render:partial=>'issues/index', :locals=>{:project=>@project})}');"
+            
+          end
+        }
       end
     else
       # Send html if the query is not valid
@@ -102,10 +114,16 @@ class IssuesController < ApplicationController
     @edit_allowed = User.current.allowed_to?(:edit_issues, @project)
     @priorities = Enumeration::get_values('IPRI')
     @time_entry = TimeEntry.new
+    @project = @issue.project
     respond_to do |format|
       format.html { render :template => 'issues/show.rhtml' }
       format.atom { render :action => 'changes', :layout => false, :content_type => 'application/atom+xml' }
       format.pdf  { send_data(issue_to_pdf(@issue), :type => 'application/pdf', :filename => "#{@project.identifier}-#{@issue.id}.pdf") }
+      format.js {
+        render:update do |page|
+          page << "jQuery('#content').html('#{escape_javascript(render:partial=>'show')}');"
+        end
+        }
     end
   end
 
@@ -169,7 +187,13 @@ class IssuesController < ApplicationController
       		
     end	
     @priorities = Enumeration::get_values('IPRI')
-    render :layout => !request.xhr?
+    respond_to do |format|
+      format.js {
+        render:update do |page|
+          page << "jQuery('#content').html('#{escape_javascript(render:partial=>'new')}');"       
+        end
+        }
+    end   
   end
   
   # Attributes that can be updated on workflow transition (without :edit permission)
@@ -180,9 +204,9 @@ class IssuesController < ApplicationController
     @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
     @priorities = Enumeration::get_values('IPRI')
     @edit_allowed = User.current.allowed_to?(:edit_issues, @project)
-    @time_entry = TimeEntry.new
-    
+    @time_entry = TimeEntry.new    
     @notes = params[:notes]
+    @project = @issue.project
     journal = @issue.init_journal(User.current, @notes)
     # User can change issue attributes only if he has :edit permission or if a workflow transition is allowed
     if (@edit_allowed || !@allowed_statuses.empty?) && params[:issue]
@@ -379,6 +403,12 @@ class IssuesController < ApplicationController
       format.html { render :template => "issues/gantt.rhtml", :layout => !request.xhr? }
       format.png  { send_data(@gantt.to_image, :disposition => 'inline', :type => 'image/png', :filename => "#{basename}.png") } if @gantt.respond_to?('to_image')
       format.pdf  { send_data(gantt_to_pdf(@gantt, @project), :type => 'application/pdf', :filename => "#{basename}.pdf") }
+      format.js  {
+          render:update do |page|
+            page << "jQuery('#content').html('#{escape_javascript(render:partial=>'issues/gantt', :locals=>{:project=>@project})}');"
+
+          end
+        }
     end
   end
   
@@ -405,8 +435,15 @@ class IssuesController < ApplicationController
                                      
       @calendar.events = events
     end
-    
-    render :layout => false if request.xhr?
+    respond_to do |format|
+       format.js  {
+          render:update do |page|
+            page << "jQuery('#content').html('#{escape_javascript(render:partial=>'issues/calendar', :locals=>{:project=>@project})}');"
+
+          end
+        }
+    end
+   
   end
   
   def context_menu
@@ -474,8 +511,8 @@ private
   
   def find_project
     @project = Project.find(params[:project_id])
-  rescue ActiveRecord::RecordNotFound
-    render_404
+    rescue ActiveRecord::RecordNotFound
+      render_404
   end
   
   def find_optional_project
@@ -494,6 +531,7 @@ private
       @query = Query.find(params[:query_id], :conditions => cond)
       @query.project = @project
       session[:query] = {:id => @query.id, :project_id => @query.project_id}
+      
     else
       if params[:set_filter] || session[:query].nil? || session[:query][:project_id] != (@project ? @project.id : nil)
         # Give it a name, required to be valid
@@ -514,6 +552,15 @@ private
         @query ||= Query.new(:name => "_", :project => @project, :filters => session[:query][:filters])
         @query.project = @project
       end
+     
     end
+  end
+
+  def find_projects
+    @projects = Project.find :all,
+                            :conditions => "#{Project.visible_by(User.current)}",
+                            :include => :parent,
+                            :order=>"created_on"
+   
   end
 end

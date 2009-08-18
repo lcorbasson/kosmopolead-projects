@@ -16,12 +16,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class ProjectsController < ApplicationController
-  menu_item :overview
+  menu_item :projects,:only=>[:show]
+ 
   menu_item :activity, :only => :activity
   menu_item :roadmap, :only => :roadmap
   menu_item :files, :only => [:list_files, :add_file]
   menu_item :settings, :only => :settings
-  menu_item :issues, :only => [:changelog]
+
   
   before_filter :find_project, :except => [ :index, :list, :add, :activity ]
   before_filter :find_optional_project, :only => :activity
@@ -46,11 +47,17 @@ class ProjectsController < ApplicationController
     @projects = Project.find :all,
                             :conditions => Project.visible_by(User.current),
                             :include => :parent
-    respond_to do |format|
+   @project = @projects.first
+   find_files
+   @members = @project.members
+   @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
+   @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
+   @trackers = @project.rolled_up_trackers
+   respond_to do |format|
       format.html { 
 #        @project_tree = projects.group_by {|p| p.parent || p}
 #        @project_tree.keys.each {|p| @project_tree[p] -= [p]}
-      }
+   }
       format.atom {
         render_feed(projects.sort_by(&:created_on).reverse.slice(0, Setting.feeds_limit.to_i), 
                                   :title => "#{Setting.app_title}: #{l(:label_project_latest)}")
@@ -67,18 +74,28 @@ class ProjectsController < ApplicationController
                                   :order => 'name')
     @project = Project.new(params[:project])
     @time_units = TimeUnit.find(:all)
-    if request.get?
+
+    if !params[:project]
       @project.identifier = Project.next_identifier if Setting.sequential_project_identifiers?
       @project.trackers = Tracker.all
       @project.is_public = Setting.default_projects_public?
       @project.enabled_module_names = Redmine::AccessControl.available_project_modules
+      respond_to do |format|
+        format.js {
+           render :update do |page|
+              page << "jQuery('#content').html('#{escape_javascript(render:partial=>'projects/add')}');"
+           end
+        }
+      end
     else
       @project.enabled_module_names = params[:enabled_modules]
       if @project.save
         flash[:notice] = l(:notice_successful_create)
-        redirect_to :controller => 'admin', :action => 'projects'
-	  end		
-    end	
+        redirect_to :controller => 'issues', :action => 'index',:project_id=>@project.id
+      end
+    end
+    
+    
   end
 	
   # Show @project
@@ -87,8 +104,16 @@ class ProjectsController < ApplicationController
       # try to redirect to the requested menu item
       redirect_to_project_menu_item(@project, params[:jump]) && return
     end
-    
-    @members_by_role = @project.members.find(:all, :include => [:user, :role], :order => 'position').group_by {|m| m.role}
+    @projects = Project.find :all,
+                            :conditions => Project.visible_by(User.current),
+                            :include => :parent
+    if !params[:id]
+      @project = @projects.first
+    else
+      @project = Project.find(params[:id])
+    end
+    find_files
+    @members = @project.members
     @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
     @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
     @trackers = @project.rolled_up_trackers
@@ -101,6 +126,14 @@ class ProjectsController < ApplicationController
                                    :conditions => cond).to_f
     end
     @key = User.current.rss_key
+    respond_to do |format|
+      format.js  {
+          render:update do |page|
+            page << "jQuery('#content').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
+          end
+      }
+    end
+
   end
 
   def settings
@@ -185,16 +218,24 @@ class ProjectsController < ApplicationController
   end
 
   def add_file
+    @versions = @project.versions.sort
     if request.post?
       container = (params[:version_id].blank? ? @project : @project.versions.find_by_id(params[:version_id]))
       attachments = attach_files(container, params[:attachments])
       if !attachments.empty? && Setting.notified_events.include?('file_added')
         Mailer.deliver_attachments_added(attachments)
       end
-      redirect_to :controller => 'projects', :action => 'list_files', :id => @project
+      respond_to do |format|
+        format.js {
+          render:update do |page|
+            page << "jQuery('#content').html('#{escape_javascript(render:partial=>'add_file')}');"
+          end
+          }
+      end
       return
     end
-    @versions = @project.versions.sort
+    
+     
   end
   
   def list_files
@@ -262,6 +303,12 @@ class ProjectsController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     render_404
   end
+
+  def queries
+    
+    
+  end
+
   
 private
   # Find project of id params[:id]
@@ -287,5 +334,16 @@ private
     else
       @selected_tracker_ids = selectable_trackers.collect {|t| t.id.to_s }
     end
+  end
+
+  def find_files
+    sort_init 'filename', 'asc'
+    sort_update 'filename' => "#{Attachment.table_name}.filename",
+                'created_on' => "#{Attachment.table_name}.created_on",
+                'size' => "#{Attachment.table_name}.filesize",
+                'downloads' => "#{Attachment.table_name}.downloads"
+
+    @containers = [ Project.find(@project.id, :include => :attachments, :order => sort_clause)]
+    @containers += @project.versions.find(:all, :include => :attachments, :order => sort_clause).sort.reverse
   end
 end

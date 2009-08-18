@@ -617,19 +617,26 @@ module ApplicationHelper
     end
   end
 
+
   def tree_ul(action, acts_as_tree_set, have_parent, init=true, &block)
     if acts_as_tree_set.size > 0
       if !have_parent
-          ret = '<ul style="display:none;">'
+          ret = '<ul class="projects_children_list" style="display:none;">'
       else
-          ret = '<ul>'
+          ret = '<ul class="projects_list">'
       end
       acts_as_tree_set.collect do |item|
         next if item.parent_id && init
+        padding = item.level*15
         if item.send("#{action}_count") == 0
-          ret += '<li id="' + "#{action}" + '_id_' + "#{item.id}" + '">&nbsp;&nbsp;&nbsp;&nbsp;'
+          ret += "<li style='padding-left:#{padding}px;' id='#{action}_id_#{item.id}'>"
+
+#          ret += '<li style="margin-left:"'+'#{margin}'+'" id="' + "#{action}" + '_id_' + "#{item.id}" + '">&nbsp;&nbsp;&nbsp;&nbsp;'
         else
-          ret += '<li id="' + "#{action}" + '_id_' + "#{item.id}" + '"><img class="tree_img"src="/images/plus.png" onClick="showChildrenProject(\'' + "#{action}" + '_id_' + "#{item.id}" + '\')" />&nbsp;&nbsp;'
+          ret += "<li style='padding-left:#{padding}px;' id='#{action}_id_#{item.id}'>"
+          ret += "<img class='tree_img' src='/images/expand.png' onClick=showChildrenProject('#{action}_id_#{item.id}') />"
+
+#          ret += '<li style="margin-left:"'+'#{margin}'+'" id="' + "#{action}" + '_id_' + "#{item.id}" + '"><img class="tree_img"src="/images/expand.png" onClick="showChildrenProject(\'' + "#{action}" + '_id_' + "#{item.id}" + '\')" />&nbsp;&nbsp;'
         end
         ret += yield item
         #ret += "#{item.children}"
@@ -641,78 +648,6 @@ module ApplicationHelper
     end
   end
 
-#  def tree_ul(action, acts_as_tree_set, have_parent, init=true, &block)
-#    if acts_as_tree_set.size > 0
-#      if !have_parent
-#          ret = '<table style="display:none;">'
-#      else
-#          ret = '<table>'
-#      end
-#      acts_as_tree_set.collect do |item|
-#        next if item.parent_id && init
-#        if item.send("#{action}_count") == 0
-#          ret += '<tr><td id="' + "#{action}" + '_id_' + "#{item.id}" + '">&nbsp;&nbsp;&nbsp;'
-#        else
-#          ret += '<td id="' + "#{action}" + '_id_' + "#{item.id}" + '"><img src="/images/plus.png" onClick="showChildrenProject(\'' + "#{action}" + '_id_' + "#{item.id}" + '\')" />&nbsp;&nbsp;'
-#        end
-#        ret += yield item
-#        ret += "#{item.children}"
-#        have_parent = false
-#        ret += tree_ul(action, item.children, have_parent, false, &block) if item.children.size > 0
-#        ret += '</tr>'
-#      end
-#      ret += '</table>'
-#    end
-#  end
-
-#  def tree_ul(action, acts_as_tree_set, have_parent, init=true, &block)
-#    if acts_as_tree_set.size > 0
-#      if !have_parent
-#          ret = '<table style="display:none;">'
-#      else
-#          ret = '<table>'
-#      end
-#      acts_as_tree_set.collect do |item|
-#        next if item.parent_id && init
-#        if item.send("#{action}_count") == 0
-#          ret += '<tr><td id="' + "#{action}" + '_id_' + "#{item.id}" + '">&nbsp;&nbsp;&nbsp;'
-#        else
-#          ret += '<td id="' + "#{action}" + '_id_' + "#{item.id}" + '"><img class="tree_img" src="/images/plus.png" onClick="showChildrenProject(\'' + "#{action}" + '_id_' + "#{item.id}" + '\')" />&nbsp;&nbsp;'
-#        end
-#        ret += yield item
-#        ret += '</td><td>koko</td>'
-#        have_parent = false
-#        ret += tree_ul(action, item.children, have_parent, false, &block) if item.children.size > 0
-#        ret += '</tr>'
-#      end
-#      ret += '</table>'
-#    end
-#  end
-
-#  def tree_house_zouko(issues)
-#    issues.collect do |issue|
-#      if issue.parent_id.nil?
-#        ret = '<tr><td>' + "#{issue.subject}" + '</td><td>' + "#{issue.status}" + '</td></tr>'
-#        ret += tree_children(issue.children) if issue.children.size > 0
-#      end
-#    end
-#  end
-#
-#  def tree_children(parent)
-#    ret = parent.subject
-#    if parent.children.size >0
-#      tree_children(parent.children)
-#    end
-#  end
-
-  # Qui marche
-#  def tree_table(tab_issue, padding)
-#    padding += 10
-#    tab_issue.collect do |issue|
-#      ret = '<tr><td style="padding-left:' + "#{padding}" + 'px;">' + "#{issue.subject}" + '</td><td>' + "#{issue.status}" + '</td></tr>'
-#      ret += "#{tree_table(issue.children, padding) if issue.children.size > 0}"
-#    end
-#  end
 
   def init_tree_table(issues)
     issues.collect do |issue|
@@ -723,9 +658,9 @@ module ApplicationHelper
         ret += '<td class="tracker">' + "#{issue.tracker}" + '</td>'
         ret += '<td class="status">' + "#{issue.status}" + '</td>'
         ret += '<td class="priority">' + "#{issue.priority}" + '</td>'
-        ret += '<td><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
-        ret += '<td><img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
-        ret += "#{link_to "#{issue.subject}", {:controller => "issues", :action => "show", :id => issue}}</td>"
+        ret += '<td><img class="tree_img" src="/images/expand.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
+        ret += '<td><img class="tree_img" src="/images/collapse.png" />' if issue.children.size == 0
+        ret += "#{link_to_remote "#{issue.subject}",{:url=>{:controller => "issues", :action => "show", :id => issue}},:method=>:get}</td>"
         ret += '<td class="assigned_to">' + "#{show_assigned_to(issue)}" + '</td>'
         ret += '<td class="updated_on">' + "#{issue.updated_on}" + '</td>'
         ret += '<td>' + "#{progress_bar issue.done_ratio, :width => '80px', :legend => "#{issue.done_ratio}%"}" + '</td>'
@@ -756,6 +691,60 @@ module ApplicationHelper
         ret += "#{tree_table(issue.children, padding, class_tr) if issue.children.size > 0}"
     end
   end
+
+   # <div class="clear"></div>
+  def clear_tag
+     content_tag(:div, "", :class => 'clear')
+  end
+
+  # module avec titre + content
+  # utilisation :
+  # <% box "titre", :class => 'ma_classe' do %>
+  #   contenu
+  # <% end %>
+  def box(title, contenu, links=[])
+    if links.size>0
+      links_str = "<div class='box_links'>"
+      links.each do |link|
+        links_str += "#{link}"
+      end
+      links_str += "</div>"
+    end
+
+    output = content_tag(:div,
+        content_tag(:div,
+          content_tag(:div,title, :class=>'box_title') + "#{links_str if links_str}", :class => 'box_header') + content_tag(:div,contenu, {:class => 'box_content'}), :class=>"box")
+    
+  end
+
+
+  def box_sidebar(title, content)
+    output = content_tag(:div,
+      content_tag(:div, title,:class=>"sidebar_head") + content_tag(:div, content,:class=>"sidebar_content"),:class=>"sidebar_box")
+  end
+
+  def user_thumbnail(user)
+    name = content_tag(:p,(user && !user.anonymous?) ? link_to(user.name, :controller => 'account', :action => 'show', :id => user) : 'Anonymous',:class=>"name")   
+    thumbnail = content_tag(:li,name,:class=>"user_thumbnail thumbnail")
+  end
+
+  def file_thumbnail(file)
+    title = content_tag(:p,file.filename,:class=>"filename")
+    author = content_tag(:p,file.author.name,:class=>"author")
+    created_on = content_tag(:p,format_time(file.created_on),:class=>"created_on")
+    thumbnail = content_tag(:li,content_tag(:div,title+author+created_on,:class=>"thumbnail_infos"),:class=>"file_thumbnail thumbnail")
+
+  end
+
+  def grey_box(box_content, box_class)
+    output = content_tag(:div,box_content,:class=>box_class+" grey_box")
+  end
+
+  def grey_title(title)
+    output = content_tag(:div,title,:class=>"grey_title")
+  end
+
+
 
   private
 

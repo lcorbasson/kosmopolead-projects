@@ -17,6 +17,7 @@
 
 class UsersController < ApplicationController
   before_filter :require_admin
+  menu_item :admin
 
   helper :sort
   include SortHelper

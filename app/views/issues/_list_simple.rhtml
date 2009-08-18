@@ -1,26 +1,27 @@
 <% if issues && issues.any? %>
 <% form_tag({}) do %>
-	<table class="list issues">		
-		<thead><tr>
-		<th>#</th>
-		<th><%=l(:field_tracker)%></th>
-		<th><%=l(:field_subject)%></th>
-		</tr></thead>
+	<table class="list issues">	
 		<tbody>	
-		<% for issue in issues %>
-		<tr id="issue-<%= issue.id %>" class="hascontextmenu <%= cycle('odd', 'even') %> <%= css_issue_classes(issue) %> <%= 'late' if issue.is_late? %> ">
-			<td class="id">
-			    <%= check_box_tag("ids[]", issue.id, false, :style => 'display:none;') %>
-				<%= link_to issue.id, :controller => 'issues', :action => 'show', :id => issue %>
-			</td>
-			<td><%=h issue.project.name %> - <%= issue.tracker.name %><br />
-                <%= issue.status.name %> - <%= format_time(issue.updated_on) %></td>
-			<td class="subject">
-                <%= link_to h(issue.subject), :controller => 'issues', :action => 'show', :id => issue %>
-            </td>
-		</tr>
-		<% end %>
+          <% for issue in issues %>
+            <tr id="issue-<%= issue.id %>" class="hascontextmenu <%= cycle('odd', 'even') %> <%= css_issue_classes(issue) %>">
+               
+                <td class="subject">
+                    <%= link_to h(issue.subject), :controller => 'issues', :action => 'show', :id => issue %>
+                </td>
+                <td class="date">
+                    <%= issue.date_range %>
+                </td>
+                <td class="priority">
+                  <%= issue.priority %>
+                </td>
+            </tr>
+          <% end %>
 		</tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3"></td>
+          </tr>
+        </tfoot>
 	</table>
 <% end %>
 <% else %>

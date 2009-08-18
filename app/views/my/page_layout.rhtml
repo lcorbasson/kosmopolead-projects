@@ -49,8 +49,7 @@ function removeBlock(block) {
 <%= link_to l(:button_save), {:action => 'page_layout_save'}, :class => 'icon icon-save' %>
 <%= link_to l(:button_cancel), {:action => 'page'}, :class => 'icon icon-cancel' %>
 </div>
-
-<h2><%=l(:label_my_page)%></h2>
+<div class="clearer"></div>
 
 <div id="list-top" class="block-receiver">
 	<% @blocks['top'].each do |b| 
@@ -59,19 +58,38 @@ function removeBlock(block) {
 	<% end if @blocks['top'] %>
 </div>
 
-<div id="list-left" class="splitcontentleft block-receiver">
-	<% @blocks['left'].each do |b| 
-	   next unless MyController::BLOCKS.keys.include? b %>
-	<%= render :partial => 'block', :locals => {:user => @user, :block_name => b} %>
-	<% end if @blocks['left'] %>
-</div>
+<table id="list-bottom">
+  <tr>
+    <td>
+      <div id="list-left" class="block-receiver">
+        <% @blocks['left'].each do |b|
+           next unless MyController::BLOCKS.keys.include? b %>
+        <%= render :partial => 'block', :locals => {:user => @user, :block_name => b} %>
+        <% end if @blocks['left'] %>
+      </div>
+    </td>
+    <td>
+       <div id="list-middle" class="block-receiver">
+        <% @blocks['middle'].each do |b|
+           next unless MyController::BLOCKS.keys.include? b %>
+        <%= render :partial => 'block', :locals => {:user => @user, :block_name => b} %>
+        <% end if @blocks['middle'] %>
+      </div>
+    </td>
+    <td>
+      <div id="list-right" class="block-receiver">
+        <% @blocks['right'].each do |b|
+           next unless MyController::BLOCKS.keys.include? b %>
+        <%= render :partial => 'block', :locals => {:user => @user, :block_name => b} %>
+        <% end if @blocks['right'] %>
+    </div>
+    </td>
+  </tr>
 
-<div id="list-right" class="splitcontentright block-receiver">
-	<% @blocks['right'].each do |b| 
-	   next unless MyController::BLOCKS.keys.include? b %>
-	<%= render :partial => 'block', :locals => {:user => @user, :block_name => b} %>
-	<% end if @blocks['right'] %>
-</div>
+</table>
+
+
+
 
 <%= sortable_element 'list-top',
       :tag => 'div',
@@ -89,7 +107,7 @@ function removeBlock(block) {
       :only => 'mypage-box',
       :handle => "handle",
       :dropOnEmpty => true,
-      :containment => ['list-top', 'list-left', 'list-right'],
+      :containment => ['list-top', 'list-left','list-middle', 'list-right'],
       :constraint => false,
       :url => { :action => "order_blocks", :group => "left" }
        %>
@@ -99,9 +117,19 @@ function removeBlock(block) {
       :only => 'mypage-box',
       :handle => "handle",
       :dropOnEmpty => true,
-      :containment => ['list-top', 'list-left', 'list-right'],
+      :containment => ['list-top', 'list-left','list-middle', 'list-right'],
       :constraint => false,
       :url => { :action => "order_blocks", :group => "right" }
+       %>
+
+<%= sortable_element 'list-middle',
+      :tag => 'div',
+      :only => 'mypage-box',
+      :handle => "handle",
+      :dropOnEmpty => true,
+      :containment => ['list-top', 'list-left','list-middle', 'list-right'],
+      :constraint => false,
+      :url => { :action => "order_blocks", :group => "middle" }
        %>
       
 <%= javascript_tag "updateSelect()" %>

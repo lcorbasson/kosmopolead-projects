@@ -52,7 +52,7 @@ class QueriesController < ApplicationController
     respond_to do |format|
       format.js  {
           render:update do |page|
-            page << "jQuery('#content').html('#{escape_javascript(render:partial=>'queries/new', :locals=>{:queryt=>@query})}');"
+            page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'queries/new', :locals=>{:queryt=>@query})}');"
 
           end
         }

@@ -91,7 +91,7 @@ class ProjectsController < ApplicationController
         format.html {}
         format.js {
            render :update do |page|
-              page << "jQuery('#content').html('#{escape_javascript(render:partial=>'projects/add')}');"
+              page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/add')}');"
            end
         }
       end
@@ -143,7 +143,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       format.js  {
           render:update do |page|
-            page << "jQuery('#content').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
+            page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
            
           end
       }
@@ -250,9 +250,10 @@ class ProjectsController < ApplicationController
         Mailer.deliver_attachments_added(attachments)
       end
       respond_to do |format|
+        format.html {}
         format.js {
           render:update do |page|
-            page << "jQuery('#content').html('#{escape_javascript(render:partial=>'add_file')}');"
+            page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'add_file')}');"
           end
           }
       end

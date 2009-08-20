@@ -1,0 +1,7 @@
+<% labelled_tabular_form_for :custom_field, @custom_field, :url => { :action => "new" } do |f| %>
+<%= render :partial => 'form', :locals => { :f => f } %>
+<%= hidden_field_tag 'type', @custom_field.type %>
+<div class="buttons right">
+  <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+</div>
+<% end %>

@@ -1,0 +1,3 @@
+<% if @project.author %>
+  <%= box_sidebar("#{t(:label_project_author)}", "#{render:partial=>'projects/box/author',:locals=>{:project=>project}}") %>
+<% end %>

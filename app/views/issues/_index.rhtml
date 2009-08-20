@@ -1,0 +1,16 @@
+<% if project %>
+  <%= box(
+      "#{l(:label_issue_plural)} - #{project.name}",
+      "#{render:partial=>'issues/box/list'}",
+      ["#{link_to_remote("",{:url=>{ :controller => 'projects', :action => 'show', :id => project.id}},:method=>:get,:class=>'inactive icon profile',:name=>'Aperçu')}",
+       "#{link_to_remote("",{:url=>{:controller => 'issues', :action => 'calendar', :project_id => project}},:method=>:get,:class=>'inactive icon calendar',:name=>'Calendrier') if User.current.allowed_to?(:view_calendar, project, :global => true)}",
+       "#{link_to_remote("", {:url=>{:controller => 'issues', :action => 'gantt', :project_id => project}},:method=>:get, :class=>'inactive icon gantt',:name=>'Gantt') if User.current.allowed_to?(:view_gantt, project, :global => true)}",
+       "#{link_to_remote("", {:url=>{:controller => 'issues', :action => 'index', :project_id => project}},:method=>:get, :class=>'active icon list ',:name=>'Liste')}"
+      ]
+  ) %>
+
+  <%= javascript_tag("activeProjectMenu('#{project.id}')") %>
+  <%= initialize_icons_tooltip() %>
+<% else %>
+  Aucun projet n'a été créé.
+<% end %>

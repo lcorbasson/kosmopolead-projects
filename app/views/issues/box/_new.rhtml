@@ -1,0 +1,29 @@
+
+<% labelled_tabular_form_for :issue, @issue,
+                             :html => {:multipart => true, :id => 'issue-form'} do |f| %>
+    <%= error_messages_for 'issue' %>
+ 
+    <%= render :partial => 'issues/form', :locals => {:f => f} %>
+  
+  <div id="preview" class="wiki"></div>
+    <div class="buttons right">
+      <%= link_to_remote l(:button_create),{},:onclick=>"javascript:jQuery.ajax({data:jQuery.param(jQuery('#issue-form').serializeArray()), dataType:'script', type:'post', url:'/projects/#{@project.id}/issues/new'}); return false;",:method=>:get, :class=>"button btn_blue corner-all" %>
+      <%= link_to_remote l(:button_create_and_continue),{},:onclick=>"javascript:jQuery.ajax({data:jQuery.param(jQuery('#issue-form').serializeArray()), dataType:'script', type:'post', url:'/projects/#{@project.id}/issues/new?continue=true'}); return false;",:method=>:get, :class=>"button btn_blue corner-all" %>
+
+      <%= link_to_remote l(:label_preview),
+                         { :url => { :controller => 'issues', :action => 'preview', :project_id => @project },
+                           :method => 'post',
+                           :update => 'preview',
+                           :with => "Form.serialize('issue-form')",
+                           :complete => "Element.scrollTo('preview')"
+                         }, :accesskey => accesskey(:preview),:class=>"button btn_orange corner-all" %>
+    </div>
+
+		<%= javascript_tag "Form.Element.focus('issue_subject');" %>
+<% end %>
+
+
+
+<% content_for :header_tags do %>
+    <%= stylesheet_link_tag 'scm' %>
+<% end %>

@@ -1,0 +1,48 @@
+<% if issues && issues.any? %>
+<% form_tag({}) do %>
+	<table class="list issues">
+      <thead>
+        <tr>
+          <td>
+            #
+          </td>
+          <td>
+            Sujet
+          </td>
+          <td>
+            Assignée à
+          </td>
+          <td>
+            Date
+          </td>
+          <td class="priority">
+            Priorité
+          </td>
+        </tr>
+      </thead>
+		<tbody>
+          <% for issue in issues %>
+            <tr id="issue-<%= issue.id %>" class="hascontextmenu <%= cycle('odd', 'even') %> <%= css_issue_classes(issue) %>">
+                <td class="id">
+                    <%= link_to h(issue.id), :controller => 'issues', :action => 'show', :id => issue %>
+                </td>
+                <td class="subject">
+                    <%= link_to h(issue.subject), :controller => 'issues', :action => 'show', :id => issue %>
+                </td>
+                <td>
+                  <%=  show_assigned_to(issue) %>
+                </td>
+                <td class="date">
+                    <%= issue.date_range %>
+                </td>
+                <td class="priority">
+                  <%= issue.priority %>
+                </td>
+            </tr>
+          <% end %>
+		</tbody>
+	</table>
+<% end %>
+<% else %>
+	<p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>

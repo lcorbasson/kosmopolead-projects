@@ -1,0 +1,39 @@
+<div class="box">
+  <div class="box_header">
+    <%=l(:label_member_plural)%>
+  </div>
+  <div class="box_content members">
+    <% members = Member.find(:all,
+                           :conditions => "#{Project.visible_by(User.current)} AND #{Project.table_name}.id = #{Member.table_name}.project_id",
+                           :limit => 10,
+                           :include => [ :project])
+                           %>
+    <% if members && members.any? %>
+      <% form_tag({}) do %>
+          <table class="list members">           
+              <tbody>
+                <% for member in members %>
+                  <tr id="issue-<%= member.user..id %>" class="hascontextmenu <%= cycle('odd', 'even') %>">
+                      <td class="identity">
+                        <div class="name">
+                          <%= link_to_user member.user %>
+                        </div>
+                      </td>
+                    
+                  </tr>
+                <% end %>
+              </tbody>
+          </table>
+      <% end %>
+      <% else %>
+          <p class="nodata"><%= l(:label_no_data) %></p>
+      <% end %>
+
+    <% content_for :header_tags do %>
+    <%= auto_discovery_link_tag(:atom,
+                                {:controller => 'issues', :action => 'index', :set_filter => 1,
+                                 :author_id => 'me', :format => 'atom', :key => User.current.rss_key},
+                                {:title => l(:label_reported_issues)}) %>
+    <% end %>
+  </div>
+</div>

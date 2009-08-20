@@ -1,0 +1,13 @@
+<div class="new_menu">
+  <p>
+       <%= link_to_remote(l(:label_project), {:url=>{:controller => 'projects', :action => 'add'}},:method=>:get) %>
+  </p>
+  <p>
+      <%= link_to_remote_if_authorized l(:label_attachment), {:url=>{:controller => 'projects', :action => 'add_file', :id => @project}},:method=>:get %>
+  </p>
+  <% if @project %>
+    <p>
+      <%= link_to_remote l(:label_issue), {:url=>{ :controller => 'issues', :action => 'new', :project_id=>@project.id }},:method=>:get %>
+    </p>
+  <% end %>
+</div>

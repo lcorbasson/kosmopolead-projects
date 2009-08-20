@@ -1,0 +1,61 @@
+<div class="profilecontentleft">
+  <%= profile_box("PROJET #{project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>project}}") %>
+	
+</div>
+
+<div class="profilecontentright">
+    <% if @members.any? %>
+        <div id="tabs">
+          <ul id="tabs_members">
+              <li><a href="#projects_managers">PARTENAIRES</a></li>
+              <li><a href="#projects_members">MEMBRES</a></li>
+          </ul>
+          <div id="projects_managers">
+              Managers
+          </div>
+          <div id="projects_members">
+              <%= render :partial=>"members", :locals=>{:members=>@members} %>
+          </div>
+           <div class="clearer"></div>
+      </div>
+	<% end %>
+
+    <%= grey_title("DESCRIPTION DU PROJET") %>
+    <%= grey_box("#{render:partial=>'projects/box/description', :locals=>{:project=>project}}", "project_description") %>
+
+    <% if @containers.size>1 %>
+      <div class="files">
+        <%= grey_title("Pieces jointes") %>
+        <% @containers.each do |container| %>
+          <% next if container.attachments.empty? -%>
+          <% container.attachments.each do |file| %>
+            <%= file_thumbnail(file) %>
+            <%  reset_cycle %>
+          <% end %>
+      <% end %>
+      </div>
+   <% end %>
+
+
+  <% if @news.any? && authorize_for('news', 'index') %>
+  <div class="box">
+    <h3><%=l(:label_news_latest)%></h3>
+    <%= render :partial => 'news/news', :collection => @news %>
+    <p><%= link_to l(:label_news_view_all), :controller => 'news', :action => 'index', :project_id => project %></p>
+  </div>
+  <% end %>
+  <%= call_hook(:view_projects_show_right, :project => project) %>
+</div>
+<div class="clearer"></div>
+<%= javascript_tag("jQuery('#tabs').tabs({selected:1});") %>
+
+<% content_for :header_tags do %>
+<%= auto_discovery_link_tag(:atom, {:action => 'activity', :id => project, :format => 'atom', :key => User.current.rss_key}) %>
+<% end %>
+
+<% html_title(l(:label_overview)) -%>
+<% content_for :sidebar do %>
+    <%= render :partial => 'projects/sidebar' %>
+<% end %>
+
+  <%= javascript_tag("activeProjectMenu('#{project.id}')") %>

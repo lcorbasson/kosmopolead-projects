@@ -1,0 +1,5 @@
+
+<% labelled_tabular_form_for :tracker, @tracker, :url => { :action => 'new' } do |f| %>
+<%= render :partial => 'form', :locals => { :f => f } %>
+
+<% end %>

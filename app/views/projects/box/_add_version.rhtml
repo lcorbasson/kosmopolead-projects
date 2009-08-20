@@ -1,0 +1,3 @@
+<% labelled_tabular_form_for :version, @version, :url => { :action => 'add_version' } do |f| %>
+<%= render :partial => 'versions/form', :locals => { :f => f } %>
+<% end %>

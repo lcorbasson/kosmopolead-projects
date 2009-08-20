@@ -50,21 +50,23 @@ class ProjectsController < ApplicationController
                             :conditions => Project.visible_by(User.current),
                             :include => :parent
    @project = @projects.first
-   find_files
-   @members = @project.members
-   @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
-   @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
-   @trackers = @project.rolled_up_trackers
-   respond_to do |format|
-      format.html { 
-#        @project_tree = projects.group_by {|p| p.parent || p}
-#        @project_tree.keys.each {|p| @project_tree[p] -= [p]}
-   }
-      format.atom {
-        render_feed(projects.sort_by(&:created_on).reverse.slice(0, Setting.feeds_limit.to_i), 
-                                  :title => "#{Setting.app_title}: #{l(:label_project_latest)}")
-      }
+   unless @project.nil?
+        find_files
+       @members = @project.members
+       @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
+       @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
+       @trackers = @project.rolled_up_trackers
     end
+       respond_to do |format|
+          format.html {
+#            @project_tree = projects.group_by {|p| p.parent || p}
+#            @project_tree.keys.each {|p| @project_tree[p] -= [p]}
+       }
+          format.atom {
+            render_feed(projects.sort_by(&:created_on).reverse.slice(0, Setting.feeds_limit.to_i),
+                                      :title => "#{Setting.app_title}: #{l(:label_project_latest)}")
+          }
+        end
   end
   
   # Add a new project

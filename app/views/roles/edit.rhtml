@@ -1,6 +1,9 @@
-<h2><%=l(:label_role)%>: <%= @role.name %></h2> 
+<%= box(
+    "#{l(:label_role)}:#{@role.name}",
+    "#{render:partial=>'roles/box/edit'}"
+) %>
+<div class="buttons right">
+  <%= submit_tag l(:button_save),:class=>"btn_blue button corner-all" %>
+</div>
+<div class="clearer"></div>
 
-<% labelled_tabular_form_for :role, @role, :url => { :action => 'edit' }, :html => {:id => 'role_form'} do |f| %>
-<%= render :partial => 'form', :locals => { :f => f } %>
-<%= submit_tag l(:button_save) %>
-<% end %>

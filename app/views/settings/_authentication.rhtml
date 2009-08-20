@@ -19,9 +19,9 @@
 <%= check_box_tag 'settings[lost_password]', 1, Setting.lost_password? %><%= hidden_field_tag 'settings[lost_password]', 0 %></p>
 </div>
 
-<div style="float:right;">
-    <%= link_to l(:label_ldap_authentication), :controller => 'auth_sources', :action => 'list' %>
-</div>
 
-<%= submit_tag l(:button_save) %>
+<div class="buttons right">
+  <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+</div>
+<div class="clearer"></div>
 <% end %>

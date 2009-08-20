@@ -135,7 +135,7 @@ class MyController < ApplicationController
   def remove_block
     block = params[:block]
     # remove block in all groups
-    %w(top left right).each {|f| (session[:page_layout][f] ||= []).delete block }
+    %w(top left middle right).each {|f| (session[:page_layout][f] ||= []).delete block }
     render :nothing => true
   end
 

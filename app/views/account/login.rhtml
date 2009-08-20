@@ -19,13 +19,13 @@
     </td>
 </tr>
 <tr>
-    <td align="left">
+    <td align="left" id="forgot_password">
         <% if Setting.lost_password? %>
             <%= link_to l(:label_password_lost), :controller => 'account', :action => 'lost_password' %>
         <% end %>
     </td>
-    <td align="right">
-        <input type="submit" name="login" value="<%=l(:button_login)%> &#187;" />
+    <td align="right" class="buttons">
+        <input type="submit" name="login" value="<%=l(:button_login)%> " class="button btn_blue corner-all" />
     </td>
 </tr>
 </table>

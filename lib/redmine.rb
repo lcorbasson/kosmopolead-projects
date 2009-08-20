@@ -115,18 +115,18 @@ end
 
 Redmine::MenuManager.map :account_menu do |menu|
   menu.push :login, :signin_path, :if => Proc.new { !User.current.logged? }
-  menu.push :register, { :controller => 'account', :action => 'register' }, :if => Proc.new { !User.current.logged? && Setting.self_registration? }
-  menu.push :my_account, { :controller => 'my', :action => 'account' }, :if => Proc.new { User.current.logged? }
+#  menu.push :register, { :controller => 'account', :action => 'register' }, :if => Proc.new { !User.current.logged? && Setting.self_registration? }
+  menu.push :my_account, { :controller => 'my', :action => 'account' }, :if => Proc.new { User.current.logged? },:caption=>User.current.name
   menu.push :logout, :signout_path, :if => Proc.new { User.current.logged? }
 end
 
 Redmine::MenuManager.map :application_menu do |menu|
   menu.push :home, { :controller => 'my', :action => 'page' }, :if => Proc.new { User.current.logged? }
 #  menu.push :overview, { :controller => 'projects', :action => 'index' }
-  menu.push :projects, { :controller => 'issues', :action => 'index' }, :param => :project_id, :caption => :label_project_plural
-  menu.push :queries, { :controller => 'queries', :action => 'index' }, :param => :project_id, :caption => "Requêtes"
-  menu.push :indicators, { :controller => 'issues', :action => 'index' }, :param => :project_id, :caption => "Indicateurs"
-  menu.push :admin, { :controller => 'admin', :action => 'index' }, :if => Proc.new { User.current.admin? }, :last => true
+  menu.push :projects, { :controller => 'projects', :action => 'index' }, :if => Proc.new { User.current.logged? },  :caption => :label_project_plural
+  menu.push :queries, { :controller => 'queries', :action => 'index' }, :if => Proc.new { User.current.logged? }, :param => :project_id, :caption => "Requêtes"
+#  menu.push :indicators, { :controller => 'issues', :action => 'index' }, :if => Proc.new { User.current.logged? }, :param => :project_id, :caption => "Indicateurs"
+  menu.push :admin, { :controller => 'admin', :action => 'index' }, :if => Proc.new { User.current.logged? }, :if => Proc.new { User.current.admin? }, :last => true
 end
 
 Redmine::MenuManager.map :admin_menu do |menu|

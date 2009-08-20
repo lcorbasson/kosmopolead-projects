@@ -7,6 +7,7 @@
 <p><label><%= l(:setting_sequential_project_identifiers) %></label>
 <%= check_box_tag 'settings[sequential_project_identifiers]', 1, Setting.sequential_project_identifiers? %><%= hidden_field_tag 'settings[sequential_project_identifiers]', 0 %></p>
 </div>
-
-<%= submit_tag l(:button_save) %>
+<div class="buttons right">
+  <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+</div>
 <% end %>

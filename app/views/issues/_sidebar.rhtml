@@ -1,6 +1,10 @@
 <% if @projects.size>0 %>
-  <%= box_sidebar("#{t(:projects)}", "#{tree_ul('projects', @projects, true) {|project| link_to_remote project.name, {:url=>{:controller => 'issues', :action => 'index', :project_id => project}}} }") %>
+  <%= box_sidebar("#{t(:projects)}", "#{tree_ul('projects', @projects, true) {|project| link_to_remote project.name, {:url=>{:controller => 'projects', :action => 'show', :id => project.id}}} }") %>
 <% end %>
+
+<div id="project_author">
+  <%= render:partial=>"projects/author",:locals=>{:project=>@project} %>
+</div>
 <p>
      <%= link_to_remote(l(:label_project_new), {:url=>{:controller => 'projects', :action => 'add'}},:method=>:get, :class => 'icon icon-add') %>
 </p>
@@ -12,5 +16,6 @@
     <%= link_to_remote :label_issue_new, {:url=>{ :controller => 'issues', :action => 'new', :project_id=>@project.id }},:method=>:get, :class => 'icon icon-add' %>
   </p>
 <% end %>
+
 
 

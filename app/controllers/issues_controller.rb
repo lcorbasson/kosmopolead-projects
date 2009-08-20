@@ -84,7 +84,7 @@ class IssuesController < ApplicationController
         format.js  {
           render:update do |page|
             page << "jQuery('#content').html('#{escape_javascript(render:partial=>'issues/index', :locals=>{:project=>@project})}');"
-            
+             page << "jQuery('#project_author').html('#{escape_javascript(render:partial=>'projects/author', :locals=>{:project=>@project})}');"
           end
         }
       end
@@ -138,6 +138,7 @@ class IssuesController < ApplicationController
   # The new issue will be created from an existing one if copy_from parameter is given
   def new
     @issue = Issue.new
+    @journals = @issue.journals.find(:all, :include => [:user, :details], :order => "#{Journal.table_name}.created_on ASC")
     @issue.copy_from(params[:copy_from]) if params[:copy_from]
     @issue.project = @project
     # Tracker must be set before custom field values
@@ -165,7 +166,7 @@ class IssuesController < ApplicationController
     @issue.status = default_status
     @allowed_statuses = ([default_status] + default_status.find_new_statuses_allowed_to(User.current.role_for_project(@project), @issue.tracker)).uniq
     
-    if request.get? || request.xhr?
+    if !params[:issue]
       @issue.start_date ||= Date.today
     else
       requested_status = IssueStatus.find_by_id(params[:issue][:status_id])
@@ -190,10 +191,22 @@ class IssuesController < ApplicationController
         end
        end
         attach_files(@issue, params[:attachments])
-        flash[:notice] = l(:notice_successful_create)
+        
         Mailer.deliver_issue_add(@issue) if Setting.notified_events.include?('issue_added')
-        redirect_to(params[:continue] ? { :action => 'new', :tracker_id => @issue.tracker } :
-                                        { :action => 'show', :id => @issue })
+        respond_to do |format|
+          format.js {
+            render:update do |page|
+              if !params[:continue].nil?               
+                 page << "jQuery('#content').html('#{escape_javascript(render:partial=>'new')}');"
+
+              else
+                 page << "jQuery('#content').html('#{escape_javascript(render:partial=>'show')}');"
+              end
+             
+            end
+          }
+
+        end      
         return
       		
     end	

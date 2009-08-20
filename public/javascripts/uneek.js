@@ -17,13 +17,16 @@ function showChildrenProject(id){
 }
 
 function showChildrenIssue(id){
+   
     if( jQuery(".tree_class_parent_" + id).css('display') == 'none' ){
-        jQuery(".tree_class_parent_" + id).show();
-//        jQuery(".tree_class_parent_" + id + ' img:first').attr('src', '/images/moins.png')
+        jQuery(".tree_class_parent_" + id).show();       
+        jQuery("tr#"+id+' td.checkbox:first .tree_img').attr('src', '/images/collapse.png')
+        jQuery("tr#"+id).addClass('active');
     }
     else{
         jQuery(".tree_class_parent_" + id).hide();
-//        jQuery(".tree_class_parent_" + id + ' img:first').attr('src', '/images/plus.png')
+        jQuery("tr#"+id+' td.checkbox:first .tree_img').attr('src', '/images/expand.png')
+        jQuery("tr#"+id).removeClass('active');
     }
 }
 
@@ -70,6 +73,6 @@ function activeProjectMenu(id){
 }
 
 function checkTypeRelation(t){
-    jQuery.ajax({dataType:'script', url:'type_event', data:'type=' + t.value,type: "get", success: function(msg){eval(msg)}});
+    jQuery.ajax({dataType:'script', url:'issues/type_event', data:'type=' + t.value,type: "get", success: function(msg){eval(msg)}});
 }
 

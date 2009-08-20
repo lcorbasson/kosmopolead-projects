@@ -630,13 +630,9 @@ module ApplicationHelper
         padding = item.level*15
         if item.send("#{action}_count") == 0
           ret += "<li style='padding-left:#{padding}px;' id='#{action}_id_#{item.id}'>"
-
-#          ret += '<li style="margin-left:"'+'#{margin}'+'" id="' + "#{action}" + '_id_' + "#{item.id}" + '">&nbsp;&nbsp;&nbsp;&nbsp;'
         else
           ret += "<li style='padding-left:#{padding}px;' id='#{action}_id_#{item.id}'>"
           ret += "<img class='tree_img' src='/images/expand.png' onClick=showChildrenProject('#{action}_id_#{item.id}') />"
-
-#          ret += '<li style="margin-left:"'+'#{margin}'+'" id="' + "#{action}" + '_id_' + "#{item.id}" + '"><img class="tree_img"src="/images/expand.png" onClick="showChildrenProject(\'' + "#{action}" + '_id_' + "#{item.id}" + '\')" />&nbsp;&nbsp;'
         end
         ret += yield item
         #ret += "#{item.children}"
@@ -648,8 +644,7 @@ module ApplicationHelper
     end
   end
 
-<<<<<<< HEAD:app/helpers/application_helper.rb
-=======
+
 #  def init_tree_table(issues, query)
 #    issues.collect do |issue|
 #      if issue.parent_id.nil?
@@ -683,40 +678,36 @@ module ApplicationHelper
 #        ret += "#{tree_table(issue.children, padding, class_tr, query) if issue.children.size > 0}"
 #    end
 #  end
->>>>>>> d45dcb5f3a75e041e4c9807e72c57cb31c7011dc:app/helpers/application_helper.rb
+
 
   def init_tree_table(issues, padding, parent_class,   query)
     padding += 1
     issues.collect do |issue|
-      if issue.parent_id.nil?
-        ret = "<tr id='#{issue.id}' class='hascontextmenu #{cycle('odd', 'even')}'>"
-        ret += '<td class="checkbox"><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
-        ret += '<td class="checkbox"><img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
-        ret += "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
+    if issue.parent_id.nil?
+        ret = "<tr id='#{issue.id}' class='hascontextmenu #{cycle('even', 'odd')}'>"
+        ret += '<td class="checkbox">'
+        ret += "#{check_box_tag("ids[]", issue.id, false, :id => nil)}"
+        ret += '<img class="tree_img" src="/images/expand.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
+        ret += "</td>"
         ret += '<td>' + "#{issue.id}" + '</td>'
-<<<<<<< HEAD:app/helpers/application_helper.rb
-        ret += '<td class="tracker">' + "#{issue.tracker}" + '</td>'
-        ret += '<td class="status">' + "#{issue.status}" + '</td>'
-        ret += '<td class="priority">' + "#{issue.priority}" + '</td>'
-        ret += '<td><img class="tree_img" src="/images/expand.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
-        ret += '<td><img class="tree_img" src="/images/collapse.png" />' if issue.children.size == 0
-        ret += "#{link_to_remote "#{issue.subject}",{:url=>{:controller => "issues", :action => "show", :id => issue}},:method=>:get}</td>"
-        ret += '<td class="assigned_to">' + "#{show_assigned_to(issue)}" + '</td>'
-        ret += '<td class="updated_on">' + "#{issue.updated_on}" + '</td>'
-        ret += '<td>' + "#{progress_bar issue.done_ratio, :width => '80px', :legend => "#{issue.done_ratio}%"}" + '</td>'
-=======
         query.columns.each do |column|
-          ret += "#{content_tag 'td', column_content(column, issue), :class => column.name}"
+          if column == query.columns.last
+            td_class = "last #{column.name}"
+          else
+            td_class=column.name
+          end
+          ret += "#{content_tag 'td', column_content(column, issue), :class => td_class  }"
         end
->>>>>>> d45dcb5f3a75e041e4c9807e72c57cb31c7011dc:app/helpers/application_helper.rb
         ret += '</tr>'
         ret += "#{init_tree_table(issue.children, 1, '', query)}"
       else
           class_tr = "#{parent_class}" + " tree_class_parent_#{issue.parent_id}"
           ret = '<tr id='"#{issue.id}"' value="' + "#{issue.parent_id}" + '" class="' + "#{class_tr}" + " hascontextmenu #{cycle('odd', 'even')}" +'" style="display:none;" >'
-          ret += '<td class="checkbox" style="padding-left:' + "#{padding}" + 'em;" ><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
-          ret += '<td class="checkbox" style="padding-left:' + "#{padding}" + 'em;" ><img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
-          ret += "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
+          ret += '<td class="checkbox" style="padding-left:' + "#{padding}" + 'em;" >'          
+          ret += "#{check_box_tag("ids[]", issue.id, false, :id => nil)}"
+          ret += '<img class="tree_img" src="/images/expand.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
+        
+          ret += "</td>"
           ret += '<td>' + "#{issue.id}" + '</td>'
           query.columns.each do |column|
               ret += "#{content_tag 'td', column_content(column, issue), :class => column.name}"
@@ -777,6 +768,15 @@ module ApplicationHelper
 
   def grey_title(title)
     output = content_tag(:div,title,:class=>"grey_title")
+  end
+
+  def initialize_icons_tooltip()
+    html = "#{javascript_include_tag("jquery/jquery.tooltip.js")}"
+    html += "#{javascript_tag("jQuery().ready(function() {jQuery('.icon').tooltip({bodyHandler: function() {return jQuery(this).attr('name');},showURL: false })});")}"
+  end
+
+  def profile_box(title,content)
+    content_tag(:div, content_tag(:div,title,:class=>'profile_header')+content_tag(:div,content,:class=>'profile_content'),:class=>"profile")
   end
 
 

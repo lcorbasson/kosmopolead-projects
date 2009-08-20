@@ -1,6 +1,8 @@
-<h2><%=l(:label_issue_status_new)%></h2>
-
-<% form_tag({:action => 'create'}, :class => "tabular") do %>
-  <%= render :partial => 'form' %>
-  <%= submit_tag l(:button_create) %>
-<% end %>
+<%= box(
+    "#{l(:label_issue_status_new)}",
+    "#{render:partial=>'issue_statuses/box/new'}"
+) %>
+<div class="buttons right">
+     <%= submit_tag l(:button_create),:class=>"button btn_blue corner-all" %>
+  </div>
+  <div class="clearer"></div>

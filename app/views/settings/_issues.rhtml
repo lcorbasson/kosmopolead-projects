@@ -10,14 +10,16 @@
 <p><label><%= l(:setting_issues_export_limit) %></label>
 <%= text_field_tag 'settings[issues_export_limit]', Setting.issues_export_limit, :size => 6 %></p>
 </div>
-
-<fieldset class="box settings"><legend><%= l(:setting_issue_list_default_columns) %></legend>
-<%= hidden_field_tag 'settings[issue_list_default_columns][]', '' %>
+<div class="fieldset">
+     <span class="fieldset_title"><%= l(:setting_issue_list_default_columns) %></span>
+     <%= hidden_field_tag 'settings[issue_list_default_columns][]', '' %>
 <% Query.new.available_columns.each do |column| %>
   <label><%= check_box_tag 'settings[issue_list_default_columns][]', column.name, Setting.issue_list_default_columns.include?(column.name.to_s) %>
 	<%= column.caption %></label><br />
 <% end %>
-</fieldset>
+</div>
 
-<%= submit_tag l(:button_save) %>
+<div class="buttons right">
+  <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+</div>
 <% end %>

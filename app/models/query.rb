@@ -95,11 +95,11 @@ class Query < ActiveRecord::Base
   cattr_reader :operators_by_filter_type
 
   @@available_columns = [
+    QueryColumn.new(:subject, :sortable => "#{Issue.table_name}.subject"),
     QueryColumn.new(:project, :sortable => "#{Project.table_name}.name"),
     QueryColumn.new(:tracker, :sortable => "#{Tracker.table_name}.position"),
     QueryColumn.new(:status, :sortable => "#{IssueStatus.table_name}.position"),
     QueryColumn.new(:priority, :sortable => "#{Enumeration.table_name}.position", :default_order => 'desc'),
-    QueryColumn.new(:subject, :sortable => "#{Issue.table_name}.subject"),
     QueryColumn.new(:author),
     QueryColumn.new(:assigned_to, :sortable => "#{User.table_name}.lastname"),
     QueryColumn.new(:updated_on, :sortable => "#{Issue.table_name}.updated_on", :default_order => 'desc'),

@@ -112,11 +112,11 @@ mail_handler_api_key:
   default: 
 issue_list_default_columns:
   serialized: true
-  default: 
+  default:
+  - subject
   - tracker
   - status
   - priority
-  - subject
   - assigned_to
   - updated_on
 display_subprojects_issues:

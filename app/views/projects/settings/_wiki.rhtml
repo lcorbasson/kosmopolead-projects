@@ -14,6 +14,7 @@
 <%= link_to(l(:button_delete), {:controller => 'wikis', :action => 'destroy', :id => @project},
             :class => 'icon icon-del') if @wiki && !@wiki.new_record? %>
 </div>
-
-<%= submit_tag((@wiki.nil? || @wiki.new_record?) ? l(:button_create) : l(:button_save)) %>
+<div class="buttons right">
+  <%= submit_tag((@wiki.nil? || @wiki.new_record?) ? l(:button_create) : l(:button_save),:class=>"button btn_blue corner-all") %>
+</div>
 <% end %>

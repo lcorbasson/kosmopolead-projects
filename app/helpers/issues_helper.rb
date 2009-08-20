@@ -210,6 +210,18 @@ module IssuesHelper
     return html
   end
 
+   def show_assigned_to_list(issue)
+    return "-" if issue.assignments.nil?
+    html =""
+    issue.assignments.each_with_index do |assignment,index|
+      user = assignment.user
+      html += avatar(user, :size => "14") ? avatar(user, :size => "14") : ""
+      html += link_to_user(user)
+      html += (index==issue.assignments.size-1)? "":"<br/>"
+    end
+    return html
+  end
+
   def tree_gantt_list(events)
     ret = ""   
     events.collect do |event| 

@@ -18,6 +18,7 @@
 class ProjectsController < ApplicationController
   menu_item :projects,:only=>[:show]
  
+ 
   menu_item :activity, :only => :activity
   menu_item :roadmap, :only => :roadmap
   menu_item :files, :only => [:list_files, :add_file]
@@ -25,6 +26,7 @@ class ProjectsController < ApplicationController
 
   
   before_filter :find_project, :except => [ :index, :list, :add, :activity ]
+
   before_filter :find_optional_project, :only => :activity
   before_filter :authorize, :except => [ :index, :list, :add, :archive, :unarchive, :destroy, :activity ]
   before_filter :require_admin, :only => [ :add, :archive, :unarchive, :destroy ]
@@ -75,14 +77,14 @@ class ProjectsController < ApplicationController
     @project = Project.new(params[:project])
     @time_units = TimeUnit.find(:all)
 
-
+    @users = User.find(:all)
     if !params[:project]
-
       @project.identifier = Project.next_identifier if Setting.sequential_project_identifiers?
       @project.trackers = Tracker.all
       @project.is_public = Setting.default_projects_public?
       @project.enabled_module_names = Redmine::AccessControl.available_project_modules
       respond_to do |format|
+        format.html {}
         format.js {
            render :update do |page|
               page << "jQuery('#content').html('#{escape_javascript(render:partial=>'projects/add')}');"
@@ -133,6 +135,7 @@ class ProjectsController < ApplicationController
       format.js  {
           render:update do |page|
             page << "jQuery('#content').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
+           
           end
       }
     end
@@ -351,4 +354,7 @@ private
     @containers = [ Project.find(@project.id, :include => :attachments, :order => sort_clause)]
     @containers += @project.versions.find(:all, :include => :attachments, :order => sort_clause).sort.reverse
   end
+  
+  
+
 end

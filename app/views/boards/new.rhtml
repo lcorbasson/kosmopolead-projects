@@ -1,6 +1,9 @@
-<h2><%= l(:label_board_new) %></h2>
+<%= box(
+    "#{l(:label_board_new)}",
+    "#{render:partial=>'boards/box/new'}"
+) %>
+<div class="buttons right">
+     <%= submit_tag l(:button_create),:class=>"button btn_blue corner-all" %>
+  </div>
+  <div class="clearer"></div>
 
-<% labelled_tabular_form_for :board, @board, :url => {:action => 'new'} do |f| %>
-  <%= render :partial => 'form', :locals => {:f => f} %>
-  <%= submit_tag l(:button_create) %>
-<% end %>

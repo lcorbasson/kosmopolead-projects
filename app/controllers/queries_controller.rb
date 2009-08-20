@@ -16,9 +16,22 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class QueriesController < ApplicationController
-  menu_item :issues
-  before_filter :find_query, :except => :new
-  before_filter :find_optional_project, :only => :new
+  menu_item :queries
+  before_filter :find_query, :except => [:new,:index]
+  before_filter :find_optional_project, :only => [:edit,:new,:index]
+
+  def index
+     @projects = Project.find :all,
+                            :conditions => Project.visible_by(User.current),
+                            :include => :parent
+     # User can see public queries and his own queries
+     visible = ARCondition.new(["is_public = ? OR user_id = ?", true, (User.current.logged? ? User.current.id : 0)])
+     # Project specific queries and global queries
+     visible << (["project_id IS NULL OR project_id IN (?)", @projects])
+      @queries = Query.find(:all,
+                            :order => "name ASC",
+                            :conditions => visible.conditions)
+  end
   
   def new
     @query = Query.new(params[:query])
@@ -36,7 +49,15 @@ class QueriesController < ApplicationController
       redirect_to :controller => 'issues', :action => 'index', :project_id => @project, :query_id => @query
       return
     end
-    render :layout => false if request.xhr?
+    respond_to do |format|
+      format.js  {
+          render:update do |page|
+            page << "jQuery('#content').html('#{escape_javascript(render:partial=>'queries/new', :locals=>{:queryt=>@query})}');"
+
+          end
+        }
+    end
+#    render :layout => false if request.xhr?
   end
   
   def edit
@@ -52,14 +73,14 @@ class QueriesController < ApplicationController
       
       if @query.save
         flash[:notice] = l(:notice_successful_update)
-        redirect_to :controller => 'issues', :action => 'index', :project_id => @project, :query_id => @query
+        redirect_to :controller => 'queries', :action => 'index',  :query_id => @query
       end
     end
   end
 
   def destroy
     @query.destroy if request.post?
-    redirect_to :controller => 'issues', :action => 'index', :project_id => @project, :set_filter => 1
+    redirect_to :controller => 'queries', :action => 'index', :set_filter => 1
   end
   
 private

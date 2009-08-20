@@ -17,6 +17,7 @@
 
 class SettingsController < ApplicationController
   before_filter :require_admin
+  menu_item :admin
 
   def index
     edit

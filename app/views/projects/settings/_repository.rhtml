@@ -19,6 +19,7 @@
             :class => 'icon icon-del') %>
 <% end %>
 </div>
-
-<%= submit_tag((@repository.nil? || @repository.new_record?) ? l(:button_create) : l(:button_save), :disabled => @repository.nil?) %>
+<div class="buttons right">
+  <%= submit_tag((@repository.nil? || @repository.new_record?) ? l(:button_create) : l(:button_save), :disabled => @repository.nil?,:class=>"button btn_blue corner-all") %>
+</div>
 <% end %>

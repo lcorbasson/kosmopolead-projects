@@ -76,7 +76,7 @@ module Redmine
       
       # Renders the application main menu
       def render_main_menu(project)
-        render_menu((project && !project.new_record?) ? :project_menu : :application_menu, project)
+        render_menu(:application_menu, project)
       end
       
       def render_menu(menu, project=nil)

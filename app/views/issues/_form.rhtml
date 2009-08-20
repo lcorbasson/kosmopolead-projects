@@ -1,26 +1,25 @@
 <% if @issue.new_record? %>
 <p><%= f.select :issue_types_id, @issue_types.collect {|t| [t.name, t.id]}, :required => true %></p>
 <%= observe_field :issue_issue_types_id, :url => { :action => :new },
-                                     :update => :content,
+                                  
                                      :with => "Form.serialize('issue-form')" %>
 
-<%#*<p><%= select :choix_type,  Issue::RELATION_TYPE.collect{|issue| issue.id}, :required => true %></p>
-<%#= observe_field :issue_issue_types_id, :url => { :action => :new },
-                                     :update => :content,
-                                     :with => "Form.serialize('issue-form')" %>
+
+<% if @issue.type.name == "ISSUE" %>
+  <p>
+  <label for="parent"><%= l(:label_parent) %></label>
+
 <%  Issue::RELATION_TYPE.each do |relation| %>
-<%= radio_button_tag :issue_relation_type, relation, relation, :onClick => "checkTypeRelation(this)" %><%= relation %>
+   <%= radio_button_tag :issue_relation_type, relation, relation, :onClick => "checkTypeRelation(this)" %><%= relation %>
 <%  end %>
 <span id="type_relation">
 </span>
-<hr />
-
-<% if @issue.type.name == "ISSUE" %>
+</p>
 <p><%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %></p>
 <%= observe_field :issue_tracker_id, :url => { :action => :new },
                                      :update => :content,
                                      :with => "Form.serialize('issue-form')" %>
-<hr />
+
 <% end %>
 <% end %>
 
@@ -89,13 +88,11 @@
     <% end -%>
     </p>
     <% end %>
- <% when "MILESTONE" %>
-  <div class="splitcontentleft">
+ <% when "MILESTONE" %>  
     <p><%= f.select :parent_id, @issue.project.issues.stages.collect {|s| [s.subject, s.id]}, :required => true %></p>
-  </div>
-  <div class="splitcontentright">
+
     <p><%= f.text_field :start_date, :size => 10 %><%= calendar_for('issue_start_date') %></p>    
-  </div>
+
  <% when "STAGE" %>
     <div class="splitcontentleft">
     <p><%= f.text_field :start_date, :size => 10 %><%= calendar_for('issue_start_date') %></p>

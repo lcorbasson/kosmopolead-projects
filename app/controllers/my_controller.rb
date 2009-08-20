@@ -16,11 +16,15 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class MyController < ApplicationController
+  menu_item :home
+  
   before_filter :require_login
 
   helper :issues
 
-  BLOCKS = { 'issuesassignedtome' => :label_assigned_to_me_issues,
+  BLOCKS = { 'members' => :label_member_plural,
+             'issuesassignedtome' => :label_assigned_to_me_issues,
+             'issuesinlate' => :label_in_late_issues,
              'issuesreportedbyme' => :label_reported_issues,
              'issueswatched' => :label_watched_issues,
              'news' => :label_news_latest,
@@ -29,8 +33,10 @@ class MyController < ApplicationController
              'timelog' => :label_spent_time
            }.freeze
 
-  DEFAULT_LAYOUT = {  'left' => ['issuesassignedtome'], 
-                      'right' => ['issuesreportedbyme'] 
+  DEFAULT_LAYOUT = {  'top'=> ['issuesinlate'],
+                      'left' => ['members'],
+                      'middle' => ['issuesreportedbyme'],
+                      'right' => ['issuesassignedtome']
                    }.freeze
 
   verify :xhr => true,
@@ -129,7 +135,7 @@ class MyController < ApplicationController
   def remove_block
     block = params[:block]
     # remove block in all groups
-    %w(top left right).each {|f| (session[:page_layout][f] ||= []).delete block }
+    %w(top left middle right).each {|f| (session[:page_layout][f] ||= []).delete block }
     render :nothing => true
   end
 
@@ -141,7 +147,7 @@ class MyController < ApplicationController
     group_items = params["list-#{group}"]
     if group_items and group_items.is_a? Array
       # remove group blocks if they are presents in other groups
-      %w(top left right).each {|f|
+      %w(top left middle right).each {|f|
         session[:page_layout][f] = (session[:page_layout][f] || []) - group_items
       }
       session[:page_layout][group] = group_items    

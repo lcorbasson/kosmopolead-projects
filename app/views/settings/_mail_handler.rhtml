@@ -13,6 +13,7 @@
                                                      :disabled => !Setting.mail_handler_api_enabled? %>
 <%= link_to_function l(:label_generate_key), "if ($('settings_mail_handler_api_key').disabled == false) { $('settings_mail_handler_api_key').value = randomKey(20) }" %></p>
 </div>
-
-<%= submit_tag l(:button_save) %>
+<div class="buttons right">
+  <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+</div>
 <% end %>

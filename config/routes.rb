@@ -26,8 +26,6 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'projects/:project_id/documents/:action', :controller => 'documents'
   map.connect 'projects/:project_id/boards/:action/:id', :controller => 'boards'
 
-   
-
   map.connect 'projects/:project_id/timelog/:action/:id', :controller => 'timelog', :project_id => /.+/
   map.connect 'boards/:board_id/topics/:action/:id', :controller => 'messages'
 

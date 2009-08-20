@@ -1,6 +1,9 @@
-<h2><%=l(:label_issue_status)%></h2>
+<%= box(
+    "#{l(:label_issue_status)}",
+    "#{render:partial=>'issue_statuses/box/edit'}"
+) %>
+<div class="buttons right">
+     <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+</div>
+<div class="clearer"></div>
 
-<% form_tag({:action => 'update', :id => @issue_status}, :class => "tabular") do %>
-  <%= render :partial => 'form' %>
-  <%= submit_tag l(:button_save) %>
-<% end %>

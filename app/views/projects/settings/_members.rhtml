@@ -15,13 +15,13 @@
 	<tbody>
 	<% members.each do |member| %>
 	<% next if member.new_record? %>
-	<tr class="<%= cycle 'odd', 'even' %>">
+	<tr class="<%= cycle 'even', 'odd' %>">
 	<td><%= member.name %></td>
-    <td align="center">
+    <td align="center" class="buttons">
     <% if authorize_for('members', 'edit') %>
       <% remote_form_for(:member, member, :url => {:controller => 'members', :action => 'edit', :id => member}, :method => :post) do |f| %>
         <%= f.select :role_id, roles.collect{|role| [role.name, role.id]}, {}, :class => "small" %>
-        <%= submit_tag l(:button_change), :class => "small" %>
+        <%= submit_tag l(:button_change), :class => "button corner-all btn_blue" %>
       <% end %>
     <% end %>
     </td>
@@ -42,9 +42,9 @@
 
 <% if authorize_for('members', 'new') && !users.empty? %>
   <% remote_form_for(:member, @member, :url => {:controller => 'members', :action => 'new', :id => @project}, :method => :post) do |f| %>
-    <p><label for="member_user_id"><%=l(:label_member_new)%></label><br />
+    <p class="buttons"><label for="member_user_id"><%=l(:label_member_new)%></label><br />
     <%= f.select :user_id, users.collect{|user| [user.name, user.id]} %>
     <%= l(:label_role) %>: <%= f.select :role_id, roles.collect{|role| [role.name, role.id]}, :selected => nil %>
-    <%= submit_tag l(:button_add) %></p>
+    <%= submit_tag l(:button_add),:class=>"button btn_blue corner-all" %></p>
   <% end %>
 <% end %>

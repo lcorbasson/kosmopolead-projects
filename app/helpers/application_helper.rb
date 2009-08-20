@@ -617,19 +617,22 @@ module ApplicationHelper
     end
   end
 
+
   def tree_ul(action, acts_as_tree_set, have_parent, init=true, &block)
     if acts_as_tree_set.size > 0
       if !have_parent
-          ret = '<ul style="display:none;">'
+          ret = '<ul class="projects_children_list" style="display:none;">'
       else
-          ret = '<ul>'
+          ret = '<ul class="projects_list">'
       end
       acts_as_tree_set.collect do |item|
         next if item.parent_id && init
+        padding = item.level*15
         if item.send("#{action}_count") == 0
-          ret += '<li id="' + "#{action}" + '_id_' + "#{item.id}" + '">&nbsp;&nbsp;&nbsp;&nbsp;'
+          ret += "<li style='padding-left:#{padding}px;' id='#{action}_id_#{item.id}'>"
         else
-          ret += '<li id="' + "#{action}" + '_id_' + "#{item.id}" + '"><img class="tree_img"src="/images/plus.png" onClick="showChildrenProject(\'' + "#{action}" + '_id_' + "#{item.id}" + '\')" />&nbsp;&nbsp;'
+          ret += "<li style='padding-left:#{padding}px;' id='#{action}_id_#{item.id}'>"
+          ret += "<img class='tree_img' src='/images/expand.png' onClick=showChildrenProject('#{action}_id_#{item.id}') />"
         end
         ret += yield item
         #ret += "#{item.children}"
@@ -640,6 +643,7 @@ module ApplicationHelper
       ret += '</ul>'
     end
   end
+
 
 #  def init_tree_table(issues, query)
 #    issues.collect do |issue|
@@ -675,26 +679,35 @@ module ApplicationHelper
 #    end
 #  end
 
+
   def init_tree_table(issues, padding, parent_class,   query)
     padding += 1
     issues.collect do |issue|
-      if issue.parent_id.nil?
-        ret = "<tr id='#{issue.id}' class='hascontextmenu #{cycle('odd', 'even')}'>"
-        ret += '<td class="checkbox"><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
-        ret += '<td class="checkbox"><img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
-        ret += "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
+    if issue.parent_id.nil?
+        ret = "<tr id='#{issue.id}' class='hascontextmenu #{cycle('even', 'odd')}'>"
+        ret += '<td class="checkbox">'
+        ret += "#{check_box_tag("ids[]", issue.id, false, :id => nil)}"
+        ret += '<img class="tree_img" src="/images/expand.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
+        ret += "</td>"
         ret += '<td>' + "#{issue.id}" + '</td>'
         query.columns.each do |column|
-          ret += "#{content_tag 'td', column_content(column, issue), :class => column.name}"
+          if column == query.columns.last
+            td_class = "last #{column.name}"
+          else
+            td_class=column.name
+          end
+          ret += "#{content_tag 'td', column_content(column, issue), :class => td_class  }"
         end
         ret += '</tr>'
         ret += "#{init_tree_table(issue.children, 1, '', query)}"
       else
           class_tr = "#{parent_class}" + " tree_class_parent_#{issue.parent_id}"
           ret = '<tr id='"#{issue.id}"' value="' + "#{issue.parent_id}" + '" class="' + "#{class_tr}" + " hascontextmenu #{cycle('odd', 'even')}" +'" style="display:none;" >'
-          ret += '<td class="checkbox" style="padding-left:' + "#{padding}" + 'em;" ><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
-          ret += '<td class="checkbox" style="padding-left:' + "#{padding}" + 'em;" ><img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
-          ret += "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
+          ret += '<td class="checkbox" style="padding-left:' + "#{padding}" + 'em;" >'          
+          ret += "#{check_box_tag("ids[]", issue.id, false, :id => nil)}"
+          ret += '<img class="tree_img" src="/images/expand.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
+        
+          ret += "</td>"
           ret += '<td>' + "#{issue.id}" + '</td>'
           query.columns.each do |column|
               ret += "#{content_tag 'td', column_content(column, issue), :class => column.name}"
@@ -704,6 +717,69 @@ module ApplicationHelper
       end
    end
   end
+
+   # <div class="clear"></div>
+  def clear_tag
+     content_tag(:div, "", :class => 'clear')
+  end
+
+  # module avec titre + content
+  # utilisation :
+  # <% box "titre", :class => 'ma_classe' do %>
+  #   contenu
+  # <% end %>
+  def box(title, contenu, links=[])
+    if links.size>0
+      links_str = "<div class='box_links'>"
+      links.each do |link|
+        links_str += "#{link}"
+      end
+      links_str += "</div>"
+    end
+
+    output = content_tag(:div,
+        content_tag(:div,
+          content_tag(:div,title, :class=>'box_title') + "#{links_str if links_str}", :class => 'box_header') + content_tag(:div,contenu, {:class => 'box_content'}), :class=>"box")
+    
+  end
+
+
+  def box_sidebar(title, content)
+    output = content_tag(:div,
+      content_tag(:div, title,:class=>"sidebar_head") + content_tag(:div, content,:class=>"sidebar_content"),:class=>"sidebar_box")
+  end
+
+  def user_thumbnail(user)
+    name = content_tag(:p,(user && !user.anonymous?) ? link_to(user.name, :controller => 'account', :action => 'show', :id => user) : 'Anonymous',:class=>"name")   
+    thumbnail = content_tag(:li,name,:class=>"user_thumbnail thumbnail")
+  end
+
+  def file_thumbnail(file)
+    title = content_tag(:p,file.filename,:class=>"filename")
+    author = content_tag(:p,file.author.name,:class=>"author")
+    created_on = content_tag(:p,format_time(file.created_on),:class=>"created_on")
+    thumbnail = content_tag(:li,content_tag(:div,title+author+created_on,:class=>"thumbnail_infos"),:class=>"file_thumbnail thumbnail")
+
+  end
+
+  def grey_box(box_content, box_class)
+    output = content_tag(:div,box_content,:class=>box_class+" grey_box")
+  end
+
+  def grey_title(title)
+    output = content_tag(:div,title,:class=>"grey_title")
+  end
+
+  def initialize_icons_tooltip()
+    html = "#{javascript_include_tag("jquery/jquery.tooltip.js")}"
+    html += "#{javascript_tag("jQuery().ready(function() {jQuery('.icon').tooltip({bodyHandler: function() {return jQuery(this).attr('name');},showURL: false })});")}"
+  end
+
+  def profile_box(title,content)
+    content_tag(:div, content_tag(:div,title,:class=>'profile_header')+content_tag(:div,content,:class=>'profile_content'),:class=>"profile")
+  end
+
+
 
   private
 

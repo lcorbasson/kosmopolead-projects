@@ -28,12 +28,7 @@
 	  	}
     </script>
 
-      
-
-<%= error_messages_for 'project' %>
-<div class="box">
-<!--[form:project]-->
-<p><%= f.text_field :name, :required => true %><br /><em><%= l(:text_caracters_maximum, 30) %></em></p>
+<p><%= f.text_field :name, :required => true %><br /><span class="specs"><%= l(:text_caracters_maximum, 30) %></span></p>
 
 <% if User.current.admin? and !@root_projects.empty? %>
     <p><%= f.select :parent_id, (@root_projects.collect {|p| [p.name, p.id]}), { :include_blank => true } %></p>
@@ -55,7 +50,7 @@
 <p><%= f.text_area :description, :rows => 5, :class => 'wiki-edit' %></p>
 <p><%= f.text_field :identifier, :required => true, :disabled => @project.identifier_frozen? %>
 <% unless @project.identifier_frozen? %>
-<br /><em><%= l(:text_length_between, 1, 20) %> <%= l(:text_project_identifier_info) %></em>
+<br /><span class="specs"><%= l(:text_length_between, 1, 20) %> <%= l(:text_project_identifier_info) %></span>
 <% end %></p>
 <p><%= f.text_field :homepage, :size => 60 %></p>
 <p><%= f.check_box :is_public %></p>
@@ -65,29 +60,34 @@
 	<p><%= custom_field_tag_with_label :project, value %></p>
 <% end %>
 <%= call_hook(:view_projects_form, :project => @project, :form => f) %>
-</div>
+
 
 <% unless @trackers.empty? %>
-<fieldset class="box"><legend><%=l(:label_tracker_plural)%></legend>
-<% @trackers.each do |tracker| %>
-    <label class="floating">
-    <%= check_box_tag 'project[tracker_ids][]', tracker.id, @project.trackers.include?(tracker) %>
-    <%= tracker %>
-    </label>
-<% end %>
-<%= hidden_field_tag 'project[tracker_ids][]', '' %>
-</fieldset>
+<div class="fieldset">
+  <span class="fieldset_title"><%=l(:label_tracker_plural)%></span>
+  <% @trackers.each do |tracker| %>
+      <label class="floating">
+      <%= check_box_tag 'project[tracker_ids][]', tracker.id, @project.trackers.include?(tracker) %>
+      <%= tracker %>
+      </label>
+  <% end %>
+  <%= hidden_field_tag 'project[tracker_ids][]', '' %>
+  <div class="clearer"></div>
+</div>
+
 <% end %>
 
 <% unless @issue_custom_fields.empty? %>
-<fieldset class="box"><legend><%=l(:label_custom_field_plural)%></legend>
-<% @issue_custom_fields.each do |custom_field| %>
-    <label class="floating">
-	<%= check_box_tag 'project[issue_custom_field_ids][]', custom_field.id, (@project.all_issue_custom_fields.include? custom_field), (custom_field.is_for_all? ? {:disabled => "disabled"} : {}) %>
-	<%= custom_field.name %>
-	</label>
-<% end %>
-<%= hidden_field_tag 'project[issue_custom_field_ids][]', '' %>
-</fieldset>
+<div class="fieldset">
+  <span class="fieldset_title"><%=l(:label_custom_field_plural)%></span>
+  <% @issue_custom_fields.each do |custom_field| %>
+      <label class="floating">
+      <%= check_box_tag 'project[issue_custom_field_ids][]', custom_field.id, (@project.all_issue_custom_fields.include? custom_field), (custom_field.is_for_all? ? {:disabled => "disabled"} : {}) %>
+      <%= custom_field.name %>
+      </label>
+  <% end %>
+  <%= hidden_field_tag 'project[issue_custom_field_ids][]', '' %>
+   <div class="clearer"></div>
+  </div>
 <% end %>
 <!--[eoform:project]-->

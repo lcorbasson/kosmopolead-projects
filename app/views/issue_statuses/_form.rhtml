@@ -1,6 +1,6 @@
 <%= error_messages_for 'issue_status' %>
 
-<div class="box">
+
 <!--[form:issue_status]-->
 <p><label for="issue_status_name"><%=l(:field_name)%><span class="required"> *</span></label>
 <%= text_field 'issue_status', 'name'  %></p>
@@ -14,4 +14,4 @@
 <%= call_hook(:view_issue_statuses_form, :issue_status => @issue_status) %>
 
 <!--[eoform:issue_status]-->
-</div>
+

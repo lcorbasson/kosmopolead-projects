@@ -101,6 +101,10 @@ mail_body_reminder: "%d demande(s) qui vous sont assignées arrivent à échéan
 gui_validation_error: 1 erreur
 gui_validation_error_plural: %d erreurs
 
+field_acronym: Acronyme
+field_time_units: Unité de temps
+field_build_by: Monté par
+field_watched_by: Suivi par
 field_name: Nom
 field_description: Description
 field_summary: Résumé
@@ -177,6 +181,7 @@ field_spent_on: Date
 field_identifier: Identifiant
 field_is_filter: Utilisé comme filtre
 field_issue_to_id: Demande liée
+field_issue_type: Type d'événement
 field_delay: Retard
 field_assignable: Demandes assignables à ce rôle
 field_redirect_existing_links: Rediriger les liens existants
@@ -286,6 +291,13 @@ project_module_wiki: Wiki
 project_module_repository: Dépôt de sources
 project_module_boards: Forums de discussion
 
+label_parent: Parent
+label_new: Nouveau
+label_support_by: Porté par
+label_build_by: Monté par
+label_watched_by: Suivi par
+label_project_author: Porteur de projet
+label_no_issues: Aucun événement
 label_user: Utilisateur
 label_user_plural: Utilisateurs
 label_user_new: Nouvel utilisateur
@@ -296,7 +308,7 @@ label_project_all: Tous les projets
 label_project_latest: Derniers projets
 label_issue: Demande
 label_issue_new: Nouvelle demande
-label_issue_plural: Demandes
+label_issue_plural: Evenements
 label_issue_view_all: Voir toutes les demandes
 label_issue_added: Demande ajoutée
 label_issue_updated: Demande mise à jour
@@ -331,7 +343,7 @@ label_information: Information
 label_information_plural: Informations
 label_please_login: Identification
 label_register: S'enregistrer
-label_password_lost: Mot de passe perdu
+label_password_lost: Mot de passe oublié ?
 label_home: Accueil
 label_my_page: Ma page
 label_my_account: Mon compte
@@ -425,9 +437,9 @@ label_comment_plural: Commentaires
 label_comment_add: Ajouter un commentaire
 label_comment_added: Commentaire ajouté
 label_comment_delete: Supprimer les commentaires
-label_query: Rapport personnalisé
-label_query_plural: Rapports personnalisés
-label_query_new: Nouveau rapport
+label_query: Requête
+label_query_plural: Requêtes
+label_query_new: Nouvelle requête
 label_filter_add: Ajouter le filtre
 label_filter_plural: Filtres
 label_equals: égal
@@ -539,6 +551,7 @@ label_reply_plural: Réponses
 label_send_information: Envoyer les informations à l'utilisateur
 label_year: Année
 label_month: Mois
+label_evenement_plural: Evenements
 label_week: Semaine
 label_date_from: Du
 label_date_to: Au
@@ -585,6 +598,7 @@ label_incoming_emails: Emails entrants
 label_generate_key: Générer une clé
 label_issue_watchers: Observateurs
 label_example: Exemple
+label_in_late_issues: Tâches en retard
 
 button_login: Connexion
 button_submit: Soumettre
@@ -703,3 +717,4 @@ default_activity_development: Développement
 enumeration_issue_priorities: Priorités des demandes
 enumeration_doc_categories: Catégories des documents
 enumeration_activities: Activités (suivi du temps)
+

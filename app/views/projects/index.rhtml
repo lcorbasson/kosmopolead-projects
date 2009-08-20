@@ -3,3 +3,6 @@
 <% else %>
   Aucun projet à visualiser.
 <% end %>
+<% content_for :sidebar do %>
+    <%= render :partial => 'projects/sidebar' %>
+<% end %>

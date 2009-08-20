@@ -49,12 +49,14 @@ class ProjectsController < ApplicationController
     @projects = Project.find :all,
                             :conditions => Project.visible_by(User.current),
                             :include => :parent
-   @project = @projects.first
-   find_files
-   @members = @project.members
-   @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
-   @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
-   @trackers = @project.rolled_up_trackers
+   if @projects.size>0
+     @project = @projects.first
+     find_files
+    @members = @project.members
+    @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
+    @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
+    @trackers = @project.rolled_up_trackers
+   end
    respond_to do |format|
       format.html { 
 #        @project_tree = projects.group_by {|p| p.parent || p}

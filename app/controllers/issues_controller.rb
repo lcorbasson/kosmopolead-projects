@@ -197,10 +197,10 @@ class IssuesController < ApplicationController
           format.js {
             render:update do |page|
               if !params[:continue].nil?               
-                 page << "jQuery('#content').html('#{escape_javascript(render:partial=>'new')}');"
+                 page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'new')}');"
 
               else
-                 page << "jQuery('#content').html('#{escape_javascript(render:partial=>'show')}');"
+                 page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'show')}');"
               end
              
             end
@@ -214,7 +214,7 @@ class IssuesController < ApplicationController
     respond_to do |format|
       format.js {
         render:update do |page|
-          page << "jQuery('#content').html('#{escape_javascript(render:partial=>'new')}');"       
+          page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'new')}');"
         end
         }
     end   
@@ -429,7 +429,7 @@ class IssuesController < ApplicationController
       format.pdf  { send_data(gantt_to_pdf(@gantt, @project), :type => 'application/pdf', :filename => "#{basename}.pdf") }
       format.js  {
           render:update do |page|
-            page << "jQuery('#content').html('#{escape_javascript(render:partial=>'issues/gantt', :locals=>{:project=>@project})}');"
+            page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'issues/gantt', :locals=>{:project=>@project})}');"
 
           end
         }
@@ -462,7 +462,7 @@ class IssuesController < ApplicationController
     respond_to do |format|
        format.js  {
           render:update do |page|
-            page << "jQuery('#content').html('#{escape_javascript(render:partial=>'issues/calendar', :locals=>{:project=>@project})}');"
+            page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'issues/calendar', :locals=>{:project=>@project})}');"
 
           end
         }

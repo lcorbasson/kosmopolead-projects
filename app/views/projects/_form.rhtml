@@ -1,5 +1,36 @@
-<%= error_messages_for 'project' %>
+<script language="JavaScript">
+        jQuery(document).ready(function()
+        {
+          jQuery('#tags').children().attr('class', 'selected')
+          
+          jQuery("#tags").fcbkcomplete({
+            json_url: "/projects/tags_json",
+            cache: true,
+            filter_case: true,
+            filter_hide: true,
+			firstselected: true,
+            //onremove: "testme",
+			//onselect: "testme",
+            filter_selected: true,
+            newel: true
+          });
+        });
 
+		function testme(item)
+	  	{	if ($.browser.mozilla)
+			{
+				console.log(item);
+			}
+			else
+			{
+				alert(item);
+			}
+	  	}
+    </script>
+
+      
+
+<%= error_messages_for 'project' %>
 <div class="box">
 <!--[form:project]-->
 <p><%= f.text_field :name, :required => true %><br /><em><%= l(:text_caracters_maximum, 30) %></em></p>
@@ -10,8 +41,14 @@
 
 <p><%= f.text_field :acronym, :required => true %></p>
 <p><%= f.select :author_id,  @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
-<p><%= f.select :watched_by, @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
-<p><%= f.select :build_by, @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
+<p><%#= f.select :watched_by, @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
+<p><%= f.select :builder_by, @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
+
+
+
+<p>Tags <div id="input_tags"></div>
+<%= select_tag  :tags,  options_for_select( @project.tag_list { |tag| [tag.name, tag.id] }, :class => 'selected'), :id => 'tags', :name => 'tags'%>
+</p>
 
 <p><%= f.select :time_units_id, (@time_units.collect {|u| [u.label, u.id]}) %></p>
 

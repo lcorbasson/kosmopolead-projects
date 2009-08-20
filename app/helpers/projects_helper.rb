@@ -33,5 +33,11 @@ module ProjectsHelper
             ]
     tabs.select {|tab| User.current.allowed_to?(tab[:action], @project)}     
   end
-
+     def tags_json
+    rows = []
+    @tags.each  do  |t|
+      rows << {:caption => t.name, :value => t.name}
+    end
+    return rows.to_json
+  end
 end

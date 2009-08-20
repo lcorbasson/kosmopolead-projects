@@ -23,9 +23,9 @@ class ProjectsController < ApplicationController
   menu_item :settings, :only => :settings
   menu_item :issues, :only => [:changelog]
   
-  before_filter :find_project, :except => [ :index, :list, :add, :activity ]
+  before_filter :find_project, :except => [ :tags_json, :index, :list, :add, :activity ]
   before_filter :find_optional_project, :only => :activity
-  before_filter :authorize, :except => [ :index, :list, :add, :archive, :unarchive, :destroy, :activity ]
+  before_filter :authorize, :except => [ :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity ]
   before_filter :require_admin, :only => [ :add, :archive, :unarchive, :destroy ]
   accept_key_auth :activity
   
@@ -60,12 +60,14 @@ class ProjectsController < ApplicationController
   
   # Add a new project
   def add
+    @tags = Tags.all
     @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
     @trackers = Tracker.all
     @root_projects = Project.find(:all,
                                   :conditions => "status = #{Project::STATUS_ACTIVE}",
                                   :order => 'name')
     @project = Project.new(params[:project])
+
     @time_units = TimeUnit.find(:all)
     @users = User.all
     if request.get?
@@ -74,6 +76,11 @@ class ProjectsController < ApplicationController
       @project.is_public = Setting.default_projects_public?
       @project.enabled_module_names = Redmine::AccessControl.available_project_modules
     else
+      @project.tag_list = ''
+      select_tags =  params[:tags]
+      select_tags.each do |tag|
+        @project.tag_list << tag
+      end
       @project.enabled_module_names = params[:enabled_modules]
       if @project.save
         flash[:notice] = l(:notice_successful_create)
@@ -106,6 +113,7 @@ class ProjectsController < ApplicationController
   end
 
   def settings
+    @tags = Tags.all
     @root_projects = Project.find(:all,
                                   :conditions => ["status = #{Project::STATUS_ACTIVE} AND id <> ?", @project.id],
                                   :order => 'name')
@@ -122,8 +130,14 @@ class ProjectsController < ApplicationController
   # Edit @project
   def edit
     if request.post?
+      @tags = Tags.all
       @project.attributes = params[:project]
       @users = User.all
+      select_tags =  params[:tags]
+      @project.tag_list = ''
+      select_tags.each do |tag|
+        @project.tag_list << tag
+      end
       if @project.save
         flash[:notice] = l(:notice_successful_update)
         redirect_to :action => 'settings', :id => @project
@@ -265,6 +279,11 @@ class ProjectsController < ApplicationController
     
   rescue ActiveRecord::RecordNotFound
     render_404
+  end
+
+  def tags_json
+    tags_json = Project.tags_json
+     render:text=>tags_json
   end
   
 private

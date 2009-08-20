@@ -16,6 +16,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class Project < ActiveRecord::Base
+
+  acts_as_taggable
+    
   # Project statuses
   STATUS_ACTIVE     = 1
   STATUS_ARCHIVED   = 9
@@ -38,6 +41,11 @@ class Project < ActiveRecord::Base
   has_one :repository, :dependent => :destroy
   has_many :changesets, :through => :repository
   has_one :wiki, :dependent => :destroy
+
+  belongs_to :watched, :class_name => 'User', :foreign_key => 'watched_id'
+  belongs_to  :builder, :class_name => 'User', :foreign_key => 'builder_id'
+  belongs_to  :author, :class_name => 'User', :foreign_key => 'author_id'
+
   # Custom field for the project issues
   has_and_belongs_to_many :issue_custom_fields, 
                           :class_name => 'IssueCustomField',
@@ -268,6 +276,14 @@ class Project < ActiveRecord::Base
       end
   end
 
+   def self.tags_json
+    rows = []
+   Tag.all.each  do  |t|
+      rows << {:caption => t.name, :value => t.name}
+    end
+    return rows.to_json
+  end
+
 protected
   def validate
     #errors.add(parent_id, " must be a root project") if parent and parent.parent
@@ -286,4 +302,5 @@ private
   def allowed_actions
     @actions_allowed ||= allowed_permissions.inject([]) { |actions, permission| actions += Redmine::AccessControl.allowed_actions(permission) }.flatten
   end
+
 end

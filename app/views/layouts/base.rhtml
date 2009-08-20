@@ -26,37 +26,39 @@
 </head>
 <body>
 <div id="wrapper">
-
-      
 <div id="header">
   <div id="top-menu">
-    <div id="account">
-        <%= render_menu :account_menu -%>
-    </div>
-   
-</div>
-
-    <%= image_tag("/images/logo.png") %>
-        
-    <div id="main-menu">
-        <%= render_menu :application_menu -%>
-   
+      <div id="account">
+          <%= render_menu :account_menu -%>
+      </div>
+  </div>
+  <%= image_tag("/images/logo.png") %>        
+  <div id="main-menu">
+      <%= render_menu :application_menu -%>
     </div>
 </div>
-
 <%= tag('div', {:id => 'main', :class => (has_content?(:sidebar) ? '' : 'nosidebar')}, true) %>
-   
-    
-    <div id="content">
-				<%= render_flash_messages %>
-        <%= yield %>
-        <%= call_hook :view_layouts_base_content %>
-    </div>
-</div>
- <div id="sidebar">
+  <div id="sidebar">
+        <!--<div id="places_wrapper">
+          <ul>
+            <li id="home_button"><%#= link_to "Accueil", '#' %></li>
+            <li id="communities_button"><%#= link_to "Mes communautés", '#' %></li>
+            <li id="profile_button"><%#= link_to_active_if @user == current_user, current_user.full_name, user_profile_path(current_user) %></li>
+          </ul>
+          <div class="clear"></div>
+        </div>-->
+
         <%= yield :sidebar %>
         <%= call_hook :view_layouts_base_sidebar %>
-    </div>
+
+   </div>
+   <div id="content">
+      <%= render_flash_messages %>
+      <%= yield %>
+      <%= call_hook :view_layouts_base_content %>
+   </div>
+</div>
+
 
 <div id="ajax-indicator" style="display:none;"><span><%= l(:label_loading) %></span></div>
 	

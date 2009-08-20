@@ -248,6 +248,7 @@ class ProjectsController < ApplicationController
         Mailer.deliver_attachments_added(attachments)
       end
       respond_to do |format|
+        format.html {}
         format.js {
           render:update do |page|
             page << "jQuery('#content').html('#{escape_javascript(render:partial=>'add_file')}');"

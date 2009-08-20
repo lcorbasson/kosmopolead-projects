@@ -9,7 +9,7 @@ h4, .wiki h3 {font-size: 13px;padding: 2px 10px 1px 0px;margin-bottom: 5px; bord
 /***** Layout *****/
 .right{float:right;}
 .left {float:left;}
-#wrapper {background: white;}
+#wrapper {background: #382D24;}
 
 #top-menu {float:right;background: transparent; color: #fff; height:1.8em; font-size: 0.8em; padding: 2px 2px 0px 6px;}
 #top-menu ul {margin: 0;  padding: 0;}
@@ -60,13 +60,13 @@ h4, .wiki h3 {font-size: 13px;padding: 2px 10px 1px 0px;margin-bottom: 5px; bord
 
 #main {background-color:#EEEEEE;}
 
-#sidebar{ padding-top:20px;float: left; width: 213px; position: relative; z-index: 9; min-height: 600px;  margin: 0;}
+#sidebar{ padding-top:20px;float: left; width: 220px; position: relative; z-index: 9; min-height: 600px;  margin: 0;}
 * html #sidebar{ width: 17%; }
 #sidebar h3{ font-size: 14px; margin-top:14px; color: #666;  }
 #sidebar hr{ width: 100%; margin: 0 auto; height: 1px; background: #ccc; border: 0; }
 * html #sidebar hr{ width: 95%; position: relative; left: -6px; color: #ccc; }
 ul {padding:0;}
-#content {float:right;border-left:10px solid #EEEEEE;border-bottom:10px solid #EEEEEE;border-right:10px solid #EEEEEE;width: 80%; background-color: #fff; margin: 0px; padding: 6px 10px 10px 10px; z-index: 10; }
+#content {float:right;width: 81%; background-color: #fff; margin: 0px; padding: 6px 10px 10px 10px; z-index: 10;}
 * html #content{ width: 80%; padding-left: 0; margin-top: 0px; padding: 6px 10px 10px 10px;}
 html>body #content { min-height: 600px; } 
 * html body #content { height: 600px; } /* IE */
@@ -168,6 +168,7 @@ table p {margin:0;}
     float:right;
     padding:5px;
     margin-bottom:20px;
+    background:#fff;
 }
 .sidebar_box a {color:#505050;font-weight:bold;}
 
@@ -647,10 +648,26 @@ padding-bottom: 3px;
 .icon22 {
 background-position: 0% 40%;
 background-repeat: no-repeat;
-padding-left: 26px;
+
 line-height: 22px;
-vertical-align: middle;
+width:640px;
+height:40px;
+vertical-align: bottom;
+padding-top:10px;
 }
+.bloc_admin {
+    width:640px;
+    height:20px;
+    background:url(../images/bg_bloc_admin.png) repeat-x;    
+    -moz-border-radius:10px;
+}
+
+.bloc_admin img {float:left;
+margin-left:10px;
+margin-top:-15px;}
+
+.bloc_admin .links {padding-left:80px;}
+.bloc_admin .links a {color:#333333;font-weight:bold;}
 
 .icon-add { background-image: url(../images/add.png); }
 .icon-edit { background-image: url(../images/edit.png); }
@@ -685,19 +702,19 @@ vertical-align: middle;
 .icon-report  { background-image: url(../images/report.png); }
 .icon-comment  { background-image: url(../images/comment.png); }
 
-.icon22-projects { background-image: url(../images/22x22/projects.png); }
-.icon22-users { background-image: url(../images/22x22/users.png); }
-.icon22-tracker { background-image: url(../images/22x22/tracker.png); }
-.icon22-role { background-image: url(../images/22x22/role.png); }
-.icon22-workflow { background-image: url(../images/22x22/workflow.png); }
-.icon22-options { background-image: url(../images/22x22/options.png); }
+.icon22-projects { background-image: url(../images/icone_projet.png); }
+.icon22-users { background-image: url(../images/icone_utilisateur.png); }
+.icon22-tracker { background-image: url(../images/icone_tracker.png); }
+.icon22-role { background-image: url(../images/icone_roles.png); }
+.icon22-workflow { background-image: url(../images/icone_workflow.png); }
+.icon22-options { background-image: url(../images/icone_valeurs.png); }
 .icon22-notifications { background-image: url(../images/22x22/notifications.png); }
 .icon22-authent { background-image: url(../images/22x22/authent.png); }
-.icon22-info { background-image: url(../images/22x22/info.png); }
+.icon22-info { background-image: url(../images/icone_info.png); }
 .icon22-comment { background-image: url(../images/22x22/comment.png); }
 .icon22-package { background-image: url(../images/22x22/package.png); }
-.icon22-settings { background-image: url(../images/22x22/settings.png); }
-.icon22-plugin { background-image: url(../images/22x22/plugin.png); }
+.icon22-settings { background-image: url(../images/icone_config.png); }
+.icon22-plugin { background-image: url(../images/icone_plugins.png); }
 
 img.gravatar { 
 	padding: 2px;

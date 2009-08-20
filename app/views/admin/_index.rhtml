@@ -1,37 +1,72 @@
 <div class="content_admin">
   <%= render :partial => 'no_data' if @no_configuration_data %>
 
-  <p class="icon22 icon22-projects">
-  <%= link_to l(:label_project_plural), :controller => 'admin', :action => 'projects' %> |
-  <%= link_to l(:label_new), :controller => 'projects', :action => 'add' %>
-  </p>
+  <div class="icon22">
+    <div class="bloc_admin">
+      <%= image_tag("/images/icone_projet.png") %>
+      <p class="links">
+        <%= link_to l(:label_project_plural), :controller => 'admin', :action => 'projects' %> |
+        <%= link_to l(:label_new), :controller => 'projects', :action => 'add' %>
+      </p>
+    </div>
+  </div>
 
-  <p class="icon22 icon22-users">
-  <%= link_to l(:label_user_plural), :controller => 'users' %> |
-  <%= link_to l(:label_new), :controller => 'users', :action => 'add' %>
-  </p>
+  <div class="icon22">
+    <div class="bloc_admin">
+      <%= image_tag("/images/icone_utilisateur.png") %>
+       <p class="links">
+          <%= link_to l(:label_user_plural), :controller => 'users' %> |
+          <%= link_to l(:label_new), :controller => 'users', :action => 'add' %>
+       </p>
+    </div>
+  </div>
 
-  <p class="icon22 icon22-role">
-  <%= link_to l(:label_role_and_permissions), :controller => 'roles' %>
-  </p>
+  <div class="icon22">
+    <div class="bloc_admin">
+      <%= image_tag("/images/icone_roles.png") %>
+       <p class="links">
+          <%= link_to l(:label_role_and_permissions), :controller => 'roles' %>
+       </p>
+    </div>
+  </div>
 
-  <p class="icon22 icon22-tracker">
-  <%= link_to l(:label_tracker_plural), :controller => 'trackers' %> |
-  <%= link_to l(:label_issue_status_plural), :controller => 'issue_statuses' %> |
-  <%= link_to l(:label_workflow), :controller => 'workflows', :action => 'edit' %>
-  </p>
+  <div class="icon22">
+    <div class="bloc_admin">
+      <%= image_tag("/images/icone_tracker.png") %>
+       <p class="links">
+          <%= link_to l(:label_tracker_plural), :controller => 'trackers' %> |
+          <%= link_to l(:label_issue_status_plural), :controller => 'issue_statuses' %> |
+          <%= link_to l(:label_workflow), :controller => 'workflows', :action => 'edit' %>
+       </p>
+    </div>
+  </div>
 
-  <p class="icon22 icon22-workflow">
-  <%= link_to l(:label_custom_field_plural), :controller => 'custom_fields' %>
-  </p>
+  <div class="icon22">
+    <div class="bloc_admin">
+      <%= image_tag("/images/icone_workflow.png") %>
+       <p class="links">
+          <%= link_to l(:label_custom_field_plural), :controller => 'custom_fields' %>
+       </p>
+    </div>
+  </div>
 
-  <p class="icon22 icon22-options">
-  <%= link_to l(:label_enumerations), :controller => 'enumerations' %>
-  </p>
+  <div class="icon22">
+    <div class="bloc_admin">
+      <%= image_tag("/images/icone_valeurs.png") %>
+      <p class="links">
+        <%= link_to l(:label_enumerations), :controller => 'enumerations' %>
+      </p>
+    </div>
+  </div>
 
-  <p class="icon22 icon22-settings">
-  <%= link_to l(:label_settings), :controller => 'settings' %>
-  </p>
+  <div class="icon22">
+    <div class="bloc_admin">
+      <%= image_tag("/images/icone_config.png") %>
+       <p class="links">
+          <%= link_to l(:label_settings), :controller => 'settings' %>
+       </p>
+    </div>
+  </div>
 
   <% menu_items_for(:admin_menu) do |item, caption, url, selected| -%>
     <%= content_tag 'p',
@@ -39,13 +74,23 @@
       :class => ["icon22", "icon22-#{item.name}"].join(' ') %>
   <% end -%>
 
-  <p class="icon22 icon22-plugin">
-  <%= link_to l(:label_plugins), :controller => 'admin', :action => 'plugins' %>
-  </p>
+  <div class="icon22">
+    <div class="bloc_admin">
+      <%= image_tag("/images/icone_plugins.png") %>
+      <p class="links">
+        <%= link_to l(:label_plugins), :controller => 'admin', :action => 'plugins' %>
+      </p>
+    </div>
+  </div>
 
-  <p class="icon22 icon22-info">
-  <%= link_to l(:label_information_plural), :controller => 'admin', :action => 'info' %>
-  </p>
+  <div class="icon22">
+     <div class="bloc_admin">
+       <%= image_tag("/images/icone_info.png") %>
+        <p class="links">
+            <%= link_to l(:label_information_plural), :controller => 'admin', :action => 'info' %>
+        </p>
+     </div>
+  </div>
 
   <% html_title(l(:label_administration)) -%>
 </div>

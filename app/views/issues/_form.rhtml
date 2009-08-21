@@ -3,7 +3,7 @@
 <%= observe_field :issue_issue_types_id, :url => { :action => :new },
                                   
                                      :with => "Form.serialize('issue-form')" %>
-
+<p><%= f.select :parent_id, @issues.collect {|i| [i.name, i.id] } %></p>
 
 <% if @issue.type.name == "ISSUE" %>
   <p>
@@ -68,6 +68,7 @@
     <p><%= f.text_field :due_date, :size => 10 %><%= calendar_for('issue_due_date') %></p>
     <p><%= f.text_field :estimated_hours, :size => 3 %>
     <%= @project.time_unit_label %>
+    
 
    
   </p>
@@ -103,3 +104,4 @@
 <%= call_hook(:view_issues_form_details_bottom, { :issue => @issue, :form => f }) %>
 
 <%= wikitoolbar_for 'issue_description' %>
+<p><%= f.text_field :resources %></p>

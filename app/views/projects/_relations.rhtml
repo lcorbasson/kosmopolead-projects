@@ -1,0 +1,33 @@
+<div id="relations">
+<div class="contextual">
+<% if authorize_for('issue_relations', 'new') %>
+    <%= toggle_link l(:button_add), 'new-relation-form'%>
+<% end %>
+</div>
+
+<p><strong><%=l(:label_related_project)%></strong></p>
+
+<% if @project.relations.any? %>
+<table style="width:100%">
+<% @project.relations.each do |relation| %>
+<tr>
+<td><%= l(relation.project_relation_type.relation_type) %>
+    <%= h(relation.other_project(@project).project) + ' - ' if Setting.cross_project_issue_relations? %> </td>
+<td><%=h relation.other_project(@project).name %></td>
+
+
+<td><%= link_to_remote(image_tag('delete.png'), { :url => {:controller => 'project_relations', :action => 'destroy', :project_id => @projects, :id => relation},
+                                                  :method => :post
+                                                }, :title => l(:label_relation_delete))  %></td>
+</tr>
+<% end %>
+</table>
+<% end %>
+
+<% remote_form_for(:relation, @relation,
+                 :url => {:controller => 'project_relations', :action => 'new', :project_id => @project},
+                 :method => :post,
+                 :html => {:id => 'new-relation-form', :style => (@relation ? '' : 'display: none;')}) do |f| %>
+<%= render :partial => 'project_relations/form', :locals => {:f => f}%>
+<% end %>
+</div>

@@ -1,0 +1,17 @@
+<%= error_messages_for 'relation' %>
+<%  values = ProjectRelation::TYPES %>
+<p><%= f.select :project_relation_type_id, ProjectRelationType.all.collect{|t| [t.relation_type, t.id]}, {}, :onchange => "setPredecessorFieldsVisibility();" %>
+<%= l(:label_project) %>
+<%= f.select :project_to_id,Project.all.collect{|p| [p.name, p.id]} %>
+<span id="predecessor_fields" style="display:none;">
+<%= l(:field_delay) %>: <%= f.text_field :delay, :size => 3 %> <%= l(:label_day_plural) %>
+</span>
+
+
+
+
+<%= submit_tag l(:button_add) %>
+<%= toggle_link l(:button_cancel), 'new-relation-form'%>
+</p>
+
+<%= javascript_tag "setPredecessorFieldsVisibility();" %>

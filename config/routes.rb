@@ -19,7 +19,9 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'roles/workflow/:id/:role_id/:tracker_id', :controller => 'roles', :action => 'workflow'
   map.connect 'help/:ctrl/:page', :controller => 'help'
   #map.connect ':controller/:action/:id/:sort_key/:sort_order'
-  
+
+  map.connect 'project_relation_types', :controller => 'project_relation_types'
+  map.connect 'projects/:project_id/relations/:action/:id', :controller => 'project_relations'
   map.connect 'issues/:issue_id/relations/:action/:id', :controller => 'issue_relations'
   map.connect 'projects/:project_id/issues/:action', :controller => 'issues'
   map.connect 'projects/:project_id/news/:action', :controller => 'news'

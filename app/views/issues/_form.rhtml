@@ -93,6 +93,8 @@
       </p>
     <% end %>
 
+
+
  <% when "MILESTONE" %>
 
     <p><%= f.select :parent_id, @issue.project.issues.stages.collect {|s| [s.subject, s.id]}, :required => true %></p>
@@ -111,5 +113,4 @@
 
   <%= wikitoolbar_for 'issue_description' %>
   <p><%#= f.text_field :resources %></p>
-
 

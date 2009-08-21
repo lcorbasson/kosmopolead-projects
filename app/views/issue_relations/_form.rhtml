@@ -5,6 +5,15 @@
 <span id="predecessor_fields" style="display:none;">
 <%= l(:field_delay) %>: <%= f.text_field :delay, :size => 3 %> <%= l(:label_day_plural) %>
 </span>
+
+  <%= link_to_remote l(:button_add),
+                         { :url => { :controller => 'issue_relations', :action => 'new'},
+                           :method => 'post',
+                           :update => 'content',
+                           :with => "Form.serialize('new-relation-form')",
+                         }, :accesskey => accesskey(:preview),:class=>"button btn_blue corner-all" %>
+
+
 <%= submit_tag l(:button_add) %>
 <%= toggle_link l(:button_cancel), 'new-relation-form'%>
 </p>

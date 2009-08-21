@@ -30,6 +30,8 @@ class Project < ActiveRecord::Base
   has_and_belongs_to_many :trackers, :order => "#{Tracker.table_name}.position"
   has_many :issues, :dependent => :destroy, :order => "#{Issue.table_name}.created_on DESC", :include => [:status, :tracker]
 
+  has_many :relations_from, :class_name => 'ProjectRelation', :foreign_key => 'project_from_id', :dependent => :delete_all
+  has_many :relations_to, :class_name => 'ProjectRelation', :foreign_key => 'project_to_id', :dependent => :delete_all
   belongs_to :author,:class_name=>"User",:foreign_key=>"author_id"
   belongs_to :watcher,:class_name=>"User",:foreign_key=>"watcher_id"
   belongs_to :builder,:class_name=>"User",:foreign_key=>"builder_by"
@@ -295,6 +297,10 @@ class Project < ActiveRecord::Base
       rows << {:caption => t.name, :value => t.name}
     end
     return rows.to_json
+  end
+
+   def relations
+    relations_from+relations_to
   end
 
 protected

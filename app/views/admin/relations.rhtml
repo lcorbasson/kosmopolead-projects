@@ -1,0 +1,6 @@
+<%= box(
+    "#{l(:label_project_relation__plural)}",
+    "#{render:partial=>'admin/box/relations'}",
+    ["#{link_to l(:label_project_relation_new), {:controller => 'project_relation_types', :action => 'new'}, :class => 'icon icon-add'}"
+    ]
+) %>

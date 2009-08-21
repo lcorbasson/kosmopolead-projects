@@ -1,6 +1,6 @@
 <% form_tag({:action => 'edit', :tab => 'issues'}) do %>
 
-<div class="box tabular settings">
+<div class="tabular settings">
 <p><label><%= l(:setting_cross_project_issue_relations) %></label>
 <%= check_box_tag 'settings[cross_project_issue_relations]', 1, Setting.cross_project_issue_relations? %><%= hidden_field_tag 'settings[cross_project_issue_relations]', 0 %></p>
 

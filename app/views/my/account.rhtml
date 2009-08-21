@@ -1,6 +1,43 @@
-<%= box(
-    "#{l(:label_my_account)}",
-    "#{render:partial=>'my/box/account'}",
-    ["#{link_to(l(:button_change_password), :action => 'password') unless @user.auth_source_id}"]
-) %>
+<%= error_messages_for 'user' %>
+<%#=  link_to(l(:button_change_password), :action => 'password') unless @user.auth_source_id %>
+<% form_for :user, @user, :url => { :action => "account" },
+                          :builder => TabularFormBuilder,
+                          :lang => current_language,
+                          :html => { :id => 'my_account_form' } do |f| %>
+<div class="splitcontentleft">
+    <%= box(
+        "#{l(:label_information_plural)}",
+        "#{render:partial=>'my/box/informations',:locals=>{:f=>f}}"
+    ) %>
+
+</div>
+
+<div class="splitcontentright">
+  <%= box(
+        "#{l(:field_mail_notification)}",
+        "#{render:partial=>'my/box/notifications',:locals=>{:f=>f}}"
+    ) %>
+
+  <%= box(
+        "#{l(:label_preferences)}",
+        "#{render:partial=>'my/box/preferences',:locals=>{:f=>f}}"
+    ) %>
+</div>
+<div class="clearer"></div>
+<div class="buttons right">
+  <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+</div>
+<% end %>
+
+
+<% html_title(l(:label_my_account)) -%>
+<div class="clearer"></div>
+
+
+
+
+
+
+
+
 

@@ -36,13 +36,13 @@
 
 <p><%= f.text_field :acronym, :required => true %></p>
 <p><%= f.select :author_id,  @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
-<p><%#= f.select :watched_by, @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
 <p><%= f.select :builder_by, @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
+<p><%= f.select :watcher_id , @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
 <p><%= f.text_field :project_cost %>€</p>
-<p><%= f.text_field :estimated_time %><%= f.select :time_units_id, (@time_units.collect {|u| [u.label, u.id]}) %></p>
-
-<p>Tags <div id="input_tags"></div>
-<%= select_tag  :tags,  options_for_select( @project.tag_list { |tag| [tag.name, tag.id] }, :class => 'selected'), :id => 'tags', :name => 'tags'%>
+<p><%= f.text_field :estimated_time %></p>
+<p><%= f.select :time_units_id, (@time_units.collect {|u| [u.label, u.id]}) %></p>
+<p><%= f.text_field :sector %></p><br />
+<p>Tags<span id="input_tags"></span><%= select_tag  :tags,  options_for_select( @project.tag_list { |tag| [tag.name, tag.id] }, :class => 'selected'), :id => 'tags', :name => 'tags'%>
 </p>
 
 <p><%= f.text_area :description, :rows => 5, :class => 'wiki-edit' %></p>

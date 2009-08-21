@@ -45,7 +45,6 @@ class Project < ActiveRecord::Base
   has_many :changesets, :through => :repository
   has_one :wiki, :dependent => :destroy
 
-  belongs_to :watched, :class_name => 'User', :foreign_key => 'watched_id'
   belongs_to  :builder, :class_name => 'User', :foreign_key => 'builder_id'
   belongs_to  :author, :class_name => 'User', :foreign_key => 'author_id'
 

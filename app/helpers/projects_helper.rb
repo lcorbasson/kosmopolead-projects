@@ -40,4 +40,8 @@ module ProjectsHelper
     end
     return rows.to_json
   end
+
+     def time_units
+       TimeUnit.all.each { |t|  [t.label, t.id] }
+     end
 end

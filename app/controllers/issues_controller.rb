@@ -20,7 +20,7 @@ class IssuesController < ApplicationController
   menu_item :projects
 
 
-  menu_item :new_issue, :only => :new
+  menu_item :new_issue, :only => :news
 
   
   before_filter :find_issue, :only => [:show, :edit, :reply]
@@ -137,6 +137,7 @@ class IssuesController < ApplicationController
   # Add a new issue
   # The new issue will be created from an existing one if copy_from parameter is given
   def new
+    @issues = Issue.all
     @issue = Issue.new
     @journals = @issue.journals.find(:all, :include => [:user, :details], :order => "#{Journal.table_name}.created_on ASC")
     @issue.copy_from(params[:copy_from]) if params[:copy_from]

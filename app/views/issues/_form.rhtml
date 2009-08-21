@@ -1,7 +1,28 @@
 <% if @issue.new_record? %>
+<<<<<<< HEAD:app/views/issues/_form.rhtml
+<p><%= f.select :issue_types_id, @issue_types.collect {|t| [t.name, t.id]}, :required => true %></p>
+<%= observe_field :issue_issue_types_id, :url => { :action => :new },
+                                  
+                                     :with => "Form.serialize('issue-form')" %>
+<p><%= f.select :parent_id, @issues.collect {|i| [i.name, i.id] } %></p>
+
+<% if @issue.type.name == "ISSUE" %>
+  <p>
+  <label for="parent"><%= l(:label_parent) %></label>
+
+<%  Issue::RELATION_TYPE.each do |relation| %>
+   <%= radio_button_tag :issue_relation_type, relation, relation, :onClick => "checkTypeRelation(this)" %><%= relation %>
+<%  end %>
+<span id="type_relation">
+</span>
+</p>
+<p><%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %></p>
+<%= observe_field :issue_tracker_id, :url => { :action => :new },
+                                     :update => :content,
+                                     :with => "Form.serialize('issue-form')" %>
+
   <p><%= f.select :issue_types_id, @issue_types.collect {|t| [t.name, t.id]}, :required => true %></p>
   <%= observe_field :issue_issue_types_id, :url => { :action => :new },
-
                                        :with => "Form.serialize('issue-form')" %>
 
 
@@ -67,6 +88,7 @@
     <p><%= f.text_field :due_date, :size => 10 %><%= calendar_for('issue_due_date') %></p>
     <p><%= f.text_field :estimated_hours, :size => 3 %>
     <%= @project.time_unit_label %>
+    
 
    
   </p>
@@ -102,3 +124,4 @@
 <%= call_hook(:view_issues_form_details_bottom, { :issue => @issue, :form => f }) %>
 
 <%= wikitoolbar_for 'issue_description' %>
+<p><%= f.text_field :resources %></p>

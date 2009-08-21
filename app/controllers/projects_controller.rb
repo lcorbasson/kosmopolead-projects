@@ -97,9 +97,10 @@ class ProjectsController < ApplicationController
       end
     else
       @project.tag_list = ''
-      select_tags =  params[:tags]
-      select_tags.each do |tag|
-        @project.tag_list << tag
+      if select_tags =  params[:tags]
+        select_tags.each do |tag|
+          @project.tag_list << tag
+        end
       end
       @project.enabled_module_names = params[:enabled_modules]
       if @project.save

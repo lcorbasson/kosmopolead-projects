@@ -209,8 +209,7 @@ table.form tr { padding: 2px 5px; }
   text-transform: uppercase;
   color: #555;
 }
-.box .box_content {
-  padding: 5px;
+.box .box_content { 
   border-top: 1px solid #dddddd;
 }
 .button_wrapper {
@@ -475,7 +474,7 @@ p.pagination {margin-top:8px;}
 /***** Tabular forms ******/
 .tabular p{
 margin: 0;
-padding: 10px 0 10px 0;
+padding: 10px 0 10px 10px;
 padding-left: 40px; /*width of left column containing the label elements*/
 height: 1%;
 clear:left;

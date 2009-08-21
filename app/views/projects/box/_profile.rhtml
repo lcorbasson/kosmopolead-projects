@@ -1,12 +1,21 @@
 <div class="project_infos splitcontentright">
   <% if  project.author %>
-    <%= l(:label_support_by) %> <%= project.author.name %><br/>
+    <%= l(:label_support_by) %>: <%= project.author.name %><br/>
   <% end %>
   <% if  project.watcher %>
-    <%= l(:label_watched_by) %> <%= project.watcher.name %><br/>
+    <%= l(:label_watched_by) %>: <%= project.watcher.name %><br/>
   <% end %>
   <% if  project.builder %>
-    <%= l(:label_build_by) %> <%= project.builder.name %><br/>
+    <%= l(:label_build_by) %>: <%= project.builder.name %><br/>
+  <% end %>
+  <% if project.estimated_time > 0 %>
+    <%= l(:label_estimated_time) %>: <%= project.estimated_time %> <%= project.time_unit.label %><br />
+  <% end %>
+  <% if project.project_cost > 0 %>
+    <%= l(:label_project_cost) %>: <%= project.project_cost %> €<br />
+  <% end %>
+  <% if project.sector %>
+    <%= l(:label_project_sector) %>: <%= project.sector %><br />
   <% end %>
 </div>
 <div class="clearer"></div>

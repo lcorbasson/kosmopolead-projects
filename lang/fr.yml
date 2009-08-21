@@ -605,6 +605,9 @@ label_generate_key: Générer une clé
 label_issue_watchers: Observateurs
 label_example: Exemple
 label_in_late_issues: Tâches en retard
+label_estimated_time: Temps estimé du projet
+label_project_cost: Coût du projet
+label_project_sector: Secteur
 
 button_login: Connexion
 button_submit: Soumettre

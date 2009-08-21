@@ -29,8 +29,11 @@
 <tr>
     <td class="fixed-version"><b><%=l(:field_fixed_version)%>:</b></td><td><%= issue.fixed_version ? link_to_version(issue.fixed_version) : "-" %></td>
     <% if issue.estimated_hours %>
-    <td class="estimated-hours"><b><%=l(:field_estimated_hours)%>:</b></td><td><%= lwr(project.time_unit_label, issue.estimated_hours) %></td>
+      <td class="estimated-hours"><b><%=l(:field_estimated_hours)%>:</b></td><td><%= issue.estimated_hours %><%= l(project.time_unit_label) %></td>
     <% end %>
+</tr>
+<tr>
+    <td><b><%= l(:label_resources) %></b></td><td><%= issue.resources %></td>
 </tr>
 <tr>
 <% n = 0 -%>

@@ -291,6 +291,9 @@ project_module_wiki: Wiki
 project_module_repository: Dépôt de sources
 project_module_boards: Forums de discussion
 
+label_synthese: Synthèse
+label_financement: Financement
+label_project_author: Porteur du projet
 label_project_relation_type: Label
 label_project_relation_type_new: Nouveau type de relation entre les projets
 label_project_relation_new: Nouveau type de relation entre les projets

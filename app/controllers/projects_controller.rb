@@ -71,7 +71,7 @@ class ProjectsController < ApplicationController
       @gantt.events = events
     end
    end
-
+    completed_percent
        respond_to do |format|
           format.html {
 #            @project_tree = projects.group_by {|p| p.parent || p}
@@ -165,6 +165,7 @@ class ProjectsController < ApplicationController
 
       @gantt.events = events
     end
+    completed_percent
     respond_to do |format|
       format.js  {
           render:update do |page|
@@ -428,6 +429,18 @@ private
       end
 
     end
+  end
+
+  def completed_percent
+    @completed_percent = 0
+    @project.issues.issues.each do |issue|
+      if issue.closed?
+        @completed_percent += 1
+      else
+        @completed_percent += issue.done_ratio
+      end
+     end
+     @completed_percent = @completed_percent/@project.issues.issues.count
   end
   
   

@@ -31,8 +31,8 @@ class Project < ActiveRecord::Base
   has_many :issues, :dependent => :destroy, :order => "#{Issue.table_name}.created_on DESC", :include => [:status, :tracker]
 
   belongs_to :author,:class_name=>"User",:foreign_key=>"author_id"
-  belongs_to :watcher,:class_name=>"User",:foreign_key=>"watched_by"
-  belongs_to :builder,:class_name=>"User",:foreign_key=>"build_by"
+  belongs_to :watcher,:class_name=>"User",:foreign_key=>"watcher_id"
+  belongs_to :builder,:class_name=>"User",:foreign_key=>"builder_by"
   has_many :issue_changes, :through => :issues, :source => :journals
   has_many :versions, :dependent => :destroy, :order => "#{Version.table_name}.effective_date DESC, #{Version.table_name}.name DESC"
   has_many :time_entries, :dependent => :delete_all
@@ -45,8 +45,7 @@ class Project < ActiveRecord::Base
   has_many :changesets, :through => :repository
   has_one :wiki, :dependent => :destroy
 
-  belongs_to  :builder, :class_name => 'User', :foreign_key => 'builder_id'
-  belongs_to  :author, :class_name => 'User', :foreign_key => 'author_id'
+
 
   # Custom field for the project issues
   has_and_belongs_to_many :issue_custom_fields, 

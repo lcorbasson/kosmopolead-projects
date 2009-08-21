@@ -145,7 +145,7 @@ class ProjectsController < ApplicationController
       format.js  {
           render:update do |page|
             page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
-           
+            page << "jQuery('#sidebar_new').html('#{escape_javascript(render:partial=>'projects/sidebar_new')}');"
           end
       }
     end

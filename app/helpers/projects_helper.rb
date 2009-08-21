@@ -20,7 +20,16 @@ module ProjectsHelper
     return '' unless version && version.is_a?(Version)
     link_to h(version.name), { :controller => 'versions', :action => 'show', :id => version }, options
   end
-  
+
+ def project_tabs
+    tabs = [{:name => 'gantt', :partial => 'projects/show/gantt', :label => :label_gantt},
+            {:name => 'synthese', :partial => 'projects/show/synthesis', :label => :label_synthese},
+            {:name => 'financement', :partial => 'projects/show/funding', :label => :label_financement},
+            {:name => 'fichiers', :partial => 'projects/show/files', :label => :label_file_plural}
+            ]
+  end
+
+
   def project_settings_tabs
     tabs = [{:name => 'info', :action => :edit_project, :partial => 'projects/edit', :label => :label_information_plural},
             {:name => 'modules', :action => :select_project_modules, :partial => 'projects/settings/modules', :label => :label_module_plural},

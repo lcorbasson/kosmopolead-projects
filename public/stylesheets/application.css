@@ -243,8 +243,8 @@ table.form tr { padding: 2px 5px; }
 a:link { color: #009eee; }
 a:visited { color: #009eee; }
 p {
-  margin-top: 5px;
-  margin-bottom: 5px;
+  margin-top:2px;
+  margin-bottom: 2px;
 }
 
 
@@ -674,7 +674,7 @@ height:17px;
 }
 #content_wrapper .tabs ul li a {padding-top:2px;border:none;font-size:11px;height:15px;}
 #tab-content-info {border:1px solid #DDDDDD;}
-
+.tab-content{padding:10px;}
 
 #content_wrapper .tabs ul li a:hover {
 background-color: #ffffdd;
@@ -983,7 +983,7 @@ h2 img { vertical-align:middle; }
 #tabs_members li.ui-state-active{padding:0;background:#E6E6E6 url(/images/test3.png) repeat-x scroll 50% 50%;}
 
 /* Thumbnails */
-.thumbnail {list-style:none;background:transparent url(/images/bg_thumbnail.png) repeat-x;height:45px;min-width:150px;border:1px solid #DDDDDD;float:left;margin:5px 5px 0 0;}
+.thumbnail {-moz-border-radius:5px;list-style:none;background:transparent url(/images/bg_thumbnail.png) repeat-x;height:45px;min-width:150px;border:1px solid #DDDDDD;float:left;margin:5px 5px 0 0;}
 .thumbnail:hover {border:1px solid #009EEE;}
 .user_thumbnail .name a {text-decoration:none;font-weight:bold;color:#009EEE;}
 .thumbnail_infos {padding-left:5px;}
@@ -1005,7 +1005,7 @@ h2 img { vertical-align:middle; }
 .buttons .btn_orange:hover {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_orange_hover.png) repeat-x}
 .buttons {margin-top:20px;}
 
-.files {margin-top:20px;}
+
 
 #tabs {margin-bottom:20px;}
 

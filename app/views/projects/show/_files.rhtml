@@ -1,0 +1,14 @@
+<div id="fichiers">
+    <% if @containers.size>1 %>
+      <ul class="files">
+        <% @containers.each do |container| %>
+          <% next if container.attachments.empty? -%>
+          <% container.attachments.each do |file| %>
+            <%= file_thumbnail(file) %>
+            <%  reset_cycle %>
+          <% end %>
+      <% end %>
+      </ul>
+   <% end %>
+   <div class="clearer"></div>
+  </div>

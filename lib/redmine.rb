@@ -122,7 +122,7 @@ end
 
 Redmine::MenuManager.map :application_menu do |menu|
   menu.push :home, { :controller => 'my', :action => 'page' }, :if => Proc.new { User.current.logged? }
-  menu.push :account, { :controller => 'my', :action => 'account' }, :if => Proc.new { User.current.logged? },  :caption => :label_account
+#  menu.push :account, { :controller => 'my', :action => 'account' }, :if => Proc.new { User.current.logged? },  :caption => :label_account
   #  menu.push :overview, { :controller => 'projects', :action => 'index' }
   menu.push :projects, { :controller => 'projects', :action => 'index' }, :if => Proc.new { User.current.logged? },  :caption => :label_project_plural
   menu.push :queries, { :controller => 'queries', :action => 'index' }, :if => Proc.new { User.current.logged? }, :param => :project_id, :caption => "Requêtes"

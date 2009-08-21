@@ -17,7 +17,7 @@
 
 class MyController < ApplicationController
   menu_item :home,:only=>:page
- menu_item :account,:only=>:account
+ menu_item :admin,:only=>:account
   
   before_filter :require_login
 

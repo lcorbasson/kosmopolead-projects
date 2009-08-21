@@ -46,6 +46,8 @@ class Project < ActiveRecord::Base
   has_one :repository, :dependent => :destroy
   has_many :changesets, :through => :repository
   has_one :wiki, :dependent => :destroy
+  has_many :stages,:class_name=>"Issue",:foreign_key=>"issue_types_id",:conditions=>["issue_types_id = 1"],:dependent => :delete_all
+
 
 
 
@@ -79,7 +81,7 @@ class Project < ActiveRecord::Base
   before_destroy :delete_all_members
 
   named_scope :has_module, lambda { |mod| { :conditions => ["#{Project.table_name}.id IN (SELECT em.project_id FROM #{EnabledModule.table_name} em WHERE em.name=?)", mod.to_s] } }
-
+  
 
 
   def identifier=(identifier)

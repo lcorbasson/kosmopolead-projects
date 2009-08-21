@@ -63,6 +63,13 @@ class ProjectsController < ApplicationController
     @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
     @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
     @trackers = @project.rolled_up_trackers
+    @gantt = Redmine::Helpers::Gantt.new(params)
+    retrieve_query
+    if @query.valid?     
+      events = Issue.find(:all,:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?)) and start_date is not null) AND #{Issue.table_name}.parent_id is null and project_id = ?", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id],:order=>["start_date ASC"])
+
+      @gantt.events = events
+    end
    end
 
        respond_to do |format|
@@ -74,6 +81,7 @@ class ProjectsController < ApplicationController
             render_feed(projects.sort_by(&:created_on).reverse.slice(0, Setting.feeds_limit.to_i),
                                       :title => "#{Setting.app_title}: #{l(:label_project_latest)}")
           }
+          
         end
   end
   end
@@ -150,6 +158,13 @@ class ProjectsController < ApplicationController
                                    :conditions => cond).to_f
     end
     @key = User.current.rss_key
+    @gantt = Redmine::Helpers::Gantt.new(params)
+    retrieve_query
+    if @query.valid?
+      events = @project.stages(:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?)) and start_date is not null) AND issues.parent_id is null])", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to])
+
+      @gantt.events = events
+    end
     respond_to do |format|
       format.js  {
           render:update do |page|
@@ -381,6 +396,38 @@ private
 
     @containers = [ Project.find(@project.id, :include => :attachments, :order => sort_clause)]
     @containers += @project.versions.find(:all, :include => :attachments, :order => sort_clause).sort.reverse
+  end
+
+  def retrieve_query
+    if !params[:query_id].blank?
+      cond = "project_id IS NULL"
+      cond << " OR project_id = #{@project.id}" if @project
+      @query = Query.find(params[:query_id], :conditions => cond)
+      @query.project = @project
+      session[:query] = {:id => @query.id, :project_id => @query.project_id}
+
+    else
+      if params[:set_filter] || session[:query].nil? || session[:query][:project_id] != (@project ? @project.id : nil)
+        # Give it a name, required to be valid
+        @query = Query.new(:name => "_")
+        @query.project = @project
+        if params[:fields] and params[:fields].is_a? Array
+          params[:fields].each do |field|
+            @query.add_filter(field, params[:operators][field], params[:values][field])
+          end
+        else
+          @query.available_filters.keys.each do |field|
+            @query.add_short_filter(field, params[field]) if params[field]
+          end
+        end
+        session[:query] = {:project_id => @query.project_id, :filters => @query.filters}
+      else
+        @query = Query.find_by_id(session[:query][:id]) if session[:query][:id]
+        @query ||= Query.new(:name => "_", :project => @project, :filters => session[:query][:filters])
+        @query.project = @project
+      end
+
+    end
   end
   
   

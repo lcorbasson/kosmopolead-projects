@@ -1,10 +1,10 @@
+<% selected_tab = params[:tab] ? params[:tab].to_s : project_tabs.first[:name] %>
 <div class="profilecontentleft">
   <%= profile_box("PROJET #{project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>project}}") %>
   <%= grey_title("MOTS CLES") %>
   <%= grey_box("#{render:partial=>'projects/box/tags', :locals=>{:project=>project}}", "project_description") %>
   <%= grey_title("LIAISONS AVEC D'AUTRES PROJETS") %>
   <%= grey_box("#{render:partial=>'relations'}", "project_description") %>
-
 </div>
 
 <div class="profilecontentright">
@@ -27,18 +27,7 @@
     <%= grey_title("DESCRIPTION DU PROJET") %>
     <%= grey_box("#{render:partial=>'projects/box/description', :locals=>{:project=>project}}", "project_description") %>
 
-    <% if @containers.size>1 %>
-      <div class="files">
-        <%= grey_title("Pieces jointes") %>
-        <% @containers.each do |container| %>
-          <% next if container.attachments.empty? -%>
-          <% container.attachments.each do |file| %>
-            <%= file_thumbnail(file) %>
-            <%  reset_cycle %>
-          <% end %>
-      <% end %>
-      </div>
-   <% end %>
+    
 
 
   <% if @news.any? && authorize_for('news', 'index') %>
@@ -51,7 +40,33 @@
   <%= call_hook(:view_projects_show_right, :project => project) %>
 </div>
 <div class="clearer"></div>
-<%= javascript_tag("jQuery('#tabs').tabs({selected:1});") %>
+
+<div class="tabs inside_tabs">
+  <ul>
+  <% project_tabs.each do |tab| -%>
+      <li><%= link_to l(tab[:label]), { :tab => tab[:name] },
+                                      :id => "tab-#{tab[:name]}",
+                                      :class => (tab[:name] != selected_tab ? nil : 'selected'),
+                                      :onclick => "showTab('#{tab[:name]}'); this.blur(); return false;" %></li>
+  <% end -%>
+  </ul>
+  <div class="clearer"></div>
+</div>
+<% project_tabs.each do |tab| -%>
+<%= content_tag('div', render(:partial => tab[:partial]),
+                       :id => "tab-content-#{tab[:name]}",
+                       :style => (tab[:name] != selected_tab ? 'display:none' : nil),
+                       :class => 'tab-content') %>
+<% end -%>
+
+
+
+
+
+
+
+
+<%= javascript_tag("jQuery('#tabs').tabs({selected:1});jQuery('.more_infos').tabs({selected:1});") %>
 
 <% content_for :header_tags do %>
 <%= auto_discovery_link_tag(:atom, {:action => 'activity', :id => project, :format => 'atom', :key => User.current.rss_key}) %>

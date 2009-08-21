@@ -44,7 +44,7 @@ function addFileField() {
 }
 
 function showTab(name) {
-    var f = $$('div#content .tab-content');
+    var f = $$('div#content_wrapper .tab-content');
 	for(var i=0; i<f.length; i++){
 		Element.hide(f[i]);
 	}

@@ -28,7 +28,7 @@ class IssuesController < ApplicationController
   before_filter :find_project, :only => [:create,:new, :update_form, :preview]
 
   before_filter :find_projects, :only => [:create,:gantt, :index, :calendar,:new,:show]
-  before_filter :authorize, :except => [:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
+  before_filter :authorize, :except => [:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
 
  
   before_filter :find_optional_project, :only => [:index, :changes, :gantt, :calendar]

@@ -1,9 +1,6 @@
 <% if @issue.new_record? %>
-  <<<<<<< HEAD:app/views/issues/_form.rhtml
   <p><%= f.select :issue_types_id, @issue_types.collect {|t| [t.name, t.id]}, :required => true %></p>
-  <%= observe_field :issue_issue_types_id, :url => { :action => :new },
-
-    :with => "Form.serialize('issue-form')" %>
+  <%= observe_field :issue_issue_types_id, :url => { :action => :new },:with => "Form.serialize('issue-form')" %>
   <p><%= f.select :parent_id, @issues.collect {|i| [i.name, i.id] } %></p>
 
   <% if @issue.type.name == "ISSUE" %>
@@ -37,6 +34,7 @@
   </div>
   <% case @issue.type.name
   when "ISSUE" %>
+
     <div class="splitcontentleft">
 
       <% if @issue.new_record? || @allowed_statuses.any?  %>
@@ -68,6 +66,7 @@
     </div>
 
     <div class="splitcontentright">
+<<<<<<< HEAD:app/views/issues/_form.rhtml
       <p><%= f.text_field :start_date, :size => 10 %><%= calendar_for('issue_start_date') %></p>
       <p><%= f.text_field :due_date, :size => 10 %><%= calendar_for('issue_due_date') %></p>
       <p><%= f.text_field :estimated_hours, :size => 3 %>
@@ -77,6 +76,16 @@
 
       </p>
       <p><%= f.select :done_ratio, ((0..10).to_a.collect {|r| ["#{r*10} %", r*10] }) %></p>
+=======
+    <p><%= f.text_field :start_date, :size => 10 %><%= calendar_for('issue_start_date') %></p>
+    <p><%= f.text_field :due_date, :size => 10 %><%= calendar_for('issue_due_date') %></p>
+    <p><%= f.text_field :estimated_hours, :size => 3 %>
+    <%= @project.time_unit_label %>
+
+
+  </p>
+    <p><%= f.select :done_ratio, ((0..10).to_a.collect {|r| ["#{r*10} %", r*10] }) %></p>
+>>>>>>> dc29a71cc49e5469fe3d270ad0908b63f4f416da:app/views/issues/_form.rhtml
     </div>
 
     <div style="clear:both;"> </div>
@@ -93,19 +102,32 @@
         <% end -%>
       </p>
     <% end %>
+<<<<<<< HEAD:app/views/issues/_form.rhtml
   <% when "MILESTONE" %>
+=======
+ <% when "MILESTONE" %>
+>>>>>>> dc29a71cc49e5469fe3d270ad0908b63f4f416da:app/views/issues/_form.rhtml
     <p><%= f.select :parent_id, @issue.project.issues.stages.collect {|s| [s.subject, s.id]}, :required => true %></p>
 
     <p><%= f.text_field :start_date, :size => 10 %><%= calendar_for('issue_start_date') %></p>
 
   <% when "STAGE" %>
     <div class="splitcontentleft">
+<<<<<<< HEAD:app/views/issues/_form.rhtml
       <p><%= f.text_field :start_date, :size => 10 %><%= calendar_for('issue_start_date') %></p>
       <p><%= f.text_field :due_date, :size => 10 %><%= calendar_for('issue_due_date') %></p>
+=======
+    <p><%= f.text_field :start_date, :size => 10 %><%= calendar_for('issue_start_date') %></p>
+    <p><%= f.text_field :due_date, :size => 10 %><%= calendar_for('issue_due_date') %></p>
+>>>>>>> dc29a71cc49e5469fe3d270ad0908b63f4f416da:app/views/issues/_form.rhtml
     </div>
   <% end %>
   <div style="clear:both"></div>
   <%= call_hook(:view_issues_form_details_bottom, { :issue => @issue, :form => f }) %>
 
+<<<<<<< HEAD:app/views/issues/_form.rhtml
   <%= wikitoolbar_for 'issue_description' %>
   <p><%= f.text_field :resources %></p>
+=======
+<%= wikitoolbar_for 'issue_description' %>
+>>>>>>> dc29a71cc49e5469fe3d270ad0908b63f4f416da:app/views/issues/_form.rhtml

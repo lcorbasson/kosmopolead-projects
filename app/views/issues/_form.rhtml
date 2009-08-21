@@ -1,7 +1,7 @@
 <% if @issue.new_record? %>
   <p><%= f.select :issue_types_id, @issue_types.collect {|t| [t.name, t.id]}, :required => true %></p>
   <%= observe_field :issue_issue_types_id, :url => { :action => :new },:with => "Form.serialize('issue-form')" %>
-  <p><%= f.select :parent_id, @issues.collect {|i| [i.subject, i.id] } %></p>
+  <p><%= f.select :parent_id, @issues.collect {|i| [i.subject, i.id] } unless @issues.nil?%></p>
 
   <% if @issue.type.name == "ISSUE" %>
     <p>

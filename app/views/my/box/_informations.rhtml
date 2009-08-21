@@ -1,0 +1,7 @@
+<div class="tabular">
+<p><%= f.text_field :firstname, :required => true %></p>
+<p><%= f.text_field :lastname, :required => true %></p>
+<p><%= f.text_field :mail, :required => true %></p>
+<p><%= f.select :language, lang_options_for_select %></p>
+<%= call_hook(:view_my_account, :user => @user, :form => f) %>
+</div>

@@ -772,7 +772,7 @@ module ApplicationHelper
 
   def initialize_icons_tooltip()
     html = "#{javascript_include_tag("jquery/jquery.tooltip.js")}"
-    html += "#{javascript_tag("jQuery().ready(function() {jQuery('.icon').tooltip({bodyHandler: function() {return jQuery(this).attr('name');},showURL: false })});")}"
+    html += "#{javascript_tag("jQuery().ready(function() {jQuery('.box_header .icon').tooltip({bodyHandler: function() {return jQuery(this).attr('name');},showURL: false })});")}"
   end
 
   def profile_box(title,content)

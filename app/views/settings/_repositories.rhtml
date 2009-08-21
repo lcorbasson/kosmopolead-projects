@@ -1,6 +1,6 @@
 <% form_tag({:action => 'edit', :tab => 'repositories'}) do %>
 
-<div class="box tabular settings">
+<div class="tabular settings">
 <p><label><%= l(:setting_autofetch_changesets) %></label>
 <%= check_box_tag 'settings[autofetch_changesets]', 1, Setting.autofetch_changesets? %><%= hidden_field_tag 'settings[autofetch_changesets]', 0 %></p>
 

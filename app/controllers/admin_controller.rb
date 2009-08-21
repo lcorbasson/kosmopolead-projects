@@ -48,6 +48,18 @@ class AdminController < ApplicationController
 
     render :action => "projects", :layout => false if request.xhr?
   end
+
+  def relations
+    @relations_count = ProjectRelationType.count
+    @relations_pages = Paginator.new self, @relations_count,
+								per_page_option,
+								params['page']
+              @relations = ProjectRelationType.find :all,
+						:limit  =>  @relations_pages.items_per_page
+
+    render :action => "relations", :layout => false if request.xhr?
+
+  end
   
   def plugins
     @plugins = Redmine::Plugin.all

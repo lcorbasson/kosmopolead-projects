@@ -38,7 +38,7 @@
        <div id="left_column_wrapper">
             <div id="places_wrapper">
               <ul>
-                <li id="home_button"><%= link_to "Kosmopolead", '#',:class=>"#{'active' if @active_menu == 'kosmopolead'}" %></li>
+              
                 <li id="communities_button"><%= link_to "Mes communautés", '#',:class=>"#{'active' if @active_menu == 'community'}" %></li>
                 <li id="profile_button"><%= link_to User.current.name ,"/my/account",:class=>"#{'active' if @active_menu == 'account'}"  %></li>
               </ul>

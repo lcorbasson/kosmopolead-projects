@@ -1,6 +1,11 @@
 <div class="profilecontentleft">
   <%= profile_box("PROJET #{project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>project}}") %>
-	
+  <%= grey_title("MOTS CLES") %>
+  <%= grey_box("#{render:partial=>'projects/box/tags', :locals=>{:project=>project}}", "project_description") %>
+  <%= grey_title("LIAISONS AVEC D'AUTRES PROJETS") %>
+  <%= grey_box("#{render:partial=>'relations'}", "project_description") %>
+  
+ 
 </div>
 
 <div class="profilecontentright">

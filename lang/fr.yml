@@ -291,6 +291,7 @@ project_module_wiki: Wiki
 project_module_repository: Dépôt de sources
 project_module_boards: Forums de discussion
 
+label_account: Mon compte
 label_parent: Parent
 label_new: Nouveau
 label_support_by: Porté par

@@ -6,15 +6,7 @@
     <%= error_messages_for 'issue' %>
     <%= error_messages_for 'time_entry' %>
     <div class="box">
-    <% if @edit_allowed || !@allowed_statuses.empty? %>
-        <fieldset class="tabular"><legend><%= l(:label_change_properties) %>
-        <% if !@issue.new_record? && !@issue.errors.any? && @edit_allowed %>
-        <small>(<%= link_to l(:label_more), {}, :onclick => 'Effect.toggle("issue_descr_fields", "appear", {duration:0.3}); return false;' %>)</small>
-        <% end %>
-        </legend>
-        <%= render :partial => (@edit_allowed ? 'form' : 'form_update'), :locals => {:f => f} %>
-        </fieldset>
-    <% end %>   
+   
     <% if @issue.is_issue? %>
     <% if authorize_for('timelog', 'edit') %>
         <fieldset class="tabular"><legend><%= l(:button_log_time) %></legend>
@@ -26,8 +18,10 @@
           <p><%= time_entry.select :activity_id, activity_collection_for_select_options %></p>
           </div>
           <p><%= time_entry.text_field :comments, :size => 60 %></p>
-          <% @time_entry.custom_field_values.each do |value| %>
-              <p><%= custom_field_tag_with_label :time_entry, value %></p>
+          <% if  @time_entry%>
+            <% @time_entry.custom_field_values.each do |value| %>
+                <p><%= custom_field_tag_with_label :time_entry, value %></p>
+            <% end %>
           <% end %>
           <% end %>
       </fieldset>

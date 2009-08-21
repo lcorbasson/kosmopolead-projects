@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class MyController < ApplicationController
-  menu_item :home
+  menu_item :home,:only=>:page
   
   before_filter :require_login
 
@@ -56,6 +56,7 @@ class MyController < ApplicationController
 
   # Edit user's account
   def account
+    @active_menu = "account"
     @user = User.current
     @pref = @user.pref
     if request.post?

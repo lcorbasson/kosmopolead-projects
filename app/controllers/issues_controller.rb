@@ -25,10 +25,10 @@ class IssuesController < ApplicationController
   
   before_filter :find_issue, :only => [:show, :edit, :reply]
   before_filter :find_issues, :only => [:bulk_edit, :move, :destroy]
-  before_filter :find_project, :only => [:new, :update_form, :preview]
+  before_filter :find_project, :only => [:create,:new, :update_form, :preview]
 
-  before_filter :find_projects, :only => [:gantt, :index, :calendar,:new,:show]
-  before_filter :authorize, :except => [:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
+  before_filter :find_projects, :only => [:create,:gantt, :index, :calendar,:new,:show]
+  before_filter :authorize, :except => [:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
 
  
   before_filter :find_optional_project, :only => [:index, :changes, :gantt, :calendar]
@@ -83,7 +83,7 @@ class IssuesController < ApplicationController
         format.pdf  { send_data(issues_to_pdf(@issues, @project), :type => 'application/pdf', :filename => 'export.pdf') }
         format.js  {
           render:update do |page|
-            page << "jQuery('#content').html('#{escape_javascript(render:partial=>'issues/index', :locals=>{:project=>@project})}');"
+            page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'issues/index', :locals=>{:project=>@project})}');"
              page << "jQuery('#project_author').html('#{escape_javascript(render:partial=>'projects/author', :locals=>{:project=>@project})}');"
           end
         }
@@ -167,49 +167,15 @@ class IssuesController < ApplicationController
     @issue.status = default_status
     @allowed_statuses = ([default_status] + default_status.find_new_statuses_allowed_to(User.current.role_for_project(@project), @issue.tracker)).uniq
     
-    if !params[:issue]
-      @issue.start_date ||= Date.today
+    if request.get? || request.xhr?
+      @issue.start_date ||= Date.today      
     else
       requested_status = IssueStatus.find_by_id(params[:issue][:status_id])
       # Check that the user is allowed to apply the requested status
       @issue.status = (@allowed_statuses.include? requested_status) ? requested_status : default_status
      if !params[:parent_id].nil?
        @issue.parent_id = params[:parent_id]
-     end
-
-      if @issue.save and @issue.is_issue?
-        if params[:assigned_to_id]
-          new_assignments = params[:assigned_to_id]
-          Assignment.delete(@issue, new_assignments)
-          #Création des assignations à la tâche
-          new_assignments.each do |assigned_to|
-            if !Assignment.exist?(@issue.id,assigned_to)
-              Assignment.create(:issue_id=>@issue.id, :user_id=>assigned_to)
-            end
-
-          end
-
-        end
-       end
-        attach_files(@issue, params[:attachments])
-        
-        Mailer.deliver_issue_add(@issue) if Setting.notified_events.include?('issue_added')
-        respond_to do |format|
-          format.js {
-            render:update do |page|
-              if !params[:continue].nil?               
-                 page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'new')}');"
-
-              else
-                 page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'show')}');"
-              end
-             
-            end
-          }
-
-        end      
-        return
-      		
+     end      		
     end	
     @priorities = Enumeration::get_values('IPRI')
     respond_to do |format|
@@ -219,6 +185,60 @@ class IssuesController < ApplicationController
         end
         }
     end   
+  end
+
+
+  def create
+    @issue = Issue.new   
+    @journals = @issue.journals.find(:all, :include => [:user, :details], :order => "#{Journal.table_name}.created_on ASC")
+    @issue.copy_from(params[:copy_from]) if params[:copy_from]
+    @issue.project = @project
+    # Tracker must be set before custom field values
+    @issue.tracker ||= @project.trackers.find((params[:issue] && params[:issue][:tracker_id]) || params[:tracker_id] || :first)
+    @issue.issue_types_id ||= IssueType.find((params[:issue] && params[:issue][:issue_type_id]) || params[:issue_type_id] || :first)
+    @issue_types = IssueType.find(:all)
+    @users = User.all
+    if @issue.tracker.nil?
+      flash.now[:error] = 'No tracker is associated to this project. Please check the Project settings.'
+      render :nothing => true, :layout => true
+      return
+    end
+    if params[:issue].is_a?(Hash)
+      @issue.attributes = params[:issue]
+      @issue.watcher_user_ids = params[:issue]['watcher_user_ids'] if User.current.allowed_to?(:add_issue_watchers, @project)
+    end
+    @issue.author = User.current
+   
+
+
+    if @issue.save @issue.is_issue?
+      if params[:assigned_to_id]
+        new_assignments = params[:assigned_to_id]
+        Assignment.delete(@issue, new_assignments)
+        #Création des assignations à la tâche
+        new_assignments.each do |assigned_to|
+          if !Assignment.exist?(@issue.id,assigned_to)
+            Assignment.create(:issue_id=>@issue.id, :user_id=>assigned_to)
+          end
+
+        end
+      end
+     end
+    attach_files(@issue, params[:attachments])
+    Mailer.deliver_issue_add(@issue) if Setting.notified_events.include?('issue_added')
+     respond_to do |format|
+          format.js {
+              render:update do |page|
+                if params[:continue]
+                   page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'new')}');"
+                else
+
+                   page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'show')}');"
+                end
+
+              end
+          }
+     end 
   end
   
   # Attributes that can be updated on workflow transition (without :edit permission)

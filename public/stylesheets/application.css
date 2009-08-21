@@ -20,35 +20,6 @@ ul {padding:0;}
 
 #quick-search {float:right;}
 
-#main-menu {position: absolute;  bottom: 0px;  left:210px;}
-#main-menu ul {margin: 0;  padding: 0;}
-#main-menu li {
-  height:20px;width:99px;
-  float:left;
-  list-style-type:none;
-  margin: 0px 2px 0px 0px;
-  padding: 0px 0px 0px 0px;
-  white-space:nowrap;
-  text-align:center;
-}
-#main-menu li a {
-  text-transform:uppercase;
-  display: block;
-  color: #fff;
-  text-decoration: none;
-  font-weight: bold;
-  margin: 0;
-    padding:4px 0 4px 0;
-  background: url(../images/onglets.png) no-repeat 0 0;
-}
-
-#main-menu li a:hover{ 
- color:#009EEE;
-  background: url(../images/onglets.png) no-repeat 0 -20px;
-}
-
-#main-menu li a.selected {color:#009EEE;background: url(../images/onglets.png) no-repeat 0 -20px;}
-
 #main {background-color:#EEEEEE;}
 
 .clearer { clear: both; }
@@ -104,6 +75,22 @@ body {
   background: transparent url(../images/tab.png) top center no-repeat;
   color: #ffffff;
 }
+
+#tabs_wrapper ul li a:link {
+  display: block;
+  width: 89px;
+  height: 10px;
+  overflow: hidden;
+  padding: 5px;
+  margin-right: 4px;
+  text-align: center;
+  font-size: 11px;
+  text-transform: uppercase;
+  text-decoration: none;
+  background: transparent url(../images/tab.png) top center no-repeat;
+  color: #ffffff;
+}
+
 #tabs_wrapper ul li a:visited {
   display: block;
   width: 89px;
@@ -117,6 +104,13 @@ body {
   text-decoration: none;
   background: transparent url(../images/tab.png) top center no-repeat;
   color: #ffffff;
+}
+
+
+#tabs_wrapper ul li a.selected {
+  background: transparent url(../images/tab.png) bottom center no-repeat;
+  color: #009eee;
+  font-weight:bold;
 }
 #tabs_wrapper ul li a.active:link {
   background-position: bottom center;
@@ -210,14 +204,12 @@ table.form tr { padding: 2px 5px; }
   margin-bottom: 10px;
 }
 .box .box_header {
-  background-color: #eeeeee;
-  padding: 5px;
+  background-color: #eeeeee; 
   font-weight: bold;
   text-transform: uppercase;
-  color: 555;
+  color: #555;
 }
-.box .box_content {
-  padding: 5px;
+.box .box_content { 
   border-top: 1px solid #dddddd;
 }
 .button_wrapper {
@@ -482,7 +474,7 @@ p.pagination {margin-top:8px;}
 /***** Tabular forms ******/
 .tabular p{
 margin: 0;
-padding: 10px 0 10px 0;
+padding: 10px 0 10px 10px;
 padding-left: 40px; /*width of left column containing the label elements*/
 height: 1%;
 clear:left;

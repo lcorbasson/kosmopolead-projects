@@ -56,7 +56,14 @@ class ProjectsController < ApplicationController
        @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
        @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
        @trackers = @project.rolled_up_trackers
-    end
+   if @projects.size>0
+     @project = @projects.first
+     find_files
+    @members = @project.members
+    @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
+    @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
+    @trackers = @project.rolled_up_trackers
+   end
        respond_to do |format|
           format.html {
 #            @project_tree = projects.group_by {|p| p.parent || p}
@@ -96,11 +103,20 @@ class ProjectsController < ApplicationController
         }
       end
     else
+<<<<<<< HEAD:app/controllers/projects_controller.rb
 #      @project.tag_list = ''
 #      select_tags =  params[:tags]
 #      select_tags.each do |tag|
 #        @project.tag_list << tag
 #      end
+=======
+      @project.tag_list = ''
+      if select_tags =  params[:tags]
+        select_tags.each do |tag|
+          @project.tag_list << tag
+        end
+      end
+>>>>>>> de276163aac2e25771bfd2870f3380b3ba31c7c0:app/controllers/projects_controller.rb
       @project.enabled_module_names = params[:enabled_modules]
       if @project.save
         flash[:notice] = l(:notice_successful_create)

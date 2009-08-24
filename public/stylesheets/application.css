@@ -983,7 +983,7 @@ h2 img { vertical-align:middle; }
 #tabs_members li.ui-state-active{padding:0;background:#E6E6E6 url(/images/test3.png) repeat-x scroll 50% 50%;}
 
 /* Thumbnails */
-.thumbnail {-moz-border-radius:5px;list-style:none;background:transparent url(/images/bg_thumbnail.png) repeat-x;height:45px;min-width:150px;border:1px solid #DDDDDD;float:left;margin:5px 5px 0 0;}
+.thumbnail {padding:5px;-moz-border-radius:5px;list-style:none;background:transparent url(/images/bg_thumbnail.png) repeat-x;height:35px;min-width:140px;border:1px solid #DDDDDD;float:left;margin:5px 5px 0 0;}
 .thumbnail:hover {border:1px solid #009EEE;}
 .user_thumbnail .name a {text-decoration:none;font-weight:bold;color:#009EEE;}
 .thumbnail_infos {padding-left:5px;}

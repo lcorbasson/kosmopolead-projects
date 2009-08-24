@@ -18,9 +18,7 @@
     <%= observe_field :issue_tracker_id, :url => { :action => :new },
       :update => :content,
       :with => "Form.serialize('issue-form')" %>
-    <p><%= f.select :issue_types_id, @issue_types.collect {|t| [t.name, t.id]}, :required => true %></p>
-    <%= observe_field :issue_issue_types_id, :url => { :action => :new },
-      :with => "Form.serialize('issue-form')" %>
+ 
 
     <% end %>
   <% end %>

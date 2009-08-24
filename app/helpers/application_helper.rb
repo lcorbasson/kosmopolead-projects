@@ -755,7 +755,9 @@ module ApplicationHelper
   end
 
   def file_thumbnail(file)
-    title = content_tag(:p,file.filename,:class=>"filename")
+    title = link_to_attachment file, :download => true, :title => file.description
+   #  title = link_to(content_tag(:p,file.filename,:class=>"filename"), {:controller => 'versions', :action => 'show', :id => file})
+   
     author = content_tag(:p,file.author.name,:class=>"author")
     created_on = content_tag(:p,format_time(file.created_on),:class=>"created_on")
     thumbnail = content_tag(:li,content_tag(:div,title+author+created_on,:class=>"thumbnail_infos"),:class=>"file_thumbnail thumbnail")

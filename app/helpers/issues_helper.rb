@@ -31,7 +31,7 @@ module IssuesHelper
     link_to_issue(issue) + ": #{h(issue.subject)}<br /><br />" +
       "<strong>#{@cached_label_start_date}</strong>: #{format_date(issue.start_date)}<br />" +
       "<strong>#{@cached_label_due_date}</strong>: #{format_date(issue.due_date)}<br />" +
-      "<strong>#{@cached_label_assigned_to}</strong>: #{issue.assigned_to}<br />" +
+      "<strong>#{@cached_label_assigned_to}</strong>: #{show_assigned_to(issue)}<br />" +
       "<strong>#{@cached_label_priority}</strong>: #{issue.priority.name}"
   end
   

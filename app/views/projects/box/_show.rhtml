@@ -1,7 +1,7 @@
 <% selected_tab = params[:tab] ? params[:tab].to_s : project_tabs.first[:name] %>
 <div class="profilecontentleft">
   <%= profile_box("PROJET #{project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>project}}") %>
-  Avancement du projet : <%= progress_bar([@completed_percent, 100], :width => '40%', :legend => ('%0.0f%' % @completed_percent)) %>
+  Avancement du projet :<br/> <%= progress_bar([@completed_percent, 100], :width => '40%', :legend => ('%0.0f%' % @completed_percent)) %>
   <%= grey_title("MOTS CLES") %>
   <%= grey_box("#{render:partial=>'projects/box/tags', :locals=>{:project=>project}}", "project_description") %>
   <%= grey_title("LIAISONS AVEC D'AUTRES PROJETS") %>

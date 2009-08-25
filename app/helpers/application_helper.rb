@@ -67,7 +67,7 @@ module ApplicationHelper
     text = options.delete(:text) || attachment.filename
     action = options.delete(:download) ? 'download' : 'show'
 
-    link_to(h(text), {:controller => 'attachments', :action => action, :id => attachment, :filename => attachment.filename }, options)
+    link_to(h(text), {:controller => 'file_attachments', :action => action, :id => attachment, :filename => attachment.filename }, options)
   end
 
   def toggle_link(name, id, options={})

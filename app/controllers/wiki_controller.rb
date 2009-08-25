@@ -23,8 +23,8 @@ class WikiController < ApplicationController
   
   verify :method => :post, :only => [:destroy, :protect], :redirect_to => { :action => :index }
 
-  helper :attachments
-  include AttachmentsHelper   
+  helper :file_attachments
+  include FileAttachmentsHelper
   
   # display a page (in editing mode if it doesn't exist)
   def index

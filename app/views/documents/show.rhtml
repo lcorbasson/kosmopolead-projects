@@ -19,7 +19,7 @@
                                              :id => 'attach_files_link' %></p>
   <% form_tag({ :controller => 'documents', :action => 'add_attachment', :id => @document }, :multipart => true, :id => "add_attachment_form", :style => "display:none;") do %>
   <div class="box">
-  <p><%= render :partial => 'attachments/form' %></p>
+  <p><%= render :partial => 'file_attachments/form' %></p>
   </div>
   <%= submit_tag l(:button_add) %>
   <% end %> 

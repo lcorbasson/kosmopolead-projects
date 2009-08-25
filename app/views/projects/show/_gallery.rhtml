@@ -1,0 +1,16 @@
+<%= error_messages_for 'attachment' %>
+<%= link_to_remote l(:label_new_image),
+                         { :url => { :controller => 'photos', :action => 'new',:gallery_id=>@project.gallery.id,:project_id=>@project.id},
+                           :method => 'post',
+                           :update => 'add_photo'
+                         },:class=>"button btn_blue corner-all" %>
+<div id="add_photo">
+
+</div>
+<%= form_upload({:url=>"projects/#{@project.id}/gallery/#{@project.gallery.id}/photos/create/",:col_collection=>@photo,:name_initial_form=>"upload_form_#{@photo.id}",:name_div_id=>"upload_#{@photo.id}"}) %>
+<div id="photo_index">
+  <%= render:partial=>"photos/index",:locals=>{:photos=>@project.gallery.photos} %>
+</div>
+
+
+<%= javascript_include_tag("ajaxfileupload") %>

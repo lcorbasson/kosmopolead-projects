@@ -3,7 +3,7 @@
        <%= link_to_remote(l(:label_project), {:url=>{:controller => 'projects', :action => 'add'}},:method=>:get) %>
   </p>
   <p>
-      <%= link_to_remote_if_authorized l(:label_attachment), {:url=>{:controller => 'projects', :action => 'add_file', :id => @project}},:method=>:get %>
+      <%= link_to_remote_if_authorized l(:label_attachment), {:url=>{:controller => 'projects', :action => 'add_file', :id => @project.id}},:method=>:get %>
   </p>
   <% if @project %>
     <p>

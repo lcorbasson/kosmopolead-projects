@@ -56,7 +56,7 @@ end %>
 
 <p><strong><%=l(:field_description)%></strong></p>
 <div class="wiki">
-<%= textilizable issue, :description, :attachments => issue.attachments %>
+<%= textilizable issue, :description, :attachments => issue.file_attachments %>
 </div>
 
 <%= link_to_attachments issue %>

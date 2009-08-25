@@ -27,6 +27,7 @@ class ProjectsController < ApplicationController
   
   before_filter :find_project, :except => [ :tags_json, :index, :list, :add, :activity ]
 
+
   before_filter :find_optional_project, :only => :activity
   before_filter :authorize, :except => [ :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity ]
   before_filter :require_admin, :only => [ :add, :archive, :unarchive, :destroy ]
@@ -72,6 +73,7 @@ class ProjectsController < ApplicationController
     end
    end
     completed_percent
+    find_gallery
        respond_to do |format|
           format.html {
 #            @project_tree = projects.group_by {|p| p.parent || p}
@@ -161,11 +163,12 @@ class ProjectsController < ApplicationController
     @gantt = Redmine::Helpers::Gantt.new(params)
     retrieve_query
     if @query.valid?
-      events = @project.stages(:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?)) and start_date is not null) AND issues.parent_id is null])", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to])
+      events = @project.stages(:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?)) and start_date is not null) AND #{Issue.table_name}.parent_id is null])", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to])
 
       @gantt.events = events
     end
     completed_percent
+     find_gallery
     respond_to do |format|
       format.js  {
           render:update do |page|
@@ -291,10 +294,10 @@ class ProjectsController < ApplicationController
   
   def list_files
     sort_init 'filename', 'asc'
-    sort_update 'filename' => "#{Attachment.table_name}.filename",
-                'created_on' => "#{Attachment.table_name}.created_on",
-                'size' => "#{Attachment.table_name}.filesize",
-                'downloads' => "#{Attachment.table_name}.downloads"
+    sort_update 'filename' => "#{FileAttachment.table_name}.filename",
+                'created_on' => "#{FileAttachment.table_name}.created_on",
+                'size' => "#{FileAttachment.table_name}.filesize",
+                'downloads' => "#{FileAttachment.table_name}.downloads"
                 
     @containers = [ Project.find(@project.id, :include => :attachments, :order => sort_clause)]
     @containers += @project.versions.find(:all, :include => :attachments, :order => sort_clause).sort.reverse
@@ -390,13 +393,13 @@ private
 
   def find_files
     sort_init 'filename', 'asc'
-    sort_update 'filename' => "#{Attachment.table_name}.filename",
-                'created_on' => "#{Attachment.table_name}.created_on",
-                'size' => "#{Attachment.table_name}.filesize",
-                'downloads' => "#{Attachment.table_name}.downloads"
+    sort_update 'filename' => "#{FileAttachment.table_name}.filename",
+                'created_on' => "#{FileAttachment.table_name}.created_on",
+                'size' => "#{FileAttachment.table_name}.filesize",
+                'downloads' => "#{FileAttachment.table_name}.downloads"
 
-    @containers = [ Project.find(@project.id, :include => :attachments, :order => sort_clause)]
-    @containers += @project.versions.find(:all, :include => :attachments, :order => sort_clause).sort.reverse
+    @containers = [ Project.find(@project.id, :include => :file_attachments, :order => sort_clause)]
+    @containers += @project.versions.find(:all, :include => :file_attachments, :order => sort_clause).sort.reverse
   end
 
   def retrieve_query
@@ -441,6 +444,12 @@ private
       end
      end
      @completed_percent = @completed_percent/@project.issues.issues.count
+  end
+
+  def find_gallery
+    @gallery = @project.gallery unless @project.nil?
+    @photo = Photo.new
+    @photo.gallery_id = @gallery.id unless @gallery.nil?
   end
   
   

@@ -1,0 +1,5 @@
+<% unless photos.nil?  %>
+  <% photos.each do |photo| %>
+     <%= image_tag photo.photo.url(:thumb) %>
+  <% end %>
+<% end %>

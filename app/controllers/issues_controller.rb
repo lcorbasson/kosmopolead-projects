@@ -25,13 +25,12 @@ class IssuesController < ApplicationController
   
   before_filter :find_issue, :only => [:show, :edit, :reply]
   before_filter :find_issues, :only => [:bulk_edit, :move, :destroy]
-  before_filter :find_project, :only => [:create,:new, :update_form, :preview]
+  before_filter :find_project, :only => [:index,:create,:new, :update_form, :preview]
 
   before_filter :find_projects, :only => [:create,:gantt, :index, :calendar,:new,:show]
   before_filter :authorize, :except => [:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
 
- 
-  before_filter :find_optional_project, :only => [:index, :changes, :gantt, :calendar]
+  before_filter :find_optional_project, :only => [ :changes, :gantt, :calendar]
   accept_key_auth :index, :show, :changes
 
   helper :journals
@@ -43,8 +42,8 @@ class IssuesController < ApplicationController
   include IssueRelationsHelper
   helper :watchers
   include WatchersHelper
-  helper :attachments
-  include AttachmentsHelper
+  helper :file_attachments
+  include FileAttachmentsHelper
   helper :queries
   helper :sort
   include SortHelper
@@ -526,7 +525,7 @@ class IssuesController < ApplicationController
   
   def preview
     @issue = @project.issues.find_by_id(params[:id]) unless params[:id].blank?
-    @attachements = @issue.attachments if @issue
+    @attachements = @issue.file_attachments if @issue
     @text = params[:notes] || (params[:issue] ? params[:issue][:description] : nil)
     render :partial => 'common/preview'
   end

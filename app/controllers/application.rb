@@ -180,7 +180,7 @@ class ApplicationController < ActionController::Base
       attachments.each_value do |attachment|
         file = attachment['file']
         next unless file && file.size > 0
-        a = Attachment.create(:container => obj, 
+        a = FileAttachment.create(:container => obj,
                               :file => file,
                               :description => attachment['description'].to_s.strip,
                               :author => User.current)

@@ -1,0 +1,13 @@
+<% remote_form_for :photo, :html=>{:id=>"upload_form_#{@photo.id}"} do |f| %>
+<p class="buttons">
+    <label><%=l(:label_photo)%></label>
+    <%= f.file_field :photo, :id=>"fileToUpload" %>
+    <%= link_to_remote l(:button_add),
+                         { :url => { :controller => 'photos', :action => 'index',:gallery_id=>@project.gallery.id,:project_id=>@project.id},
+                           :method => 'post',
+                           :update => 'photo_index',
+                           :with => "clone_upload__form()",
+                         },:class=>"button btn_blue corner-all" %>
+    <%= f.hidden_field :gallery_id %>
+</p>
+<% end %>

@@ -782,6 +782,45 @@ module ApplicationHelper
   end
 
 
+   def form_upload(args)
+    name_div_id=args[:name_div_id] || "div_upload_form"
+    url=args[:url]
+    textarea_id=args[:textarea_id] || ""
+    textarea_class=args[:textarea_class] || ""
+    col_collection=args[:col_collection]
+    item_id=col_collection.id.to_s || args[:item_id].to_s
+    name_initial_form=args[:name_initial_form].to_s || "initial_form"
+
+    if textarea_id==""
+      data_textarea=""
+    else
+      data_textarea="$('##{textarea_id}').val(tinyMCE.get('#{textarea_id}').getContent());$('#'+formId+' .#{textarea_class}').val($('##{name_initial_form} .#{textarea_class}').val());"
+    end
+    concat_url = url+item_id
+   
+    data=<<-END
+    <script>
+        function clone_#{name_div_id}_form(){
+        jQuery.ajaxFileUpload({url:'#{concat_url}',
+        secureuri:false, fileElementId:'fileToUpload', dataType: 'json',
+        before_send_callback:function(formId){
+          jQuery('##{name_initial_form} :input').clone().appendTo(jQuery('#' + formId));
+          #{data_textarea}
+        }
+      })
+      };
+
+    </script>
+    <div id="#{name_div_id}" style="display:none">
+    #{form_tag url+item_id,:method => :post, :enctype=>"multipart/form-data", :target=>"upload_frame",:id=>"form_"+name_div_id }
+       <div id="inner_form_#{name_div_id}"></div>
+       #{submit_tag t(:button_validate)}
+    </form>
+    </div>
+   END
+   return data
+  end
+
 
   private
 

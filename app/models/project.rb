@@ -29,6 +29,7 @@ class Project < ActiveRecord::Base
   has_many :enabled_modules, :dependent => :delete_all
   has_and_belongs_to_many :trackers, :order => "#{Tracker.table_name}.position"
   has_many :issues, :dependent => :destroy, :order => "#{Issue.table_name}.created_on DESC", :include => [:status, :tracker]
+  has_one :gallery,:as=>:owned,:conditions=>["owned_type = ?", "PROJECT"],:dependent => :destroy
 
   has_many :relations_from, :class_name => 'ProjectRelation', :foreign_key => 'project_from_id', :dependent => :delete_all
   has_many :relations_to, :class_name => 'ProjectRelation', :foreign_key => 'project_to_id', :dependent => :delete_all
@@ -46,8 +47,8 @@ class Project < ActiveRecord::Base
   has_one :repository, :dependent => :destroy
   has_many :changesets, :through => :repository
   has_one :wiki, :dependent => :destroy
-  has_many :stages,:class_name=>"Issue",:foreign_key=>"issue_types_id",:conditions=>["issue_types_id = 1"],:dependent => :delete_all
-
+  has_many :stages,:class_name=>"Issue",:foreign_key=>"issue_types_id",:include=>[:type],:conditions=>["#{IssueType.table_name}.name='STAGE'"],:dependent => :delete_all
+  has_many :file_attachments,:as=>:container,:conditions=>["container_type = ?", "project"],:dependent => :destroy
 
 
 
@@ -162,15 +163,15 @@ class Project < ActiveRecord::Base
     cond
   end
   
-  def self.find(*args)
-    if args.first && args.first.is_a?(String) && !args.first.match(/^\d*$/)
-      project = find_by_identifier(*args)
-      raise ActiveRecord::RecordNotFound, "Couldn't find Project with identifier=#{args.first}" if project.nil?
-      project
-    else
-      super
-    end
-  end
+#  def self.find(*args)
+#    if args.first && args.first.is_a?(String) && !args.first.match(/^\d*$/)
+#      project = find_by_identifier(*args)
+#      raise ActiveRecord::RecordNotFound, "Couldn't find Project with identifier=#{args.first}" if project.nil?
+#      project
+#    else
+#      super
+#    end
+#  end
  
   def to_param
     # id is used for projects with a numeric identifier (compatibility)

@@ -18,6 +18,7 @@ rescue LoadError
 end
 
 Rails::Initializer.run do |config|
+  
   # Settings in config/environments/* take precedence those specified here
   
   # Skip frameworks you're not going to use
@@ -54,4 +55,5 @@ Rails::Initializer.run do |config|
   # Define your email configuration in email.yml instead.
   # It will automatically turn deliveries on
   config.action_mailer.perform_deliveries = false
+
 end

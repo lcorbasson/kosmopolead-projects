@@ -1,9 +1,10 @@
 <%= box(
     "profile - #{@project.name}",
     "#{render:partial=>'projects/box/show',:locals=>{:project=>@project}}",
-    ["#{link_to("profile",{:controller => 'projects', :action => 'show', :id => @project},:class=>'active icon')}",
-     "#{link_to("",{ :controller => 'issues', :action => 'calendar', :project_id => @project},:class=>'inactive icon calendar') if User.current.allowed_to?(:view_calendar, @project, :global => true)}",
-     "#{link_to("", {:controller => 'issues', :action => 'gantt', :project_id => @project}, :class=>'inactive icon gantt') if User.current.allowed_to?(:view_gantt, @project, :global => true)}",
-     "#{link_to("", {:controller => 'issues', :action => 'index', :project_id => @project}, :class=>'inactive icon list ')}"
+    ["#{link_to("profile",{:controller => 'projects', :action => 'show', :id => @project.id},:class=>'active icon')}",
+     "#{link_to("",{ :controller => 'issues', :action => 'calendar', :project_id => @project.id},:class=>'inactive icon calendar') if User.current.allowed_to?(:view_calendar, @project, :global => true)}",
+     "#{link_to("", {:controller => 'issues', :action => 'gantt', :project_id => @project.id}, :class=>'inactive icon gantt') if User.current.allowed_to?(:view_gantt, @project, :global => true)}",
+     "#{link_to("", {:controller => 'issues', :action => 'index', :project_id => @project.id}, :class=>'inactive icon list ')}"
     ]
 ) %>
+

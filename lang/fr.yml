@@ -297,6 +297,11 @@ project_module_wiki: Wiki
 project_module_repository: Dépôt de sources
 project_module_boards: Forums de discussion
 
+label_members: Membres
+label_partners: Partenaires
+label_new_image: Ajouter une photo
+label_photo: Nouvelle photo
+label_gallery_photos: Galerie photos
 label_synthese: Synthèse
 label_financement: Financement
 label_project_author: Porteur du projet

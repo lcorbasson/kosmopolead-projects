@@ -20,9 +20,9 @@ class Issue < ActiveRecord::Base
 
   RELATION_TYPE = [ 'stage', 'issue', 'none']
 
-
   # -- relations
 
+  belongs_to :issue_type
   belongs_to :type, :class_name => 'IssueType', :foreign_key => 'issue_types_id'
   has_and_belongs_to_many :issues,:foreign_key => 'parent_id'
   belongs_to :project
@@ -41,7 +41,7 @@ class Issue < ActiveRecord::Base
   
   has_many :relations_from, :class_name => 'IssueRelation', :foreign_key => 'issue_from_id', :dependent => :delete_all
   has_many :relations_to, :class_name => 'IssueRelation', :foreign_key => 'issue_to_id', :dependent => :delete_all
-
+  has_many :file_attachments,:as=>:container,:conditions=>["container_type = ?", "issue"],:dependent => :destroy
   acts_as_tree :order => "start_date",:foreign_key=>"parent_id"
   acts_as_attachable :after_remove => :attachment_removed
   acts_as_customizable
@@ -61,9 +61,12 @@ class Issue < ActiveRecord::Base
   validates_inclusion_of :done_ratio, :in => 0..100
   validates_numericality_of :estimated_hours, :allow_nil => true
 
-  named_scope :stages, :conditions=>["issue_types_id = ?", IssueType.find(:first,:conditions=>["name = 'STAGE'"]).id]
-  named_scope :milestones, :conditions=>["issue_types_id = ?", IssueType.find(:first,:conditions=>["name = 'MILESTONE'"]).id]
-  named_scope :issues, :conditions=>["issue_types_id = ?", IssueType.find(:first,:conditions=>["name = 'ISSUE'"]).id]
+  named_scope :stages,:include=>[:type],:conditions=>["#{IssueType.table_name}.name = ?","STAGE"]
+  named_scope :milestones,:include=>[:type],:conditions=>["#{IssueType.table_name}.name = ?","MILESTONE"]
+  named_scope :issues,:include=>[:type],:conditions=>["#{IssueType.table_name}.name = ?","ISSUE"]
+#  named_scope :stages, :conditions=>["issue_types_id = ?", IssueType.find(:first,:conditions=>["name = 'STAGE'"]).id]
+#  named_scope :milestones, :conditions=>["issue_types_id = ?", IssueType.find(:first,:conditions=>["name = 'MILESTONE'"]).id]
+#  named_scope :issues, :conditions=>["issue_types_id = ?", IssueType.find(:first,:conditions=>["name = 'ISSUE'"]).id]
 
   def after_initialize
     if new_record?

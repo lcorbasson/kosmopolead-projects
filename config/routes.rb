@@ -22,6 +22,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'project_relation_types', :controller => 'project_relation_types'
   map.connect 'projects/:project_id/relations/:action/:id', :controller => 'project_relations'
+  map.connect 'projects/:project_id/gallery/:gallery_id/photos/:action', :controller => 'photos'
   map.connect 'issues/:issue_id/relations/:action/:id', :controller => 'issue_relations'
   map.connect 'projects/:project_id/issues/:action', :controller => 'issues'
   map.connect 'projects/:project_id/news/:action', :controller => 'news'
@@ -40,9 +41,9 @@ ActionController::Routing::Routes.draw do |map|
     omap.repositories_revision 'repositories/revision/:id/:rev', :action => 'revision'
   end
   
-  map.connect 'attachments/:id', :controller => 'attachments', :action => 'show', :id => /\d+/
-  map.connect 'attachments/:id/:filename', :controller => 'attachments', :action => 'show', :id => /\d+/, :filename => /.*/
-  map.connect 'attachments/download/:id/:filename', :controller => 'attachments', :action => 'download', :id => /\d+/, :filename => /.*/
+  map.connect 'file_attachments/:id', :controller => 'file_attachments', :action => 'show', :id => /\d+/
+  map.connect 'file_attachments/:id/:filename', :controller => 'file_attachments', :action => 'show', :id => /\d+/, :filename => /.*/
+  map.connect 'file_attachments/download/:id/:filename', :controller => 'file_attachments', :action => 'download', :id => /\d+/, :filename => /.*/
    
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'

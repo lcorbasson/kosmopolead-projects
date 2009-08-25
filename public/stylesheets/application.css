@@ -36,7 +36,7 @@ body {
 #body_wrapper {
   position: relative;
   padding-left: 175px;
-  padding-right: 175px;
+  /*padding-right: 175px;*/
 }
 #left_column_wrapper {
   width: 175px;
@@ -645,7 +645,7 @@ p.progress-info {clear: left; font-style: italic; font-size: 80%;}
 #content_wrapper .tabs ul li a {
 
   display: block;
-  color: #fff;
+  color: #777777;
   text-decoration: none;
   font-weight: bold;
   margin: 0;
@@ -977,12 +977,28 @@ h2 img { vertical-align:middle; }
 .content_admin {padding:5px;}
 
 /* Members tabs*/
-#tabs_members{border:none;background:transparent url(/images/barre_degrade.png) no-repeat scroll right bottom}
-#tabs_members li {height:20px;margin-bottom:2px;-moz-border-radius:0px;float:right;border:none;}
-#tabs_members li.ui-state-active a{color:#009EEE;}
-#tabs_members li.ui-state-active{padding:0;background:#E6E6E6 url(/images/test3.png) repeat-x scroll 50% 50%;}
+#tabs_members{border:none;background:transparent}
 
+#tabs_members li.ui-state-active a{color:#009EEE;}
+#tabs_members li.ui-state-active{padding:0;background: url(../images/inside_tabs.png) no-repeat 0 -17px;}
+
+#tabs_members  li a {padding:0;font-size:11px;}
+#tabs_members li:hover a { color:#009EEE;}
+#tabs_members li:hover {background: url(../images/inside_tabs.png) no-repeat 0 -17px;}
+#tabs_members  li {
+text-align:center;
+float:right;
+list-style-type:none;
+white-space:nowrap;
+margin-right:1px;
+background: transparent url(../images/inside_tabs.png) no-repeat scroll 0 0;
+border:none;
+width:120px;
+height:17px;
+
+}
 /* Thumbnails */
+.thumbnail_infos a {text-decoration:none;color:#009EEE;font-weight:bold;}
 .thumbnail {padding:5px;-moz-border-radius:5px;list-style:none;background:transparent url(/images/bg_thumbnail.png) repeat-x;height:35px;min-width:140px;border:1px solid #DDDDDD;float:left;margin:5px 5px 0 0;}
 .thumbnail:hover {border:1px solid #009EEE;}
 .user_thumbnail .name a {text-decoration:none;font-weight:bold;color:#009EEE;}
@@ -1012,7 +1028,7 @@ h2 img { vertical-align:middle; }
 /*Notifications*/
 .no-data {padding:10px;}
 #tabs_members li a {font-weight:bold;}
-
+#projects_members .thumbnail{float:right;}
 /*Widget*/
 #list-bottom {width:100%;}
 #list-bottom td {width:32%;}
@@ -1065,3 +1081,7 @@ h2 img { vertical-align:middle; }
 
 .visu {margin-right:15px;text-transform:none;}
 
+
+/*Photos*/
+#photo_index {margin-top:10px;}
+#photo_index img {margin:5px;}

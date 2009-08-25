@@ -20,7 +20,7 @@ class DocumentsController < ApplicationController
   before_filter :find_document, :except => [:index, :new]
   before_filter :authorize
   
-  helper :attachments
+  helper :file_attachments
   
   def index
     @sort_by = %w(category date title author).include?(params[:sort_by]) ? params[:sort_by] : 'category'

@@ -25,8 +25,8 @@ class MessagesController < ApplicationController
   verify :xhr => true, :only => :quote
 
   helper :watchers
-  helper :attachments
-  include AttachmentsHelper   
+  helper :file_attachments
+  include FileAttachmentsHelper
 
   # Show a topic and its replies
   def show

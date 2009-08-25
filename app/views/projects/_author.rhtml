@@ -1,3 +1,3 @@
-<% if @project.author %>
+<% if @project and @project.author %>
   <%= box_sidebar("#{l(:label_project_author)}", "#{render:partial=>'projects/box/author',:locals=>{:project=>project}}") %>
 <% end %>

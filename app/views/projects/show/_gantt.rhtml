@@ -1,5 +1,3 @@
-
-
   <p style="float:right; margin:0 10px 0 0  ;">
             <%= if @gantt.zoom < 4
                 link_to_remote image_tag('zoom_in.png'), {:url => @gantt.params.merge(:zoom => (@gantt.zoom+1)), :update => 'content'}, {:href => url_for(@gantt.params.merge(:zoom => (@gantt.zoom+1)))}

@@ -461,9 +461,8 @@ private
         @completed_percent += issue.done_ratio
       end
      end
-     if @completed_percent>0
-      @completed_percent = @completed_percent/@project.issues.issues.count
-    
+     if @completed_percent > 0
+       @completed_percent = @completed_percent/@project.issues.issues.count
      end
   end
 

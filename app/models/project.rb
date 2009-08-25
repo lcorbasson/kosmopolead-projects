@@ -29,7 +29,7 @@ class Project < ActiveRecord::Base
   has_many :enabled_modules, :dependent => :delete_all
   has_and_belongs_to_many :trackers, :order => "#{Tracker.table_name}.position"
   has_many :issues, :dependent => :destroy, :order => "#{Issue.table_name}.created_on DESC", :include => [:status, :tracker]
-  has_one :gallery,:as=>:owned,:conditions=>["owned_type = ?", "PROJECT"],:dependent => :destroy
+  has_one :gallery,:as=>:owned,:conditions=>["owned_type = ?", "project"],:dependent => :destroy
 
   has_many :relations_from, :class_name => 'ProjectRelation', :foreign_key => 'project_from_id', :dependent => :delete_all
   has_many :relations_to, :class_name => 'ProjectRelation', :foreign_key => 'project_to_id', :dependent => :delete_all

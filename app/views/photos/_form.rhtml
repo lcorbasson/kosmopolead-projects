@@ -8,6 +8,8 @@
                            :update => 'photo_index',
                            :with => "clone_upload__form()",
                          },:class=>"button btn_blue corner-all" %>
+    <%= link_to(l(:button_cancel),"#",:onclick=>"Element.toggle('upload_form_#{@photo.id}'); this.blur(); return false;",:class=>"button btn_orange corner-all") %>
+    
     <%= f.hidden_field :gallery_id %>
 </p>
 <% end %>

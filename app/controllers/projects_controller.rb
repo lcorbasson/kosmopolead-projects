@@ -60,19 +60,19 @@ class ProjectsController < ApplicationController
    if @projects.size>0
      @project = @projects.first
      find_files
-    @members = @project.members
-    @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
-    @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
-    @trackers = @project.rolled_up_trackers
-    @gantt = Redmine::Helpers::Gantt.new(params)
-    retrieve_query
-    if @query.valid?     
-       events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
-                  and start_date is not null)
-                  AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
+      @members = @project.members
+      @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
+      @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
+      @trackers = @project.rolled_up_trackers
+      @gantt = Redmine::Helpers::Gantt.new(params)
+      retrieve_query
+      if @query.valid?
+         events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
+                    and start_date is not null)
+                    AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
 
-      @gantt.events = events
-    end
+        @gantt.events = events
+      end
    end
     completed_percent
     find_gallery
@@ -145,7 +145,7 @@ class ProjectsController < ApplicationController
     if !params[:id]
       @project = @projects.first
     else
-      @project = Project.find(params[:id])
+      find_project
     end
     find_files
     @members = @project.members
@@ -380,14 +380,22 @@ private
   # if not found, redirect to project list
   # Used as a before_filter
   def find_project
-    @project = Project.find(params[:id])
+    if params[:id].is_a?(Integer) 
+      @project = Project.find(params[:id])
+    else    
+      @project = Project.find_by_identifier(params[:id])
+    end
   rescue ActiveRecord::RecordNotFound
     render_404
   end
   
   def find_optional_project
     return true unless params[:id]
-    @project = Project.find(params[:id])
+    if params[:id].is_a?(Integer)
+      @project = Project.find(params[:id])
+    else
+      @project = Project.find_by_identifier(params[:id])
+    end
     authorize
   rescue ActiveRecord::RecordNotFound
     render_404
@@ -453,11 +461,19 @@ private
         @completed_percent += issue.done_ratio
       end
      end
-     @completed_percent = @completed_percent/@project.issues.issues.count
+     if @completed_percent>0
+      @completed_percent = @completed_percent/@project.issues.issues.count
+    
+     end
   end
 
   def find_gallery
-    @gallery = @project.gallery unless @project.nil?
+    unless @project.nil?
+      @gallery = @project.gallery
+      if @gallery.nil?
+        @gallery = Gallery.create(:owned_id=>@project.id, :owned_type=>"project")
+      end
+    end
     @photo = Photo.new
     @photo.gallery_id = @gallery.id unless @gallery.nil?
   end

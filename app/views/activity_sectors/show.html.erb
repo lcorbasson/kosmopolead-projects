@@ -1,0 +1,19 @@
+<p>
+  <b>Identifier:</b>
+  <%=h @activity_sector.identifier %>
+  <table>
+    <% @activity_sector.activity_sector_translations.each do |a| %>
+      <tr><td><%= ll(a.local, :general_lang_name) %>
+        </td>
+        <td><%= a.name %></td>
+        <td><%= link_to 'edit', edit_activity_sector_activity_sector_translation_path(@activity_sector, a) %></td>
+        <td><%= link_to 'destroy', [@activity_sector, a], :controller => :activity_sector_translation,:method => :delete, :confirm => "Are you sure?" %></td>
+      </tr>
+    <% end %>
+  </table>
+</p>
+
+<%= link_to 'new', new_activity_sector_activity_sector_translation_path(@activity_sector) %> |
+<%= link_to 'Edit', edit_activity_sector_path(@activity_sector) %> |
+<%= link_to 'Back', activity_sectors_path %>
+

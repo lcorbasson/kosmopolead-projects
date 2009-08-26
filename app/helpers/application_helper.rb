@@ -814,7 +814,7 @@ module ApplicationHelper
     <div id="#{name_div_id}" style="display:none">
     #{form_tag url+item_id,:method => :post, :enctype=>"multipart/form-data", :target=>"upload_frame",:id=>"form_"+name_div_id }
        <div id="inner_form_#{name_div_id}"></div>
-       #{submit_tag t(:button_validate)}
+       #{submit_tag l(:button_validate)}
     </form>
     </div>
    END

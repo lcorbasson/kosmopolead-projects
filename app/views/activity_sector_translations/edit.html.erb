@@ -1,0 +1,24 @@
+<h1>Editing activity_sector_translation</h1>
+
+<% form_for [@activity_sector ,@activity_sector_translation] do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :description %><br />
+    <%= f.text_field :description %>
+  </p>
+  <p>
+    <%= f.label :local %><br />
+    <%= f.select :local, lang_options_for_select(false), :selected=> current_language.to_s %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', activity_sector_activity_sector_translation_path(@activity_sector, @activity_sector_translation) %> |
+<%= link_to 'Back', activity_sector_path(@activity_sector) %>

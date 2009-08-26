@@ -41,7 +41,8 @@
 <p><%= f.text_field :project_cost %>€</p>
 <p><%= f.text_field :estimated_time %></p>
 <p><%= f.select :time_units_id, (@time_units.collect {|u| [u.label, u.id]}) %></p>
-<p><%= f.text_field :sector %></p><br />
+<p><%= f.select :sector, list_sectors(current_language).collect{|s| s.name} %></p><br />
+<%= current_language %>
 <p><label>Tags</label><%= select_tag  :tags,  options_for_select( @project.tag_list { |tag| [tag.name, tag.id] }, :class => 'selected'), :id => 'tags', :name => 'tags'%>
 </p>
 

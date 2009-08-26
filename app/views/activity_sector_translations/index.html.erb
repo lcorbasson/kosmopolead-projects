@@ -1,0 +1,26 @@
+<h1>Listing activity_sector_translations</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Local</th>
+    <th>Activity sector</th>
+  </tr>
+
+  <% for activity_sector_translation in @activity_sector_translations %>
+  <tr>
+    <td><%=h activity_sector_translation.name %></td>
+    <td><%=h activity_sector_translation.description %></td>
+    <td><%=h activity_sector_translation.local %></td>
+    <td><%=h activity_sector_translation.activity_sector_id %></td>
+    <td><%= link_to 'Show', activity_sector_activity_sector_translation_path(@activity_sector, activity_sector_translation) %></td>
+    <td><%= link_to 'Edit', edit_activity_sector_activity_sector_translation_path(@activity_sector, activity_sector_translation) %></td>
+    <td><%= link_to 'Destroy', [@activity_sector, activity_sector_translation], :confirm => 'Are you sure?', :controller => :activity_sector_translation, :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New activity_sector_translation', new_activity_sector_activity_sector_translation_path %>

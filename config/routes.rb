@@ -20,6 +20,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'help/:ctrl/:page', :controller => 'help'
   #map.connect ':controller/:action/:id/:sort_key/:sort_order'
 
+ 
   map.connect 'project_relation_types', :controller => 'project_relation_types'
   map.connect 'projects/:project_id/relations/:action/:id', :controller => 'project_relations'
   map.connect 'projects/:project_id/gallery/:gallery_id/photos/:action', :controller => 'photos'
@@ -28,6 +29,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'projects/:project_id/news/:action', :controller => 'news'
   map.connect 'projects/:project_id/documents/:action', :controller => 'documents'
   map.connect 'projects/:project_id/boards/:action/:id', :controller => 'boards'
+  map.connect 'projects/:project_id/funding_lines/:action/:id', :controller => 'funding_lines'
 
   map.connect 'projects/:project_id/timelog/:action/:id', :controller => 'timelog', :project_id => /.+/
   map.connect 'boards/:board_id/topics/:action/:id', :controller => 'messages'

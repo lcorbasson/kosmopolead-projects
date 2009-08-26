@@ -76,3 +76,118 @@ function checkTypeRelation(t){
     jQuery.ajax({dataType:'script', url:'issues/type_event', data:'type=' + t.value,type: "get", success: function(msg){eval(msg)}});
 }
 
+function initialize_funding_grid(url,edit_url){   
+     jQuery("#funding_fields_list").jqGrid({
+            url:url,
+            datatype: "json",
+            colNames:["AAP", "Financeur","Correspondant financeur","Montant demandé","Type","Date accord","Montant accordé","Date libération","Montant libéré"],
+            colModel:[
+                {name:'aap',index:'aap',width:80, resizable:false,sortable:true, align:"center", editable:true},
+                {name:'financeur',index:'financeur',width:100, resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'correspondant',index:'correspondant', resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'montant_demande',index:'montant_demande',width:100, resizable:true, sortable:false, editable:true, align:"right" },
+                {name:'type',index:'type', width:100,resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'date_accord',index:'date_accord', resizable:false, sortable:true, editable:true, align:"center",
+                   editoptions:{size:12//,
+//                        dataInit:function(el){
+//                            jQuery(el).datepicker({dateFormat:'yy-mm-dd'});
+//                        },
+//                        defaultValue: function(){
+//                            var currentTime = new Date();
+//                            var month = parseInt(currentTime.getMonth() + 1);
+//                            month = month <= 9 ? "0"+month : month;
+//                            var day = currentTime.getDate();
+//                            day = day <= 9 ? "0"+day : day;
+//                            var year = currentTime.getFullYear();
+//                            return year+"-"+month + "-"+day;
+//                        }
+                    }
+                },
+                {name:'montant_accorde',index:'montant_accorde',width:100, resizable:false, sortable:true, editable:true, align:"right"},
+                {name:'date_liberation',index:'date_liberation', resizable:false, sortable:true, editable:true, align:"center"
+                     
+                },
+                {name:'montant_libere',index:'montant_libere',width:100, resizable:false, sortable:true, editable:true, align:"right"}],
+            multiselect: false,
+            multiboxonly:true,
+            pager:jQuery("#pager"),
+            rowNum:40, //Nombre d'enregistrements visibles par défaut
+            rowList:[10,20,50],          
+            height:"auto",
+            loadtext: "Chargement de la liste...",
+            pgtext : "Page {0} sur {1}",
+            emptyrecords: "Aucune ligne",
+            viewrecords: true, //Affichage du nombre d'enregistrements courants
+            editurl:edit_url
+        }).navGrid('#pager', {view:true}, //options        
+        {reloadAfterSubmit:true,jqModal:false, closeOnEscape:true}, // del options
+        {closeOnEscape:true}, // search options
+        {navkeys: [true,38,40], height:250,jqModal:false,closeOnEscape:true} // view options
+        );
+
+    
+
+            jQuery(".jqgrid_div div").width("100%");
+            jQuery(".jqgrid_div table").width("100%");
+            jQuery(".jqgrid_div .ui-jqgrid-titlebar").css("padding-left",0);
+            jQuery(".jqgrid_div .ui-jqgrid-titlebar").css("padding-right",0);
+            jQuery(".jqgrid_div .loading").width("20%");
+
+}
+
+function initialize_simple_funding_grid(url,edit_url){
+     jQuery("#funding_fields_list").jqGrid({
+            url:url,
+            datatype: "json",
+            colNames:["AAP", "Financeur","Correspondant financeur","Montant demandé","Type","Date accord","Montant accordé","Date libération","Montant libéré"],
+            colModel:[
+                {name:'aap',index:'aap',width:80, resizable:false,sortable:true, align:"center", editable:true},
+                {name:'financeur',index:'financeur',width:100, resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'correspondant',index:'correspondant', resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'montant_demande',index:'montant_demande',width:100, resizable:true, sortable:false, editable:true, align:"right" },
+                {name:'type',index:'type', width:100,resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'date_accord',index:'date_accord', resizable:false, sortable:true, editable:true, align:"center",
+                   editoptions:{size:12//,
+//                        dataInit:function(el){
+//                            jQuery(el).datepicker({dateFormat:'yy-mm-dd'});
+//                        },
+//                        defaultValue: function(){
+//                            var currentTime = new Date();
+//                            var month = parseInt(currentTime.getMonth() + 1);
+//                            month = month <= 9 ? "0"+month : month;
+//                            var day = currentTime.getDate();
+//                            day = day <= 9 ? "0"+day : day;
+//                            var year = currentTime.getFullYear();
+//                            return year+"-"+month + "-"+day;
+//                        }
+                    }
+                },
+                {name:'montant_accorde',index:'montant_accorde',width:100, resizable:false, sortable:true, editable:true, align:"right"},
+                {name:'date_liberation',index:'date_liberation', resizable:false, sortable:true, editable:true, align:"center"
+
+                },
+                {name:'montant_libere',index:'montant_libere',width:100, resizable:false, sortable:true, editable:true, align:"right"}],
+            multiselect: false,
+            multiboxonly:true,
+            pager:jQuery("#pager"),
+            rowNum:40, //Nombre d'enregistrements visibles par défaut
+            rowList:[10,20,50],
+            height:"auto",
+            loadtext: "Chargement de la liste...",
+            pgtext : "Page {0} sur {1}",
+            emptyrecords: "Aucune ligne",
+            viewrecords: true, //Affichage du nombre d'enregistrements courants
+            editurl:edit_url
+        });
+
+
+
+            jQuery(".jqgrid_div div").width("100%");
+            jQuery(".jqgrid_div table").width("100%");
+            jQuery(".jqgrid_div .ui-jqgrid-titlebar").css("padding-left",0);
+            jQuery(".jqgrid_div .ui-jqgrid-titlebar").css("padding-right",0);
+            jQuery(".jqgrid_div .loading").width("20%");
+
+}
+
+

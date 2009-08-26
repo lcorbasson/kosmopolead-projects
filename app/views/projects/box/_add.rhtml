@@ -1,6 +1,8 @@
 <% labelled_tabular_form_for :project, @project, :url => { :action => "add" } do |f| %>
 <%= render :partial => 'form', :locals => { :f => f } %>
 
+
+
 <div class="fieldset">
   <span class="fieldset_title"><%= l(:label_module_plural) %></span>
   <% Redmine::AccessControl.available_project_modules.each do |m| %>
@@ -16,7 +18,6 @@
    <%=  submit_tag l(:button_save),:class => 'button btn_blue corner-all' %>
 </p>
  <div class="clearer"></div>
-
 
 
 <% end %>

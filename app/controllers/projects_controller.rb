@@ -29,7 +29,7 @@ class ProjectsController < ApplicationController
 
 
   before_filter :find_optional_project, :only => :activity
-  before_filter :authorize, :except => [ :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity ]
+  before_filter :authorize, :except => [:show_funding, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity ]
   before_filter :require_admin, :only => [ :add, :archive, :unarchive, :destroy ]
   accept_key_auth :activity
   
@@ -373,6 +373,35 @@ class ProjectsController < ApplicationController
     tags_json = Project.tags_json
      render:text=>tags_json
   end
+
+  def show_funding
+     @page      =   params[:page].to_i # get the requested page
+     @limit     =   params[:rows].to_i # get how many rows we want to have into the grid
+     @sidx      =   params[:sidx]
+     @sord      =   params[:sord]
+     @order_by  =   "#{@sidx} #{@sord}"
+ 
+     @records = @project.funding_lines.count   
+      if @limit>@records
+        @page = 1
+        @start = 0
+      else
+        @start = @limit*@page - @limit
+      end
+
+      #Calcul du nombre total de pages
+      if @records<(@limit)
+        @total_pages = 1
+      else
+        @total_pages = @records.div(@limit)
+        @total_pages = @total_pages+1 if @total_pages*@limit<@records
+      end
+
+
+    render:layout=>false
+  end
+
+
 
   
 private

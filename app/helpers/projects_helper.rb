@@ -22,9 +22,9 @@ module ProjectsHelper
   end
 
  def project_tabs
-    tabs = [{:name => 'gantt', :partial => 'projects/show/gantt', :label => :label_gantt},
-            {:name => 'synthesis', :partial => 'projects/show/synthesis', :label => :label_synthese},
-            {:name => 'funding', :partial => 'projects/show/funding', :label => :label_financement},
+    tabs = [{:name => 'funding', :partial => 'projects/show/funding', :label => :label_funding},
+            {:name => 'gantt', :partial => 'projects/show/gantt', :label => :label_gantt},
+            {:name => 'synthesis', :partial => 'projects/show/synthesis', :label => :label_synthese},            
             {:name => 'files', :partial => 'projects/show/files', :label => :label_file_plural},
             {:name => 'gallery', :partial => 'projects/show/gallery', :label => :label_gallery_photos}
             ]
@@ -37,19 +37,21 @@ module ProjectsHelper
   end
 
 
-  def project_settings_tabs
+   def project_settings_tabs
     tabs = [{:name => 'info', :action => :edit_project, :partial => 'projects/edit', :label => :label_information_plural},
+            {:name => 'funding', :action => :edit_funding, :partial => 'projects/settings/funding', :label => :label_funding},
             {:name => 'modules', :action => :select_project_modules, :partial => 'projects/settings/modules', :label => :label_module_plural},
             {:name => 'members', :action => :manage_members, :partial => 'projects/settings/members', :label => :label_member_plural},
             {:name => 'versions', :action => :manage_versions, :partial => 'projects/settings/versions', :label => :label_version_plural},
             {:name => 'categories', :action => :manage_categories, :partial => 'projects/settings/issue_categories', :label => :label_issue_category_plural},
             {:name => 'wiki', :action => :manage_wiki, :partial => 'projects/settings/wiki', :label => :label_wiki},
-            {:name => 'repository', :action => :manage_repository, :partial => 'projects/settings/repository', :label => :label_repository},
+          
             {:name => 'boards', :action => :manage_boards, :partial => 'projects/settings/boards', :label => :label_board_plural}
             ]
-    tabs.select {|tab| User.current.allowed_to?(tab[:action], @project)}     
+#    tabs.select {|tab| User.current.allowed_to?(tab[:action], @project)}
   end
-     def tags_json
+
+  def tags_json
     rows = []
     @tags.each  do  |t|
       rows << {:caption => t.name, :value => t.name}
@@ -57,7 +59,25 @@ module ProjectsHelper
     return rows.to_json
   end
 
-     def time_units
-       TimeUnit.all.each { |t|  [t.label, t.id] }
-     end
+ def time_units
+   TimeUnit.all.each { |t|  [t.label, t.id] }
+ end
+
+ def funding_lines_to_json
+      #Construction du tableau à renvoyer à jqgrid
+      hash_json={}
+      rows=[]
+       if @project.funding_lines.size>0
+        @project.funding_lines.each do |line|
+          rows << {:id=>line.id,:cell=>[line.aap,line.financeur,line.correspondant_financeur,line.montant_demande,line.type,line.date_accord,line.montant_accorde,line.date_liberation,line.montant_libere]}
+          
+        end
+      end
+     hash_json = {"page"=>@page,"total"=>@total_pages,"records"=>@records,"rows"=>rows}
+     
+     return hash_json.to_json
+   end
+
+    
+
 end

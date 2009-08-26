@@ -37,7 +37,11 @@ class ProjectRelationsController < ApplicationController
 
   private
   def find_project
-    @project = Project.find(params[:project_id])
+   if params[:project_id].is_a?(Integer)
+      @project = Project.find(params[:project_id])
+    else
+      @project = Project.find_by_identifier(params[:project_id])
+    end
 
   rescue ActiveRecord::RecordNotFound
     render_404

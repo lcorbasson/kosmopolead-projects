@@ -456,7 +456,7 @@
 /* body */
 .ui-jqgrid .ui-jqgrid-bdiv {position: relative;margin : 0em; padding:0; overflow-y: auto;overflow-x:hidden;}
 .ui-jqgrid .ui-jqgrid-btable {table-layout:fixed;}
-.ui-jqgrid tr.jqgrow td {border-right-width: 1px; border-right-color: inherit; border-right-style: solid;border-bottom-width: 1px; border-bottom-color: inherit; border-bottom-style: solid;}
+.ui-jqgrid tr.jqgrow td {border-right-width: 2px; border-right-color: #DDDDDD; border-right-style: solid;}
 .ui-jqgrid tr.jqgrow td {font-weight: normal; overflow: hidden; text-align:left; white-space: nowrap; height: 22px;}
 .ui-jqgrid .ui-jqgrid-resize-mark{ width:2px; left:0; background-color:#777; cursor: e-resize; cursor: col-resize; position:absolute; top:0; height:100px; overflow:hidden; visibility:hidden;	border:0 none;}
 /* Pager*/

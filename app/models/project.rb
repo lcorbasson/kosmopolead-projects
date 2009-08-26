@@ -31,6 +31,7 @@ class Project < ActiveRecord::Base
   has_many :issues, :dependent => :destroy, :order => "#{Issue.table_name}.created_on DESC", :include => [:status, :tracker]
   has_one :gallery,:as=>:owned,:conditions=>["owned_type = ?", "project"],:dependent => :destroy
 
+  has_many :funding_lines, :class_name => 'FundingLine', :foreign_key => 'project_id', :dependent => :delete_all
   has_many :relations_from, :class_name => 'ProjectRelation', :foreign_key => 'project_from_id', :dependent => :delete_all
   has_many :relations_to, :class_name => 'ProjectRelation', :foreign_key => 'project_to_id', :dependent => :delete_all
   belongs_to :author,:class_name=>"User",:foreign_key=>"author_id"
@@ -305,6 +306,22 @@ class Project < ActiveRecord::Base
    def relations
     relations_from+relations_to
   end
+
+   def self.find_funding_col_names_project(project)
+     grid_col_names = []
+      project.funding_custom_fields.each do |field|
+        grid_col_names<<field.name
+      end
+      grid_col_names.to_json
+   end
+
+   def self.find_funding_col_model_project(project)
+     grid_col_model = []    
+     project.funding_custom_fields.each do |field|
+        grid_col_model<< {:name=>"#{field.name}",:index=>"#{field.name}",:editable=>true,:editoptions=>{:readonly=>false,:size=>10}}
+     end   
+     grid_col_model.to_json   
+   end
 
 protected
   def validate

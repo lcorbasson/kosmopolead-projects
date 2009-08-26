@@ -1,6 +1,8 @@
-<%#
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
-%>
+<table id="funding_fields_list"></table>
+<div id="pager"></div>
 
-<%= "_funding" %>
+<% content_for :header_tags do %>
+    <%= javascript_include_tag 'jquery.jqGrid.min', 'jquery.jqgrid' %>
+<% end %>
+
+<%= javascript_tag("initialize_simple_funding_grid('/projects/show_funding/#{@project.identifier}','/projects/#{@project.identifier}/funding_lines/new');") %>

@@ -1,0 +1,23 @@
+<p>
+  <b>Name:</b>
+  <%=h @activity_sector_translation.name %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%=h @activity_sector_translation.description %>
+</p>
+
+<p>
+  <b>Local:</b>
+  <%=h @activity_sector_translation.local %>
+</p>
+
+<p>
+  <b>Activity sector:</b>
+  <%=h @activity_sector_translation.activity_sector_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_activity_sector_translation_path(@activity_sector_translation) %> |
+<%= link_to 'Back', activity_sector_translations_path %>

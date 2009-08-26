@@ -1,0 +1,16 @@
+<h1>Editing activity_sector</h1>
+
+<% form_for(@activity_sector) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :identifier %><br />
+    <%= f.text_area :identifier %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @activity_sector %> |
+<%= link_to 'Back', activity_sectors_path %>

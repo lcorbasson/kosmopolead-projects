@@ -57,7 +57,11 @@ module ProjectsHelper
     return rows.to_json
   end
 
-     def time_units
-       TimeUnit.all.each { |t|  [t.label, t.id] }
-     end
+   def time_units
+     TimeUnit.all.each { |t|  [t.label, t.id] }
+   end
+
+    def list_sectors(language)
+      ActivitySectorTranslation.find(:all, :conditions => {:local => language.to_s})
+   end
 end

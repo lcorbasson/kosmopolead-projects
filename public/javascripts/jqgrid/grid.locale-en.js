@@ -18,10 +18,10 @@ $.jgrid.defaults = {
     recordpos: 'right' // this too
 };
 $.jgrid.search = {
-    caption: "Search...",
-    Find: "Find",
-    Reset: "Reset",
-    odata : ['equal', 'not equal', 'less', 'less or equal','greater','greater or equal', 'begins with','ends with','contains' ]
+    caption: "Rechercher...",
+    Find: "Trouver",
+    Reset: "Réinitialiser",
+    odata : ['égal', 'différent', 'inférieur', 'inférieur ou égal','supérieur','supérieur ou égal', 'commence par','se termine par','contient' ]
 };
 $.jgrid.edit = {
     addCaption: "Ajouter un enregistrement",
@@ -58,8 +58,8 @@ $.jgrid.nav = {
     searchtitle: "Find records",
     refreshtext: "",
     refreshtitle: "Reload Grid",
-    alertcap: "Warning",
-    alerttext: "Please, select row"
+    alertcap: "Avertissement",
+    alerttext: "Veuillez sélectionner un enregistrement"
 };
 // setcolumns module
 $.jgrid.col ={

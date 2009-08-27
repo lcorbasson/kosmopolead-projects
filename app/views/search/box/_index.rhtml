@@ -12,7 +12,7 @@
 <% end %>
 </p>
 
-<p><%= submit_tag l(:button_submit), :name => 'submit' %></p>
+<p class="buttons"><%= submit_tag l(:button_submit), :name => 'submit',:class=>"button btn_blue corner-all" %></p>
 <% end %>
 </div>
 
@@ -31,18 +31,18 @@
     </dl>
 <% end %>
 
-<p class="buttons">
+<p>
 <% if @pagination_previous_date %>
 <%= link_to_remote ('&#171; ' + l(:label_previous)),
                    {:update => :content,
                     :url => params.merge(:previous => 1, :offset => @pagination_previous_date.strftime("%Y%m%d%H%M%S"))
-                   },:class=>"button btn_blue corner-all", :href => url_for(params.merge(:previous => 1, :offset => @pagination_previous_date.strftime("%Y%m%d%H%M%S"))) %>&nbsp;
+                   }, :href => url_for(params.merge(:previous => 1, :offset => @pagination_previous_date.strftime("%Y%m%d%H%M%S"))) %>&nbsp;
 <% end %>
 <% if @pagination_next_date %>
 <%= link_to_remote (l(:label_next) + ' &#187;'),
                    {:update => :content,
                     :url => params.merge(:previous => nil, :offset => @pagination_next_date.strftime("%Y%m%d%H%M%S"))
-                   },:class=>"button btn_blue corner-all", :href => url_for(params.merge(:previous => nil, :offset => @pagination_next_date.strftime("%Y%m%d%H%M%S"))) %>
+                   }, :href => url_for(params.merge(:previous => nil, :offset => @pagination_next_date.strftime("%Y%m%d%H%M%S"))) %>
 <% end %>
 </p>
 

@@ -115,7 +115,7 @@ class Query < ActiveRecord::Base
   
   def initialize(attributes = nil)
     super attributes
-    self.filters ||= { 'status_id' => {:operator => "o", :values => [""]} }
+#    self.filters ||= { 'status_id' => {:operator => "o", :values => [""]} }
     set_language_if_valid(User.current.language)
   end
   
@@ -187,6 +187,21 @@ class Query < ActiveRecord::Base
     end
     @available_filters
   end
+
+
+  def available_filters_projects
+    return @available_filters_projects if @available_filters_projects
+
+    
+    @available_filters_projects = {  "status" => { :type => :list, :order => 1, :values => [[l(:label_all), ''],
+                        [l(:status_active), 1]] },
+                                    "builder_by" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] } }
+                                    
+                                  }
+
+    @available_filters_projects
+  end
+
   
   def add_filter(field, operator, values)
     # values must be an array
@@ -207,6 +222,32 @@ class Query < ActiveRecord::Base
     return unless expression
     parms = expression.scan(/^(o|c|\!|\*)?(.*)$/).first
     add_filter field, (parms[0] || "="), [parms[1] || ""]
+  end
+
+  def add_filter_projects(field, operator, values)
+    # values must be an array
+    return unless values and values.is_a? Array # and !values.first.empty?
+    # check if field is defined as an available filter
+    if available_filters_projects.has_key? field
+      filter_options = available_filters_projects[field]
+      # check if operator is allowed for that filter
+      #if @@operators_by_filter_type[filter_options[:type]].include? operator
+      #  allowed_values = values & ([""] + (filter_options[:values] || []).collect {|val| val[1]})
+      #  filters[field] = {:operator => operator, :values => allowed_values } if (allowed_values.first and !allowed_values.first.empty?) or ["o", "c", "!*", "*", "t"].include? operator
+      #end
+      if !filters
+        filters= []
+        filters[field] = {:operator => operator, :values => values }
+      else
+        filters[field] = {:operator => operator, :values => values }
+      end
+    end
+  end
+
+  def add_short_filter_projects(field, expression)
+    return unless expression
+    parms = expression.scan(/^(o|c|\!|\*)?(.*)$/).first
+    add_filter_projects field, (parms[0] || "="), [parms[1] || ""]
   end
   
   def has_filter?(field)
@@ -334,6 +375,36 @@ class Query < ActiveRecord::Base
     
     (filters_clauses << project_statement).join(' AND ')
   end
+
+
+  def statement_projects
+     # filters clauses
+    filters_clauses = []
+    filters.each_key do |field|  
+
+      v = values_for(field).clone
+      next unless v and !v.empty?
+
+      sql = ''
+      is_custom_filter = false
+      
+      if (field == "status_id")
+        db_field = 'status'
+        field = "status"
+      else
+          # regular field
+          db_table = Issue.table_name
+          db_field = field
+          sql << '('
+       end   
+     
+      sql = sql + sql_for_field(field, v, db_table, db_field, is_custom_filter)
+
+      sql << ')'
+      filters_clauses << sql
+    end if filters and valid?
+  end
+  
   
   private
   
@@ -388,6 +459,59 @@ class Query < ActiveRecord::Base
     
     return sql
   end
+
+
+  def sql_for_field_projects(field, value, db_table, db_field, is_custom_filter)
+    sql = ''
+    case operator_for field
+    when "="
+      sql = "#{db_table}.#{db_field} IN (" + value.collect{|val| "'#{connection.quote_string(val)}'"}.join(",") + ")"
+    when "!"
+      sql = "(#{db_table}.#{db_field} IS NULL OR #{db_table}.#{db_field} NOT IN (" + value.collect{|val| "'#{connection.quote_string(val)}'"}.join(",") + "))"
+    when "!*"
+      sql = "#{db_table}.#{db_field} IS NULL"
+      sql << " OR #{db_table}.#{db_field} = ''" if is_custom_filter
+    when "*"
+      sql = "#{db_table}.#{db_field} IS NOT NULL"
+      sql << " AND #{db_table}.#{db_field} <> ''" if is_custom_filter
+    when ">="
+      sql = "#{db_table}.#{db_field} >= #{value.first.to_i}"
+    when "<="
+      sql = "#{db_table}.#{db_field} <= #{value.first.to_i}"
+    when "o"
+      sql = "#{Project.table_name}.status=1" if field == "status"
+    when "c"
+      sql = "#{Project.table_name}.status=0" if field == "status"
+    when ">t-"
+      sql = date_range_clause(db_table, db_field, - value.first.to_i, 0)
+    when "<t-"
+      sql = date_range_clause(db_table, db_field, nil, - value.first.to_i)
+    when "t-"
+      sql = date_range_clause(db_table, db_field, - value.first.to_i, - value.first.to_i)
+    when ">t+"
+      sql = date_range_clause(db_table, db_field, value.first.to_i, nil)
+    when "<t+"
+      sql = date_range_clause(db_table, db_field, 0, value.first.to_i)
+    when "t+"
+      sql = date_range_clause(db_table, db_field, value.first.to_i, value.first.to_i)
+    when "t"
+      sql = date_range_clause(db_table, db_field, 0, 0)
+    when "w"
+      from = l(:general_first_day_of_week) == '7' ?
+      # week starts on sunday
+      ((Date.today.cwday == 7) ? Time.now.at_beginning_of_day : Time.now.at_beginning_of_week - 1.day) :
+        # week starts on monday (Rails default)
+        Time.now.at_beginning_of_week
+      sql = "#{db_table}.#{db_field} BETWEEN '%s' AND '%s'" % [connection.quoted_date(from), connection.quoted_date(from + 7.days)]
+    when "~"
+      sql = "#{db_table}.#{db_field} LIKE '%#{connection.quote_string(value.first)}%'"
+    when "!~"
+      sql = "#{db_table}.#{db_field} NOT LIKE '%#{connection.quote_string(value.first)}%'"
+    end
+
+    return sql
+  end
+
   
   def add_custom_fields_filters(custom_fields)
     @available_filters ||= {}

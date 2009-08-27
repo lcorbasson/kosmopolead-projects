@@ -17,8 +17,11 @@
 
 class QueriesController < ApplicationController
   menu_item :queries
-  before_filter :find_query, :except => [:new,:index]
+  before_filter :find_query, :except => [:projects,:new,:index]
   before_filter :find_optional_project, :only => [:edit,:new,:index]
+
+   helper :sort
+  include SortHelper
 
   def index
      @projects = Project.find :all,
@@ -31,6 +34,8 @@ class QueriesController < ApplicationController
       @queries = Query.find(:all,
                             :order => "name ASC",
                             :conditions => visible.conditions)
+
+     retrieve_query
   end
   
   def new
@@ -82,6 +87,42 @@ class QueriesController < ApplicationController
     @query.destroy if request.post?
     redirect_to :controller => 'queries', :action => 'index', :set_filter => 1
   end
+
+  def projects   
+    retrieve_query
+    sort_init 'id', 'desc'
+    sort_update({'id' => "#{Project.table_name}.id"}.merge(@query.columns.inject({}) {|h, c| h[c.name.to_s] = c.sortable; h}))
+
+
+
+    if @query.valid?
+      limit = per_page_option
+      respond_to do |format|
+        format.html { }
+        format.atom { }
+        format.csv  { limit = Setting.issues_export_limit.to_i }
+        format.pdf  { limit = Setting.issues_export_limit.to_i }
+      end
+      @project_count = Project.count( :conditions => @query.statement_projects)
+      @project_pages = Paginator.new self, @project_count, limit, params['page']
+      @projects = Project.find :all, :order => sort_clause,
+                           :include => [ :parent],
+                           :conditions => "#{@query.statement_projects}",
+                           :limit  =>  limit,
+                           :offset =>  @project_pages.current.offset
+      respond_to do |format|       
+        format.js  {          
+            render(:update) {|page| page.replace "projects_list",:partial=>"projects/index"}
+        }
+      end
+    else
+      # Send html if the query is not valid
+      render(:template => 'queries/index.rhtml', :layout => !request.xhr?)
+    end
+  rescue ActiveRecord::RecordNotFound
+    render_404
+    
+  end
   
 private
   def find_query
@@ -98,4 +139,39 @@ private
   rescue ActiveRecord::RecordNotFound
     render_404
   end
+
+  # Retrieve query from session or build a new query
+  def retrieve_query
+     
+      if params[:set_filter]
+        # Give it a name, required to be valid
+        @query = Query.new(:name => "_")
+        @query.project = nil
+        if params[:fields] and params[:fields].is_a? Array
+          params[:fields].each do |field|
+            @query.add_filter_projects(field, params[:operators][field], params[:values][field])
+          end
+        else
+          @query.available_filters_projects.keys.each do |field|
+            @query.add_short_filter_projects(field, params[field]) if params[field]
+          end
+        end
+        session[:query] = {:project_id => @query.project_id, :filters => @query.filters}
+      else
+         @query = Query.new(:name => "_")
+      @query.available_filters_projects.keys.each do |field|
+        @query.add_short_filter(field, params[field]) if params[field]
+      end
+      end
+     
+    
+
+
+
+
+
+
+    
+  end
+
 end

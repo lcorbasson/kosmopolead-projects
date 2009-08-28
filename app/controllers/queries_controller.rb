@@ -149,6 +149,7 @@ private
         # Give it a name, required to be valid
         @query = Query.new(:name => "_")
         @query.project = nil
+        @query.query_type = "project"
         if params[:fields] and params[:fields].is_a? Array
           params[:fields].each do |field|
             @query.add_filter(field, params[:operators][field], params[:values][field])
@@ -161,6 +162,7 @@ private
         
       else
          @query = Query.new(:name => "_")
+         @query.query_type = "project"
            @query.available_filters_projects.keys.each do |field|
         @query.add_short_filter(field, params[field]) if params[field]
       end

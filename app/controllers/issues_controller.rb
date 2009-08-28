@@ -72,7 +72,7 @@ class IssuesController < ApplicationController
       @issue_pages = Paginator.new self, @issue_count, limit, params['page']
       @issues = Issue.find :all, :order => sort_clause,
                            :include => [ :parent, :assigned_to, :status, :tracker, :project, :priority, :category, :fixed_version ],
-                           :conditions => "#{'('+@query.project_statement+')'+' and ' if @query.statement} issues.parent_id is NULL" ,
+                           :conditions => "#{'('+@query.statement+')'+' and ' if !@query.statement.blank?} issues.parent_id is NULL" ,
                            :limit  =>  limit,
                            :offset =>  @issue_pages.current.offset
       respond_to do |format|
@@ -418,26 +418,24 @@ class IssuesController < ApplicationController
   def gantt
     @gantt = Redmine::Helpers::Gantt.new(params)
     retrieve_query
-    if @query.valid?
+   if @query.valid?
       events = []
-
-
       # Issues that have start and due dates
-      events += Issue.find(:all, 
+      events += Issue.find(:all,
                            :order => "start_date, due_date",
-                           :include => [:tracker, :status, :assigned_to, :priority, :project], 
-                           :conditions => ["#{'('+@query.project_statement+')'+' and ' if @query.statement} (((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?)) and start_date is not null) AND issues.parent_id is null", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
+                           :include => [:tracker, :status, :assigned_to, :priority, :project],
+                           :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?)) and start_date is not null and due_date is not null)", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
                            )
       # Issues that don't have a due date but that are assigned to a version with a date
-      events += Issue.find(:all, 
+      events += Issue.find(:all,
                            :order => "start_date, effective_date",
-                           :include => [:tracker, :status, :assigned_to, :priority, :project, :fixed_version], 
-                           :conditions => ["#{'('+@query.project_statement+')'+' and ' if @query.statement} (((start_date>=? and start_date<=?) or (effective_date>=? and effective_date<=?) or (start_date<? and effective_date>?)) and start_date is not null and due_date is null and effective_date is not null) AND issues.parent_id is null", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
+                           :include => [:tracker, :status, :assigned_to, :priority, :project, :fixed_version],
+                           :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (effective_date>=? and effective_date<=?) or (start_date<? and effective_date>?)) and start_date is not null and due_date is null and effective_date is not null)", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
                            )
       # Versions
       events += Version.find(:all, :include => :project,
-                                   :conditions => ["#{'('+@query.project_statement+')'+' and ' if @query.statement} effective_date BETWEEN ? AND ?", @gantt.date_from, @gantt.date_to])
-                                   
+                                   :conditions => ["(#{@query.project_statement}) AND effective_date BETWEEN ? AND ?", @gantt.date_from, @gantt.date_to])
+
       @gantt.events = events
     end
     
@@ -598,7 +596,7 @@ private
       cond = "project_id IS NULL"
       cond << " OR project_id = #{@project.id}" if @project
       @query = Query.find(params[:query_id], :conditions => cond)
-      @query.project = @project
+      @query.project = @project     
       session[:query] = {:id => @query.id, :project_id => @query.project_id}
       
     else
@@ -606,6 +604,7 @@ private
         # Give it a name, required to be valid
         @query = Query.new(:name => "_")
         @query.project = @project
+         @query.query_type = "issue"
         if params[:fields] and params[:fields].is_a? Array
           params[:fields].each do |field|
             @query.add_filter(field, params[:operators][field], params[:values][field])
@@ -620,6 +619,7 @@ private
         @query = Query.find_by_id(session[:query][:id]) if session[:query][:id]
         @query ||= Query.new(:name => "_", :project => @project, :filters => session[:query][:filters])
         @query.project = @project
+        @query.query_type = "issue"
       end
      
     end

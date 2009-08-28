@@ -83,4 +83,8 @@ module ProjectsHelper
       ActivitySectorTranslation.find(:all, :conditions => {:local => language.to_s})
    end
 
+    def my_sector(language, id)
+      ActivitySectorTranslation.find(:all, :conditions => {:local => language.to_s, :activity_sector_id => id})
+    end
+
 end

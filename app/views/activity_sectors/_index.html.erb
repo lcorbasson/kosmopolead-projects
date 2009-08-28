@@ -1,0 +1,13 @@
+<table>
+  <tr>
+    <th>Identifier</th>
+  </tr>
+<% for activity_sector in @activity_sectors %>
+  <tr>
+    <td><%=h activity_sector.identifier %></td>
+    <td><%= link_to 'Show', activity_sector %></td>
+    <td><%= link_to 'Edit', edit_activity_sector_path(activity_sector) %></td>
+    <td><%= link_to 'Destroy', activity_sector, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>

@@ -8,14 +8,14 @@
   <div id="preview" class="wiki"></div>
     <div class="buttons right">
       <%= link_to_remote l(:button_create),
-                         { :url => { :controller => 'issues', :action => 'create', :project_id => @project.id },
+                         { :url => { :controller => 'issues', :action => 'create', :project_id => @project },
                            :method => 'post',
                            :update => 'content',
                            :with => "Form.serialize('issue-form')",                          
                          }, :accesskey => accesskey(:preview),:class=>"button btn_blue corner-all" %>
 
     <%= link_to_remote l(:button_create_and_continue),
-                         { :url => { :controller => 'issues', :action => 'create', :project_id => @project.id,:continue=>true },
+                         { :url => { :controller => 'issues', :action => 'create', :project_id => @project,:continue=>true },
                            :method => 'post',
                            :update => 'content',
                            :with => "Form.serialize('issue-form')",

@@ -579,13 +579,19 @@ private
   end
   
   def find_project
-    @project = Project.find_by_identifier(params[:project_id])
+    
+      @project = Project.find_by_identifier(params[:project_id])
+   
+
     rescue ActiveRecord::RecordNotFound
       render_404
   end
   
   def find_optional_project
-    @project = Project.find_by_identifier(params[:project_id]) unless params[:project_id].blank?
+  
+      @project = Project.find_by_identifier(params[:project_id])
+   
+
     allowed = User.current.allowed_to?({:controller => params[:controller], :action => params[:action]}, @project, :global => true)
     allowed ? true : deny_access
   rescue ActiveRecord::RecordNotFound

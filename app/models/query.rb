@@ -351,8 +351,11 @@ class Query < ActiveRecord::Base
       sql << ')'
       filters_clauses << sql
     end if filters and valid?
-    
-    filters_clauses.join(' AND ')
+    if self.query_type == "issue"
+      (filters_clauses << project_statement).join(' AND ')
+    else
+      filters_clauses.join(' AND ')
+    end
   end
 
 

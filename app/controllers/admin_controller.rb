@@ -46,6 +46,12 @@ class AdminController < ApplicationController
 						:limit  =>  @project_pages.items_per_page,
 						:offset =>  @project_pages.current.offset
 
+
+
+    
+
+
+
     render :action => "projects", :layout => false if request.xhr?
   end
 

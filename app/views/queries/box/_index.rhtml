@@ -2,14 +2,18 @@
 <%= link_to_if_authorized l(:label_query_new), {:controller => 'queries', :action => 'new', :project_id => @project}, :class => 'icon icon-add' %>
 </div>
 
-<% if @queries.empty? %>
+<% if queries.empty? %>
   <p><i><%=l(:label_no_data)%></i></p>
 <% else %>
   <table class="list">
-  <% @queries.each do |query| %>
+  <% queries.each do |query| %>
     <tr class="<%= cycle('odd', 'even') %>">
       <td>
-        <%= link_to_remote query.name, {:url=>{:controller => 'issues', :action => 'index', :project_id => @project, :query_id => query}} %>
+        <%  if query.query_type=="issue" %>
+          <%= link_to_remote query.name, {:url=>{:controller => 'issues', :action => 'index', :project_id => @project, :query_id => query}} %>
+        <% else %>
+          <%= link_to_remote query.name, {:url=>{:controller => 'queries', :action => 'projects',  :query_id => query}} %>
+        <% end %>
       </td>
       <td align="right">
         <small>
@@ -23,3 +27,6 @@
   <% end %>
   </table>
 <% end %>
+
+
+

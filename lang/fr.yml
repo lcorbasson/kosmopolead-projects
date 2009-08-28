@@ -297,6 +297,8 @@ project_module_wiki: Wiki
 project_module_repository: Dépôt de sources
 project_module_boards: Forums de discussion
 
+label_project_query_plural: Requêtes sur les projets
+label_event_query_plural: Requêtes sur les tâches
 label_funding: Financement
 label_members: Membres
 label_partners: Partenaires

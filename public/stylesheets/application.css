@@ -138,7 +138,6 @@ body {
   background-color: #190f06;
 }
 
-#places_wrapper {margin-top:30px;}
 #places_wrapper ul li a:visited {
   display: block;
   font-size: 11px;
@@ -1087,8 +1086,9 @@ height:17px;
 #photo_index img {margin:5px;}
 
 
-#editmodfunding_fields_list {position:absolute;width:auto;}
+#editmodfunding_fields_list,#alertmod,#delmodfunding_fields_list,#srchmodfunding_fields_list {position:absolute;width:auto;}
 #tab-content-funding .ui-jqgrid .loading{z-index:940;}
 #gview_funding_fields_list .ui-jqgrid tr.jqgrow td{border:1px solid #DDDDDD;}
 #gview_funding_fields_list .ui-th-column{background:#EEEEEE;border-right:2px solid #DDDDDD;border-bottom:none;}
 #pg_pager {background:url(../images/bg_bloc_admin.png) repeat-x}
+

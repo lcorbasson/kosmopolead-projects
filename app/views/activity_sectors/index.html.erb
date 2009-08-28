@@ -1,16 +1,11 @@
-<h1>Listing activity_sectors</h1>
+<h1><%=l(:label_sectors)%></h1>
 
-
-<div id="activity_sectors"></div>
 <div class="contextual">
-    <%= toggle_link l(:button_add), 'new-activity_sector-form'%>
+  <%= toggle_link l(:button_add), 'new-activity_sector-form'%>
 </div>
-
-<%#*A%>
-
-
-<%= render :partial => 'activity_sectors/index', :locals=>{:activity_sectors=>@activity_sectors}%>
-
+<div id="activity_sectors">
+  <%= render :partial => 'activity_sectors/index', :locals=>{:activity_sectors=>@activity_sectors}%>
+</div>
 
 <% remote_form_for(:activity_sector, @activity_sector,
                  :url => {:controller => 'activity_sectors', :action => 'create'},
@@ -18,5 +13,3 @@
                  :html => {:id => 'new-activity_sector-form', :style => (@relation ? '' : 'display: none;')}) do |f| %>
 <%= render :partial => 'activity_sectors/edit', :locals => {:f => f}%>
 <% end %>
-
-<%#*A%>

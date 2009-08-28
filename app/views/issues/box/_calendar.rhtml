@@ -1,6 +1,6 @@
   <div class="box_filters">
     <% form_tag({}, :id => 'query_form') do %>
-    <% if !@query %>
+    <% if @query.new_record? %>
       <div id="filters">
          <span class="title_filter"><%= l(:label_filter_plural) %></span>
             <div class="toggle_filter toggle open">&nbsp;&nbsp;</div>

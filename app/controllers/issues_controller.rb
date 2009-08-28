@@ -472,10 +472,10 @@ class IssuesController < ApplicationController
       events = []
       events += Issue.find(:all, 
                            :include => [:tracker, :status, :assigned_to, :priority, :project], 
-                           :conditions => ["(#{@query.statement}) AND ((start_date BETWEEN ? AND ?) OR (due_date BETWEEN ? AND ?))", @calendar.startdt, @calendar.enddt, @calendar.startdt, @calendar.enddt]
+                           :conditions => ["#{'('+@query.project_statement+')'+' and ' if @query.statement} ((start_date BETWEEN ? AND ?) OR (due_date BETWEEN ? AND ?))", @calendar.startdt, @calendar.enddt, @calendar.startdt, @calendar.enddt]
                            )
       events += Version.find(:all, :include => :project,
-                                   :conditions => ["(#{@query.project_statement}) AND effective_date BETWEEN ? AND ?", @calendar.startdt, @calendar.enddt])
+                                   :conditions => ["#{'('+@query.project_statement+')'+' and ' if @query.statement}    effective_date BETWEEN ? AND ?", @calendar.startdt, @calendar.enddt])
                                      
       @calendar.events = events
     end

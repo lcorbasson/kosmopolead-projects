@@ -18,24 +18,17 @@
 class QueriesController < ApplicationController
   menu_item :queries
   before_filter :find_query, :except => [:projects,:new,:index]
+  before_filter :find_queries, :only => [:projects,:index]
   before_filter :find_optional_project, :only => [:edit,:new,:index]
 
    helper :sort
   include SortHelper
 
-  def index
-     @projects = Project.find :all,
-                            :conditions => Project.visible_by(User.current),
-                            :include => :parent
-     # User can see public queries and his own queries
-     visible = ARCondition.new(["is_public = ? OR user_id = ?", true, (User.current.logged? ? User.current.id : 0)])
-     # Project specific queries and global queries
-     visible << (["project_id IS NULL OR project_id IN (?)", @projects])
-      @queries = Query.find(:all,
-                            :order => "name ASC",
-                            :conditions => visible.conditions)
+ 
 
-     retrieve_query
+  def index
+   retrieve_query
+   render :layout => !request.xhr?
   end
   
   def new
@@ -44,14 +37,14 @@ class QueriesController < ApplicationController
     @query.user = User.current
     @query.is_public = false unless (@query.project && current_role.allowed_to?(:manage_public_queries)) || User.current.admin?
     @query.column_names = nil if params[:default_columns]
-    
+    @query.query_type = params[:query_type]
     params[:fields].each do |field|
       @query.add_filter(field, params[:operators][field], params[:values][field])
     end if params[:fields]
     
     if request.post? && params[:confirm] && @query.save
       flash[:notice] = l(:notice_successful_create)
-      redirect_to :controller => 'issues', :action => 'index', :project_id => @project, :query_id => @query
+      redirect_to :controller => 'queries', :action => 'index'
       return
     end
     respond_to do |format|
@@ -103,16 +96,21 @@ class QueriesController < ApplicationController
         format.csv  { limit = Setting.issues_export_limit.to_i }
         format.pdf  { limit = Setting.issues_export_limit.to_i }
       end
-      @project_count = Project.count( :conditions => @query.statement_projects)
+      conditions = @query.statement_projects
+
+      @project_count = Project.count( :conditions => conditions)
       @project_pages = Paginator.new self, @project_count, limit, params['page']
       @projects = Project.find :all, :order => sort_clause,
                            :include => [ :parent],
-                           :conditions => "#{@query.statement_projects}",
+                           :conditions => conditions,
                            :limit  =>  limit,
                            :offset =>  @project_pages.current.offset
-      respond_to do |format|       
-        format.js  {          
-            render(:update) {|page| page.replace "projects_list",:partial=>"projects/index"}
+      respond_to do |format|
+        format.js {
+        render:update do |page|
+            page << "jQuery('#projects_list').html('#{escape_javascript(render:partial=>'projects/index')}');"
+           
+          end
         }
       end
     else
@@ -142,36 +140,47 @@ private
 
   # Retrieve query from session or build a new query
   def retrieve_query
-     
+    if !params[:query_id].blank?     
+      @query = Query.find(params[:query_id])  
+  
+
+    else
       if params[:set_filter]
         # Give it a name, required to be valid
         @query = Query.new(:name => "_")
         @query.project = nil
         if params[:fields] and params[:fields].is_a? Array
           params[:fields].each do |field|
-            @query.add_filter_projects(field, params[:operators][field], params[:values][field])
+            @query.add_filter(field, params[:operators][field], params[:values][field])
           end
         else
           @query.available_filters_projects.keys.each do |field|
-            @query.add_short_filter_projects(field, params[field]) if params[field]
+            @query.add_short_filter(field, params[field]) if params[field]
           end
         end
-        session[:query] = {:project_id => @query.project_id, :filters => @query.filters}
+        
       else
          @query = Query.new(:name => "_")
-      @query.available_filters_projects.keys.each do |field|
+           @query.available_filters_projects.keys.each do |field|
         @query.add_short_filter(field, params[field]) if params[field]
       end
       end
-     
-    
-
-
-
-
-
-
-    
+    end
   end
+
+  def find_queries
+    @projects = Project.find :all,
+                            :conditions => Project.visible_by(User.current),
+                            :include => :parent
+
+
+    @queries = Query.find(:all,
+                            :order => "name ASC",
+                            :conditions => ["(is_public = ? OR user_id = ?) and (project_id IS NULL OR project_id IN (?)) and query_type='issue'", true, (User.current.logged? ? User.current.id : 0),@projects])
+
+    @project_queries = Query.find(:all,
+                            :order => "name ASC",
+                            :conditions => ["(is_public = ? OR user_id = ?) and (project_id IS NULL OR project_id IN (?)) and query_type='project'", true, (User.current.logged? ? User.current.id : 0),@projects])
+    end
 
 end

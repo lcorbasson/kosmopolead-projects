@@ -1,5 +1,11 @@
 <%= box(
-    "#{l(:label_query_plural)}",
-    "#{render:partial=>'queries/box/index'}") %>
+    "#{l(:label_event_query_plural)}",
+    "#{render:partial=>'queries/box/index',:locals=>{:queries=>@queries}}") %>
+
+<%= box(
+    "#{l(:label_project_query_plural)}",
+    "#{render:partial=>'queries/box/projects',:locals=>{:queries=>@project_queries}}",
+    ["#{toggle_link l(:label_query_new), 'new_query_project', :class => 'icon icon-add'}"
+    ]) %>
 
 

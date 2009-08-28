@@ -60,6 +60,9 @@ class Query < ActiveRecord::Base
   
   validates_presence_of :name, :on => :save
   validates_length_of :name, :maximum => 255
+
+  named_scope :projects, :conditions=>["query_type= ?", "project"]
+  named_scope :issues, :conditions=>["query_type= ?", "issue"]
     
   @@operators = { "="   => :label_equals, 
                   "!"   => :label_not_equals,
@@ -115,7 +118,7 @@ class Query < ActiveRecord::Base
   
   def initialize(attributes = nil)
     super attributes
-#    self.filters ||= { 'status_id' => {:operator => "o", :values => [""]} }
+    self.filters ={}
     set_language_if_valid(User.current.language)
   end
   
@@ -193,11 +196,12 @@ class Query < ActiveRecord::Base
     return @available_filters_projects if @available_filters_projects
 
     
-    @available_filters_projects = {  "status" => { :type => :list, :order => 1, :values => [[l(:label_all), ''],
-                        [l(:status_active), 1]] },
-                                    "builder_by" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] } }
-                                    
-                                  }
+    @available_filters_projects = {
+                    "status" => { :type => :list, :order => 1, :values => [[l(:label_all), ''],[l(:status_active), 1]] },
+                    "builder_by" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }},
+                    "author_id" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }},
+                    "watcher_id" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }}
+                                     }
 
     @available_filters_projects
   end
@@ -207,7 +211,7 @@ class Query < ActiveRecord::Base
     # values must be an array
     return unless values and values.is_a? Array # and !values.first.empty?
     # check if field is defined as an available filter
-    if available_filters.has_key? field
+   
       filter_options = available_filters[field]
       # check if operator is allowed for that filter
       #if @@operators_by_filter_type[filter_options[:type]].include? operator
@@ -215,7 +219,7 @@ class Query < ActiveRecord::Base
       #  filters[field] = {:operator => operator, :values => allowed_values } if (allowed_values.first and !allowed_values.first.empty?) or ["o", "c", "!*", "*", "t"].include? operator
       #end
       filters[field] = {:operator => operator, :values => values }
-    end
+   
   end
   
   def add_short_filter(field, expression)
@@ -224,32 +228,7 @@ class Query < ActiveRecord::Base
     add_filter field, (parms[0] || "="), [parms[1] || ""]
   end
 
-  def add_filter_projects(field, operator, values)
-    # values must be an array
-    return unless values and values.is_a? Array # and !values.first.empty?
-    # check if field is defined as an available filter
-    if available_filters_projects.has_key? field
-      filter_options = available_filters_projects[field]
-      # check if operator is allowed for that filter
-      #if @@operators_by_filter_type[filter_options[:type]].include? operator
-      #  allowed_values = values & ([""] + (filter_options[:values] || []).collect {|val| val[1]})
-      #  filters[field] = {:operator => operator, :values => allowed_values } if (allowed_values.first and !allowed_values.first.empty?) or ["o", "c", "!*", "*", "t"].include? operator
-      #end
-      if !filters
-        filters= []
-        filters[field] = {:operator => operator, :values => values }
-      else
-        filters[field] = {:operator => operator, :values => values }
-      end
-    end
-  end
-
-  def add_short_filter_projects(field, expression)
-    return unless expression
-    parms = expression.scan(/^(o|c|\!|\*)?(.*)$/).first
-    add_filter_projects field, (parms[0] || "="), [parms[1] || ""]
-  end
-  
+   
   def has_filter?(field)
     filters and filters[field]
   end
@@ -373,7 +352,7 @@ class Query < ActiveRecord::Base
       filters_clauses << sql
     end if filters and valid?
     
-    (filters_clauses << project_statement).join(' AND ')
+    filters_clauses.join(' AND ')
   end
 
 
@@ -387,22 +366,22 @@ class Query < ActiveRecord::Base
 
       sql = ''
       is_custom_filter = false
-      
+
+      db_table = Project.table_name
+
       if (field == "status_id")
-        db_field = 'status'
-        field = "status"
+        db_field = 'status'        
       else
-          # regular field
-          db_table = Issue.table_name
-          db_field = field
-          sql << '('
+          # regular field          
+          db_field = field          
        end   
-     
-      sql = sql + sql_for_field(field, v, db_table, db_field, is_custom_filter)
+       sql << '('
+      sql = sql + sql_for_field_projects(field, v, db_table, db_field, is_custom_filter)
 
       sql << ')'
-      filters_clauses << sql
-    end if filters and valid?
+     filters_clauses << sql
+    end
+    filters_clauses.join(' AND ')   
   end
   
   

@@ -1,0 +1,65 @@
+<% if queries.empty? %>
+  <p><i><%=l(:label_no_data)%></i></p>
+<% else %>
+  <table class="list">
+  <% queries.each do |query| %>
+    <tr class="<%= cycle('odd', 'even') %>">
+      <td>
+        <%  if query.query_type=="issue" %>
+          <%= link_to_remote query.name, {:url=>{:controller => 'issues', :action => 'index', :project_id => @project, :query_id => query}} %>
+        <% else %>
+          <%= link_to_remote query.name, {:url=>{:controller => 'queries', :action => 'projects',  :query_id => query}} %>
+        <% end %>
+      </td>
+      <td align="right">
+        <small>
+        <% if query.editable_by?(User.current) %>
+        <%= link_to l(:button_edit), {:controller => 'queries', :action => 'edit', :id => query}, :class => 'icon icon-edit' %>
+        <%= link_to l(:button_delete), {:controller => 'queries', :action => 'destroy', :id => query}, :confirm => l(:text_are_you_sure), :method => :post, :class => 'icon icon-del' %>
+        </small>
+      <% end %>
+      </td>
+    </tr>
+  <% end %>
+  </table>
+<% end %>
+
+<div class="box_filters" style="display:none;" id="new_query_project">
+     <div id="filters">
+        <% form_tag({ :controller => 'queries', :action => 'projects' }, :id => 'query_form') do %>
+
+          <span class="title_filter"><%= l(:label_filter_plural) %></span>
+          <div class="toggle_filter toggle open">&nbsp;&nbsp;</div>
+          <div class="clearer"></div>
+          <div class="toggler_filter toggler">
+              <div id="effect_filter" class="effect">
+                <%= render :partial => 'queries/filters', :locals => {:query => @query} %>
+                <%= hidden_field_tag :query_type,"project" %>
+              </div>
+          </div>
+          <p class="buttons">
+          <%= link_to_remote l(:button_apply),
+                             { :url => {:controller => 'queries', :action => 'projects', :set_filter => 1 },
+                               :update => "content",
+                               :with => "Form.serialize('query_form')"
+                             }, :class => 'btn_blue corner-all button' %>
+
+          <%= link_to_remote l(:button_clear),
+                             { :url => { :set_filter => 1 },
+                               :update => "content_wrapper",
+                             }, :class => 'btn_orange corner-all button'  %>
+          <% if User.current.allowed_to?(:save_queries, @project, :global => true) %>
+            <%= link_to_remote l(:button_save), {:url=>{}}, :onclick =>"javascript:jQuery.ajax({data:jQuery.param(jQuery('#query_form').serializeArray()), dataType:'script', type:'post', url:'/queries/new'}); return false;", :class => 'icon icon-save' %>
+
+            <%#= link_to_remote l(:button_save), {:url=>{:controller=>"queries",:action=>"new"}}, :class => 'icon icon-save' %>
+          <% end %>
+          </p>
+          <div class="clearer"></div>
+          </fieldset>
+        <% end %>
+      </div>
+  </div>
+<div id="projects_list">
+
+</div>
+  <%= javascript_tag("initialize_toggle('filter');") %>

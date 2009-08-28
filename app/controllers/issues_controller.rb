@@ -25,7 +25,7 @@ class IssuesController < ApplicationController
   
   before_filter :find_issue, :only => [:show, :edit, :reply]
   before_filter :find_issues, :only => [:bulk_edit, :move, :destroy]
-  before_filter :find_project, :only => [:index,:create,:new, :update_form, :preview]
+  before_filter :find_project, :only => [:calendar,:gantt,:index,:create,:new, :update_form, :preview]
 
   before_filter :find_projects, :only => [:create,:gantt, :index, :calendar,:new,:show]
   before_filter :authorize, :except => [:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
@@ -72,7 +72,7 @@ class IssuesController < ApplicationController
       @issue_pages = Paginator.new self, @issue_count, limit, params['page']
       @issues = Issue.find :all, :order => sort_clause,
                            :include => [ :parent, :assigned_to, :status, :tracker, :project, :priority, :category, :fixed_version ],
-                           :conditions => "#{@query.statement} and issues.parent_id is NULL" ,
+                           :conditions => "#{'('+@query.project_statement+')'+' and ' if @query.statement} issues.parent_id is NULL" ,
                            :limit  =>  limit,
                            :offset =>  @issue_pages.current.offset
       respond_to do |format|
@@ -426,17 +426,17 @@ class IssuesController < ApplicationController
       events += Issue.find(:all, 
                            :order => "start_date, due_date",
                            :include => [:tracker, :status, :assigned_to, :priority, :project], 
-                           :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?)) and start_date is not null) AND issues.parent_id is null", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
+                           :conditions => ["#{'('+@query.project_statement+')'+' and ' if @query.statement} (((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?)) and start_date is not null) AND issues.parent_id is null", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
                            )
       # Issues that don't have a due date but that are assigned to a version with a date
       events += Issue.find(:all, 
                            :order => "start_date, effective_date",
                            :include => [:tracker, :status, :assigned_to, :priority, :project, :fixed_version], 
-                           :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (effective_date>=? and effective_date<=?) or (start_date<? and effective_date>?)) and start_date is not null and due_date is null and effective_date is not null) AND issues.parent_id is null", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
+                           :conditions => ["#{'('+@query.project_statement+')'+' and ' if @query.statement} (((start_date>=? and start_date<=?) or (effective_date>=? and effective_date<=?) or (start_date<? and effective_date>?)) and start_date is not null and due_date is null and effective_date is not null) AND issues.parent_id is null", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
                            )
       # Versions
       events += Version.find(:all, :include => :project,
-                                   :conditions => ["(#{@query.project_statement}) AND effective_date BETWEEN ? AND ?", @gantt.date_from, @gantt.date_to])
+                                   :conditions => ["#{'('+@query.project_statement+')'+' and ' if @query.statement} effective_date BETWEEN ? AND ?", @gantt.date_from, @gantt.date_to])
                                    
       @gantt.events = events
     end

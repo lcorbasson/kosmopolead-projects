@@ -1,0 +1,76 @@
+  <div class="box_filters">
+    <% form_tag({}, :id => 'query_form') do %>
+    <% if !@query %>
+      <div id="filters">
+         <span class="title_filter"><%= l(:label_filter_plural) %></span>
+            <div class="toggle_filter toggle open">&nbsp;&nbsp;</div>
+            <div class="toggler_filter toggler">
+              <div class="clearer"></div>
+                <div id="effect_filter" class="effect">
+                  <%= render :partial => 'queries/filters', :locals => {:query => @query} %>
+                </div>
+            </div>
+            <span class="title_filter"><%= l(:label_date_range) %></span>
+            <div class="toggle_date toggle open">&nbsp;&nbsp;</div>
+            <div class="toggler_date toggler">
+              <div class="clearer"></div>
+               <div id="effect_date" class="effect"><legend><%= l(:label_date_range) %></legend>
+                      <%= select_month(@month, :prefix => "month", :discard_type => true) %>
+                      <%= select_year(@year, :prefix => "year", :discard_type => true) %>
+                  </div>
+            </div>
+       </div>
+    <% else %>
+          <h2><%=h @query.name %></h2>
+          <% html_title @query.name %>
+           <div id="filters">
+            <span class="title_filter"><%= l(:label_date_range) %></span>
+            <div class="toggle_date toggle open">&nbsp;&nbsp;</div>            
+            <div class="toggler_date toggler">
+              <div class="clearer"></div>
+               <div id="effect_date" class="effect"><legend><%= l(:label_date_range) %></legend>
+                      <%= select_month(@month, :prefix => "month", :discard_type => true) %>
+                      <%= select_year(@year, :prefix => "year", :discard_type => true) %>
+                  </div>
+            </div>
+       </div>
+      <% end %>
+      <p class="buttons">
+        <%= link_to_remote l(:button_apply),
+                           { :url => { :set_filter => (@query.new_record? ? 1 : nil) },
+                             :update => "content",
+                             :with => "Form.serialize('query_form')"
+                           }, :class => 'button btn_blue corner-all' %>
+
+        <%= link_to_remote l(:button_clear),
+                           { :url => { :set_filter => (@query.new_record? ? 1 : nil) },
+                             :update => "content",
+                           }, :class => 'button btn_orange corner-all' if @query.new_record? %>
+      </p>
+      <div class="clearer"></div>
+
+
+
+    <% end %>
+  </div>
+   <p style="float:right; margin:0px;">
+      <%= link_to_remote ('&#171; ' + (@month==1 ? "#{month_name(12)} #{@year-1}" : "#{month_name(@month-1)}")),
+                              {:update => "content", :url => { :year => (@month==1 ? @year-1 : @year), :month =>(@month==1 ? 12 : @month-1) }},
+                              {:href => url_for(:action => 'calendar', :year => (@month==1 ? @year-1 : @year), :month =>(@month==1 ? 12 : @month-1))}
+                              %> |
+      <%= link_to_remote ((@month==12 ? "#{month_name(1)} #{@year+1}" : "#{month_name(@month+1)}") + ' &#187;'),
+                              {:update => "content", :url => { :year => (@month==12 ? @year+1 : @year), :month =>(@month==12 ? 1 : @month+1) }},
+                              {:href => url_for(:action => 'calendar', :year => (@month==12 ? @year+1 : @year), :month =>(@month==12 ? 1 : @month+1))}
+                              %>
+      </p>
+      <%= error_messages_for 'query' %>
+  <% if @query.valid? %>
+  <%= render :partial => 'common/calendar', :locals => {:calendar => @calendar} %>
+
+  <%= image_tag 'arrow_from.png' %>&nbsp;&nbsp;<%= l(:text_tip_task_begin_day) %><br />
+  <%= image_tag 'arrow_to.png' %>&nbsp;&nbsp;<%= l(:text_tip_task_end_day) %><br />
+  <%= image_tag 'arrow_bw.png' %>&nbsp;&nbsp;<%= l(:text_tip_task_begin_end_day) %><br />
+  <% end %>
+
+  <%= javascript_tag("initialize_toggle('filter');initialize_toggle('date')") %>
+

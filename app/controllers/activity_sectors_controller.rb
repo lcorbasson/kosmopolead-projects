@@ -43,11 +43,13 @@ class ActivitySectorsController < ApplicationController
 
     respond_to do |format|
       if @activity_sector.save
+        @activity_sectors = ActivitySector.find(:all)
         flash[:notice] = 'ActivitySector was successfully created.'
-        render :update do |page|
-          #format.html { redirect_to(@activity_sector) }
-          page.replace_html "activity_sectors", :partial => 'activity_sectors/index'
-        end
+        format.js  {
+          render :update do |page|
+            page.replace_html "activity_sectors", :partial => 'activity_sectors/index'
+          end
+        }
       else
         format.html { render :action => "new" }
       end

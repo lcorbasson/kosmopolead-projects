@@ -1,6 +1,6 @@
 <h1>Listing activity_sector_translations</h1>
 
-<table>
+<table class="list">
   <tr>
     <th>Name</th>
     <th>Description</th>
@@ -9,7 +9,7 @@
   </tr>
 
   <% for activity_sector_translation in @activity_sector_translations %>
-  <tr>
+  <tr class="<%= cycle("even", "odd") %>">
     <td><%=h activity_sector_translation.name %></td>
     <td><%=h activity_sector_translation.description %></td>
     <td><%=h activity_sector_translation.local %></td>

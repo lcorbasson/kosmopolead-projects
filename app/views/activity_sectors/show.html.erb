@@ -1,13 +1,17 @@
 <p>
   <b>Identifier:</b>
   <%=h @activity_sector.identifier %>
-  <table>
+  <table class="list">
+    <th>Langue</th>
+    <th></th>
+    <th></th>
+    <th></th>
     <% @activity_sector.activity_sector_translations.each do |a| %>
-      <tr><td><%= ll(a.local, :general_lang_name) %>
+      <tr class="<%= cycle("even", "odd") %>"><td><%= ll(a.local, :general_lang_name) %>
         </td>
         <td><%= a.name %></td>
-        <td><%= link_to 'edit', edit_activity_sector_activity_sector_translation_path(@activity_sector, a) %></td>
-        <td><%= link_to 'destroy', [@activity_sector, a], :controller => :activity_sector_translation,:method => :delete, :confirm => "Are you sure?" %></td>
+        <td><%= link_to l(:button_edit), edit_activity_sector_activity_sector_translation_path(@activity_sector, a) %></td>
+        <td><%= link_to l(:button_delete), [@activity_sector, a], :controller => :activity_sector_translation,:method => :delete, :confirm => "Are you sure?" %></td>
       </tr>
     <% end %>
   </table>

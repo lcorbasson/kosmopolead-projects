@@ -70,7 +70,7 @@ module ProjectsHelper
       rows=[]
        if @project.funding_lines.size>0
         @project.funding_lines.each do |line|
-          rows << {:id=>line.id,:cell=>[line.aap,line.financeur,line.correspondant_financeur,line.montant_demande,line.type,line.date_accord,line.montant_accorde,line.date_liberation,line.montant_libere]}
+          rows << {:id=>line.id,:cell=>[line.aap,line.financeur,line.correspondant_financeur,line.montant_demande,line.funding_type,line.date_accord,line.montant_accorde,line.date_liberation,line.montant_libere]}
           
         end
       end

@@ -46,14 +46,12 @@
 <p><label>Tags</label><%= select_tag  :tags,  options_for_select( @project.tag_list { |tag| [tag.name, tag.id] }, :class => 'selected'), :id => 'tags', :name => 'tags'%>
 </p>
 
-<p><%= f.text_area :description, :rows => 5, :class => 'wiki-edit' %></p>
-
 <% unless @project.identifier_frozen? %>
 <br /><span class="specs"><%= l(:text_length_between, 1, 20) %> <%= l(:text_project_identifier_info) %></span>
 <% end %></p>
 <p><%= f.text_field :homepage, :size => 60 %></p>
 <p><%= f.check_box :is_public %></p>
-<%= wikitoolbar_for 'project_description' %>
+
 
 <% @project.custom_field_values.each do |value| %>
 	<p><%= custom_field_tag_with_label :project, value %></p>

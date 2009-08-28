@@ -1,9 +1,10 @@
-<div id="relations">
-<div class="contextual">
-<% if authorize_for('issue_relations', 'new') %>
-    <%= toggle_link l(:button_add), 'new-relation-form'%>
-<% end %>
-</div>
+<div id="relations" class="editable_box">
+   <div class="links_edit_box">
+     <% if authorize_for('issue_relations', 'new') %>
+        <%= toggle_link image_tag('/images/add.png'), 'new-relation-form'%>
+    <% end %>
+   </div>
+
 
 <p><strong><%=l(:label_related_project)%></strong></p>
 

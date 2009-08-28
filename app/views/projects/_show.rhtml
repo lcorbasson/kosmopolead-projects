@@ -1,5 +1,11 @@
+<% if project.parent %>
+    <%  title = "projet - #{project.parent.acronym} - #{@project.acronym}"  %>
+<% else %>
+    <%  title = "projet - #{project.acronym}"  %>
+<% end %>
+
 <%= box(
-    "profile - #{project.name}",
+    "#{title}",
     "#{render:partial=>'projects/box/show',:locals=>{:project=>project}}",
     ["<span class='visu'>Visualisation</span>",
       "#{link_to_remote("",{:url=>{:controller => 'projects', :action => 'show', :project_id => project}},:method=>:get,:class=>'active icon profile',:name=>'Aperçu')}",

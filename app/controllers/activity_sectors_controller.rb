@@ -40,9 +40,8 @@ class ActivitySectorsController < ApplicationController
   # POST /activity_sectors.xml
   def create
     @activity_sector = ActivitySector.new(params[:activity_sector])
-
     respond_to do |format|
-      if @activity_sector.save
+      if @activity_sector.save       
         flash[:notice] = 'ActivitySector was successfully created.'
         render :update do |page|
           #format.html { redirect_to(@activity_sector) }

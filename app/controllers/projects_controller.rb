@@ -29,7 +29,7 @@ class ProjectsController < ApplicationController
 
 
   before_filter :find_optional_project, :only => :activity
-  before_filter :authorize, :except => [:show_funding, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity ]
+  before_filter :authorize, :except => [:update,:show_funding, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity ]
   before_filter :require_admin, :only => [ :add, :archive, :unarchive, :destroy ]
   accept_key_auth :activity
   
@@ -223,6 +223,23 @@ class ProjectsController < ApplicationController
         settings
         render :action => 'settings'
       end
+    end
+  end
+
+
+  def update
+    @project = Project.find_by_identifier(params[:project_id])
+    case params[:part]
+      when "description"
+        @project.update_attributes(params[:project])
+    end
+
+    respond_to do |format|
+      format.js {
+        render :update do |page|
+          page << "jQuery('.project_description').html('#{escape_javascript(render:partial=>'projects/box/description',:locals=>{:project=>@project})}');"
+        end
+      }
     end
   end
   

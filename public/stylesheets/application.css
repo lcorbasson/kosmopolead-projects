@@ -99,7 +99,7 @@ body {
   padding: 5px;
   margin-right: 4px;
   text-align: center;
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
   text-decoration: none;
   background: transparent url(../images/tab.png) top center no-repeat;
@@ -112,6 +112,8 @@ body {
   color: #009eee;
   font-weight:bold;
 }
+#tabs_wrapper ul li a,#places_wrapper ul li a {font-weight:bold;}
+
 #tabs_wrapper ul li a.active:link {
   background-position: bottom center;
   color: #009eee;
@@ -127,12 +129,13 @@ body {
   color: #009eee;
   font-weight: bold;
 }
+
 #places_wrapper ul li a:link {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
   text-decoration: none;
-  padding: 12px;
+  padding: 10px;
   padding-left: 45px;
   color: #ffffff;
   background-color: #190f06;
@@ -140,10 +143,10 @@ body {
 
 #places_wrapper ul li a:visited {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
   text-decoration: none;
-  padding: 12px;
+  padding: 10px;
   padding-left: 45px;
   color: #ffffff;
   background-color: #190f06;
@@ -213,6 +216,10 @@ table.form tr { padding: 2px 5px; }
 .box .box_content { 
   border-top: 1px solid #dddddd;
 }
+
+.box_content h3 {font-weight:bold;text-transform:uppercase;padding-top:3px;padding-left:5px;font-size:11px;background:url(../images/bg_bloc_admin.png) repeat-x;margin-left:5px;margin-right:5px;height:20px;}
+
+
 .button_wrapper {
   float: left;
   color: #ffffff;
@@ -257,7 +264,7 @@ p {
 
 /***** Links *****/
 a, a:link, a:visited{ color: #333333; text-decoration: none; }
-a:hover, a:active{ color: #c61a1a; text-decoration: underline;}
+a:hover, a:active{text-decoration: none;color:#009EEE;}
 a img{ border: 0; }
 
 a.issue.closed, a.issue.closed:link, a.issue.closed:visited { text-decoration: line-through; }
@@ -385,7 +392,8 @@ div.square {
  overflow: hidden;
  width: .6em; height: .6em;
 }
-.contextual {float:right; white-space: nowrap; line-height:1.4em;margin-top:5px; padding-left: 10px; font-size:0.9em;}
+.contextual {margin-right:10px;
+margin-top:15px;float:right; white-space: nowrap; line-height:1.4em; padding-left: 10px; font-size:0.9em;}
 .contextual input {font-size:0.9em;}
 
 .splitcontentleft{float:left; width:49%;}
@@ -1006,10 +1014,12 @@ height:17px;
 
 /* Blocks*/
 .box_header .icon {height:16px;width:16px;margin-right:5px;}
-.box_title {padding-top:2px;font-size:11px;float:left}
+.box_title {font-size:12px;padding-top:2px;float:left}
 .box_links {padding:3px;float:right;}
-.grey_box {background:#EEEEEE;-moz-border-radius:5px;padding:10px;border:1px solid #DDDDDD;}
-.grey_title {text-transform:uppercase;color:#444444;font-size:11px;font-weight:bold;margin-top:10px;}
+.box_links a {font-size:10px;}
+.box_links a:hover {color:#009EEE;}
+.grey_box {margin:0 0 10px;background:#EEEEEE;-moz-border-radius:5px;padding:10px;border:1px solid #DDDDDD;}
+.grey_title {text-transform:uppercase;color:#444444;font-size:11px;font-weight:bold;}
 
 /* Buttons */
 .buttons input {border:none;}
@@ -1092,3 +1102,7 @@ height:17px;
 #gview_funding_fields_list .ui-th-column{background:#EEEEEE;border-right:2px solid #DDDDDD;border-bottom:none;}
 #pg_pager {background:url(../images/bg_bloc_admin.png) repeat-x}
 
+/* Show issue */
+.show_issue .wiki,.show_issue .user,#history .journal {padding:0 5px 0 5px;}
+
+.links_edit_box {display:none;float:right}

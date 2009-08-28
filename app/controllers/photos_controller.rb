@@ -11,7 +11,7 @@ class PhotosController < ApplicationController
   def new
     @photo = Photo.new
     @photo.gallery_id = @gallery.id
-   render :layout=>false
+    render :layout=>false
   end
 
   def create
@@ -26,8 +26,8 @@ class PhotosController < ApplicationController
 private
 
   def find_project
-    @project = Project.find(params[:project_id])
-    @gallery = @project.gallery
+    @project = Project.find_by_identifier(params[:project_id])
+    @gallery = @project.gallery unless @project.nil?
   end
 
 end

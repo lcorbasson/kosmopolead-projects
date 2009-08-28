@@ -63,6 +63,6 @@ class Journal < ActiveRecord::Base
   end
   
   def attachments
-    journalized.respond_to?(:attachments) ? journalized.attachments : nil
+    journalized.respond_to?(:file_attachments) ? journalized.file_attachments : nil
   end
 end

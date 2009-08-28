@@ -1,12 +1,13 @@
-<div class="contextual">
-<%= link_to_remote l(:button_add), 
+<div class="contextual" style="margin-top:3px;">
+<%= link_to_remote l(:button_add),
+                    :html=>{:class => 'icon icon-add'},
                    :url => {:controller => 'watchers',
                             :action => 'new',
                             :object_type => watched.class.name.underscore,
                             :object_id => watched} if User.current.allowed_to?(:add_issue_watchers, @project) %>
 </div>
+<h3><%= l(:label_issue_watchers) %></h3>
 
-<p><strong><%= l(:label_issue_watchers) %></strong></p>
 <%= watchers_list(watched) %>
 
 <% unless @watcher.nil? %>
@@ -19,7 +20,7 @@
                    :html => {:id => 'new-watcher-form'}) do |f| %>
 <p><%= f.select :user_id, (watched.addable_watcher_users.collect {|m| [m.name, m.id]}), :prompt => true %>
 
-<%= submit_tag l(:button_add) %>
+<%= submit_tag l(:button_add),:class=>"button btn_blue corner-all" %>
 <%= toggle_link l(:button_cancel), 'new-watcher-form'%></p>
 <% end %>
 <% end %>

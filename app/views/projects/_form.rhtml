@@ -29,12 +29,13 @@
     </script>
 
 <p><%= f.text_field :name, :required => true %><br /><span class="specs"><%= l(:text_caracters_maximum, 30) %></span></p>
-
+<p><%= f.text_field :acronym, :required => true %></p>
+<p><%= f.text_field :identifier, :required => true, :disabled => @project.identifier_frozen? %>
 <% if User.current.admin? and !@root_projects.empty? %>
     <p><%= f.select :parent_id, (@root_projects.collect {|p| [p.name, p.id]}), { :include_blank => true } %></p>
 <% end %>
 
-<p><%= f.text_field :acronym, :required => true %></p>
+
 <p><%= f.select :author_id,  @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
 <p><%= f.select :builder_by, @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
 <p><%= f.select :watcher_id , @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
@@ -46,7 +47,7 @@
 </p>
 
 <p><%= f.text_area :description, :rows => 5, :class => 'wiki-edit' %></p>
-<p><%= f.text_field :identifier, :required => true, :disabled => @project.identifier_frozen? %>
+
 <% unless @project.identifier_frozen? %>
 <br /><span class="specs"><%= l(:text_length_between, 1, 20) %> <%= l(:text_project_identifier_info) %></span>
 <% end %></p>

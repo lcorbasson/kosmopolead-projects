@@ -1,5 +1,11 @@
+<% if @project.parent %>
+    <%  title = "projet - #{@project.parent.acronyme} - #{@project.acronyme}"  %>
+<% else %>
+    <%  title = "projet - #{@project.parent.acronyme}"  %>
+<% end %>
+
 <%= box(
-    "profile - #{@project.name}",
+    "#{title}",
     "#{render:partial=>'projects/box/show',:locals=>{:project=>@project}}",
     ["#{link_to("profile",{:controller => 'projects', :action => 'show', :project_id => @project},:class=>'active icon')}",
      "#{link_to("",{ :controller => 'issues', :action => 'calendar', :project_id => @project},:class=>'inactive icon calendar') if User.current.allowed_to?(:view_calendar, @project, :global => true)}",

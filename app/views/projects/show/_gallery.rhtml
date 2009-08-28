@@ -1,6 +1,6 @@
 <%= error_messages_for 'attachment' %>
 <%= link_to_remote l(:label_new_image),
-                         { :url => { :controller => 'photos', :action => 'new',:gallery_id=>@project.gallery.id,:project_id=>@project.id},
+                         { :url => { :controller => 'photos', :action => 'new',:gallery_id=>@project.gallery.id,:project_id=>@project},
                            :method => 'post',
                            :update => 'add_photo'
                          },:class=>"button btn_blue corner-all" %>

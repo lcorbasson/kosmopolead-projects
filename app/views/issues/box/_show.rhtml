@@ -1,10 +1,11 @@
 <div class="show_issue">
-        <%= avatar(issue.author, :size => "64") %>
-        <h3><%=h issue.subject %></h3>
+        <%= avatar(issue.author, :size => "64") %>    
+        <%  if issue.created_on != issue.updated_on %>
         <p class="author">
         <%#= authoring issue.created_on, issue.author %>.
-        <%= l(:label_updated_time, distance_of_time_in_words(Time.now, issue.updated_on)) + '.' if issue.created_on != issue.updated_on %>
+        <%= l(:label_updated_time, distance_of_time_in_words(Time.now, issue.updated_on)) + '.'  %>
         </p>
+    <% end %>
 
 <table width="100%">
 <tr>
@@ -48,13 +49,13 @@ end %>
 </tr>
 <%= call_hook(:view_issues_show_details_bottom, :issue => issue) %>
 </table>
-<hr />
+
 
 <div class="contextual">
 <%= link_to_remote_if_authorized(l(:button_quote), { :url => {:action => 'reply', :id => issue} }, :class => 'icon icon-comment') unless issue.description.blank? %>
 </div>
+<h3><%=l(:field_description)%></h3>
 
-<p><strong><%=l(:field_description)%></strong></p>
 <div class="wiki">
 <%= textilizable issue, :description, :attachments => issue.file_attachments %>
 </div>
@@ -64,15 +65,18 @@ end %>
 <%= call_hook(:view_issues_show_description_bottom, :issue => issue) %>
 
 <% if authorize_for('issue_relations', 'new') || issue.relations.any? %>
-<hr />
-<div id="relations">
-<%= render :partial => 'relations' %>
-</div>
+
+<% if @issue.is_issue? %>
+
+  <div id="relations">
+  <%= render :partial => 'relations' %>
+  </div>
+<% end %>
 <% end %>
 
 <% if User.current.allowed_to?(:add_issue_watchers, project) ||
         (issue.watchers.any? && User.current.allowed_to?(:view_issue_watchers, project)) %>
-<hr />
+
 <div id="watchers">
 <%= render :partial => 'watchers/watchers', :locals => {:watched => issue} %>
 </div>

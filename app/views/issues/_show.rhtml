@@ -1,8 +1,8 @@
 <% case @issue.type.name
    when "ISSUE" %>
-    <%  @title = "#{@issue.tracker.name} # #{@issue.id}"%>
+    <%  @title = "#{@issue.tracker.name} # #{@issue.id} : #{@issue.subject}"%>
   <% else %>
-      <%  @title = "#{@issue.type.name} # #{@issue.id}"%>
+      <%  @title = "#{l(@issue.type.name)} # #{@issue.id} : #{@issue.subject}"%>
 <% end %>
 
 <%= box(
@@ -15,14 +15,7 @@
     "#{link_to_if_authorized l(:button_copy), {:controller => 'issues', :action => 'new', :project_id => @project, :copy_from => @issue }, :class => 'icon icon-copy'}",
     "#{link_to_if_authorized l(:button_move), {:controller => 'issues', :action => 'move', :id => @issue }, :class => 'icon icon-move'}",
     "#{link_to_if_authorized l(:button_delete), {:controller => 'issues', :action => 'destroy', :id => @issue}, :confirm => l(:text_are_you_sure), :method => :post, :class => 'icon icon-del'}"
-
-
-
     ]
-
-
-
-
 ) %>
 
 

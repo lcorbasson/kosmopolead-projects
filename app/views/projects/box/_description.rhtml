@@ -1,1 +1,13 @@
 <%= textilizable project.description %>
+
+<% remote_form_for(:project, project,
+                 :url => {:controller => 'projects', :action => 'update', :project_id => @project,:part=>'description'},
+                 :method => :put,
+                 :html => {:id => 'update-description-form',:style=>'display:none;'}) do |f| %>
+  <%= f.text_area :description, :rows => 5, :class => 'wiki-edit' %>
+  <div class="buttons">
+    <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+  </div>
+<% end %>
+
+ <%= wikitoolbar_for 'project_description' %>

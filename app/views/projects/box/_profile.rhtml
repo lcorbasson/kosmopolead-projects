@@ -15,7 +15,7 @@
     <%= l(:label_project_cost) %>: <%= project.project_cost %> €<br />
   <% end %>
   <% if project.sector and project.sector %>
-    <%= l(:label_project_sector) %>: <%= project.sector %><br />
+    <%= l(:label_project_sector) %>: <%= my_sector(current_language, project.sector).collect{|s| s.name} %><br />
   <% end %>
 </div>
 <div class="clearer"></div>

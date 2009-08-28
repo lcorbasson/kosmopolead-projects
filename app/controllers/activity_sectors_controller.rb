@@ -44,11 +44,12 @@ class ActivitySectorsController < ApplicationController
     respond_to do |format|
       if @activity_sector.save
         flash[:notice] = 'ActivitySector was successfully created.'
-        format.html { redirect_to(@activity_sector) }
-        format.xml  { render :xml => @activity_sector, :status => :created, :location => @activity_sector }
+        render :update do |page|
+          #format.html { redirect_to(@activity_sector) }
+          page.replace_html "activity_sectors", :partial => 'activity_sectors/index'
+        end
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @activity_sector.errors, :status => :unprocessable_entity }
       end
     end
   end

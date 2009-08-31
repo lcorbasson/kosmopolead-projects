@@ -2,10 +2,12 @@
   <b>Identifier:</b>
   <%=h @activity_sector.identifier %>
   <table class="list">
-    <th>Langue</th>
-    <th></th>
-    <th></th>
-    <th></th>
+    <tr>
+      <th>Langue</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
     <% @activity_sector.activity_sector_translations.each do |a| %>
       <tr class="<%= cycle("even", "odd") %>"><td><%= ll(a.local, :general_lang_name) %>
         </td>

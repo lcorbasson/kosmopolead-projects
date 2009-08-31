@@ -4,7 +4,7 @@
       <tr>        
         <tr>
           <th>
-            <%= link_to "", {}, :onclick => 'toggleIssuesSelection(Element.up(this, "form")); return false;', :title => "#{l(:button_check_all)}/#{l(:button_uncheck_all)}" %>
+            <%= link_to "#", {}, :onclick => 'toggleIssuesSelection(Element.up(this, "form")); return false;', :title => "#{l(:button_check_all)}/#{l(:button_uncheck_all)}" %>
           </th>
           <%= sort_header_tag('id', :caption => '#', :default_order => 'desc') %>
           <% query.columns.each do |column| %>

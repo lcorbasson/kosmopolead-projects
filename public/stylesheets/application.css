@@ -628,18 +628,18 @@ color:#505050;
 
 /***** Progress bar *****/
 table.progress {
-    border: 1px solid #D7D7D7;
+    border: 1px solid #333333;
    
     border-spacing: 0pt;
     empty-cells: show;
     text-align: center;
-    float:left;
+
     margin: 1px 6px 1px 0px;
 }
 table.progress tr {border:1px solid black;}
 table.progress td { height: 0.9em; }
 table.progress td.closed { background: #6AC500 none repeat scroll 0%; }
-table.progress td.done { background: #DEF0DE none repeat scroll 0%; }
+table.progress td.done { background:#fff; }
 table.progress td.open { background: #FFF none repeat scroll 0%; }
 p.pourcent {font-size: 80%;}
 p.progress-info {clear: left; font-style: italic; font-size: 80%;}
@@ -1026,6 +1026,7 @@ height:17px;
 .buttons .button {cursor:pointer;text-decoration:none;color:#fff;font-weight:bold;text-transform:uppercase;}
 .buttons .btn_blue {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_blue.png) repeat-x}
 .buttons .btn_orange {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_orange.png) repeat-x}
+.buttons a.btn_orange{padding-top:3px;padding-bottom:3px;vertical-align:middle;}
 .buttons .btn_blue:hover {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_blue_hover.png) repeat-x}
 .buttons .btn_orange:hover {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_orange_hover.png) repeat-x}
 .buttons {margin-top:20px;}
@@ -1050,7 +1051,7 @@ height:17px;
 #input-search {border:1px solid #DDDDDD;}
 
 /*Profile*/
-.profile {color:#fff;background:#382D24;-moz-border-radius:5px;}
+.profile {color:#fff;background:#382D24;-moz-border-radius:5px;margin-bottom:10px;}
 .profile_header {padding:5px 0 5px 5px;border-bottom:1px solid black;color:#9E836F;font-weight:bold;font-size:14px;}
 .profile_content{margin:5px;padding:5px;}
 .profilecontentleft {margin:5px;float:left;width:40%;}
@@ -1106,3 +1107,5 @@ height:17px;
 .show_issue .wiki,.show_issue .user,#history .journal {padding:0 5px 0 5px;}
 
 .links_edit_box {display:none;float:right}
+
+#update-tags-form ul.holder{width:95%;}

@@ -1,3 +1,44 @@
 <% @project.tag_list.each do |tag| %>
   <%= tag %>
 <% end %>
+
+<% remote_form_for(:project, @project,
+                 :url => {:controller => 'projects', :action => 'update', :project_id => @project,:part=>'tags'},
+                 :method => :put,
+                 :html => {:id => 'update-tags-form',:style=>'display:none;'}) do |f| %>
+  <%= select_tag  :tags,  options_for_select( @project.tag_list { |tag| [tag.name, tag.id] }, :class => 'selected'), :id => 'tags', :name => 'tags'%>
+  <div class="buttons">
+    <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+    <%= toggle_link l(:button_cancel), 'update-tags-form'%>
+  </div>
+<% end %>
+
+<script language="JavaScript">
+        jQuery(document).ready(function()
+        {
+          jQuery('#tags').children().attr('class', 'selected')
+
+          jQuery("#tags").fcbkcomplete({
+            json_url: "/projects/tags_json",
+            cache: true,
+            filter_case: true,
+            filter_hide: true,
+			firstselected: true,          
+            filter_selected: true,
+            newel: true
+          });
+        });
+
+		function testme(item)
+	  	{	if ($.browser.mozilla)
+			{
+				console.log(item);
+			}
+			else
+			{
+				alert(item);
+			}
+	  	}
+</script>
+
+

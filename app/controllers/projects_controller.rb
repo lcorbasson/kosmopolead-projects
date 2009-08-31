@@ -228,16 +228,23 @@ class ProjectsController < ApplicationController
 
 
   def update
-    @project = Project.find_by_identifier(params[:project_id])
-    case params[:part]
-      when "description"
-        @project.update_attributes(params[:project])
-    end
-
+    @project = Project.find_by_identifier(params[:project_id])    
+    @project.update_attributes(params[:project])
     respond_to do |format|
       format.js {
         render :update do |page|
-          page << "jQuery('.project_description').html('#{escape_javascript(render:partial=>'projects/box/description',:locals=>{:project=>@project})}');"
+          case params[:part]
+            when "description"
+              page << "jQuery('.project_description').html('#{escape_javascript(render:partial=>'projects/box/description',:locals=>{:project=>@project})}');"
+          when "tags"
+            @project.tag_list = ''
+            if select_tags =  params[:tags]
+              select_tags.each do |tag|
+                @project.tag_list << tag
+              end
+            end
+              page << "jQuery('.project_tags').html('#{escape_javascript(render:partial=>'projects/box/tags')}');"
+          end
         end
       }
     end

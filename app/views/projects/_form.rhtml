@@ -1,32 +1,4 @@
-<script language="JavaScript">
-        jQuery(document).ready(function()
-        {
-          jQuery('#tags').children().attr('class', 'selected')
-          
-          jQuery("#tags").fcbkcomplete({
-            json_url: "/projects/tags_json",
-            cache: true,
-            filter_case: true,
-            filter_hide: true,
-			firstselected: true,
-            //onremove: "testme",
-			//onselect: "testme",
-            filter_selected: true,
-            newel: true
-          });
-        });
 
-		function testme(item)
-	  	{	if ($.browser.mozilla)
-			{
-				console.log(item);
-			}
-			else
-			{
-				alert(item);
-			}
-	  	}
-    </script>
 
 <p><%= f.text_field :name, :required => true %><br /><span class="specs"><%= l(:text_caracters_maximum, 30) %></span></p>
 <p><%= f.text_field :acronym, :required => true %></p>
@@ -43,8 +15,7 @@
 <p><%= f.text_field :estimated_time %></p>
 <p><%= f.select :time_units_id, (@time_units.collect {|u| [u.label, u.id]}) %></p>
 <p><%= f.select :sector, list_sectors(current_language).collect{|s| [s.name, s.activity_sector_id] } %></p><br />
-<p><label>Tags</label><%= select_tag  :tags,  options_for_select( @project.tag_list { |tag| [tag.name, tag.id] }, :class => 'selected'), :id => 'tags', :name => 'tags'%>
-</p>
+
 
 <% unless @project.identifier_frozen? %>
 <br /><span class="specs"><%= l(:text_length_between, 1, 20) %> <%= l(:text_project_identifier_info) %></span>

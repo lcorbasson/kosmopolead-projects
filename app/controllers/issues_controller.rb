@@ -197,6 +197,7 @@ class IssuesController < ApplicationController
     @issue.issue_types_id ||= IssueType.find((params[:issue] && params[:issue][:issue_type_id]) || params[:issue_type_id] || :first)
     @issue_types = IssueType.find(:all)
     @users = User.all
+     @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
     if @issue.tracker.nil?
       flash.now[:error] = 'No tracker is associated to this project. Please check the Project settings.'
       render :nothing => true, :layout => true

@@ -1,10 +1,17 @@
 <% selected_tab = params[:tab] ? params[:tab].to_s : project_tabs.first[:name] %>
 <div class="profilecontentleft">
   <%= profile_box("PROJET #{project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>project}}") %>
-  Avancement du projet :<br/> <%= progress_bar([@completed_percent, 100], :width => '40%', :legend => ('%0.0f%' % @completed_percent)) %>
-  <%= grey_title("MOTS CLES") %>
-  <%= grey_box("#{render:partial=>'projects/box/tags', :locals=>{:project=>project}}", "project_tags") %>
-   <%= grey_box("#{render:partial=>'relations'}", "project_relations") %>
+
+  <span class="grey_title" style="float:left;margin-right:20px;"> Avancement du projet :</span><%= progress_bar([@completed_percent, 100], :width => '40%', :legend => ('%0.0f%' % @completed_percent)) %>
+<br/><br/>
+  <div class="editable_box">
+    <div class="links_edit_box">
+        <%= toggle_link image_tag("/images/edit.png"), 'update-tags-form'%>
+      </div>
+    <%= grey_title("MOTS CLES") %>
+    <%= grey_box("#{render:partial=>'projects/box/tags', :locals=>{:project=>project}}", "project_tags") %>
+  </div>
+  <%= grey_box("#{render:partial=>'relations'}", "project_relations") %>
 
 </div>
 
@@ -79,4 +86,4 @@
 
 
   <%= javascript_tag("activeProjectMenu('#{project.id}')") %>
-  <%= wikitoolbar_for 'project_description' %>
+

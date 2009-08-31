@@ -4,7 +4,7 @@
   Avancement du projet :<br/> <%= progress_bar([@completed_percent, 100], :width => '40%', :legend => ('%0.0f%' % @completed_percent)) %>
   <%= grey_title("MOTS CLES") %>
   <%= grey_box("#{render:partial=>'projects/box/tags', :locals=>{:project=>project}}", "project_tags") %>
-   <%= grey_box("#{render:partial=>'relations'}", "project_relations") %>
+  <%= grey_box("#{render:partial=>'relations'}", "project_relations") %>
 
 </div>
 
@@ -79,4 +79,4 @@
 
 
   <%= javascript_tag("activeProjectMenu('#{project.id}')") %>
-  <%= wikitoolbar_for 'project_description' %>
+

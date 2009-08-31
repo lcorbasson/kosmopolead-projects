@@ -1026,6 +1026,7 @@ height:17px;
 .buttons .button {cursor:pointer;text-decoration:none;color:#fff;font-weight:bold;text-transform:uppercase;}
 .buttons .btn_blue {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_blue.png) repeat-x}
 .buttons .btn_orange {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_orange.png) repeat-x}
+.buttons a.btn_orange{padding-top:3px;padding-bottom:3px;vertical-align:middle;}
 .buttons .btn_blue:hover {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_blue_hover.png) repeat-x}
 .buttons .btn_orange:hover {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_orange_hover.png) repeat-x}
 .buttons {margin-top:20px;}

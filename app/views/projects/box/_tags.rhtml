@@ -9,6 +9,7 @@
   <%= select_tag  :tags,  options_for_select( @project.tag_list { |tag| [tag.name, tag.id] }, :class => 'selected'), :id => 'tags', :name => 'tags'%>
   <div class="buttons">
     <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+    <%= toggle_link l(:button_cancel), 'update-tags-form'%>
   </div>
 <% end %>
 

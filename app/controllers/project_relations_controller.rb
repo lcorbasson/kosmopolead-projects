@@ -24,14 +24,11 @@ class ProjectRelationsController < ApplicationController
   end
 
   def destroy
-    relation = IssueRelation.find(params[:id])
-    if request.post? && @issue.relations.include?(relation)
-      relation.destroy
-      @issue.reload
-    end
-    respond_to do |format|
-      format.html { redirect_to :controller => 'issues', :action => 'show', :id => @issue }
-      format.js { render(:update) {|page| page.replace_html "relations", :partial => 'issues/relations'} }
+    relation = ProjectRelation.find(params[:id])
+     @project = relation.project_from   
+     relation.destroy  
+    respond_to do |format|    
+      format.js { render(:update) {|page| page.replace_html "relations", :partial => 'projects/relations'} }
     end
   end
 

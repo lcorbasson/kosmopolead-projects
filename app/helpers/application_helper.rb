@@ -74,7 +74,7 @@ module ApplicationHelper
     onclick = "Element.toggle('#{id}'); "
     onclick << (options[:focus] ? "Form.Element.focus('#{options[:focus]}'); " : "this.blur(); ")
     onclick << "return false;"
-    link_to(name, "#", :onclick => onclick)
+    link_to(name, "#", :onclick => onclick,:class=>"button btn_orange corner-all")
   end
 
   def image_to_function(name, function, html_options = {})

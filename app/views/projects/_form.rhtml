@@ -15,8 +15,7 @@
 <p><%= f.text_field :estimated_time %></p>
 <p><%= f.select :time_units_id, (@time_units.collect {|u| [u.label, u.id]}) %></p>
 <p><%= f.select :sector, list_sectors(current_language).collect{|s| [s.name, s.activity_sector_id] } %></p><br />
-<p><label>Tags</label><%= select_tag  :tags,  options_for_select( @project.tag_list { |tag| [tag.name, tag.id] }, :class => 'selected'), :id => 'tags', :name => 'tags'%>
-</p>
+
 
 <% unless @project.identifier_frozen? %>
 <br /><span class="specs"><%= l(:text_length_between, 1, 20) %> <%= l(:text_project_identifier_info) %></span>

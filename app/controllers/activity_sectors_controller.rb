@@ -43,6 +43,7 @@ class ActivitySectorsController < ApplicationController
     respond_to do |format|
 
       if @activity_sector.save
+        @activity_sectors = ActivitySector.find(:all)
         flash[:notice] = 'ActivitySector was successfully created.'
         format.js  {
           render :update do |page|

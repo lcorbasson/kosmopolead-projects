@@ -1,8 +1,9 @@
-<h1><%=l(:label_sectors)%></h1>
+<%= box(
+    "#{l(:label_sectors)}",
+    ["<span class='icon icon-add'></span>", "#{toggle_link l(:label_project_new), 'new-activity_sector-form', :class => 'icon icon-add'}"]
+    
+) %>
 
-<div class="contextual">
-  <%= toggle_link l(:button_add), 'new-activity_sector-form'%>
-</div>
 <div id="activity_sectors">
   <%= render :partial => 'activity_sectors/index', :locals=>{:activity_sectors=>@activity_sectors}%>
 </div>

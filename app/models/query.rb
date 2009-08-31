@@ -193,16 +193,17 @@ class Query < ActiveRecord::Base
 
 
   def available_filters_projects
-    return @available_filters_projects if @available_filters_projects
+    return @available_filters_projects if @available_filters_projects    
 
-    
     @available_filters_projects = {
                     "status" => { :type => :list, :order => 1, :values => [[l(:label_all), ''],[l(:status_active), 1]] },
                     "builder_by" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }},
                     "author_id" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }},
                     "watcher_id" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }}
-                                     }
-
+                  }
+    add_custom_fields_filters_projects(CustomField.all(:conditions=>["type = 'ProjectCustomField'"]))
+ 
+    
     @available_filters_projects
   end
 
@@ -368,21 +369,27 @@ class Query < ActiveRecord::Base
       next unless v and !v.empty?
 
       sql = ''
-      is_custom_filter = false
+     if field =~ /^cf_(\d+)$/
+          # custom field
+          db_table = CustomValue.table_name
+          db_field = 'value'
+          is_custom_filter = true
+          sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{db_table} ON #{db_table}.customized_type='Project' AND #{db_table}.customized_id=#{Project.table_name}.id AND #{db_table}.custom_field_id=#{$1} WHERE "
+     else
+         db_table = Project.table_name
+         if (field == "status_id")
+           db_field = 'status'
+         else
+            # regular field
+            db_field = field
+          end
+            sql << '('
+      end
+     
+       sql = sql + sql_for_field_projects(field, v, db_table, db_field, is_custom_filter)
 
-      db_table = Project.table_name
-
-      if (field == "status_id")
-        db_field = 'status'        
-      else
-          # regular field          
-          db_field = field          
-       end   
-       sql << '('
-      sql = sql + sql_for_field_projects(field, v, db_table, db_field, is_custom_filter)
-
-      sql << ')'
-     filters_clauses << sql
+       sql << ')'
+       filters_clauses << sql
     end
     filters_clauses.join(' AND ')   
   end
@@ -512,6 +519,26 @@ class Query < ActiveRecord::Base
         options = { :type => :string, :order => 20 }
       end
       @available_filters["cf_#{field.id}"] = options.merge({ :name => field.name })
+    end
+  end
+
+  def add_custom_fields_filters_projects(custom_fields)
+    @available_filters ||= {}
+
+    custom_fields.select(&:is_filter?).each do |field|
+      case field.field_format
+      when "text"
+        options = { :type => :text, :order => 20 }
+      when "list"
+        options = { :type => :list_optional, :values => field.possible_values, :order => 20}
+      when "date"
+        options = { :type => :date, :order => 20 }
+      when "bool"
+        options = { :type => :list, :values => [[l(:general_text_yes), "1"], [l(:general_text_no), "0"]], :order => 20 }
+      else
+        options = { :type => :string, :order => 20 }
+      end
+      @available_filters_projects["cf_#{field.id}"] = options.merge({ :name => field.name })
     end
   end
   

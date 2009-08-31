@@ -37,7 +37,7 @@ class QueriesController < ApplicationController
     @query.user = User.current
     @query.is_public = false unless (@query.project && current_role.allowed_to?(:manage_public_queries)) || User.current.admin?
     @query.column_names = nil if params[:default_columns]
-    @query.query_type = params[:query_type]
+    
     params[:fields].each do |field|
       @query.add_filter(field, params[:operators][field], params[:values][field])
     end if params[:fields]
@@ -46,6 +46,8 @@ class QueriesController < ApplicationController
       flash[:notice] = l(:notice_successful_create)
       redirect_to :controller => 'queries', :action => 'index'
       return
+    else
+        @query.query_type = params[:query_type]
     end
     respond_to do |format|
       format.js  {

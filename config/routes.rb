@@ -22,7 +22,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'help/:ctrl/:page', :controller => 'help'
   #map.connect ':controller/:action/:id/:sort_key/:sort_order'
 
- 
+ map.connect 'projects/:action/:project_id', :controller => 'projects'
   map.connect 'project_relation_types', :controller => 'project_relation_types'
   map.connect 'projects/:project_id/relations/:action/:id', :controller => 'project_relations'
   map.connect 'projects/:project_id/gallery/:gallery_id/photos/:action', :controller => 'photos'

@@ -29,7 +29,7 @@ class ProjectsController < ApplicationController
 
 
   before_filter :find_optional_project, :only => :activity
-  before_filter :authorize, :except => [:update,:show_funding, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity ]
+  before_filter :authorize, :except => [:add_file,:update,:show_funding, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity ]
   before_filter :require_admin, :only => [ :add, :archive, :unarchive, :destroy ]
   accept_key_auth :activity
   
@@ -74,6 +74,11 @@ class ProjectsController < ApplicationController
         @gantt.events = events
       end
    end
+   @member ||= @project.members.new   
+   @users = User.all
+   @file = FileAttachment.new
+   @file.container_id  = @project.id
+   @file.container_type = "project"
     completed_percent
     find_gallery
        respond_to do |format|
@@ -163,6 +168,11 @@ class ProjectsController < ApplicationController
     end
     @key = User.current.rss_key
     @gantt = Redmine::Helpers::Gantt.new(params)
+    @member ||= @project.members.new
+    @users = User.all
+    @file = FileAttachment.new
+    @file.container_id  = @project.id
+    @file.container_type = "project"
     retrieve_query
     if @query.valid?
       events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
@@ -305,24 +315,19 @@ class ProjectsController < ApplicationController
   end
 
   def add_file
-    @versions = @project.versions.sort
-    if request.post?
+    
       container = (params[:version_id].blank? ? @project : @project.versions.find_by_id(params[:version_id]))
       attachments = attach_files(container, params[:attachments])
       if !attachments.empty? && Setting.notified_events.include?('file_added')
         Mailer.deliver_attachments_added(attachments)
       end
-      respond_to do |format|
-        format.html {}
-        format.js {
-          render:update do |page|
-            page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'add_file')}');"
-          end
-          }
-      end
-      return
-    end
+      @file = FileAttachment.new
+     @file.container_id  = @project.id
+      @file.container_type = "project"
+      @containers = [ Project.find(@project.id, :include => :file_attachments, :order => sort_clause)]
+     @containers += @project.versions.find(:all, :include => :file_attachments, :order => sort_clause).sort.reverse
     
+      render :layout=>false
      
   end
   
@@ -433,11 +438,9 @@ private
   # if not found, redirect to project list
   # Used as a before_filter
   def find_project
-    if params[:id].is_a?(Integer) 
-      @project = Project.find(params[:id])
-    else    
-      @project = Project.find_by_identifier(params[:id])
-    end
+       
+      @project = Project.find_by_identifier(params[:project_id])
+  
   rescue ActiveRecord::RecordNotFound
     render_404
   end

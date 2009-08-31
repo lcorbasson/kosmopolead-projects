@@ -1,4 +1,5 @@
-<table class="list">
+<h3><%= @query.name  if @query and @query.name!= "_" %></h3>
+<table class="list" <%= "id='result_query'" if @query %> >
   <thead><tr>
 	<%= sort_header_tag('name', :caption => l(:label_project)) %>
 	<th><%=l(:field_description)%></th>

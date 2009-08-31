@@ -1106,3 +1106,5 @@ height:17px;
 .show_issue .wiki,.show_issue .user,#history .journal {padding:0 5px 0 5px;}
 
 .links_edit_box {display:none;float:right}
+
+#update-tags-form ul.holder{width:95%;}

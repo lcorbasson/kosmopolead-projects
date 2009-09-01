@@ -1,6 +1,6 @@
 <% if queries.empty? %>
   <p><i><%=l(:label_no_data)%></i></p>
-<% else %>
+<% else %>  
   <table class="list">
   <% queries.each do |query| %>
     <tr class="<%= cycle('odd', 'even') %>">
@@ -49,7 +49,7 @@
                                :update => "content_wrapper",
                              }, :class => 'btn_orange corner-all button'  %>
           <% if User.current.allowed_to?(:save_queries, @project, :global => true) %>
-            <%= link_to_remote l(:button_save), {:url=>{}}, :onclick =>"javascript:jQuery.ajax({data:jQuery.param(jQuery('#query_form').serializeArray()), dataType:'script', type:'post', url:'/queries/new'}); return false;", :class => 'icon icon-save' %>
+            <%= link_to_remote "", {:url=>{}}, :onclick =>"javascript:jQuery.ajax({data:jQuery.param(jQuery('#query_form').serializeArray()), dataType:'script', type:'post', url:'/queries/new'}); return false;", :class => 'icon icon-save' %>
 
             <%#= link_to_remote l(:button_save), {:url=>{:controller=>"queries",:action=>"new"}}, :class => 'icon icon-save' %>
           <% end %>
@@ -60,6 +60,6 @@
       </div>
   </div>
 <div id="projects_list">
-
+ 
 </div>
   <%= javascript_tag("initialize_toggle('filter');") %>

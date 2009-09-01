@@ -26,10 +26,16 @@
               Managers
           </div>
           <div id="projects_members">
+            <div class="editable_box">
+              <div class="links_edit_box">
+                <%= toggle_link image_tag("/images/add.png"), 'update-members-form'%>
+              </div>
               <%= render :partial=>"projects/show/members", :locals=>{:members=>@members} %>
+            </div>
           </div>
            <div class="clearer"></div>
       </div>
+      
 	<% end %>
     <div class="editable_box">
       <div class="links_edit_box">

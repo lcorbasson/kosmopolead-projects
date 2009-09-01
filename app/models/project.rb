@@ -81,6 +81,7 @@ class Project < ActiveRecord::Base
   validates_format_of :identifier, :with => /^[a-z0-9\-]*$/
   
   before_destroy :delete_all_members
+  before_create :create_gallery
 
   named_scope :has_module, lambda { |mod| { :conditions => ["#{Project.table_name}.id IN (SELECT em.project_id FROM #{EnabledModule.table_name} em WHERE em.name=?)", mod.to_s] } }
   
@@ -212,6 +213,10 @@ class Project < ActiveRecord::Base
   # Deletes all project's members
   def delete_all_members
     Member.delete_all(['project_id = ?', id])
+  end
+
+  def create_gallery
+    Gallery.create(:owned_type=>"project", :owned_id=>self.id)
   end
   
   # Users issues can be assigned to

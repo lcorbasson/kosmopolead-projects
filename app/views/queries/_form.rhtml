@@ -12,7 +12,7 @@
    </div>
 </div>
 <div class="tabular">
-  <%= hidden_field :query_type,@query.query_type %>
+  <%= hidden_field :query,:query_type %>
   <p>
       <label for="query_name"><%=l(:field_name)%></label>
       <%= text_field 'query', 'name', :size => 80 %>

@@ -1,4 +1,4 @@
-<% remote_form_for :photo, :html=>{:id=>"upload_form_#{@photo.id}"} do |f| %>
+<% remote_form_for :photo,@photo, :html=>{:id=>"upload_form_#{@photo.id}"} do |f| %>
 <p class="buttons">
     <label><%=l(:label_photo)%></label>
     <%= f.file_field :photo, :id=>"fileToUpload" %>
@@ -8,8 +8,7 @@
                            :update => 'photo_index',
                            :with => "clone_upload__form()",
                          },:class=>"button btn_blue corner-all" %>
-    <%= link_to(l(:button_cancel),"#",:onclick=>"Element.toggle('upload_form_#{@photo.id}'); this.blur(); return false;",:class=>"button btn_orange corner-all") %>
-    
-    <%= f.hidden_field :gallery_id %>
+  <%= toggle_link l(:button_cancel), "upload_form_#{@photo.id}" %>
+  <%= f.hidden_field :gallery_id %>
 </p>
 <% end %>

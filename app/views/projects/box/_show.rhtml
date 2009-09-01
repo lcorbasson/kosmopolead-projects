@@ -19,19 +19,14 @@
     <% if @members.any? %>
         <div id="tabs">
           <ul id="tabs_members">
-              <li><a href="#projects_managers"><%= l(:label_partners) %></a></li>
+              <li><a href="#projects_partners"><%= l(:label_partners) %></a></li>
               <li><a href="#projects_members"><%= l(:label_members) %></a></li>
           </ul>
-          <div id="projects_managers">
-              Managers
+          <div id="projects_partners">
+              <%= render :partial=>"projects/show/partners" %>
           </div>
-          <div id="projects_members">
-            <div class="editable_box">
-              <div class="links_edit_box">
-                <%= toggle_link image_tag("/images/add.png"), 'update-members-form'%>
-              </div>
-              <%= render :partial=>"projects/show/members", :locals=>{:members=>@members} %>
-            </div>
+          <div id="projects_members">            
+              <%= render :partial=>"projects/show/members" %>       
           </div>
            <div class="clearer"></div>
       </div>
@@ -39,7 +34,7 @@
 	<% end %>
     <div class="editable_box">
       <div class="links_edit_box">
-        <%= toggle_link image_tag("/images/edit.png"), 'update-description-form'%>
+        <%= toggle_link image_tag("/images/edit.png"), 'update-description-form','description'%>
       </div>
       <%= grey_title("DESCRIPTION DU PROJET") %>
       <%= grey_box("#{render:partial=>'projects/box/description', :locals=>{:project=>project}}", "project_description") %>

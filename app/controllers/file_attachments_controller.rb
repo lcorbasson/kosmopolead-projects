@@ -16,12 +16,31 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class FileAttachmentsController < ApplicationController
-  before_filter :find_project
-  before_filter :read_authorize, :except => :destroy
-  before_filter :delete_authorize, :only => :destroy
+  before_filter :find_project,:except=>[:index]
+  before_filter :read_authorize, :except => [:destroy,:index,:create]
+  before_filter :delete_authorize, :only => [:destroy]
   
   verify :method => :post, :only => :destroy
-  
+
+
+  def index
+     @project = Project.find_by_identifier(params[:project_id])
+     @containers = [ Project.find(@project.id, :include => :file_attachments)]
+     @containers += @project.versions.find(:all, :include => :file_attachments)
+     render :layout=>false
+  end
+
+  def create
+    @file = FileAttachment.new(params[:file_attachment])
+    @file.container_id = @project.id
+    @file.container_type = "project"
+    @file.save
+    respond_to do |format|  
+      format.js { render(:update) {|page| page.replace_html "files_index", :partial => 'file_attachments/index'} }
+    end
+    
+  end
+
   def show
     if @attachment.is_diff?
       @diff = File.new(@attachment.diskfile, "rb").read
@@ -55,11 +74,8 @@ class FileAttachmentsController < ApplicationController
   end
   
 private
-  def find_project
-    @attachment = FileAttachment.find(params[:id])
-    # Show 404 if the filename in the url is wrong
-    raise ActiveRecord::RecordNotFound if params[:filename] && params[:filename] != @attachment.filename
-    @project = @attachment.project
+  def find_project    
+    @project = Project.find_by_identifier(params[:project_id])
   rescue ActiveRecord::RecordNotFound
     render_404
   end

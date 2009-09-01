@@ -1,11 +1,15 @@
-<% remote_form_for :file_attachment, :html=>{:id=>"upload_form_#{@file.id}"} do |f| %>
-  <span id="attachments_fields">
-  <%= file_field_tag 'attachments[1][file]', :size => 30, :id => nil  -%><br/>
-  <%= l(:label_optional_description) %><%= text_field_tag 'attachments[1][description]', '', :size => 60, :id => nil %>
-  <%= l(:label_optional_description) %>
-  </span>
+<% remote_form_for :file_attachment,@file, :url=>{:controller=>:file_attachments,:action=>:create,:project_id=>@project},:html=>{:id=>"upload_form_#{@file.id}"} do |f| %>
+<p class="buttons">
+    <label><%=l(:label_file)%></label>
+    <%= f.file_field :file, :id=>"fileToUpload" %>
+    <%= link_to_remote l(:button_add),
+                         { :url => { :controller => 'file_attachments', :action => 'create',:project_id=>@project},
+                           :method => 'post',
+                           :with => "clone_upload__form()",
+                         },:class=>"button btn_blue corner-all" %>
+  <%= toggle_link l(:button_cancel), "upload_form_#{@file.id}" %>
 
-  <div class="buttons">
-    <%= submit_tag l(:button_add),:class=>"button btn_blue corner-all" %>
-  </div>
+</p>
 <% end %>
+
+

@@ -5,10 +5,10 @@
     <div class="bloc_admin">
       <%= image_tag("/images/icone_projet.png") %>
       <p class="links">
-        <%= link_to l(:label_project_plural), :controller => 'admin', :action => 'projects' %> |
+        <%= link_to l(:label_project_plural), :controller => 'admin', :action => 'projects' %> |   
         <%= link_to l(:label_project_relation), :controller => 'admin', :action => 'relations' %> |
-        <%= link_to l(:label_sectors), :controller => 'activity_sectors'%> |
-        <%= link_to l(:label_new), :controller => 'projects', :action => 'add' %>
+        <%= link_to l(:label_activity_sectors), :controller => 'activity_sectors'%>
+       
       </p>
     </div>
   </div>
@@ -18,7 +18,7 @@
       <%= image_tag("/images/icone_utilisateur.png") %>
        <p class="links">
           <%= link_to l(:label_user_plural), :controller => 'users' %> |
-          <%= link_to l(:label_new), :controller => 'users', :action => 'add' %>
+          <%= link_to l(:label_partner_plural), :controller => 'partners' %>
        </p>
     </div>
   </div>

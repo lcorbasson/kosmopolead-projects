@@ -56,12 +56,16 @@ class UsersController < ApplicationController
   def add
     if request.get?
       @user = User.new(:language => Setting.default_language)
+      @partners = Partner.all
     else
       @user = User.new(params[:user])
       @user.admin = params[:user][:admin] || false
-      @user.login = params[:user][:login]
+      @user.login = params[:user][:login]     
       @user.password, @user.password_confirmation = params[:password], params[:password_confirmation] unless @user.auth_source_id
       if @user.save
+         if params[:partner]
+          @partnership = Partnership.create(:user_id=>@user.id,:partner_id=>params[:partner])
+        end
         Mailer.deliver_account_information(@user, params[:password]) if params[:send_information]
         flash[:notice] = l(:notice_successful_create)
         redirect_to :action => 'list'
@@ -72,6 +76,7 @@ class UsersController < ApplicationController
 
   def edit
     @user = User.find(params[:id])
+    @partners = Partner.all
     if request.post?
       @user.admin = params[:user][:admin] if params[:user][:admin]
       @user.login = params[:user][:login] if params[:user][:login]

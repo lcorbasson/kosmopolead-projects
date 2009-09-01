@@ -23,6 +23,8 @@ class Project < ActiveRecord::Base
   STATUS_ACTIVE     = 1
   STATUS_ARCHIVED   = 9
 
+  has_many :project_partners
+  has_many :partners, :through => :project_partners, :dependent => :destroy
   belongs_to :time_unit, :foreign_key=>"time_units_id"
   has_many :members, :include => :user, :conditions => "#{User.table_name}.status=#{User::STATUS_ACTIVE}"
   has_many :users, :through => :members

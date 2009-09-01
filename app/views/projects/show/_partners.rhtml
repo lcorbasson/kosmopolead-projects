@@ -1,2 +1,31 @@
+<%  project_partners = @project.project_partners.find(:all) %>
+<% possible_partners = Partner.all- project_partners %>
+<div class="editable_box">
+    <div class="links_edit_box">
+      <%= toggle_link image_tag("/images/add.png"), 'update-partners-form'%>
+    </div>
+    <% if project_partners.size>0 %>
+      <ul style="margin-right:20px;">
+        <% project_partners.each do |project_partner| %>
+            <%= partner_thumbnail(project_partner.partner,project_partner) %>
+        <% end %>
+      </ul>
+    <% else %>
+       <div class="emptymessage">
+          <p><%= l(:project_add_partner) %>
+          <%= toggle_link image_tag("/images/add.png"), 'update-partners-form'%></p>
+        </div>
+    <% end %>
+    <div class="clearer"></div>
+</div>
+<% remote_form_for(:project_partner, @project_partner, :url => {:controller => 'project_partners', :action => 'new', :project_id => @project}, :method => :post,:html=>{:style=>"display:none;",:id=>"update-partners-form"}) do |f| %>
+        <p class="buttons" style="text-align:right;">
+        <%= f.select :partner_id, possible_partners.collect {|p| [p.name, p.id]} %>
+       <%= f.hidden_field :project_id,:value=>@project.id %>
 
-<%= "_partners" %>
+
+        <%= submit_tag l(:button_add),:class=>"button btn_blue corner-all" %>
+        <%= toggle_link l(:button_cancel), 'update-partners-form'%></p>
+    <% end %>
+
+

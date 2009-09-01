@@ -1039,7 +1039,7 @@ height:17px;
 /*Notifications*/
 .no-data {padding:10px;}
 #tabs_members li a {font-weight:bold;}
-#projects_members .thumbnail{float:right;}
+#projects_members .thumbnail,#projects_partners .thumbnail{float:right;}
 /*Widget*/
 #list-bottom {width:100%;}
 #list-bottom td {width:32%;}
@@ -1112,3 +1112,17 @@ height:17px;
 #update-tags-form ul.holder{width:95%;}
 
 #add_file {margin-top:20px;}
+
+.emptymessage {
+-moz-border-radius-bottomleft:5px;
+-moz-border-radius-bottomright:5px;
+-moz-border-radius-topleft:5px;
+-moz-border-radius-topright:5px;
+background:#F0F0F0 none repeat scroll 0 0;
+border:2px solid #E7E7E7;
+color:#666666;
+font-size:11px;
+margin:2px 20px;
+padding:4px;
+text-align:center;
+}

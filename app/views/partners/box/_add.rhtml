@@ -1,0 +1,6 @@
+<% form_for :partner, partner, :url => { :action => "add" },:html=>{:multipart=>true,:class=>"tabular"} do |f| %>
+  <%= render :partial => 'form', :locals => { :f => f } %>
+  <div class="buttons right">
+    <%= submit_tag l(:button_create),:class=>"btn_blue corner-all button" %>
+  </div>
+<% end %>

@@ -52,14 +52,14 @@ class ProjectsController < ApplicationController
                             :include => :parent
    @project = @projects.first
    unless @project.nil?
-        find_files
+       find_files
        @members = @project.members
        @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
        @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
        @trackers = @project.rolled_up_trackers
    if @projects.size>0
-     @project = @projects.first
-     find_files
+      @project = @projects.first
+      find_files
       @members = @project.members
       @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
       @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
@@ -79,6 +79,7 @@ class ProjectsController < ApplicationController
    @file = FileAttachment.new
    @file.container_id  = @project.id
    @file.container_type = "project"
+    @roles = Role.find :all, :order => 'builtin, position'
     completed_percent
     find_gallery
        respond_to do |format|
@@ -147,7 +148,7 @@ class ProjectsController < ApplicationController
     @projects = Project.find :all,
                             :conditions => Project.visible_by(User.current),
                             :include => :parent
-    if !params[:id]
+    if !params[:project_id]
       @project = @projects.first
     else
       find_project
@@ -173,6 +174,7 @@ class ProjectsController < ApplicationController
     @file = FileAttachment.new
     @file.container_id  = @project.id
     @file.container_type = "project"
+    @roles = Role.find :all, :order => 'builtin, position'
     retrieve_query
     if @query.valid?
       events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
@@ -314,21 +316,11 @@ class ProjectsController < ApplicationController
   	end
   end
 
-  def add_file
-    
-      container = (params[:version_id].blank? ? @project : @project.versions.find_by_id(params[:version_id]))
-      attachments = attach_files(container, params[:attachments])
-      if !attachments.empty? && Setting.notified_events.include?('file_added')
-        Mailer.deliver_attachments_added(attachments)
-      end
+  def add_file    
       @file = FileAttachment.new
-     @file.container_id  = @project.id
+      @file.container_id  = @project.id
       @file.container_type = "project"
-      @containers = [ Project.find(@project.id, :include => :file_attachments, :order => sort_clause)]
-     @containers += @project.versions.find(:all, :include => :file_attachments, :order => sort_clause).sort.reverse
-    
       render :layout=>false
-     
   end
   
   def list_files
@@ -432,6 +424,7 @@ class ProjectsController < ApplicationController
 
 
 
+
   
 private
   # Find project of id params[:id]
@@ -466,14 +459,7 @@ private
   end
 
   def find_files
-    sort_init 'filename', 'asc'
-    sort_update 'filename' => "#{FileAttachment.table_name}.filename",
-                'created_on' => "#{FileAttachment.table_name}.created_on",
-                'size' => "#{FileAttachment.table_name}.filesize",
-                'downloads' => "#{FileAttachment.table_name}.downloads"
-
-    @containers = [ Project.find(@project.id, :include => :file_attachments, :order => sort_clause)]
-    @containers += @project.versions.find(:all, :include => :file_attachments, :order => sort_clause).sort.reverse
+  
   end
 
   def retrieve_query

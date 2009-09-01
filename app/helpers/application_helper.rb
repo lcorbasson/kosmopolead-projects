@@ -72,8 +72,7 @@ module ApplicationHelper
 
   def toggle_link(name, id, options={})
     onclick = "Element.toggle('#{id}'); "
-    onclick << (options[:focus] ? "Form.Element.focus('#{options[:focus]}'); " : "this.blur(); ")
-    onclick << "return false;"
+    onclick << (options[:focus] ? "Form.Element.focus('#{options[:focus]}'); " : "this.blur(); ")   
     link_to(name, "#", :onclick => onclick,:class=>"button btn_orange corner-all")
   end
 
@@ -550,8 +549,8 @@ module ApplicationHelper
     pcts << (100 - pcts[1] - pcts[0])
     width = options[:width] || '100px;'
     legend = options[:legend] || ''
-    content_tag('table',
-      content_tag('p', legend, :class => 'pourcent right')+
+    content_tag('p', legend, :class => 'pourcent right')+
+    content_tag('table',      
       content_tag('tr',
         (pcts[0] > 0 ? content_tag('td', '', :style => "width: #{pcts[0].floor}%;", :class => 'closed') : '') +
         (pcts[1] > 0 ? content_tag('td', '', :style => "width: #{pcts[1].floor}%;", :class => 'done') : '') +
@@ -755,6 +754,21 @@ module ApplicationHelper
     thumbnail = content_tag(:li,name,:class=>"user_thumbnail thumbnail")
   end
 
+  def partner_thumbnail(partner,partner_project)
+    name = content_tag(:p,partner.name,:class=>"name")
+    thumbnail = content_tag(:li,
+      content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=>{:controller=>:project_partners,:action=>:destroy,:project_id=>@project,:id=>partner_project.id},:method=>:get,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
+      name,:class=>"user_thumbnail thumbnail editable_box")
+  end
+
+  def member_thumbnail(user,member)
+    name = content_tag(:p,(user && !user.anonymous?) ? link_to(user.name, :controller => 'account', :action => 'show', :id => user) : 'Anonymous',:class=>"name")   
+    thumbnail = content_tag(:li,
+      content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=>{:controller=>:members,:action=>:destroy,:project_id=>@project,:id=>member.id},:method=>:get,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
+      name,:class=>"user_thumbnail thumbnail editable_box")
+  end
+
+
   def file_thumbnail(file)
     title = link_to_attachment file, :download => true, :title => file.description
    #  title = link_to(content_tag(:p,file.filename,:class=>"filename"), {:controller => 'versions', :action => 'show', :id => file})
@@ -805,7 +819,7 @@ module ApplicationHelper
         jQuery.ajaxFileUpload({url:'#{concat_url}',
         secureuri:false, fileElementId:'fileToUpload', dataType: 'json',
         before_send_callback:function(formId){
-          jQuery('##{name_initial_form} :input').clone().appendTo(jQuery('#' + formId));
+          jQuery('##{name_initial_form}:input').clone().appendTo(jQuery('#'+formId));
           #{data_textarea}
         }
       })

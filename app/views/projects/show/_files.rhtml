@@ -7,7 +7,7 @@
 <div id="add_file">
 
 </div>
-<%= form_upload({:url=>"projects/#{@project.id}/add_file",:col_collection=>@file,:name_initial_form=>"upload_form_#{@file.id}",:name_div_id=>"upload_#{@file.id}"}) %>
+<%= form_upload({:url=>"projects/#{@project.identifier}/file_attachments/create",:col_collection=>@file,:name_initial_form=>"upload_form_#{@file.id}",:name_div_id=>"upload_#{@file.id}"}) %>
 <div id="files_index">
   <%= render:partial=>"file_attachments/index",:locals=>{:containers=>@containers} %>
 </div>

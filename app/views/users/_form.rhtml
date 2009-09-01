@@ -7,6 +7,8 @@
 <p><%= f.text_field :lastname, :required => true %></p>
 <p><%= f.text_field :mail, :required => true %></p>
 <p><%= f.select :language, lang_options_for_select %></p>
+<p><label><%=  l(:label_partner) %></label><%= select_tag :partner, options_for_select(@partners.collect {|p| [p.name, p.id]}),
+          :multiple => true,:style=>"width:200px"  %></p>
 
 <% @user.custom_field_values.each do |value| %>
 	<p><%= custom_field_tag_with_label :user, value %></p>

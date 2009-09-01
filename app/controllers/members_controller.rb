@@ -18,13 +18,39 @@
 class MembersController < ApplicationController
   before_filter :find_member, :except => :new
   before_filter :find_project, :only => :new
-  before_filter :authorize
+  before_filter :authorize,:except=>:new
 
   def new
-    @project.members << Member.new(params[:member]) if request.post?
-    respond_to do |format|
-      format.html { redirect_to :action => 'settings', :tab => 'members', :id => @project }
-      format.js { render(:update) {|page| page.replace_html "tab-content-members", :partial => 'projects/settings/members'} }
+    if params[:change]
+      if params[:partner_id].blank?
+        @users = @project.users
+      else
+        @users = Partner.find(params[:partner_id]).members-@project.users
+      end
+      respond_to do |format|      
+        format.js { render(:update) {|page| page.replace_html "member_users", content_tag('select', options_from_collection_for_select(@users, 'id', 'name'), :id => 'member_user_id', :name => 'member[user_id]')} }
+      end
+    else
+      @project.members << Member.new(params[:member]) if request.post?
+      @members = @project.members
+      @member ||= @project.members.new
+      @users = User.all
+      @roles = Role.find :all, :order => 'builtin, position'
+      if !params[:partner_id].blank?
+        @partner = Partner.find(params[:partner_id])
+        @project_partner = ProjectPartner.find(:first,:conditions=>["project_id = ? and partner_id = ?", @project.id,@partner.id])
+        if !@project_partner
+          ProjectPartner.create(:project_id=>@project.id,:partner_id=>@partner.id)
+        end
+      end
+      respond_to do |format|
+        format.html { redirect_to :action => 'settings', :tab => 'members', :id => @project }
+        format.js { render(:update) {|page|
+            page.replace_html "projects_members", :partial => 'projects/show/members'
+            page.replace_html "projects_partners", :partial => 'projects/show/partners'
+
+        } }
+      end
     end
   end
   
@@ -37,17 +63,19 @@ class MembersController < ApplicationController
     end
   end
 
+
+
   def destroy
+    @member = Member.find(params[:id])
     @member.destroy
-	respond_to do |format|
-      format.html { redirect_to :controller => 'projects', :action => 'settings', :tab => 'members', :id => @project }
-      format.js { render(:update) {|page| page.replace_html "tab-content-members", :partial => 'projects/settings/members'} }
+    respond_to do |format|
+        format.js { render(:update) {|page| page.replace_html "projects_members", :partial => 'projects/show/members'} }
     end
   end
 
 private
   def find_project
-    @project = Project.find(params[:id])
+    @project = Project.find_by_identifier(params[:id])
   rescue ActiveRecord::RecordNotFound
     render_404
   end

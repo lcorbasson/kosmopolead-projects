@@ -1,0 +1,15 @@
+<%  form_for :activity_sector, @activity_sector,   :html => {:multipart => true, :id => 'activity-sector-form'} do |f| %>
+
+<div id="activity-sector-form"></div>
+
+<div id="table_sector_translations">
+  <% if User.current.language == 'fr'
+                @language = 'en'
+             else
+                @language = 'fr'
+             end
+    %>
+  <%= render :partial => 'activity_sectors/sector_translations', :locals => {:current_language => @language} %>
+</div>
+ 
+<% end %>

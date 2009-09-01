@@ -1,14 +1,1 @@
-<table class="list">
-  <tr>
-    <th><%=l(:label_sectors)%></th>
-    <th></th>
-    <th></th>
-  </tr>
-<% for activity_sector in @activity_sectors %>
-  <tr class="<%= cycle("even", "odd") %>">
-    <td><%=  link_to activity_sector.identifier, activity_sector %></td>
-    <td><%= link_to l(:button_edit), edit_activity_sector_path(activity_sector) %></td>
-    <td><%= link_to l(:button_delete), activity_sector, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
+<%= render :partial => 'list_translations'%>

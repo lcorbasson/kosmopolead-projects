@@ -82,7 +82,7 @@ class IssuesController < ApplicationController
         format.pdf  { send_data(issues_to_pdf(@issues, @project), :type => 'application/pdf', :filename => 'export.pdf') }
         format.js  {
           render:update do |page|
-            page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'issues/index', :locals=>{:project=>@project})}');"
+             page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'issues/index', :locals=>{:project=>@project})}');"
              page << "jQuery('#project_author').html('#{escape_javascript(render:partial=>'projects/author', :locals=>{:project=>@project})}');"
           end
         }

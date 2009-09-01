@@ -5,6 +5,11 @@ class ActivitySectorsController < ApplicationController
 
   def index
     @activity_sectors = ActivitySector.find(:all)
+#    if params[:local]
+#      @activity_sector_translations = ActivitySectorTranslation.all(:all, :conditions => {:local => params[:local]})
+#    else
+#      @activity_sector_translations = ActivitySectorTranslation.all(:all, :conditions => {:local => current_language.to_s })
+#    end
   end
 
   # GET /activity_sectors/1
@@ -12,7 +17,6 @@ class ActivitySectorsController < ApplicationController
   def show
     @activity_sector = ActivitySector.find(params[:id])
     @activity_sector_translationss = ActivitySectorTranslation.find(:all, :conditions => {:activity_sector_id => @activity_sector.id})
-
 
     respond_to do |format|
       format.html # show.html.erb
@@ -83,5 +87,18 @@ class ActivitySectorsController < ApplicationController
       format.html { redirect_to(activity_sectors_url) }
       format.xml  { head :ok }
     end
+  end
+
+  def f_translation=(attributes)
+      # Process the attributes hash
+  end
+
+  def sector_translations
+    @activity_sectors = ActivitySector.find(:all)
+    #@activity_sector_translations = ActivitySectorTranslation.all(:all, :conditions => {:local => params[:local]})
+    @local =  params[:local]
+
+    render :layout=>false
+   
   end
 end

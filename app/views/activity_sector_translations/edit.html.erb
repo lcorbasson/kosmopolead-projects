@@ -13,7 +13,7 @@
   </p>
   <p>
     <%= f.label :local %><br />
-    <%= f.select :local, lang_options_for_select(false), :selected=> current_language.to_s %>
+    <%= f.select :local, lang_options_for_select(false), :selected=> @activity_sector_translation.local %>
   </p>
   <p>
     <%= f.submit "Update" %>

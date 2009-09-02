@@ -72,7 +72,8 @@ module ApplicationHelper
 
   def toggle_link(name, id, options={})
     onclick = "Element.toggle('#{id}'); "
-    onclick << (options[:focus] ? "Form.Element.focus('#{options[:focus]}'); " : "this.blur(); ")   
+    onclick << (options[:focus] ? "Form.Element.focus('#{options[:focus]}'); " : "this.blur(); ")
+    onclick << (options[:second_element] ?    "Element.toggle('#{options[:second_element]}');$('#{options[:second_element]}').blur();" : "")
     link_to(name, "#", :onclick => onclick,:class=>"button btn_orange corner-all")
   end
 

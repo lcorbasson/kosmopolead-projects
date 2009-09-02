@@ -6,7 +6,7 @@
 <br/><br/>
   <div class="editable_box">
     <div class="links_edit_box">
-        <%= toggle_link image_tag("/images/edit.png"), 'update-tags-form'%>
+        <%= toggle_link image_tag("/images/edit.png"), 'update-tags-form',{:second_element=>"project_tags"} %>
       </div>
     <%= grey_title("MOTS CLES") %>
     <%= grey_box("#{render:partial=>'projects/box/tags', :locals=>{:project=>project}}", "project_tags") %>
@@ -16,7 +16,7 @@
 </div>
 
 <div class="profilecontentright">
-    <% if @members.any? %>
+
         <div id="tabs">
           <ul id="tabs_members">
               <li><a href="#projects_partners"><%= l(:label_partners) %></a></li>
@@ -30,11 +30,10 @@
           </div>
            <div class="clearer"></div>
       </div>
-      
-	<% end %>
+
     <div class="editable_box">
       <div class="links_edit_box">
-        <%= toggle_link image_tag("/images/edit.png"), 'update-description-form','description'%>
+        <%= toggle_link image_tag("/images/edit.png"), 'update-description-form',{:second_element=>"description"}%>
       </div>
       <%= grey_title("DESCRIPTION DU PROJET") %>
       <%= grey_box("#{render:partial=>'projects/box/description', :locals=>{:project=>project}}", "project_description") %>

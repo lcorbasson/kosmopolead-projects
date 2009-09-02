@@ -1056,6 +1056,7 @@ height:17px;
 .profile_content{margin:5px;padding:5px;}
 .profilecontentleft {margin:5px;float:left;width:40%;}
 .profilecontentright {float:right;width:57%;margin:5px;}
+.profilecontentleft .progress, .profilecontentleft .pourcent {float:right;}
 
 /*Toolbar */
 .jstElements {

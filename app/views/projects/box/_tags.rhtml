@@ -1,7 +1,15 @@
-<% @project.tag_list.each do |tag| %>
-  <%= tag %>
-<% end %>
-
+<div id="project_tags">
+  <% if @project.tag_list.size>0 %>
+    <% @project.tag_list.each do |tag| %>
+      <%= tag %>
+    <% end %>
+  <% else %>
+       <div class="emptymessage">
+            <p><%= l(:project_add_tag) %>
+            <%= toggle_link image_tag("/images/edit.png"), 'update-tags-form',{:second_element=>"project_tags"}%></p>
+       </div>
+  <% end %>
+</div>
 <% remote_form_for(:project, @project,
                  :url => {:controller => 'projects', :action => 'update', :project_id => @project,:part=>'tags'},
                  :method => :put,
@@ -9,7 +17,7 @@
   <%= select_tag  :tags,  options_for_select( @project.tag_list { |tag| [tag.name, tag.id] }, :class => 'selected'), :id => 'tags', :name => 'tags'%>
   <div class="buttons">
     <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
-    <%= toggle_link l(:button_cancel), 'update-tags-form'%>
+    <%= toggle_link l(:button_cancel), 'update-tags-form',{:second_element=>"project_tags"}%>
   </div>
 <% end %>
 

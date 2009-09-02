@@ -94,9 +94,9 @@ class FileAttachmentsController < ApplicationController
     end
     
     # images are sent inline
-    send_file @attachment.diskfile, :filename => filename_for_content_disposition(@attachment.filename),
-                                    :type => @attachment.content_type, 
-                                    :disposition => (@attachment.image? ? 'inline' : 'attachment')
+    send_file @attachment.file.path, :filename => filename_for_content_disposition(@attachment.file_file_name),
+                                    :type => @attachment.file_content_type,
+                                    :disposition => 'attachment'
    
   end
   

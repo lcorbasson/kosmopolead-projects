@@ -128,7 +128,7 @@ class ProjectsController < ApplicationController
       @project.enabled_module_names = params[:enabled_modules]
       if @project.save
         flash[:notice] = l(:notice_successful_create)
-        redirect_to :controller => 'issues', :action => 'index',:project_id=>@project
+        redirect_to "/projects/#{@project}/issues/index"
       end
     end
     

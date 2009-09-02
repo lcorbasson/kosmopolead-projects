@@ -64,7 +64,7 @@ module ApplicationHelper
   # * :text - Link text (default to attachment filename)
   # * :download - Force download (default: false)
   def link_to_attachment(attachment, options={})
-    text = options.delete(:text) || attachment.file_file_name
+    text = options.delete(:text) || truncate(attachment.file_file_name,18)
     action = options.delete(:download) ? 'download' : 'show'
 
     link_to(h(text), {:controller => 'file_attachments', :action => action, :id => attachment, :filename => attachment.file_file_name }, options)

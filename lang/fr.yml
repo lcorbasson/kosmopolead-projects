@@ -298,6 +298,7 @@ project_module_wiki: Wiki
 project_module_repository: Dépôt de sources
 project_module_boards: Forums de discussion
 
+label_file: Fichier
 label_notes: Notes
 label_partner: Partenaire
 label_name: Nom

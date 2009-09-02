@@ -22,8 +22,9 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'help/:ctrl/:page', :controller => 'help'
   #map.connect ':controller/:action/:id/:sort_key/:sort_order'
 
-  map.connect 'projects/:project_id/:action',:controller=>'projects'
   map.connect 'projects/:action',:controller=>'projects'
+  map.connect 'projects/:project_id/:action',:controller=>'projects'
+  
   map.connect 'projects/:project_id/wikis/:action/:id',:controller=>'wikis'
   map.connect 'projects/:project_id/project_partners/:action/:id',:controller=>'project_partners'
   map.connect 'partners/:action',:controller=>'partners'
@@ -33,7 +34,10 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'projects/:project_id/gallery/:gallery_id/photos/:action', :controller => 'photos'
   map.connect 'issues/:issue_id/relations/:action/:id', :controller => 'issue_relations'
   map.connect 'projects/:project_id/issues/:action', :controller => 'issues'
-  
+  map.resources :projects do |project|
+      project.resources :issues
+  end
+
   map.connect 'projects/:project_id/news/:action', :controller => 'news'
   map.connect 'projects/:project_id/documents/:action', :controller => 'documents'
   map.connect 'projects/:project_id/boards/:action/:id', :controller => 'boards'

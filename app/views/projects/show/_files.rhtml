@@ -15,7 +15,11 @@
       <% else %>
           <div class="emptymessage">
           <p><%= l(:project_add_file) %>
-          <%= toggle_link image_tag("/images/add.png"), 'update-members-form'%></p>
+          <%= link_to_remote "#{image_tag('/images/add.png')}",
+                         { :url => { :controller => 'file_attachments', :action => 'new',:project_id=>@project},
+                           :method => 'post',
+                           :update => 'add_file'
+                         } %>
         </div>
       <% end %>
     </div>

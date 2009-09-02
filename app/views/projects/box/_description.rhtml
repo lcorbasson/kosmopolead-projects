@@ -3,7 +3,7 @@
     <%= textilizable project.description %>
   <% else %>
     <div class="emptymessage">
-          <p><%= l(:project_add_relation) %>
+          <p><%= l(:project_add_description) %>
           <%= toggle_link image_tag("/images/edit.png"), 'update-description-form',{:second_element=>"description"}%></p>
    </div>
   <% end %>

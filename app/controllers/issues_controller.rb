@@ -279,9 +279,7 @@ class IssuesController < ApplicationController
     if request.post?
       @time_entry = TimeEntry.new(:project => @project, :issue => @issue, :user => User.current, :spent_on => Date.today)
       @time_entry.attributes = params[:time_entry]
-      attachments = attach_files(@issue, params[:attachments])
-      attachments.each {|a| journal.details << JournalDetail.new(:property => 'attachment', :prop_key => a.id, :value => a.filename)}
-      
+     
       call_hook(:controller_issues_edit_before_save, { :params => params, :issue => @issue, :time_entry => @time_entry, :journal => journal})
 
       if (@time_entry.hours.nil? || @time_entry.valid?) && @issue.save
@@ -601,7 +599,8 @@ private
       cond = "project_id IS NULL"
       cond << " OR project_id = #{@project.id}" if @project
       @query = Query.find(params[:query_id], :conditions => cond)
-      @query.project = @project     
+      @query.project = @project
+      @query.query_type = "issue"
       session[:query] = {:id => @query.id, :project_id => @query.project_id}
       
     else

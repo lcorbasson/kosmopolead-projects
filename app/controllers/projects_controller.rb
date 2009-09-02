@@ -268,6 +268,7 @@ class ProjectsController < ApplicationController
     if request.post? and params[:confirm]
       @project_to_destroy.destroy
       redirect_to :controller => 'admin', :action => 'projects'
+    
     end
     # hide project in layout
     @project = nil

@@ -1,0 +1,19 @@
+<div>
+<p><strong><%=h @project_to_destroy %></strong><br />
+<%=l(:text_project_destroy_confirmation)%>
+
+<% if @project_to_destroy.children.any? %>
+<br /><%= l(:text_subprojects_destroy_warning, content_tag('strong', h(@project_to_destroy.children.sort.collect{|p| p.to_s}.join(', ')))) %>
+<% end %>
+</p>
+
+    <% form_tag({:controller => 'projects', :action => 'destroy', :project_id => @project_to_destroy}) do %>
+    <label><%= check_box_tag 'confirm', 1 %> <%= l(:general_text_Yes) %></label>
+    <div class="buttons right">
+      <%= submit_tag l(:button_delete),:class=>"button btn_blue corner-all" %>
+      <%= link_to l(:button_cancel),{:controller=>:admin,:action=>:projects},:class=>"button btn_orange corner-all" %>
+    </div>
+    <div class="clearer"></div>
+    <% end %>
+
+</div>

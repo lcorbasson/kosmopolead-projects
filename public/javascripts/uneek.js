@@ -186,4 +186,10 @@ function initialize_simple_funding_grid(url,edit_url){
 
 }
 
-
+function sector_activity_show(t){
+//    alert(t.value);
+//    jQuery.get("/activity_sectors?local=" + t.value , function(callback){
+//            jQuery("#test").html(callback);
+//    });
+    jQuery.ajax({dataType:'script', url:'sector_translations', data:'local=' + t.value,type: "get", success: function(msg){eval(msg)}});
+}

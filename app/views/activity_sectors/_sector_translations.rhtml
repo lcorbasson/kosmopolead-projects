@@ -1,0 +1,50 @@
+  <table class="list" style="text-align:left;">
+    <tr>
+      <th><%=  l(:label_language) %></th>
+      <th>
+          <%
+                    if current_language == User.current.language
+                      if User.current.language == 'fr'
+                        @language = 'en'
+                      else
+                        @language = 'fr'
+                      end
+                    else
+                      @language = current_language
+                    end
+                    %>
+         <%= select_tag :local, options_for_select(lang_options_for_select(false), @language) %>
+         <%= observe_field :local, :url => { :action => :sector_translations },
+              :update => :table_sector_translations,
+              :with => "Form.serialize('activity-sector-form')" %>
+      </th>
+      <th><%= ll(User.current.language, :general_lang_name) %></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+      <% @activity_sectors.collect do |sector| %>
+      <tr class="<%= cycle("even", "odd") %>">
+        <td><%= link_to sector.identifier, sector %></td>
+        <td>
+          <%=
+                      lang_id = sector.activity_sector_translations.select{ |lang| lang.local == @language}.collect{ |n| n.id }
+                      lang_name = sector.activity_sector_translations.select{ |lang| lang.local == @language}.collect{ |n| n.name }
+                      link_to lang_name,
+                      edit_activity_sector_activity_sector_translation_path( sector,lang_id)
+                  %>
+        </td>
+        <td>
+         <%=
+                      lang_id = sector.activity_sector_translations.select{ |lang| lang.local == User.current.language}.collect{ |n| n.id }
+                      lang_name = sector.activity_sector_translations.select{ |lang| lang.local == User.current.language}.collect{ |n| n.name }
+                      link_to lang_name,
+                      edit_activity_sector_activity_sector_translation_path( sector,lang_id)
+                  %>
+        </td>
+        <td><%= link_to l(:button_add), new_activity_sector_activity_sector_translation_path(sector) %></td>
+        <td><%= link_to l(:button_edit), edit_activity_sector_path(sector) %></td>
+        <td><%= link_to l(:button_delete), sector, :confirm => 'Are you sure?', :method => :delete %></td>
+      </tr>
+       <% end %>
+  </table>

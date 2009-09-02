@@ -47,7 +47,10 @@ ActionController::Routing::Routes.draw do |map|
     omap.repositories_entry 'repositories/annotate/:id/*path', :action => 'annotate'
     omap.repositories_revision 'repositories/revision/:id/:rev', :action => 'revision'
   end
-  
+
+  map.connect 'activity_sectors/:action/:id', :controller => 'activity_sectors'
+
+
   map.connect 'file_attachments/:id', :controller => 'file_attachments', :action => 'show', :id => /\d+/
   map.connect 'file_attachments/:id/:filename', :controller => 'file_attachments', :action => 'show', :id => /\d+/, :filename => /.*/
   map.connect 'file_attachments/download/:id/:filename', :controller => 'file_attachments', :action => 'download', :id => /\d+/, :filename => /.*/

@@ -1,0 +1,20 @@
+  <%= t.error_messages %>
+  <p>
+    <%= t.label :activity_sector_id %><br />
+    <%= t.text_field :activity_sector_id %>
+  </p>
+  <p>
+    <%= t.label :name %><br />
+    <%= t.text_field :name %>
+  </p>
+  <p>
+    <%= t.label :description %><br />
+    <%= t.text_field :description %>
+  </p>
+  <p>
+    <%= t.label :local %><br />
+    <%= t.select :local, lang_options_for_select(false), :selected=> current_language.to_s %>
+  </p>
+  <p>
+    <%= t.submit "Create" %>
+  </p>

@@ -75,7 +75,7 @@ class Project < ActiveRecord::Base
   attr_protected :status, :enabled_module_names
   
   validates_presence_of :name, :identifier
-  validates_uniqueness_of :name, :identifier
+  validates_uniqueness_of  :identifier
   validates_associated :repository, :wiki
   validates_length_of :name, :maximum => 30
   validates_length_of :homepage, :maximum => 255
@@ -83,7 +83,7 @@ class Project < ActiveRecord::Base
   validates_format_of :identifier, :with => /^[a-z0-9\-]*$/
   
   before_destroy :delete_all_members
-  before_create :create_gallery
+  before_save :create_gallery
 
   named_scope :has_module, lambda { |mod| { :conditions => ["#{Project.table_name}.id IN (SELECT em.project_id FROM #{EnabledModule.table_name} em WHERE em.name=?)", mod.to_s] } }
   

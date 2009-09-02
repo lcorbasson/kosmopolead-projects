@@ -26,7 +26,7 @@ class IssueRelationsController < ApplicationController
       format.html { redirect_to :controller => 'issues', :action => 'show', :id => @issue }
       format.js do
         render :update do |page|
-          page.replace_html "relations", :partial => 'issues/relations'
+          page.replace_html "relations", :partial => 'issues/relations',:locals=>{:issue=>@issue}
           if @relation.errors.empty?
             page << "$('relation_delay').value = ''"
             page << "$('relation_issue_to_id').value = ''"
@@ -44,7 +44,7 @@ class IssueRelationsController < ApplicationController
     end
     respond_to do |format|
       format.html { redirect_to :controller => 'issues', :action => 'show', :id => @issue }
-      format.js { render(:update) {|page| page.replace_html "relations", :partial => 'issues/relations'} }
+      format.js { render(:update) {|page| page.replace_html "relations", :partial => 'issues/relations',:locals=>{:issue=>@issue}} }
     end
   end
   

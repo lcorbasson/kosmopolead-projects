@@ -223,7 +223,7 @@ private
       @issue = Issue.find(params[:issue_id])
       @project = @issue.project
     elsif params[:project_id]
-      @project = Project.find(params[:project_id])
+      @project = Project.find_by_identifier(params[:project_id])
     else
       render_404
       return false

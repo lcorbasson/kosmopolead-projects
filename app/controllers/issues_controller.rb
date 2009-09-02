@@ -27,7 +27,7 @@ class IssuesController < ApplicationController
   before_filter :find_issues, :only => [:bulk_edit, :move, :destroy]
   before_filter :find_project, :only => [:calendar,:gantt,:index,:create,:new, :update_form, :preview]
 
-  before_filter :find_projects, :only => [:create,:gantt, :index, :calendar,:new,:show]
+  before_filter :find_projects, :only => [:gantt, :index, :calendar,:new,:show,:create]
   before_filter :authorize, :except => [:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
 
   before_filter :find_optional_project, :only => [ :changes, :gantt, :calendar]
@@ -121,6 +121,9 @@ class IssuesController < ApplicationController
     @priorities = Enumeration::get_values('IPRI')
     @time_entry = TimeEntry.new
     @project = @issue.project
+    @file_attachment = FileAttachment.new
+    @file_attachment.container_type="issue"
+    @file_attachment.container_id = @issue.id
     respond_to do |format|
       format.html { render :template => 'issues/show.rhtml' }
       format.atom { render :action => 'changes', :layout => false, :content_type => 'application/atom+xml' }
@@ -176,7 +179,7 @@ class IssuesController < ApplicationController
        @issue.parent_id = params[:parent_id]
      end      		
     end	
-    @priorities = Enumeration::get_values('IPRI')
+    @priorities = Enumeration::get_values('IPRI')   
     respond_to do |format|
       format.js {
         render:update do |page|
@@ -208,7 +211,7 @@ class IssuesController < ApplicationController
       @issue.watcher_user_ids = params[:issue]['watcher_user_ids'] if User.current.allowed_to?(:add_issue_watchers, @project)
     end
     @issue.author = User.current
-   
+   @priorities = Enumeration::get_values('IPRI')
 
 
     if @issue.save @issue.is_issue?
@@ -224,8 +227,8 @@ class IssuesController < ApplicationController
         end
       end
      end
-    attach_files(@issue, params[:attachments])
-    Mailer.deliver_issue_add(@issue) if Setting.notified_events.include?('issue_added')
+   # attach_files(@issue, params[:file_attachments])
+#    Mailer.deliver_issue_add(@issue) if Setting.notified_events.include?('issue_added')
      respond_to do |format|
           format.js {
               render:update do |page|
@@ -556,6 +559,7 @@ class IssuesController < ApplicationController
   
 private
   def find_issue
+
     @issue = Issue.find(params[:id], :include => [:project, :tracker, :status, :author, :priority, :category])
     @project = @issue.project
   rescue ActiveRecord::RecordNotFound

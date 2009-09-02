@@ -64,10 +64,10 @@ module ApplicationHelper
   # * :text - Link text (default to attachment filename)
   # * :download - Force download (default: false)
   def link_to_attachment(attachment, options={})
-    text = options.delete(:text) || attachment.filename
+    text = options.delete(:text) || attachment.file_file_name
     action = options.delete(:download) ? 'download' : 'show'
 
-    link_to(h(text), {:controller => 'file_attachments', :action => action, :id => attachment, :filename => attachment.filename }, options)
+    link_to(h(text), {:controller => 'file_attachments', :action => action, :id => attachment, :filename => attachment.file_file_name }, options)
   end
 
   def toggle_link(name, id, options={})
@@ -549,13 +549,13 @@ module ApplicationHelper
     pcts << (100 - pcts[1] - pcts[0])
     width = options[:width] || '100px;'
     legend = options[:legend] || ''
-    content_tag('p', legend, :class => 'pourcent right')+
+    content_tag('p', legend, :class => 'pourcent')+
     content_tag('table',      
       content_tag('tr',
         (pcts[0] > 0 ? content_tag('td', '', :style => "width: #{pcts[0].floor}%;", :class => 'closed') : '') +
         (pcts[1] > 0 ? content_tag('td', '', :style => "width: #{pcts[1].floor}%;", :class => 'done') : '') +
         (pcts[2] > 0 ? content_tag('td', '', :style => "width: #{pcts[2].floor}%;", :class => 'todo') : '')
-      ), :class => 'progress right', :style => "width: #{width};")
+      ), :class => 'progress', :style => "width: #{width};")
       
   end
 
@@ -769,13 +769,18 @@ module ApplicationHelper
   end
 
 
-  def file_thumbnail(file)
+  def file_thumbnail(file)   
+      link =  content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=>"/file_attachments/destroy/#{file.id}",:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")
+   
+
     title = link_to_attachment file, :download => true, :title => file.description
    #  title = link_to(content_tag(:p,file.filename,:class=>"filename"), {:controller => 'versions', :action => 'show', :id => file})
    
     author = content_tag(:p,file.author.name,:class=>"author")
     created_on = content_tag(:p,format_time(file.created_on),:class=>"created_on")
-    thumbnail = content_tag(:li,content_tag(:div,title+author+created_on,:class=>"thumbnail_infos"),:class=>"file_thumbnail thumbnail")
+    thumbnail = content_tag(:li,
+     link+
+      content_tag(:div,title+author+created_on,:class=>"thumbnail_infos"),:class=>"file_thumbnail thumbnail editable_box")
 
   end
 
@@ -798,6 +803,7 @@ module ApplicationHelper
 
 
    def form_upload(args)
+    
     name_div_id=args[:name_div_id] || "div_upload_form"
     url=args[:url]
     textarea_id=args[:textarea_id] || ""
@@ -815,6 +821,7 @@ module ApplicationHelper
    
     data=<<-END
     <script>
+ 
         function clone_#{name_div_id}_form(){
         jQuery.ajaxFileUpload({url:'#{concat_url}',
         secureuri:false, fileElementId:'fileToUpload', dataType: 'json',
@@ -835,6 +842,8 @@ module ApplicationHelper
    END
    return data
   end
+
+   
 
 
   private

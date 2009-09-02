@@ -1,0 +1,8 @@
+<% unless file_attachments.nil?  %>
+  <ul>
+    <% file_attachments.each do |file_attachment| %>
+      <%= file_thumbnail(file_attachment) %>
+    <% end %>
+  </ul>
+<% end %>
+<div class="clearer"></div>

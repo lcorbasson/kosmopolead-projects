@@ -1,7 +1,7 @@
 <div id="relations" class="editable_box">
    <div class="links_edit_box">
      <% if authorize_for('issue_relations', 'new') %>
-        <%= toggle_link image_tag('/images/add.png'), 'new-relation-form'%>
+        <%= toggle_link image_tag('/images/add.png'), 'new-relation-form',:class=>"icon icon-add"%>
     <% end %>
    </div>
 

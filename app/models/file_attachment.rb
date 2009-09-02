@@ -18,8 +18,6 @@
 require "digest/md5"
 
 class FileAttachment < ActiveRecord::Base  
-  belongs_to :author, :class_name => "User", :foreign_key => "author_id"
-  
 
   # -- paperclip
 
@@ -28,6 +26,22 @@ class FileAttachment < ActiveRecord::Base
   # -- validation
 
   validates_attachment_presence :file
+
+  # -- relations
+  
+  belongs_to :container, :polymorphic => true
+  belongs_to :author, :class_name => "User", :foreign_key => "author_id"
+
+  def container
+    case container_type
+      when "project"
+        container = Project.find(self.container_id)
+      when "issue"
+        container = Issue.find(self.container_id)
+      when "version"
+        container = Version.find(self.container_id)
+    end
+  end
 
 
   

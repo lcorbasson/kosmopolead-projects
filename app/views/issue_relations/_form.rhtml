@@ -1,23 +1,17 @@
 <%= error_messages_for 'relation' %>
 
-<p><%= f.select :relation_type, collection_for_relation_type_select, {}, :onchange => "setPredecessorFieldsVisibility();" %>
+<p class="buttons"><%= f.select :relation_type, collection_for_relation_type_select, {}, :onchange => "setPredecessorFieldsVisibility();" %>
 <%= l(:label_issue) %> #
 
 <%= f.select  :issue_to_id,@issue.project.issues.all.collect {|i| [ i.subject, i.id ] }%>
-<%= f.text_field :issue_to_id, :size => 6 %>
 <span id="predecessor_fields" style="display:none;">
 <%= l(:field_delay) %>: <%= f.text_field :delay, :size => 3 %> <%= l(:label_day_plural) %>
 </span>
 
-  <%= link_to_remote l(:button_add),
-                         { :url => { :controller => 'issue_relations', :action => 'new'},
-                           :method => 'post',
-                           :update => 'content',
-                           :with => "Form.serialize('new-relation-form')",
-                         }, :accesskey => accesskey(:preview),:class=>"button btn_blue corner-all" %>
+ 
 
 
-<%= submit_tag l(:button_add) %>
+<%= submit_tag l(:button_add),:class=>"button btn_blue corner-all" %>
 <%= toggle_link l(:button_cancel), 'new-relation-form'%>
 </p>
 

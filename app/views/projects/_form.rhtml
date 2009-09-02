@@ -14,12 +14,8 @@
 <p><%= f.text_field :project_cost %>€</p>
 <p><%= f.text_field :estimated_time %></p>
 <p><%= f.select :time_units_id, (@time_units.collect {|u| [u.label, u.id]}) %></p>
-<p><%= f.select :sector, list_sectors(current_language).collect{|s| [s.name, s.activity_sector_id] } %></p><br />
+<p><%= f.select :sector, list_sectors(current_language).collect{|s| [s.name, s.activity_sector_id] } %></p>
 
-
-<% unless @project.identifier_frozen? %>
-<br /><span class="specs"><%= l(:text_length_between, 1, 20) %> <%= l(:text_project_identifier_info) %></span>
-<% end %></p>
 <p><%= f.text_field :homepage, :size => 60 %></p>
 <p><%= f.check_box :is_public %></p>
 

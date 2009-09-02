@@ -51,15 +51,13 @@ class ProjectsController < ApplicationController
                             :conditions => Project.visible_by(User.current),
                             :include => :parent
    @project = @projects.first
-   unless @project.nil?
-       find_files
+   unless @project.nil?   
        @members = @project.members
        @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
        @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
        @trackers = @project.rolled_up_trackers
    if @projects.size>0
       @project = @projects.first
-      find_files
       @members = @project.members
       @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
       @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
@@ -76,9 +74,9 @@ class ProjectsController < ApplicationController
    end
    @member ||= @project.members.new   
    @users = User.all
-   @file = FileAttachment.new
-   @file.container_id  = @project.id
-   @file.container_type = "project"
+   @file_attachment = FileAttachment.new
+   @file_attachment.container_id  = @project.id
+   @file_attachment.container_type = "project"
     @roles = Role.find :all, :order => 'builtin, position'
     completed_percent
     find_gallery
@@ -105,17 +103,14 @@ class ProjectsController < ApplicationController
                                   :conditions => "status = #{Project::STATUS_ACTIVE}",
                                   :order => 'name')
     @project = Project.new(params[:project])
-
     @time_units = TimeUnit.find(:all)
-
     @users = User.find(:all)
     if !params[:project]
       @project.identifier = Project.next_identifier if Setting.sequential_project_identifiers?
       @project.trackers = Tracker.all
       @project.is_public = Setting.default_projects_public?
       @project.enabled_module_names = Redmine::AccessControl.available_project_modules
-      respond_to do |format|
-        format.html {}
+      respond_to do |format|       
         format.js {
            render :update do |page|
               page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/add')}');"
@@ -132,7 +127,7 @@ class ProjectsController < ApplicationController
       @project.enabled_module_names = params[:enabled_modules]
       if @project.save
         flash[:notice] = l(:notice_successful_create)
-        redirect_to :controller => 'issues', :action => 'index',:project_id=>@project.id
+        redirect_to :controller => 'issues', :action => 'index',:project_id=>@project
       end
     end
     
@@ -153,7 +148,6 @@ class ProjectsController < ApplicationController
     else
       find_project
     end
-    find_files
     @members = @project.members
     @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
     @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
@@ -171,21 +165,15 @@ class ProjectsController < ApplicationController
     @gantt = Redmine::Helpers::Gantt.new(params)
     @member ||= @project.members.new
     @users = User.all
-    @file = FileAttachment.new
-    @file.container_id  = @project.id
-    @file.container_type = "project"
+    @file_attachment = FileAttachment.new
+    @file_attachment.container_id  = @project.id
+    @file_attachment.container_type = "project"
     @roles = Role.find :all, :order => 'builtin, position'
     retrieve_query
     if @query.valid?
       events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
                   and start_date is not null)
                   AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
-
-
-#      events = @project.stages(:conditions=>
-#                ["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
-#                  and start_date is not null)
-#                  AND #{Issue.table_name}.parent_id is null", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to])
 
       @gantt.events = events
     end
@@ -458,9 +446,7 @@ private
     end
   end
 
-  def find_files
-  
-  end
+
 
   def retrieve_query
     if !params[:query_id].blank?

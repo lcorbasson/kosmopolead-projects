@@ -1,15 +1,28 @@
-<% remote_form_for :file_attachment,@file, :url=>{:controller=>:file_attachments,:action=>:create,:project_id=>@project},:html=>{:id=>"upload_form_#{@file.id}"} do |f| %>
+<% remote_form_for :file_attachment,@file_attachment, :html=>{:id=>"upload_form_file_#{@file_attachment.id}"} do |f| %>
 <p class="buttons">
     <label><%=l(:label_file)%></label>
-    <%= f.file_field :file, :id=>"fileToUpload" %>
-    <%= link_to_remote l(:button_add),
-                         { :url => { :controller => 'file_attachments', :action => 'create',:project_id=>@project},
+    <%= f.file_field :file, :id=>"fileToUpload" %>   
+    <% case @file_attachment.container_type
+         when "project" %>
+            <%=  link_to_remote l(:button_add),
+                         { :url => "/projects/#{@project}/file_attachments/index",
                            :method => 'post',
-                           :with => "clone_upload__form()",
+                           :update => 'files_index',
+                           :with => "clone_upload_file__form()",
                          },:class=>"button btn_blue corner-all" %>
-  <%= toggle_link l(:button_cancel), "upload_form_#{@file.id}" %>
+        <%   when "issue" %>
+           <%=   link_to_remote l(:button_add),
+                         { :url => "/projects/#{@issue.project}/issues/#{@issue.id}/file_attachments/index",
+                           :method => 'post',
+                           :update => 'files_index',
+                           :with => "clone_upload_file__form()",
+                         },:class=>"button btn_blue corner-all" %>
 
+        
+    <% end %>
+   
+  <%= toggle_link l(:button_cancel), "upload_form_file_#{@file_attachment.id}" %>
+  <%= f.hidden_field :container_id,:value=>@file_attachment.container_id %>
+  <%= f.hidden_field :container_type,:value=>@file_attachment.container_type %>
 </p>
 <% end %>
-
-

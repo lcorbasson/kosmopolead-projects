@@ -1,16 +1,20 @@
-<%= error_messages_for 'attachment' %>
-<%= link_to_remote l(:label_new_file),
-                         { :url => { :controller => 'projects', :action => 'add_file',:project_id=>@project},
+<%= error_messages_for 'file_attachment' %>
+
+<%= form_upload({:url=>"projects/#{@project.identifier}/file_attachments/create",:col_collection=>@file_attachment,:name_initial_form=>"upload_form_file_#{@file_attachment.id}",:name_div_id=>"upload_file_#{@file_attachment.id}"}) %>
+<div class="editable_box">
+    <div class="links_edit_box">
+        <%= link_to_remote "#{image_tag('/images/add.png')}",
+                         { :url => { :controller => 'file_attachments', :action => 'new',:project_id=>@project},
                            :method => 'post',
                            :update => 'add_file'
-                         },:class=>"button btn_blue corner-all" %>
+                         } %>
+     </div>
+    <div id="files_index">
+      <%= render:partial=>"file_attachments/index",:locals=>{:file_attachments=>@project.file_attachments} %>
+    </div>
+</div>
+
 <div id="add_file">
 
 </div>
-<%= form_upload({:url=>"projects/#{@project.identifier}/file_attachments/create",:col_collection=>@file,:name_initial_form=>"upload_form_#{@file.id}",:name_div_id=>"upload_#{@file.id}"}) %>
-<div id="files_index">
-  <%= render:partial=>"file_attachments/index",:locals=>{:containers=>@containers} %>
-</div>
-
-
 <%= javascript_include_tag("ajaxfileupload") %>

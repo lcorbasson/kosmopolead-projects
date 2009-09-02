@@ -51,16 +51,12 @@ end %>
 </table>
 
 
-<div class="contextual">
+<div class="contextual" style="margin-top:15px;">
 <%= link_to_remote_if_authorized(l(:button_quote), { :url => {:action => 'reply', :id => issue} }, :class => 'icon icon-comment') unless issue.description.blank? %>
 </div>
 <h3><%=l(:field_description)%></h3>
 
-<div class="wiki">
-<%= textilizable issue, :description, :attachments => issue.file_attachments %>
-</div>
 
-<%= link_to_attachments issue %>
 
 <%= call_hook(:view_issues_show_description_bottom, :issue => issue) %>
 
@@ -69,7 +65,7 @@ end %>
 <% if @issue.is_issue? %>
 
   <div id="relations">
-  <%= render :partial => 'relations' %>
+  <%= render :partial => 'relations',:locals=>{:issue=>issue} %>
   </div>
 <% end %>
 <% end %>
@@ -81,7 +77,17 @@ end %>
 <%= render :partial => 'watchers/watchers', :locals => {:watched => issue} %>
 </div>
 <% end %>
-
+  <div id="files">    
+    <div class="contextual">
+      <%= link_to_remote "#{l(:button_add)}",
+                         { :url => { :controller => 'file_attachments', :action => 'new',:issue_id=>issue,:project_id=>project},
+                           :method => 'post',
+                           :update => 'add_file'
+                         },:class=>"icon icon-add" %>
+    </div>
+    <h3><%= l(:label_file_plural) %></h3>
+    <%= render :partial => 'issues/show/files' %>
+  </div>
 </div>
 
 <% if issue.changesets.any? && User.current.allowed_to?(:view_changesets, project) %>

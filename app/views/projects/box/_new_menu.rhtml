@@ -1,6 +1,6 @@
 <div class="new_menu">
   <p>
-       <%= link_to_remote(l(:label_project), {:url=>{:controller => 'projects', :action => 'add'}},:method=>:get) %>
+       <%= link_to_remote(l(:label_project), {:url=>{:controller => 'projects', :action => 'add'},:method=>:get})  %>
   </p>
   <% if @project %>    
     <p>

@@ -392,8 +392,7 @@ div.square {
  overflow: hidden;
  width: .6em; height: .6em;
 }
-.contextual {margin-right:10px;
-margin-top:15px;float:right; white-space: nowrap; line-height:1.4em; padding-left: 10px; font-size:0.9em;}
+.contextual {margin-right:10px;float:right; white-space: nowrap; line-height:1.4em; padding-left: 10px; font-size:0.9em;}
 .contextual input {font-size:0.9em;}
 
 .splitcontentleft{float:left; width:49%;}
@@ -1028,7 +1027,7 @@ height:17px;
 .buttons .btn_blue {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_blue.png) repeat-x}
 .buttons .btn_orange {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_orange.png) repeat-x}
 .buttons a.btn_orange{padding-top:3px;padding-bottom:3px;vertical-align:middle;}
-.buttons .btn_blue:hover {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_blue_hover.png) repeat-x}
+.btn_blue:hover {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_blue_hover.png) repeat-x}
 .buttons .btn_orange:hover {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_orange_hover.png) repeat-x}
 .buttons {margin-top:20px;}
 
@@ -1111,7 +1110,7 @@ height:17px;
 
 #update-tags-form ul.holder{width:95%;}
 
-#add_file {margin-top:20px;}
+
 
 .emptymessage {
 -moz-border-radius-bottomleft:5px;
@@ -1126,3 +1125,6 @@ margin:2px 20px;
 padding:4px;
 text-align:center;
 }
+
+#watcher_user_id,#relation_relation_type{margin-left:10px;}
+#files_index ul {margin-left:10px;}

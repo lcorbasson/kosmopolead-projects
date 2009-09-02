@@ -11,7 +11,7 @@
       "#{link_to_remote("",{:url=>{:controller => 'projects', :action => 'show', :project_id => project}},:method=>:get,:class=>'active icon profile',:name=>'Aperçu')}",
       "#{link_to_remote("",{:url=>{:controller => 'issues', :action => 'calendar', :project_id => project}},:method=>:get,:class=>'inactive icon calendar',:name=>'Calendar') if User.current.allowed_to?(:view_calendar, @project, :global => true)}",
      "#{link_to_remote("",{:url=>{:controller => 'issues', :action => 'gantt', :project_id => project}},:method=>:get, :class=>'inactive icon gantt',:name=>'Gantt') if User.current.allowed_to?(:view_gantt, @project, :global => true)}",
-     "#{link_to_remote("",{:url=>{:controller => 'issues', :action => 'index', :project_id => project}},:method=>:get, :class=>'inactive icon list ',:name=>'Liste')}"
+     "#{link_to_remote("",{:url=>"/projects/#{project}/issues/index"},:method=>:get, :class=>'inactive icon list ',:name=>'Liste')}"
     ]
 ) %>
 

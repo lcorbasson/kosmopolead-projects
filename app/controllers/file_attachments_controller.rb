@@ -16,30 +16,64 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class FileAttachmentsController < ApplicationController
-  before_filter :find_project,:except=>[:index]
-  before_filter :read_authorize, :except => [:destroy,:index,:create]
-  before_filter :delete_authorize, :only => [:destroy]
+  before_filter :find_project
+
   
   verify :method => :post, :only => :destroy
 
 
-  def index
-     @project = Project.find_by_identifier(params[:project_id])
-     @containers = [ Project.find(@project.id, :include => :file_attachments)]
-     @containers += @project.versions.find(:all, :include => :file_attachments)
+  def index    
+    if params[:issue_id]
+      @issue = Issue.find(params[:issue_id])
+      @file_attachments = @issue.file_attachments     
+    else 
+        @project = Project.find_by_identifier(params[:project_id])
+      @file_attachments = @project.file_attachments
+    end
      render :layout=>false
   end
 
   def create
-    @file = FileAttachment.new(params[:file_attachment])
-    @file.container_id = @project.id
-    @file.container_type = "project"
-    @file.save
+    @file_attachment = FileAttachment.new(params[:file_attachment])
+    if params[:issue_id]
+      @issue = Issue.find(params[:issue_id])
+      @file_attachment.container_id = @issue.id
+      @file_attachment.container_type = "issue"
+    else
+      @project = Project.find_by_identifier(params[:project_id])
+      @file_attachment.container_id = @project.id
+      @file_attachment.container_type = "project"      
+    end
+    @file_attachment.author_id = User.current.id
+    @file_attachment.save
     respond_to do |format|  
-      format.js { render(:update) {|page| page.replace_html "files_index", :partial => 'file_attachments/index'} }
+      format.js { render(:update) {|page|
+          if params[:project_id]
+              page.replace_html "files_index", :partial => 'file_attachments/index',:locals=>{:file_attachments=>@project.file_attachments}
+          else
+              page.replace_html "files_index", :partial => 'file_attachments/index',:locals=>{:file_attachments=>@issue.file_attachments}
+          end
+        } }
     end
     
   end
+
+  def new
+    test = params[:file_attachment]
+    @file_attachment = FileAttachment.new
+    @file_attachment.container_id = params[:project_id]
+    if params[:issue_id]
+       @file_attachment.container_type = "issue"
+       @issue = Issue.find(params[:issue_id])
+       @file_attachment.container_id = @issue.id
+    else 
+       @file_attachment.container_type = "project"
+       @project = Project.find(params[:project_id])
+       @file_attachment.container_id = @project.id
+    end
+    render :layout=>false
+  end
+
 
   def show
     if @attachment.is_diff?
@@ -54,6 +88,7 @@ class FileAttachmentsController < ApplicationController
   end
   
   def download
+    @attachment = FileAttachment.find(params[:id])
     if @attachment.container.is_a?(Version) || @attachment.container.is_a?(Project)
       @attachment.increment_download
     end
@@ -67,8 +102,23 @@ class FileAttachmentsController < ApplicationController
   
   def destroy
     # Make sure association callbacks are called
-    @attachment.container.attachments.delete(@attachment)
-    redirect_to :back
+    @attachment = FileAttachment.find(params[:id])
+    @attachment.destroy
+    respond_to do |format|
+        format.js {
+          render(:update) {|page|
+                if @attachment.container_type == "project"
+                    @project = Project.find(@attachment.container_id)
+                    page.replace_html "files_index", :partial => 'file_attachments/index',:locals=>{:file_attachments=>@project.file_attachments}
+                else
+                  if @attachment.container_type == "issue"
+                    @issue = Issue.find(@attachment.container_id)
+                    page.replace_html "files_index", :partial => 'file_attachments/index',:locals=>{:file_attachments=>@issue.file_attachments}
+                  end
+                end
+               }
+         }
+     end   
   rescue ::ActionController::RedirectBackError
     redirect_to :controller => 'projects', :action => 'show', :id => @project
   end

@@ -101,6 +101,7 @@ mail_body_reminder: "%d demande(s) qui vous sont assignées arrivent à échéan
 gui_validation_error: 1 erreur
 gui_validation_error_plural: %d erreurs
 
+field_issue_types: Type de demande
 field_resources: Ressources nécessaires
 field_acronym: Acronyme
 field_time_units: Unité de temps
@@ -298,6 +299,7 @@ project_module_wiki: Wiki
 project_module_repository: Dépôt de sources
 project_module_boards: Forums de discussion
 
+label_assigned_to: Assignée à
 label_file: Fichier
 label_notes: Notes
 label_partner: Partenaire

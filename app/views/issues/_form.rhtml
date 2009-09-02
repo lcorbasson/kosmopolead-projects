@@ -1,5 +1,5 @@
 <% if @issue.new_record? %>
-  <p><%= f.select :issue_types_id, @issue_types.collect {|t| [t.name, t.id]}, :required => true %></p>
+  <p><%= f.select :issue_types_id, @issue_types.collect {|t| [l("#{t.name}"), t.id]}, :required => true %></p>
   <%= observe_field :issue_issue_types_id, :url => { :action => :new },:with => "Form.serialize('issue-form')" %>
   <% if !@issue.is_issue? %>
     <p><%= f.select :parent_id, @issues.collect {|i| [i.subject, i.id] }, :include_blank => true unless @issues.nil?%></p>
@@ -44,6 +44,7 @@
 
       <p><%= f.select :priority_id, (@priorities.collect {|p| [p.name, p.id]}), :required => true %></p>
       <p>
+        <label><%= l(:label_assigned_to) %></label>
         <%= select_tag 'assigned_to_id[]',
           options_for_select(@issue.assignable_users.collect {|m| [m.name, m.id]}),
           :multiple => true, :size => 10, :style => "width:150px" %>
@@ -55,7 +56,7 @@
         <p><%= f.select :category_id, (@project.issue_categories.collect {|c| [c.name, c.id]}), :include_blank => true %>
           <%= prompt_to_remote(l(:label_issue_category_new),
             l(:label_issue_category_new), 'category[name]',
-            {:controller => 'projects', :action => 'add_issue_category', :id => @project},
+            {:controller => 'projects', :action => 'add_issue_category', :project_id => @project},
             :class => 'small', :tabindex => 199) if authorize_for('projects', 'add_issue_category') %></p>
         <% end %>
         <%= content_tag('p', f.select(:fixed_version_id,
@@ -84,7 +85,7 @@
     <% if @issue.new_record? && User.current.allowed_to?(:add_issue_watchers, @project) -%>
       <p><label><%= l(:label_issue_watchers) %></label>
         <% @issue.project.users.sort.each do |user| -%>
-          <label class="floating"><%= check_box_tag 'issue[watcher_user_ids][]', user.id, @issue.watcher_user_ids.include?(user.id) %> <%=h user %></label>
+          <%= check_box_tag 'issue[watcher_user_ids][]', user.id, @issue.watcher_user_ids.include?(user.id) %> <%=h user %>
         <% end -%>
       </p>
     <% end %>
@@ -109,5 +110,5 @@
 
   <%= wikitoolbar_for 'issue_description' %>
   <p><%= f.text_field :resources %></p>
-  <p><%= f.text_field :estimated_hours %></p>
+  <p><%= f.text_field :estimated_hours %>  <%= l(@project.time_unit_label) %></p>
 

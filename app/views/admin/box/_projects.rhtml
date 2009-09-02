@@ -32,7 +32,7 @@
   <tbody>
 <% for project in @projects %>
   <tr class="<%= cycle("even", "odd") %>">
-	<td><%= project.active? ? link_to(h(project.name), :controller => 'projects', :action => 'settings', :id => project) : h(project.name) %>
+	<td><%= project.active? ? link_to(h(project.name), :controller => 'projects', :action => 'settings', :project_id => project) : h(project.name) %>
 	<td><%= textilizable project.short_description, :project => project %>
 	<td align="center"><%= project.children.size %>
 	<td align="center"><%= image_tag 'true.png' if project.is_public? %>

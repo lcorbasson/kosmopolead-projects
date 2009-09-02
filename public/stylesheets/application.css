@@ -534,7 +534,7 @@ a.feed { background: url(../images/feed.png) no-repeat 1px 50%; padding: 2px 0px
 /***** Flash & error messages ****/
 
 
-div.flash {margin-top: 8px;}
+div.flash {margin-top: 8px;padding:5px;}
 
 div.flash.error, #errorExplanation {
     background: url(../images/error.png) 8px 5px repeat-x;color:#fff;font-weight:bold;text-align:center
@@ -679,7 +679,7 @@ width:120px;
 height:17px;
 }
 #content_wrapper .tabs ul li a {padding-top:2px;border:none;font-size:11px;height:15px;}
-#tab-content-info {border:1px solid #DDDDDD;}
+#tab-content-info,#tab-content-modules,#tab-content-versions,#tab-content-categories,#tab-content-categories,#tab-content-boards {border:1px solid #DDDDDD;}
 .tab-content{padding:10px;}
 
 #content_wrapper .tabs ul li a:hover {

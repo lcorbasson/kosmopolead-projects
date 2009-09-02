@@ -10,7 +10,7 @@
     </thead>
 	<tbody>
 <% for version in @project.versions.sort %>
-    <tr class="<%= cycle 'odd', 'even' %>">
+    <tr class="<%= cycle 'even', 'odd' %>">
     <td><%= link_to h(version.name), :controller => 'versions', :action => 'show', :id => version %></td>
     <td align="center"><%= format_date(version.effective_date) %></td>
     <td><%=h version.description %></td>
@@ -25,4 +25,4 @@
 <p class="nodata"><%= l(:label_no_data) %></p>
 <% end %>
 
-<p><%= link_to_if_authorized l(:label_version_new), :controller => 'projects', :action => 'add_version', :id => @project %></p>
+<p><%= link_to_if_authorized l(:label_version_new), :controller => 'projects', :action => 'add_version', :project_id => @project %></p>

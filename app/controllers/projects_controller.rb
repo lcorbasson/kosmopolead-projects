@@ -110,7 +110,8 @@ class ProjectsController < ApplicationController
       @project.trackers = Tracker.all
       @project.is_public = Setting.default_projects_public?
       @project.enabled_module_names = Redmine::AccessControl.available_project_modules
-      respond_to do |format|       
+      respond_to do |format|
+        format.html {}
         format.js {
            render :update do |page|
               page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/add')}');"
@@ -211,14 +212,10 @@ class ProjectsController < ApplicationController
       @tags = Tags.all
       @project.attributes = params[:project]
       @users = User.all
-      select_tags =  params[:tags]
-      @project.tag_list = ''
-      select_tags.each do |tag|
-        @project.tag_list << tag
-      end
+     
       if @project.save
         flash[:notice] = l(:notice_successful_update)
-        redirect_to :action => 'settings', :id => @project
+        redirect_to :action => 'settings', :project_id => @project
       else
         settings
         render :action => 'settings'
@@ -252,7 +249,7 @@ class ProjectsController < ApplicationController
   
   def modules
     @project.enabled_module_names = params[:enabled_modules]
-    redirect_to :action => 'settings', :id => @project, :tab => 'modules'
+    redirect_to :action => 'settings', :project_id => @project, :tab => 'modules'
   end
 
   def archive
@@ -283,7 +280,7 @@ class ProjectsController < ApplicationController
   	  respond_to do |format|
         format.html do
           flash[:notice] = l(:notice_successful_create)
-          redirect_to :action => 'settings', :tab => 'categories', :id => @project
+          redirect_to :action => 'settings', :tab => 'categories', :project_id => @project
         end
         format.js do
           # IE doesn't support the replace_html rjs method for select box options
@@ -300,7 +297,7 @@ class ProjectsController < ApplicationController
   	@version = @project.versions.build(params[:version])
   	if request.post? and @version.save
   	  flash[:notice] = l(:notice_successful_create)
-      redirect_to :action => 'settings', :tab => 'versions', :id => @project
+      redirect_to :action => 'settings', :tab => 'versions', :project_id => @project
   	end
   end
 

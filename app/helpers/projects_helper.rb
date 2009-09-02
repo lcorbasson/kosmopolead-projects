@@ -39,14 +39,13 @@ module ProjectsHelper
 
    def project_settings_tabs
     tabs = [{:name => 'info', :action => :edit_project, :partial => 'projects/edit', :label => :label_information_plural},
-            {:name => 'funding', :action => :edit_funding, :partial => 'projects/settings/funding', :label => :label_funding},
+           
             {:name => 'modules', :action => :select_project_modules, :partial => 'projects/settings/modules', :label => :label_module_plural},
            
             {:name => 'versions', :action => :manage_versions, :partial => 'projects/settings/versions', :label => :label_version_plural},
             {:name => 'categories', :action => :manage_categories, :partial => 'projects/settings/issue_categories', :label => :label_issue_category_plural},
-            {:name => 'wiki', :action => :manage_wiki, :partial => 'projects/settings/wiki', :label => :label_wiki},
-          
-            {:name => 'boards', :action => :manage_boards, :partial => 'projects/settings/boards', :label => :label_board_plural}
+            {:name => 'wiki', :action => :manage_wiki, :partial => 'projects/settings/wiki', :label => :label_wiki}
+            
             ]
 #    tabs.select {|tab| User.current.allowed_to?(tab[:action], @project)}
   end

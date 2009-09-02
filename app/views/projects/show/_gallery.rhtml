@@ -12,7 +12,14 @@
                          } %>
      </div>
     <div id="photo_index">
-      <%= render:partial=>"photos/index",:locals=>{:photos=>@project.gallery.photos} %>
+      <% if @project.gallery.photos.size>0 %>
+        <%= render:partial=>"photos/index",:locals=>{:photos=>@project.gallery.photos} %>
+      <% else %>
+         <div class="emptymessage">
+          <p><%= l(:project_add_photo) %>
+          <%= toggle_link image_tag("/images/add.png"), 'update-members-form'%></p>
+        </div>
+      <% end %>
     </div>
 </div>
 <div id="add_photo">

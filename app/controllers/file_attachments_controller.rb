@@ -68,7 +68,7 @@ class FileAttachmentsController < ApplicationController
        @file_attachment.container_id = @issue.id
     else 
        @file_attachment.container_type = "project"
-       @project = Project.find(params[:project_id])
+       @project = Project.find_by_identifier(params[:project_id])
        @file_attachment.container_id = @project.id
     end
     render :layout=>false

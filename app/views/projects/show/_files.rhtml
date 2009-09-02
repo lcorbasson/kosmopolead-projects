@@ -10,7 +10,14 @@
                          } %>
      </div>
     <div id="files_index">
-      <%= render:partial=>"file_attachments/index",:locals=>{:file_attachments=>@project.file_attachments} %>
+      <% if @project.file_attachments.size>0 %>
+        <%= render:partial=>"file_attachments/index",:locals=>{:file_attachments=>@project.file_attachments} %>
+      <% else %>
+          <div class="emptymessage">
+          <p><%= l(:project_add_file) %>
+          <%= toggle_link image_tag("/images/add.png"), 'update-members-form'%></p>
+        </div>
+      <% end %>
     </div>
 </div>
 

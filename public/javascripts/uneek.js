@@ -96,7 +96,7 @@ function initialize_funding_grid(url,edit_url){
                 {name:'financeur',index:'financeur',width:100, resizable:false, sortable:true, editable:true, align:"center",editrules:{required:true}},
                 {name:'correspondant',index:'correspondant', resizable:false, sortable:true, editable:true, align:"center",editrules:{required:true}},
                 {name:'montant_demande',index:'montant_demande',width:100, resizable:true, sortable:false, editable:true, align:"right",editrules:{required:true} },
-                {name:'type',index:'type', width:100,resizable:false, sortable:true, editable:true, align:"center",editrules:{required:true}},
+                {name:'funding_type',index:'type', width:100,resizable:false, sortable:true, editable:true, align:"center",editrules:{required:true}},
                 {name:'date_accord',index:'date_accord', resizable:false, sortable:true, editable:true, align:"center",editrules:{required:true},
                    editoptions:{size:12}},
                 {name:'montant_accorde',index:'montant_accorde',width:100, resizable:false, sortable:true, editable:true, align:"right",editrules:{required:true}},

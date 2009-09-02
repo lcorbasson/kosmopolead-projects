@@ -19,7 +19,7 @@
           jQuery('#tags').children().attr('class', 'selected')
 
           jQuery("#tags").fcbkcomplete({
-            json_url: "/projects/tags_json",
+            json_url: "/projects/<%= @project%>/tags_json",
             cache: true,
             filter_case: true,
             filter_hide: true,

@@ -211,10 +211,13 @@ class IssuesController < ApplicationController
       @issue.watcher_user_ids = params[:issue]['watcher_user_ids'] if User.current.allowed_to?(:add_issue_watchers, @project)
     end
     @issue.author = User.current
-   @priorities = Enumeration::get_values('IPRI')
-
+    @priorities = Enumeration::get_values('IPRI')
+    
 
     if @issue.save @issue.is_issue?
+      @file_attachment = FileAttachment.new
+    @file_attachment.container_type="issue"
+    @file_attachment.container_id = @issue.id
       if params[:assigned_to_id]
         new_assignments = params[:assigned_to_id]
         Assignment.delete(@issue, new_assignments)

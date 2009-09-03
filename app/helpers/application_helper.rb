@@ -844,6 +844,10 @@ module ApplicationHelper
    return data
   end
 
+   def current_project
+     session[:project]
+   end
+
    
 
 

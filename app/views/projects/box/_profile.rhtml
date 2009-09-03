@@ -9,7 +9,7 @@
     <%= l(:label_build_by) %>: <%= project.builder.name %><br/>
   <% end %>
   <% if project.estimated_time and project.estimated_time > 0 %>
-    <%= l(:label_estimated_time) %>: <%= project.estimated_time %> <%= project.time_unit.label %><br />
+    <%= l(:label_estimated_time) %>: <%= project.estimated_time %> <%= l("#{project.time_unit.label}") %><br />
   <% end %>
   <% if project.project_cost and project.project_cost > 0 %>
     <%= l(:label_project_cost) %>: <%= project.project_cost %> €<br />

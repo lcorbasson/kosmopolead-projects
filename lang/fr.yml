@@ -299,6 +299,14 @@ project_module_wiki: Wiki
 project_module_repository: Dépôt de sources
 project_module_boards: Forums de discussion
 
+label_acronym: Acronyme
+label_identifier: Identifiant
+label_author: Auteur
+label_builder: Monté par
+label_watcher: Suivi par
+label_cost: Coût
+label_sector: Secteur d'activité
+label_is_public: Public
 label_assigned_to: Assignée à
 label_file: Fichier
 label_notes: Notes
@@ -767,6 +775,8 @@ project_add_tag: Pour ajouter un tag, cliquez sur le bouton
 project_add_relation: Pour ajouter une relation, cliquez sur le bouton
 project_add_description: Pour ajouter une description, cliquez sur le bouton
 
+hours: heures
+days: jours
 STAGE: Phase
 MILESTONE: Jalon
 ISSUE: Tâche

@@ -5,7 +5,7 @@
     <% case @file_attachment.container_type
          when "project" %>
             <%=  link_to_remote l(:button_add),
-                         { :url => "/projects/#{@project}/file_attachments/index",
+                         { :url => "/projects/#{@project.identifier}/file_attachments/index",
                            :method => 'post',
                            :update => 'files_index',
                            :with => "clone_upload_file__form()",

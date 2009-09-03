@@ -4,7 +4,7 @@
 </p>
 <p>
   <label><%= l(:label_acronym) %></label>
-  <%= f.text_field :acronym, :required => true %>
+  <%= f.text_field :acronym, :required => true, :size => 30, :maxlength => 30 %>
   <br /><span class="specs"><%= l(:text_caracters_maximum, 30) %></span>
 </p>
 <p>

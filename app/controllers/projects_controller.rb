@@ -143,7 +143,10 @@ class ProjectsController < ApplicationController
                     end
                 }
             end
-        
+        else
+           respond_to do |format|
+             format.js { render(:update) {|page| page.replace_html "notice", "#{@project.errors.full_messages.to_s}"} }
+            end
         end
       end
   end

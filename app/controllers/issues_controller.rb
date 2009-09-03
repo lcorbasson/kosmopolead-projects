@@ -116,7 +116,8 @@ class IssuesController < ApplicationController
     @journals = @issue.journals.find(:all, :include => [:user, :details], :order => "#{Journal.table_name}.created_on ASC")
     @journals.each_with_index {|j,i| j.indice = i+1}
     @journals.reverse! if User.current.wants_comments_in_reverse_order?
-    @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
+    #@allowed_statuses = @issue.new_statuses_allowed_to(User.current)
+    @allowed_statuses = IssueStatus.all
     @edit_allowed = User.current.allowed_to?(:edit_issues, @project)
     @priorities = Enumeration::get_values('IPRI')
     @time_entry = TimeEntry.new

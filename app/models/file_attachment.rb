@@ -44,5 +44,10 @@ class FileAttachment < ActiveRecord::Base
   end
 
 
+  def increment_download
+    increment!(:downloads)
+  end
+
+
   
 end

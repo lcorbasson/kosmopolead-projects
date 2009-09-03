@@ -586,9 +586,9 @@ module ApplicationHelper
     unless @calendar_headers_tags_included
       @calendar_headers_tags_included = true
       content_for :header_tags do
-        javascript_include_tag('calendar/calendar') +
-        javascript_include_tag("calendar/lang/calendar-#{current_language}.js") +
-        javascript_include_tag('calendar/calendar-setup') +
+        javascript_include_tag('calendar/calendar') 
+        javascript_include_tag("calendar/lang/calendar-#{current_language}.js") 
+        javascript_include_tag('calendar/calendar-setup') 
         stylesheet_link_tag('calendar')
       end
     end
@@ -799,7 +799,10 @@ module ApplicationHelper
   end
 
   def profile_box(title,content)
-    content_tag(:div, content_tag(:div,title,:class=>'profile_header')+content_tag(:div,content,:class=>'profile_content'),:class=>"profile")
+    link= "#{toggle_link image_tag("/images/edit.png"), 'update-profile-form',{:second_element=>"project_infos"}}"
+    content_tag(:div,
+      content_tag(:div,content_tag(:div,title,:class=>"left")+content_tag(:div,link,:class=>"links_edit_box")+content_tag(:div,"",:class=>"clearer"),:class=>'profile_header')+
+      content_tag(:div,content,:class=>'profile_content'),:class=>"profile editable_box")
   end
 
 
@@ -843,6 +846,10 @@ module ApplicationHelper
    END
    return data
   end
+
+   def current_project
+     session[:project]
+   end
 
    
 

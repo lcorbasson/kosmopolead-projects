@@ -77,7 +77,7 @@ class Project < ActiveRecord::Base
   validates_presence_of :name, :identifier
   validates_uniqueness_of  :identifier
   validates_associated :repository, :wiki
-  validates_length_of :name, :maximum => 30
+  validates_length_of :acronym, :maximum => 30
   validates_length_of :homepage, :maximum => 255
   validates_length_of :identifier, :in => 1..20
   validates_format_of :identifier, :with => /^[a-z0-9\-]*$/
@@ -329,6 +329,9 @@ class Project < ActiveRecord::Base
      end   
      grid_col_model.to_json   
    end
+
+
+  
 
 protected
   def validate

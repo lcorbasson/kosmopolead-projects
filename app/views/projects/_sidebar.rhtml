@@ -1,6 +1,9 @@
-<% if @projects.size>0 %>
-  <%= box_sidebar("#{l(:label_project_plural)}", "#{tree_ul('projects', @projects, true) {|project| link_to_remote project.name, {:url=>{:controller => 'projects', :action => 'show', :project_id => project}}} }") %>
-<% end %>
+
+
+<div id="projects_menu">
+  <%= render :partial=>"projects/projects_menu" %>
+</div>
+
 <div id="sidebar_new">
   <%= render:partial=>"projects/sidebar_new" %>
 </div>

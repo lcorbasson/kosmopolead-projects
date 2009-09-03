@@ -170,7 +170,11 @@ class IssuesController < ApplicationController
     @allowed_statuses = ([default_status] + default_status.find_new_statuses_allowed_to(User.current.role_for_project(@project), @issue.tracker)).uniq
     
     if request.get? || request.xhr?
-      @issue.start_date ||= Date.today      
+      @issue.start_date ||= Date.today
+      if params[:issue_type]        
+          @issue_type = IssueType.find(:first,:conditions=>["name = ?",params[:issue_type]])
+          @issue.issue_types_id = @issue_type.id
+      end
     else
       requested_status = IssueStatus.find_by_id(params[:issue][:status_id])
       # Check that the user is allowed to apply the requested status
@@ -211,10 +215,13 @@ class IssuesController < ApplicationController
       @issue.watcher_user_ids = params[:issue]['watcher_user_ids'] if User.current.allowed_to?(:add_issue_watchers, @project)
     end
     @issue.author = User.current
-   @priorities = Enumeration::get_values('IPRI')
-
+    @priorities = Enumeration::get_values('IPRI')
+    
 
     if @issue.save @issue.is_issue?
+      @file_attachment = FileAttachment.new
+    @file_attachment.container_type="issue"
+    @file_attachment.container_id = @issue.id
       if params[:assigned_to_id]
         new_assignments = params[:assigned_to_id]
         Assignment.delete(@issue, new_assignments)
@@ -227,8 +234,7 @@ class IssuesController < ApplicationController
         end
       end
      end
-   # attach_files(@issue, params[:file_attachments])
-#    Mailer.deliver_issue_add(@issue) if Setting.notified_events.include?('issue_added')
+     session[:project] = @issue.project
      respond_to do |format|
           format.js {
               render:update do |page|

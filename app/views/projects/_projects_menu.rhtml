@@ -1,0 +1,7 @@
+<%# remote_form_for("project",:url=>{:contoller=>:projects,:action=>:update_left_menu}, :method => :get,:html=>{:id=>"status-form"}) do |f| %>
+    <%#= f.select 'status', project_status_options_for_select()  %>
+    <%#= observe_field 'filtre_project_status',:url=>{:action=>:update_left_menu} %>
+<%# end %>
+<% if @projects.size>0 %>
+  <%= box_sidebar("#{l(:label_project_plural)}", "#{tree_ul('projects', @projects, true) {|project| link_to_remote project.acronym, {:url=>{:controller => 'projects', :action => 'show', :project_id => project}}} }") %>
+<% end %>

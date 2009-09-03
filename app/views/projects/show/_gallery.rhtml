@@ -1,7 +1,7 @@
 <%= error_messages_for 'photo' %>
 
 
-<%= form_upload({:url=>"projects/#{@project.id}/gallery/#{@gallery.id}/photos/create/",:col_collection=>@photo,:name_initial_form=>"upload_form_photo",:name_div_id=>"upload_photo"}) %>
+<%= form_upload({:url=>"/projects/#{@project.id}/gallery/#{@gallery.id}/photos/create/",:col_collection=>@photo,:name_initial_form=>"upload_form_photo",:name_div_id=>"upload_photo"}) %>
 
 <div class="editable_box">
     <div class="links_edit_box">

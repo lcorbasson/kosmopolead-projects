@@ -1,6 +1,6 @@
 <%= error_messages_for 'file_attachment' %>
 
-<%= form_upload({:url=>"projects/#{@project.identifier}/file_attachments/create",:col_collection=>@file_attachment,:name_initial_form=>"upload_form_file_#{@file_attachment.id}",:name_div_id=>"upload_file_#{@file_attachment.id}"}) %>
+<%= form_upload({:url=>"/projects/#{@project.identifier}/file_attachments/create",:col_collection=>@file_attachment,:name_initial_form=>"upload_form_file_#{@file_attachment.id}",:name_div_id=>"upload_file_#{@file_attachment.id}"}) %>
 <div class="editable_box">
     <div class="links_edit_box">
         <%= link_to_remote "#{image_tag('/images/add.png')}",

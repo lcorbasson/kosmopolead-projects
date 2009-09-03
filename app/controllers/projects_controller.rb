@@ -142,8 +142,7 @@ class ProjectsController < ApplicationController
                       page << "jQuery('#projects_menu').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
                     end
                 }
-            end
-        
+            end    
         end
       end
   end

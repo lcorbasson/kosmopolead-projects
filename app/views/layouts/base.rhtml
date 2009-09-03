@@ -56,9 +56,9 @@
          <div id="tabs_wrapper">
             <%= render_menu :application_menu -%>
             <div class="clearer"></div>
-          </div>
-          <div id="content_wrapper">
-             <%= render_flash_messages %>
+          </div>        
+          <div id="content_wrapper">            
+             <%= render_flash_messages %>     
              <%= yield %>
              <%= call_hook :view_layouts_base_content %>
           </div>

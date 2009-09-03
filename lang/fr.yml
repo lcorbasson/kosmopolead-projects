@@ -299,6 +299,20 @@ project_module_wiki: Wiki
 project_module_repository: Dépôt de sources
 project_module_boards: Forums de discussion
 
+label_status_id: Statut
+label_priority_id: Priorité
+label_category_id: Catégorie
+label_done_ratio: Réalisé
+label_fixed_version_id: Version
+label_tracker_id: Tracker
+label_issue_type: Type de demande
+label_phase_id: Phase
+label_subject: Sujet
+label_description: Description
+label_start_date: Date de début
+label_due_date: Date de fin
+label_resources: Ressources nécessaires
+label_estimated_hours: Temps estimé
 label_acronym: Acronyme
 label_identifier: Identifiant
 label_author: Auteur
@@ -780,5 +794,8 @@ days: jours
 STAGE: Phase
 MILESTONE: Jalon
 ISSUE: Tâche
+issue: Tâche
+stage: Phase
+none: Aucun
 
 

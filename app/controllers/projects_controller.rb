@@ -47,8 +47,12 @@ class ProjectsController < ApplicationController
   
   # Lists visible projects
   def index
-    if @project = @projects.first
-      unless @project.nil?      
+    if session[:project]
+      @project = session[:project]
+    else
+      @project = @projects.first
+    end
+     unless @project.nil?
           @gantt = Redmine::Helpers::Gantt.new(params)
           retrieve_query
           if @query.valid?
@@ -65,7 +69,6 @@ class ProjectsController < ApplicationController
           completed_percent
           find_gallery
       end
-    end
      respond_to do |format|
         format.html {}
         format.atom {

@@ -234,8 +234,7 @@ class IssuesController < ApplicationController
         end
       end
      end
-   # attach_files(@issue, params[:file_attachments])
-#    Mailer.deliver_issue_add(@issue) if Setting.notified_events.include?('issue_added')
+     session[:project] = @issue.project
      respond_to do |format|
           format.js {
               render:update do |page|

@@ -12,7 +12,7 @@
         <p>
           <label for="parent"><%= l(:label_parent) %></label>
           <%  Issue::RELATION_TYPE.each do |relation| %>
-            <%= radio_button_tag :issue_relation_type, l("#{relation}"), relation, :onClick => "checkTypeRelation(this)" %><%= relation %>
+            <%= radio_button_tag :issue_relation_type, relation, l("#{relation}"), :onClick => "checkTypeRelation(this)" %><%= relation %>
           <%  end %>
           <span id="type_relation">
           </span>

@@ -586,9 +586,9 @@ module ApplicationHelper
     unless @calendar_headers_tags_included
       @calendar_headers_tags_included = true
       content_for :header_tags do
-        javascript_include_tag('calendar/calendar') +
-        javascript_include_tag("calendar/lang/calendar-#{current_language}.js") +
-        javascript_include_tag('calendar/calendar-setup') +
+        javascript_include_tag('calendar/calendar') 
+        javascript_include_tag("calendar/lang/calendar-#{current_language}.js") 
+        javascript_include_tag('calendar/calendar-setup') 
         stylesheet_link_tag('calendar')
       end
     end

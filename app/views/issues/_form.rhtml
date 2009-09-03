@@ -66,7 +66,7 @@
     </div>
 
     <div class="splitcontentright">
-      <p><%= f.text_field :start_date, :size => 10 %><%= calendar_for('issue_start_date') %></p>
+      <p><%= f.text_field :start_date, :size => 10 %></p>
       <p><%= f.text_field :due_date, :size => 10 %><%= calendar_for('issue_due_date') %></p>
       <p><%= f.text_field :estimated_hours, :size => 3 %>
         <%= @project.time_unit_label %>

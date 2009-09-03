@@ -55,7 +55,7 @@
           </p>
       <% end %>
       <p>
-        <label><%= l(:label_priotrity_id) %></label>
+        <label><%= l(:label_priority_id) %></label>
         <%= f.select :priority_id, (@priorities.collect {|p| [p.name, p.id]}), :required => true %>
       </p>
       <p>

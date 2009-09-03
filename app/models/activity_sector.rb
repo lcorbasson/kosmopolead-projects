@@ -3,6 +3,8 @@ class ActivitySector < ActiveRecord::Base
   validates_presence_of :identifier
   validates_uniqueness_of :identifier
 
+
+  before_create :add_activity_sector_translation_without_sector
   after_create :add_activity_sector_translation
 
   attr_accessor :local, :description, :name
@@ -12,4 +14,5 @@ class ActivitySector < ActiveRecord::Base
   def add_activity_sector_translation
     activity_sector_translations.create :local => local, :description => description, :name => name
   end
+
 end

@@ -42,7 +42,8 @@
                       edit_activity_sector_activity_sector_translation_path( sector,lang_id)
                   %>
         </td>
-        <td><%= link_to l(:button_add), new_activity_sector_activity_sector_translation_path(sector) %></td>
+        <td><%= link_to l(:button_add), new_activity_sector_activity_sector_translation_path(sector) %>
+        </td>
         <td><%= link_to l(:button_edit), edit_activity_sector_path(sector) %></td>
         <td><%= link_to l(:button_delete), sector, :confirm => 'Are you sure?', :method => :delete %></td>
       </tr>

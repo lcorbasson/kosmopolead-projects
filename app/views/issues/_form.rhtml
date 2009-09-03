@@ -1,9 +1,7 @@
 <% if @issue.new_record? %>
-    <p>
-      <label><%= l(:label_issue_type) %></label>
-      <%= f.select :issue_types_id, @issue_types.collect {|t| [l("#{t.name}"), t.id]}, :required => true %>
-      <%= observe_field :issue_issue_types_id, :url => { :action => :new },:with => "Form.serialize('issue-form')" %>
-    </p>
+  <%= f.hidden_field :issue_types_id %>
+
+    
     <% if !@issue.is_issue? %>
         <p>
           <label><%= l(:label_phase_id) %></label>

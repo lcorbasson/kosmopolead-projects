@@ -170,7 +170,11 @@ class IssuesController < ApplicationController
     @allowed_statuses = ([default_status] + default_status.find_new_statuses_allowed_to(User.current.role_for_project(@project), @issue.tracker)).uniq
     
     if request.get? || request.xhr?
-      @issue.start_date ||= Date.today      
+      @issue.start_date ||= Date.today
+      if params[:issue_type]        
+          @issue_type = IssueType.find(:first,:conditions=>["name = ?",params[:issue_type]])
+          @issue.issue_types_id = @issue_type.id
+      end
     else
       requested_status = IssueStatus.find_by_id(params[:issue][:status_id])
       # Check that the user is allowed to apply the requested status

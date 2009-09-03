@@ -299,6 +299,9 @@ project_module_wiki: Wiki
 project_module_repository: Dépôt de sources
 project_module_boards: Forums de discussion
 
+label_stage_new: Phase
+label_issue_new: Tâche
+label_milestone_new: Jâlon
 label_status_id: Statut
 label_priority_id: Priorité
 label_category_id: Catégorie
@@ -365,7 +368,6 @@ label_project_plural: Projets
 label_project_all: Tous les projets
 label_project_latest: Derniers projets
 label_issue: Demande
-label_issue_new: Nouvelle demande
 label_issue_plural: Evenements
 label_issue_view_all: Voir toutes les demandes
 label_issue_added: Demande ajoutée

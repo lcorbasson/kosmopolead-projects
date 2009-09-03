@@ -323,6 +323,7 @@ class IssuesController < ApplicationController
   # Bulk edit a set of issues
   def bulk_edit
     if request.post?
+      @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
       status = params[:status_id].blank? ? nil : IssueStatus.find_by_id(params[:status_id])
       priority = params[:priority_id].blank? ? nil : Enumeration.find_by_id(params[:priority_id])
       assigned_to = (params[:assigned_to_id].blank? || params[:assigned_to_id] == 'none') ? nil : User.find_by_id(params[:assigned_to_id])

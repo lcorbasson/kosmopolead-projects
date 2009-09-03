@@ -33,13 +33,11 @@
   </div>
   <% case @issue.type.name
   when "ISSUE" %>
-
     <div class="splitcontentleft">
-
       <% if @issue.new_record? || @allowed_statuses.any?  %>
         <p><%= f.select :status_id, (@allowed_statuses.collect {|p| [p.name, p.id]}), :required => true %></p>
       <% else %>
-        <p><label><%= l(:field_status) %></label> <%= @issue.status.name %></p>
+        <p><label><%= l(:field_status) %></label> <%= f.select :status_id, (@allowed_statuses.collect {|p| [p.name, p.id]}), :required => true %><%#= @issue.status.name %></p>
       <% end %>
 
       <p><%= f.select :priority_id, (@priorities.collect {|p| [p.name, p.id]}), :required => true %></p>
@@ -70,8 +68,6 @@
       <p><%= f.text_field :due_date, :size => 10 %><%= calendar_for('issue_due_date') %></p>
       <p><%= f.text_field :estimated_hours, :size => 3 %>
         <%= @project.time_unit_label %>
-
-
 
       </p>
       <p><%= f.select :done_ratio, ((0..10).to_a.collect {|r| ["#{r*10} %", r*10] }) %></p>

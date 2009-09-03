@@ -212,7 +212,7 @@ class ProjectsController < ApplicationController
     @trackers = Tracker.all
     @repository ||= @project.repository
     @wiki ||= @project.wiki
-     @users = User.all
+    @users = User.all
   end
   
   # Edit @project
@@ -250,6 +250,9 @@ class ProjectsController < ApplicationController
                 end
               end
               page << "jQuery('.project_tags').html('#{escape_javascript(render:partial=>'projects/box/tags')}');"
+          when "summary"
+            @users = User.all
+            page << "jQuery('#profile_project').html('#{escape_javascript(profile_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
           end
           @project.save
         end

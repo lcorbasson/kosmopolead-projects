@@ -53,6 +53,7 @@ class FileAttachmentsController < ApplicationController
           else
               page.replace_html "files_index", :partial => 'file_attachments/index',:locals=>{:file_attachments=>@issue.file_attachments}
           end
+          page<<"jQuery('#fileToUpload').val('');"
         } }
     end
     

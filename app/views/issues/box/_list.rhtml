@@ -1,4 +1,4 @@
-  <% if @query.new_record? %>
+<% if @query.new_record? %>
     <div class="box_filters">
        <div id="filters">
           <% form_tag({ :controller => 'queries', :action => 'new' }, :id => 'query_form') do %>
@@ -33,8 +33,8 @@
           <% end %>
         </div>
     </div>
-  <% end %>
-  <% if @issues and @issues.size>0 %>
+<% end %>
+<% if @issues and @issues.size>0 %>
   <%= render :partial => 'issues/list', :locals => {:issues => @issues, :query => @query} %>
   <%= javascript_tag("initialize_toggle('filter');") %>
 <% else %>

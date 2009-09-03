@@ -114,7 +114,7 @@ body {
   font-weight:bold;
 }
 #tabs_wrapper ul li a,#places_wrapper ul li a {font-weight:bold;}
-
+#places_wrapper {margin-top:20px;}
 #tabs_wrapper ul li a.active:link {
   background-position: bottom center;
   color: #009eee;

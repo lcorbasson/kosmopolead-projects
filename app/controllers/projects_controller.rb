@@ -105,6 +105,7 @@ class ProjectsController < ApplicationController
     @project = Project.new(params[:project])
     @time_units = TimeUnit.find(:all)
     @users = User.find(:all)
+    
     if !params[:project]
       @project.identifier = Project.next_identifier if Setting.sequential_project_identifiers?
       @project.trackers = Tracker.all

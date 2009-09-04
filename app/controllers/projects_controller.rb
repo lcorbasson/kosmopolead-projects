@@ -145,7 +145,25 @@ class ProjectsController < ApplicationController
             end
         else
            respond_to do |format|
-             format.js { render(:update) {|page| page.replace_html "notice", "#{@project.errors.full_messages.to_s}"} }
+#             format.js { render(:update) {|page| page.replace_html "notice", "#{line}"} }
+             format.js{
+                render :update do |page|
+#                  line = ''
+#                  @project.errors.full_messages.each do |err| # Boucle pour récupérer toutes les erreurs
+#                    line +="<p>#{err}</p>";
+#                  end
+#                    page.replace_html "notice", "#{line}"
+#                    page <<  "jQuery('#notice').show();"
+                  page << display_message_error(@project)
+               end
+             }
+
+#              format.js { render(:update) {|page| page.replace_html "notice", "#{display_error_msg(@project.errors.full_messages.to_s)}"} }
+#                format.js {
+#                  render :update do |page|
+#                      page << display_error_msg(@project)
+#                   end
+#                }
             end
         end
       end

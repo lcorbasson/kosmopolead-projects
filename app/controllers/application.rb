@@ -231,4 +231,17 @@ class ApplicationController < ActionController::Base
   def filename_for_content_disposition(name)
     request.env['HTTP_USER_AGENT'] =~ %r{MSIE} ? ERB::Util.url_encode(name) : name
   end
+
+#  def display_error_msg(my_collection)
+#    line_js ="";
+#    if my_collection.class==String
+#      line_js +="<div><p>#{escape_javascript my_collection}</p></div>";
+#    else
+#      my_collection.errors.full_messages.each do |err| # Boucle pour récupérer toutes les erreurs
+#        line_js +="<p>#{escape_javascript err}</p>";
+#      end
+#    end
+#    line_js="#{escape_javascript line_js}";
+#    return line_js  # envoi de line_js
+#  end
 end

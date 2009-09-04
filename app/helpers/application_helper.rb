@@ -851,7 +851,22 @@ module ApplicationHelper
      session[:project]
    end
 
-   
+   def display_message_error(my_collection)
+     line_js ="<ul>";
+    if my_collection.class==String
+      line_js +="<li>#{escape_javascript my_collection}</li>";
+    else
+      my_collection.errors.full_messages.map {|msg| line_js += "#{content_tag(:li, l(msg))}" }
+    end
+    line_js += "</ul>"
+    line_js="jQuery('#errorExplanation').html(\"#{line_js}\");
+            jQuery('#errorExplanation').show();
+            setTimeout(function() {
+                jQuery('#errorExplanation').slideUp();
+            }, 10000);
+     "
+    return line_js  # envoi de line_js
+   end
 
 
   private

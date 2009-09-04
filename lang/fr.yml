@@ -28,6 +28,7 @@ activerecord_error_empty: doit être renseigné
 activerecord_error_blank: doit être renseigné
 activerecord_error_too_long: est trop long
 activerecord_error_too_short: est trop court
+activerecord_error_too_short1: est trop court
 activerecord_error_wrong_length: n'est pas de la bonne longueur
 activerecord_error_taken: est déjà utilisé
 activerecord_error_not_a_number: n'est pas un nombre

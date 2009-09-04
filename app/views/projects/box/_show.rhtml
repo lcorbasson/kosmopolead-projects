@@ -12,6 +12,7 @@
     <%= grey_title("MOTS CLES") %>
     <%= grey_box("#{render:partial=>'projects/box/tags', :locals=>{:project=>project}}", "project_tags") %>
   </div>
+  
   <%= grey_box("#{render:partial=>'relations'}", "project_relations") %>
 
 </div>
@@ -30,6 +31,7 @@
               <%= render :partial=>"projects/show/members" %>       
           </div>
            <div class="clearer"></div>
+           <%= render :partial=>"members/form" %>
       </div>
 
     <div class="editable_box">
@@ -74,9 +76,6 @@
 <% content_for :header_tags do %>
 <%= auto_discovery_link_tag(:atom, {:action => 'activity', :id => project, :format => 'atom', :key => User.current.rss_key}) %>
 <% end %>
-
+<%= javascript_tag("activeProjectMenu('#{project.id}')") %>
 <% html_title(l(:label_overview)) -%>
-
-
-  <%= javascript_tag("activeProjectMenu('#{project.id}')") %>
 

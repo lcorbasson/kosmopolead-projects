@@ -1,5 +1,6 @@
 class ProjectRelation < ActiveRecord::Base
 
+  belongs_to :project
   belongs_to :project_from, :class_name => 'Project', :foreign_key => 'project_from_id'
   belongs_to :project_to, :class_name => 'Project', :foreign_key => 'project_to_id'
   belongs_to :project_relation_type

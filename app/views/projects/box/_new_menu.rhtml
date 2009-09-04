@@ -1,16 +1,16 @@
 <div class="new_menu">
   <p>
-       <%= link_to_remote(l(:label_project), {:url=>{:controller => 'projects', :action => 'add'},:method=>:get})  %>
+       <%= link_to_remote(l(:label_project), {:url=>add_projects_path(),:method=>:get})  %>
   </p>
   <% if @project %>
   <p>
-    <%= link_to_remote l(:label_stage_new), {:url=>{ :controller => 'issues', :action => 'new', :project_id=>@project,:issue_type=>"STAGE" }},:method=>:get %>
+    <%= link_to_remote l(:label_stage), {:url=>new_project_issue_path(@project,:issue_type=>"STAGE"),:method=>:get} %>
   </p>
   <p>
-    <%= link_to_remote l(:label_milestone_new), {:url=>{ :controller => 'issues', :action => 'new', :project_id=>@project,:issue_type=>"MILESTONE" }},:method=>:get %>
+    <%= link_to_remote l(:label_milestone), {:url=>new_project_issue_path(@project,:issue_type=>"MILESTONE"),:method=>:get} %>
   </p>
   <p>
-    <%= link_to_remote l(:label_issue_new), {:url=>{ :controller => 'issues', :action => 'new', :project_id=>@project,:issue_type=>"ISSUE" }},:method=>:get %>
+    <%= link_to_remote l(:label_issue), {:url=>new_project_issue_path(@project,:issue_type=>"ISSUE"),:method=>:get} %>
   </p>
 <% end %>
 </div>

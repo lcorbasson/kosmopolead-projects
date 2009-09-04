@@ -13,40 +13,47 @@ ActionController::Routing::Routes.draw do |map|
     map.from_plugin plugin.name.to_sym
   end
 
-  map.home '', :controller => 'welcome'
+  map.home '', :controller => 'my',:action=>"page"
   map.signin 'login', :controller => 'account', :action => 'login'
   map.signout 'logout', :controller => 'account', :action => 'logout'
+  map.connect 'queries',:controller=>'queries'
+
+
+
+  map.resources :projects,:collection=>{:add_version=>:get,:show_funding=>:get,:add=>:get,:settings=>:get} do |project|
+      project.resources :members
+      project.resources :issues,:collection=>{:calendar=>:get,:gantt=>:get} do |issue|
+        issue.resources :file_attachments
+        issue.resources :issue_relations
+      end
+      project.resources :gallery do |gallery|
+        gallery.resources :photos
+      end
+      project.resources :file_attachments
+      project.resources :wikis
+      project.resources :project_partners do |project_partner|
+        project_partner.resources :partner
+      end
+      project.resources :project_relations do |project_relation|
+        project_relation.resources :project_relation_type
+      end
+      project.resources :news
+      project.resources :boards
+      project.resources :funding_lines
+      project.resources :activity_sector
+  end
+
+ 
   
   map.connect 'wiki/:id/:page/:action', :controller => 'wiki', :page => nil
   map.connect 'roles/workflow/:id/:role_id/:tracker_id', :controller => 'roles', :action => 'workflow'
   map.connect 'help/:ctrl/:page', :controller => 'help'
-  #map.connect ':controller/:action/:id/:sort_key/:sort_order'
 
-  map.connect 'projects/:action',:controller=>'projects'
-  map.connect 'projects/:project_id/:action',:controller=>'projects'
-  
-  map.connect 'projects/:project_id/wikis/:action/:id',:controller=>'wikis'
-  map.connect 'projects/:project_id/project_partners/:action/:id',:controller=>'project_partners'
-  map.connect 'partners/:action',:controller=>'partners'
-  map.connect 'projects/:project_id/:action', :controller => 'projects'
-  map.connect 'project_relation_types', :controller => 'project_relation_types'
-  map.connect 'projects/:project_id/relations/:action/:id', :controller => 'project_relations'
-  map.connect 'projects/:project_id/gallery/:gallery_id/photos/:action', :controller => 'photos'
-  map.connect 'issues/:issue_id/relations/:action/:id', :controller => 'issue_relations'
-  map.connect 'projects/:project_id/issues/:action', :controller => 'issues'
-  map.resources :projects do |project|
-      project.resources :issues
-  end
 
-  map.connect 'projects/:project_id/news/:action', :controller => 'news'
-  map.connect 'projects/:project_id/documents/:action', :controller => 'documents'
-  map.connect 'projects/:project_id/boards/:action/:id', :controller => 'boards'
-  map.connect 'projects/:project_id/funding_lines/:action/:id', :controller => 'funding_lines'
-  map.connect 'projects/:action/:project_id', :controller => 'projects'
-  map.connect 'projects/:project_id/file_attachments/:action/:id', :controller => 'file_attachments'
+ 
   map.connect 'projects/:project_id/timelog/:action/:id', :controller => 'timelog', :project_id => /.+/
   map.connect 'boards/:board_id/topics/:action/:id', :controller => 'messages'
-  map.connect 'projects/:project_id/issues/:issue_id/file_attachments/:action/:id', :controller => 'file_attachments'
+
 
   map.with_options :controller => 'repositories' do |omap|
     omap.repositories_show 'repositories/browse/:id/*path', :action => 'browse'
@@ -57,13 +64,10 @@ ActionController::Routing::Routes.draw do |map|
     omap.repositories_revision 'repositories/revision/:id/:rev', :action => 'revision'
   end
 
-  map.connect 'activity_sectors/:action/:id', :controller => 'activity_sectors'
 
 
-  map.connect 'file_attachments/:id', :controller => 'file_attachments', :action => 'show', :id => /\d+/
-  map.connect 'file_attachments/:id/:filename', :controller => 'file_attachments', :action => 'show', :id => /\d+/, :filename => /.*/
-  map.connect 'file_attachments/download/:id/:filename', :controller => 'file_attachments', :action => 'download', :id => /\d+/, :filename => /.*/
-   
+  map.connect 'file_attachments', :controller => 'file_attachments'
+  
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'
   map.connect ':controller/service.wsdl', :action => 'wsdl'

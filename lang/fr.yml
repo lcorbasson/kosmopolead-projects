@@ -299,9 +299,12 @@ project_module_wiki: Wiki
 project_module_repository: Dépôt de sources
 project_module_boards: Forums de discussion
 
-label_stage_new: Phase
-label_issue_new: Tâche
-label_milestone_new: Jâlon
+label_stage: Phase
+label_issue: Tâche
+label_milestone: Jâlon
+label_stage_new: Nouvelle phase
+label_issue_new: Nouvelle tâche
+label_milestone_new: Nouveau jâlon
 label_status_id: Statut
 label_priority_id: Priorité
 label_category_id: Catégorie

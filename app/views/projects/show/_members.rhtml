@@ -1,40 +1,13 @@
-<%= error_messages_for 'member' %>
-<% roles = Role.find_all_givable %>
-<% users = User.active.find(:all).sort - @project.users %>
-<% # members sorted by role position
-   members = @project.members.find(:all, :include => [:role, :user]).sort %>
-
 <div class="editable_box">
     <div class="links_edit_box">
       <%= toggle_link image_tag("/images/add.png"), 'update-members-form'%>
     </div>
-    <% if members.size>0 %>
-      <ul style="margin-right:20px;">
-        <% members.each do |member| %>
-            <%= member_thumbnail(member.user,member) %>
-        <% end %>
-      </ul>
-     <% else %>
-      <div class="emptymessage">
-          <p><%= l(:project_add_member) %>
-          <%= toggle_link image_tag("/images/add.png"), 'update-members-form'%></p>
-        </div>
-     <% end %>
+    <%= render :partial=>"members/index",:locals=>{:members=>@project.members.find(:all, :include => [:role, :user]).sort} %>
     <div class="clearer"></div>
 </div>
- <% remote_form_for(:member, @member, :url => {:controller => 'members', :action => 'new', :id => @project}, :method => :post,:html=>{:style=>"display:none;",:id=>"update-members-form"}) do |f| %>
-      <p class="buttons" style="text-align:right;">
-        <%= l(:label_partner) %>:
-      <%= select_tag :partner_id, "<option value=""></option>"+options_for_select(Partner.all.collect {|p| [p.name, p.id]}) %>
-      <%= observe_field :partner_id, :url => { :controller=>:members,:action => :new,:id=>@project,:change=>true },:with => "Form.serialize('update-members-form')" %>
-      <%= l(:label_user) %>:
-      <span id="member_users">
-        <%= f.select :user_id, users.collect{|user| [user.name, user.id]} %>
-      </span>
-      <%= l(:label_role) %>: <%= f.select :role_id, roles.collect{|role| [role.name, role.id]}, :selected => nil %>
 
-      <%= submit_tag l(:button_add),:class=>"button btn_blue corner-all" %>
-      <%= toggle_link l(:button_cancel), 'update-members-form'%></p>
-  <% end %>
+
+
+
 
 

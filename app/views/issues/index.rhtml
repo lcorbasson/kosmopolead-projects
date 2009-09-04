@@ -1,3 +1,7 @@
 <%= render:partial=>"index", :locals=>{:project=>@project} %>
 
+<% content_for :sidebar do %>
+    <%= render :partial => 'projects/sidebar' %>
+<% end %>
+
 

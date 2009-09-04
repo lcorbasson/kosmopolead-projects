@@ -16,21 +16,23 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class MembersController < ApplicationController
-  before_filter :find_member, :except => :new
-  before_filter :find_project, :only => :new
-  before_filter :authorize,:except=>:new
+  before_filter :find_member, :except => [:create,:new]
+  before_filter :find_project, :only => [:create,:new]
+  before_filter :authorize,:except=>[:create,:new]
 
   def new
-    if params[:change]
-      if params[:partner_id].blank?
+    if params[:partner_id].blank?
         @users = @project.users
       else
         @users = Partner.find(params[:partner_id]).members-@project.users
       end
-      respond_to do |format|      
+      respond_to do |format|
         format.js { render(:update) {|page| page.replace_html "member_users", content_tag('select', options_from_collection_for_select(@users, 'id', 'name'), :id => 'member_user_id', :name => 'member[user_id]')} }
       end
-    else
+  end
+
+
+  def create    
       @project.members << Member.new(params[:member]) if request.post?
       @members = @project.members
       @member ||= @project.members.new
@@ -50,9 +52,12 @@ class MembersController < ApplicationController
             page.replace_html "projects_partners", :partial => 'projects/show/partners'
 
         } }
-      end
-    end
+      end   
   end
+
+
+  
+
   
   def edit
     if request.post? and @member.update_attributes(params[:member])
@@ -75,7 +80,7 @@ class MembersController < ApplicationController
 
 private
   def find_project
-    @project = Project.find_by_identifier(params[:id])
+    @project = Project.find_by_identifier(params[:project_id])
   rescue ActiveRecord::RecordNotFound
     render_404
   end

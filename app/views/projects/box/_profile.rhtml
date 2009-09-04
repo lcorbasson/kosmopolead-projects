@@ -21,9 +21,9 @@
   </div>  
 </div>
 <% remote_form_for(:project, project,
-                 :url => {:controller => 'projects', :action => 'update', :project_id => @project,:part=>'summary'},
+                 :url =>  project_path(@project,:part=>'summary'),
                  :method => :put,
-                 :html => {:id => 'update-profile-form',:style=>'display:none;'}) do |f| %>
+                 :html => {:id => 'update-profile-form',:class=>"tabular",:style=>'display:none;'}) do |f| %>
 
       <p><label><%= l(:label_support_by) %></label> <%= f.select :author_id,  @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
       <p><label><%= l(:label_watched_by) %></label> <%= f.select :watcher_id , @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>

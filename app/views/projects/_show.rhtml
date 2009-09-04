@@ -8,10 +8,10 @@
     "#{title}",
     "#{render:partial=>'projects/box/show',:locals=>{:project=>project}}",
     ["<span class='visu'>Visualisation</span>",
-      "#{link_to_remote("",{:url=>{:controller => 'projects', :action => 'show', :project_id => project}},:method=>:get,:class=>'active icon profile',:name=>'Aperçu')}",
-      "#{link_to_remote("",{:url=>{:controller => 'issues', :action => 'calendar', :project_id => project}},:method=>:get,:class=>'inactive icon calendar',:name=>'Calendar') if User.current.allowed_to?(:view_calendar, @project, :global => true)}",
-     "#{link_to_remote("",{:url=>{:controller => 'issues', :action => 'gantt', :project_id => project}},:method=>:get, :class=>'inactive icon gantt',:name=>'Gantt') if User.current.allowed_to?(:view_gantt, @project, :global => true)}",
-     "#{link_to_remote("",{:url=>"/projects/#{project.identifier}/issues/index"},:method=>:get, :class=>'inactive icon list ',:name=>'Liste')}"
+      "#{link_to_remote("",{:url=>project_path(project),:method=>:get},:class=>'active icon profile',:name=>'Aperçu')}",
+      "#{link_to_remote("",{:url=>calendar_project_issues_path(project),:method=>:get},:class=>'inactive icon calendar',:name=>'Calendar') if User.current.allowed_to?(:view_calendar, @project, :global => true)}",
+     "#{link_to_remote("",{:url=> gantt_project_issues_path(project),:method=>:get}, :class=>'inactive icon gantt',:name=>'Gantt') if User.current.allowed_to?(:view_gantt, @project, :global => true)}",
+     "#{link_to_remote("",{:url=> project_issues_path(project),:method=>:get}, :class=>'inactive icon list ',:name=>'Liste')}"
     ]
 ) %>
 

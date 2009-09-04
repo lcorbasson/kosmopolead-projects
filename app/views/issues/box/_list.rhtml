@@ -1,8 +1,9 @@
 <% if @query.new_record? %>
     <div class="box_filters">
        <div id="filters">
-          <% form_tag({ :controller => 'queries', :action => 'new' }, :id => 'query_form') do %>
+          <% form_tag({:url=>{:controller=>:queries,:action=>:new}}, :id => 'query_form') do %>
             <%= hidden_field_tag('project_id', @project.id) if @project %>
+            <%= hidden_field_tag('query_type', "issue") %>
             <span class="title_filter"><%= l(:label_filter_plural) %></span>
             <div class="toggle_filter toggle open">&nbsp;&nbsp;</div>
             <div class="clearer"></div>
@@ -12,24 +13,23 @@
                 </div>
             </div>
             <p class="buttons">
-            <%= link_to_remote l(:button_apply),
-                               { :url =>  "projects/#{@project}/issues/index?set_filter=1",
-                                 :update => "content",
-                                 :with => "Form.serialize('query_form')"
-                               }, :class => 'btn_blue corner-all button' %>
+                <%= link_to_remote l(:button_apply),
+                                   { :url => project_issues_path(@project)   ,
+                                     :update => "content",
+                                     :method=>:get,
+                                     :with => "Form.serialize('query_form')"
+                                   }, :class => 'btn_blue corner-all button' %>
 
-            <%= link_to_remote l(:button_clear),
-                               { :url => "projects/#{@project}/issues/index?set_filter=1",
-                                 :update => "content",
-                               }, :class => 'btn_orange corner-all button'  %>
-            <% if User.current.allowed_to?(:save_queries, @project, :global => true) %>
-              <%= link_to_remote l(:button_save), {:url=>{}}, :onclick =>"javascript:jQuery.ajax({data:jQuery.param(jQuery('#query_form').serializeArray()), dataType:'script', type:'post', url:'/queries/new?query_type=issue'}); return false;", :class => 'icon icon-save' %>
-              
-              <%#= link_to_remote l(:button_save), {:url=>{:controller=>"queries",:action=>"new"}}, :class => 'icon icon-save' %>
-            <% end %>
+                <%= link_to_remote l(:button_clear),
+                                   { :url =>  project_issues_path(@project,:set_filter => 1),
+                                     :update => "content",
+                                     :method=>:get,
+                                   }, :class => 'btn_orange corner-all button'  %>
+                <% if User.current.allowed_to?(:save_queries, @project, :global => true) %>
+                  <%= link_to_remote l(:button_save), {:url=>{}}, :onclick =>"javascript:jQuery.ajax({data:jQuery.param(jQuery('#query_form').serializeArray()), dataType:'script', type:'post', url:'/queries/new?query_type=issue'}); return false;", :class => 'icon icon-save' %>
+                <% end %>
             </p>
-            <div class="clearer"></div>
-            </fieldset>
+            <div class="clearer"></div>          
           <% end %>
         </div>
     </div>

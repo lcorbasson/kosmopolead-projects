@@ -1,13 +1,13 @@
 <%= error_messages_for 'photo' %>
 
 
-<%= form_upload({:url=>"/projects/#{@project.id}/gallery/#{@gallery.id}/photos/create/",:col_collection=>@photo,:name_initial_form=>"upload_form_photo",:name_div_id=>"upload_photo"}) %>
+<%= form_upload({:url=> project_gallery_photos_path(@project,@gallery),:method=>:post,:col_collection=>@photo,:name_initial_form=>"upload_form_photo",:name_div_id=>"upload_photo"}) %>
 
 <div class="editable_box">
     <div class="links_edit_box">
         <%= link_to_remote "#{image_tag('/images/add.png')}",
                          { :url => { :controller => 'photos', :action => 'new',:gallery_id=>@gallery.id,:project_id=>@project},
-                           :method => 'post',
+                           :method => 'get',
                            :update => 'add_photo'
                          } %>
      </div>
@@ -19,7 +19,7 @@
           <p><%= l(:project_add_photo) %>
            <%= link_to_remote "#{image_tag('/images/add.png')}",
                          { :url => { :controller => 'photos', :action => 'new',:gallery_id=>@gallery.id,:project_id=>@project},
-                           :method => 'post',
+                           :method => 'get',
                            :update => 'add_photo'
                          } %>
         </div>

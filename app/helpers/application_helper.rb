@@ -56,7 +56,7 @@ module ApplicationHelper
     options[:class] ||= ''
     options[:class] << ' issue'
     options[:class] << ' closed' if issue.closed?
-    link_to "#{issue.tracker.name if issue.tracker}  ##{issue.id}", {:controller => "issues", :action => "show", :id => issue}, options
+    link_to "#{issue.tracker.name if issue.tracker}  ##{issue.id}", {:controller => "issues", :action => "show", :id => issue,:project_id=>issue.project}, options
   end
 
   # Generates a link to an attachment.
@@ -285,7 +285,7 @@ module ApplicationHelper
     only_path = options.delete(:only_path) == false ? false : true
 
     # when using an image link, try to use an attachment, if possible
-    attachments = options[:attachments] || (obj && obj.respond_to?(:attachments) ? obj.attachments : nil)
+    attachments = options[:file_attachments] || (obj && obj.respond_to?(:file_attachments) ? obj.file_attachments : nil)
 
     if attachments
       attachments = attachments.sort_by(&:created_on).reverse
@@ -758,14 +758,14 @@ module ApplicationHelper
   def partner_thumbnail(partner,partner_project)
     name = content_tag(:p,partner.name,:class=>"name")
     thumbnail = content_tag(:li,
-      content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=>{:controller=>:project_partners,:action=>:destroy,:project_id=>@project,:id=>partner_project.id},:method=>:get,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
+      content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=> project_project_partner_path(@project,partner_project),:method=>:delete,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
       name,:class=>"user_thumbnail thumbnail editable_box")
   end
 
   def member_thumbnail(user,member)
     name = content_tag(:p,(user && !user.anonymous?) ? link_to(user.name, :controller => 'account', :action => 'show', :id => user) : 'Anonymous',:class=>"name")   
     thumbnail = content_tag(:li,
-      content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=>{:controller=>:members,:action=>:destroy,:project_id=>@project,:id=>member.id},:method=>:get,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
+      content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=> project_member_path(@project,member) ,:method=>:delete,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
       name,:class=>"user_thumbnail thumbnail editable_box")
   end
 

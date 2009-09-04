@@ -41,13 +41,12 @@ class QueriesController < ApplicationController
     params[:fields].each do |field|
       @query.add_filter(field, params[:operators][field], params[:values][field])
     end if params[:fields]
-    
+    @query.query_type = params[:query_type]
     if request.post? && params[:confirm] && @query.save
       flash[:notice] = l(:notice_successful_create)
       redirect_to :controller => 'queries', :action => 'index'
-      return
-    else
-        @query.query_type = params[:query_type]
+      return    
+        
     end
     respond_to do |format|
       format.js  {
@@ -57,7 +56,6 @@ class QueriesController < ApplicationController
           end
         }
     end
-#    render :layout => false if request.xhr?
   end
   
   def edit
@@ -134,7 +132,7 @@ private
   end
   
   def find_optional_project
-    @project = Project.find(params[:project_id]) if params[:project_id]
+    @project = Project.find_by_identifier(params[:project_id]) if params[:project_id]
     User.current.allowed_to?(:save_queries, @project, :global => true)
   rescue ActiveRecord::RecordNotFound
     render_404

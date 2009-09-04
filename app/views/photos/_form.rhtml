@@ -4,7 +4,7 @@
     <%= f.file_field :photo, :id=>"fileToUpload" %>
     <%= link_to_remote l(:button_add),
                          { :url => { :controller => 'photos', :action => 'index',:gallery_id=>@project.gallery.id,:project_id=>@project},
-                           :method => 'post',
+                           :method => 'get',
                            :update => 'photo_index',
                            :with => "clone_upload_photo_form()",
                          },:class=>"button btn_blue corner-all" %>

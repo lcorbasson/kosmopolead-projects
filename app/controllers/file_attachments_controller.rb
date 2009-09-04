@@ -47,20 +47,19 @@ class FileAttachmentsController < ApplicationController
     @file_attachment.author_id = User.current.id
     @file_attachment.save
     respond_to do |format|  
-      format.js { render(:update) {|page|
+      format.js { render(:update) {|page|   
           if params[:project_id]
               page.replace_html "files_index", :partial => 'file_attachments/index',:locals=>{:file_attachments=>@project.file_attachments}
           else
               page.replace_html "files_index", :partial => 'file_attachments/index',:locals=>{:file_attachments=>@issue.file_attachments}
           end
-          page<<"jQuery('#fileToUpload').val('');"
+          
         } }
     end
     
   end
 
-  def new
-    test = params[:file_attachment]
+  def new  
     @file_attachment = FileAttachment.new
     @file_attachment.container_id = params[:project_id]
     if params[:issue_id]

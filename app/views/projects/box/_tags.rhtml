@@ -11,7 +11,7 @@
   <% end %>
 </div>
 <% remote_form_for(:project, @project,
-                 :url => {:controller => 'projects', :action => 'update', :project_id => @project,:part=>'tags'},
+                 :url => project_path(@project,:part=>'tags'),
                  :method => :put,
                  :html => {:id => 'update-tags-form',:style=>'display:none;'}) do |f| %>
   <%= select_tag  :tags,  options_for_select( @project.tag_list { |tag| [tag.name, tag.id] }, :class => 'selected'), :id => 'tags', :name => 'tags'%>
@@ -21,13 +21,14 @@
   </div>
 <% end %>
 
+
 <script language="JavaScript">
         jQuery(document).ready(function()
         {
           jQuery('#tags').children().attr('class', 'selected')
 
           jQuery("#tags").fcbkcomplete({
-            json_url: "/projects/<%= @project%>/tags_json",
+            json_url: "/projects/tags_json/<%= @project.identifier %>",
             cache: true,
             filter_case: true,
             filter_hide: true,

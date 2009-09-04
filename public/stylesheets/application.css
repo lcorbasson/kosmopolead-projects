@@ -1137,3 +1137,5 @@ text-align:center;
 #update-profile-form p {padding:5px;}
 #update-profile-form select,#update-profile-form input{width:100px;}
 #update-profile-form label{width:150px;}
+#relation_project_to_id {width:100px;}
+#project_author .name {padding:20px;}

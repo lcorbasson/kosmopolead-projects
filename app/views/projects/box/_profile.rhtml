@@ -13,7 +13,7 @@
        <label><%= l(:label_estimated_time) %></label> <%= project.estimated_time %> <%= l("#{project.time_unit.label}") %><br />
     <% end %>
     <% if project.project_cost and project.project_cost > 0 %>
-       <label><%= l(:label_project_cost) %></label> <%= project.project_cost %> €<br />
+       <label><%= l(:label_project_cost) %></label> <%= number_to_currency(project.project_cost, :unit => "€", :format => "%n %u") %><br />
     <% end %>
     <% if project.sector and project.sector %>
        <label><%= l(:label_project_sector) %></label> <%= my_sector(current_language, project.sector).collect{|s| s.name} %><br />

@@ -44,6 +44,7 @@ class ActivitySectorsController < ApplicationController
   # POST /activity_sectors.xml
   def create
     @activity_sector = ActivitySector.new(params[:activity_sector])
+    
     respond_to do |format|
 
       if @activity_sector.save

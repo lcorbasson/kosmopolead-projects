@@ -586,9 +586,9 @@ module ApplicationHelper
     unless @calendar_headers_tags_included
       @calendar_headers_tags_included = true
       content_for :header_tags do
-        javascript_include_tag('calendar/calendar') +
-        javascript_include_tag("calendar/lang/calendar-#{current_language}.js") +
-        javascript_include_tag('calendar/calendar-setup') +
+        javascript_include_tag('calendar/calendar') 
+        javascript_include_tag("calendar/lang/calendar-#{current_language}.js") 
+        javascript_include_tag('calendar/calendar-setup') 
         stylesheet_link_tag('calendar')
       end
     end
@@ -799,7 +799,10 @@ module ApplicationHelper
   end
 
   def profile_box(title,content)
-    content_tag(:div, content_tag(:div,title,:class=>'profile_header')+content_tag(:div,content,:class=>'profile_content'),:class=>"profile")
+    link= "#{toggle_link image_tag("/images/edit.png"), 'update-profile-form',{:second_element=>"project_infos"}}"
+    content_tag(:div,
+      content_tag(:div,content_tag(:div,title,:class=>"left")+content_tag(:div,link,:class=>"links_edit_box")+content_tag(:div,"",:class=>"clearer"),:class=>'profile_header')+
+      content_tag(:div,content,:class=>'profile_content'),:class=>"profile editable_box")
   end
 
 
@@ -844,7 +847,28 @@ module ApplicationHelper
    return data
   end
 
-   
+   def current_project
+     session[:project]
+   end
+
+   def display_message_error(my_collection)
+     line_js ="<ul>";
+    if my_collection.class==String
+      line_js +="<li>#{escape_javascript my_collection}</li>";
+    else
+      #my_collection.errors.full_messages.map {|msg| line_js += "#{content_tag(:li, l(msg))}" }
+      my_collection.errors.each{|attr,msg| line_js += "<li>- #{l("label_#{attr}")} #{l("#{msg}")}</li>" }
+
+    end
+    line_js += "</ul>"
+    line_js="jQuery('#errorExplanation').html(\"#{line_js}\");
+            jQuery('#errorExplanation').show();
+            setTimeout(function() {
+                jQuery('#errorExplanation').slideUp();
+            }, 10000);
+     "
+    return line_js  # envoi de line_js
+   end
 
 
   private

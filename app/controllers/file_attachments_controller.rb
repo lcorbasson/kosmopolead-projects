@@ -28,7 +28,7 @@ class FileAttachmentsController < ApplicationController
       @file_attachments = @issue.file_attachments     
     else 
         @project = Project.find_by_identifier(params[:project_id])
-      @file_attachments = @project.file_attachments
+       @file_attachments = @project.file_attachments
     end
      render :layout=>false
   end

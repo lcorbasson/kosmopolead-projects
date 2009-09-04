@@ -1,4 +1,4 @@
-<% labelled_tabular_form_for :project, @project, :url => { :action => "add" } do |f| %>
+<% remote_form_for :project, @project, {:url => { :action => "add" },:method=>:get},:html=>{:class=>"tabular"} do |f| %>
 <%= render :partial => 'form', :locals => { :f => f } %>
 
 
@@ -16,6 +16,7 @@
 
 <p class="buttons right">
    <%=  submit_tag l(:button_save),:class => 'button btn_blue corner-all' %>
+   <%= link_to_remote "#{l(:button_cancel)}",{:url=>{:controller=>:projects,:action=>:show,:project_id=>current_project},:method=>:get},:class=>"button btn_orange corner-all"%>
 </p>
  <div class="clearer"></div>
 

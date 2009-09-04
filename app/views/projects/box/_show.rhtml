@@ -1,7 +1,8 @@
 <% selected_tab = params[:tab] ? params[:tab].to_s : project_tabs.first[:name] %>
 <div class="profilecontentleft">
-  <%= profile_box("PROJET #{project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>project}}") %>
-
+  <div id="profile_project">
+    <%= profile_box("PROJET #{project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>project}}") %>
+  </div>
   <span class="grey_title" style="float:left;margin-right:20px;"> Avancement du projet :</span><%= progress_bar([@completed_percent, 100], :width => '40%', :legend => ('%0.0f%' % @completed_percent)) %>
 <br/><br/>
   <div class="editable_box">
@@ -40,14 +41,6 @@
     </div>
     
 
-  <% if @news.any? && authorize_for('news', 'index') %>
-  <div class="box">
-    <h3><%=l(:label_news_latest)%></h3>
-    <%= render :partial => 'news/news', :collection => @news %>
-    <p><%= link_to l(:label_news_view_all), :controller => 'news', :action => 'index', :project_id => project %></p>
-  </div>
-  <% end %>
-  <%= call_hook(:view_projects_show_right, :project => project) %>
 </div>
 <div class="clearer"></div>
 
@@ -63,7 +56,7 @@
   <div class="clearer"></div>
 </div>
 <% project_tabs.each do |tab| -%>
-<%= content_tag('div', render(:partial => tab[:partial]),
+<%= content_tag('div', render(:partial => tab[:partial],:locals=>{:project=>project}),
                        :id => "tab-content-#{tab[:name]}",
                        :style => (tab[:name] != selected_tab ? 'display:none' : nil),
                        :class => 'tab-content') %>

@@ -92,18 +92,18 @@ function initialize_funding_grid(url,edit_url){
             datatype: "json",
             colNames:["AAP", "Financeur","Correspondant financeur","Montant demandé","Type","Date accord","Montant accordé","Date libération","Montant libéré"],
             colModel:[
-                {name:'aap',index:'aap',width:80, resizable:false,sortable:true, align:"center", editable:true,editrules:{required:true}},
-                {name:'financeur',index:'financeur',width:100, resizable:false, sortable:true, editable:true, align:"center",editrules:{required:true}},
-                {name:'correspondant',index:'correspondant', resizable:false, sortable:true, editable:true, align:"center",editrules:{required:true}},
-                {name:'montant_demande',index:'montant_demande',width:100, resizable:true, sortable:false, editable:true, align:"right",editrules:{required:true} },
-                {name:'funding_type',index:'type', width:100,resizable:false, sortable:true, editable:true, align:"center",editrules:{required:true}},
-                {name:'date_accord',index:'date_accord', resizable:false, sortable:true, editable:true, align:"center",editrules:{required:true},
+                {name:'aap',index:'aap',width:80, resizable:false,sortable:true, align:"center", editable:true},
+                {name:'financeur',index:'financeur',width:100, resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'correspondant',index:'correspondant', resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'montant_demande',index:'montant_demande',width:100, resizable:true, sortable:false, editable:true, align:"right" },
+                {name:'funding_type',index:'type', width:100,resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'date_accord',index:'date_accord', resizable:false, sortable:true, editable:true, align:"center",
                    editoptions:{size:12}},
-                {name:'montant_accorde',index:'montant_accorde',width:100, resizable:false, sortable:true, editable:true, align:"right",editrules:{required:true}},
-                {name:'date_liberation',index:'date_liberation', resizable:false, sortable:true, editable:true, align:"center",editrules:{required:true}
+                {name:'montant_accorde',index:'montant_accorde',width:100, resizable:false, sortable:true, editable:true, align:"right"},
+                {name:'date_liberation',index:'date_liberation', resizable:false, sortable:true, editable:true, align:"center"
                      
                 },
-                {name:'montant_libere',index:'montant_libere',width:100, resizable:false, sortable:true, editable:true, align:"right",editrules:{required:true}}],
+                {name:'montant_libere',index:'montant_libere',width:100, resizable:false, sortable:true, editable:true, align:"right"}],
             multiselect: false,
             multiboxonly:true,
             pager:jQuery("#pager"),

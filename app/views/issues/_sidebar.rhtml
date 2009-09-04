@@ -13,7 +13,13 @@
 </p>
 <% if @project %>
   <p>
-    <%= link_to_remote :label_issue_new, {:url=>{ :controller => 'issues', :action => 'new', :project_id=>@project.id }},:method=>:get, :class => 'icon icon-add' %>
+    <%= link_to_remote :label_stage_new, {:url=>{ :controller => 'issues', :action => 'new', :project_id=>@project.id,:issue_type=>"phase" }},:method=>:get, :class => 'icon icon-add' %>
+  </p>
+  <p>
+    <%= link_to_remote :label_milestone_new, {:url=>{ :controller => 'issues', :action => 'new', :project_id=>@project.id,:issue_type=>"milestone" }},:method=>:get, :class => 'icon icon-add' %>
+  </p>
+  <p>
+    <%= link_to_remote :label_issue_new, {:url=>{ :controller => 'issues', :action => 'new', :project_id=>@project.id,:issue_type=>"issue" }},:method=>:get, :class => 'icon icon-add' %>
   </p>
 <% end %>
 

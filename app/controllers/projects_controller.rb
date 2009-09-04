@@ -25,11 +25,11 @@ class ProjectsController < ApplicationController
   menu_item :settings, :only => :settings
 
   
-  before_filter :find_project, :except => [ :tags_json, :index, :list, :add, :activity ]
-
+  before_filter :find_project, :except => [ :tags_json, :index, :list, :add, :activity,:update_left_menu ]
+  before_filter :find_projects,:only=>[:index]
 
   before_filter :find_optional_project, :only => :activity
-  before_filter :authorize, :except => [:add_file,:update,:show_funding, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity ]
+  before_filter :authorize, :except => [:add_file,:update,:show_funding, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu ]
   before_filter :require_admin, :only => [ :add, :archive, :unarchive, :destroy ]
   accept_key_auth :activity
   
@@ -47,30 +47,29 @@ class ProjectsController < ApplicationController
   
   # Lists visible projects
   def index
-    @projects = Project.find :all,
-                            :conditions => Project.visible_by(User.current),
-                            :include => :parent
-   @project = @projects.first
-   unless @project.nil?   
-       @members = @project.members
-       @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
-       @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
-       @trackers = @project.rolled_up_trackers
-   if @projects.size>0
+    if session[:project]
+      @project = session[:project]
+    else
       @project = @projects.first
-      @members = @project.members
-      @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
-      @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
-      @trackers = @project.rolled_up_trackers
-      @gantt = Redmine::Helpers::Gantt.new(params)
-      retrieve_query
-      if @query.valid?
-         events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
-                    and start_date is not null)
-                    AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
+    end
+     unless @project.nil?
+          @gantt = Redmine::Helpers::Gantt.new(params)
+          retrieve_query
+          if @query.valid?
+             events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
+                        and start_date is not null)
+                        AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
 
-        @gantt.events = events
+            @gantt.events = events
+          end
+          @member ||= @project.members.new
+          @users = User.all
+          @file_attachment = FileAttachment.new(:container_id=>@project.id,:container_type=>"project")
+          @roles = Role.find :all, :order => 'builtin, position'
+          completed_percent
+          find_gallery
       end
+
    end
    @member ||= @project.members.new   
    @users = User.all
@@ -112,28 +111,104 @@ class ProjectsController < ApplicationController
       @project.is_public = Setting.default_projects_public?
       @project.enabled_module_names = Redmine::AccessControl.available_project_modules
       respond_to do |format|
+
         format.html {}
-        format.js {
-           render :update do |page|
-              page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/add')}');"
-           end
+        format.atom {
+          render_feed(projects.sort_by(&:created_on).reverse.slice(0, Setting.feeds_limit.to_i),
+                                    :title => "#{Setting.app_title}: #{l(:label_project_latest)}")
         }
+
       end
+  end
+ 
+  # Add a new project
+  def add    
+    #Call to form
+    if !params[:project]
+      @project = Project.new()
+        @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
+        @trackers = Tracker.all
+        @root_projects = Project.find(:all,
+                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
+                                    :order => 'name')        
+        @time_units = TimeUnit.find(:all)
+        @users = User.find(:all)
+        @project.identifier = Project.next_identifier if Setting.sequential_project_identifiers?
+        @project.trackers = Tracker.all
+        @project.is_public = Setting.default_projects_public?
+        @project.enabled_module_names = Redmine::AccessControl.available_project_modules
+        respond_to do |format|
+          format.html {}
+          format.js {
+             render :update do |page|
+                page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/add')}');"
+             end
+          }
+        end
     else
-      @project.tag_list = ''
-      if select_tags =  params[:tags]
-        select_tags.each do |tag|
-          @project.tag_list << tag
+        #Save project
+        @project = Project.new(params[:project])
+        @project.enabled_module_names = params[:enabled_modules]
+        if @project.save
+            @trackers = @project.rolled_up_trackers
+            @users = User.all
+            cond = @project.project_condition(Setting.display_subprojects_issues?)
+            TimeEntry.visible_by(User.current) do
+              @total_hours = TimeEntry.sum(:hours,
+                                           :include => :project,
+                                           :conditions => cond).to_f
+            end
+            @key = User.current.rss_key
+            @gantt = Redmine::Helpers::Gantt.new(params)
+            @member ||= @project.members.new
+            @users = User.all
+            @file_attachment = FileAttachment.new(:container_type=>"project",:container_id=>@project.id)
+            @roles = Role.find :all, :order => 'builtin, position'
+            retrieve_query
+            if @query.valid?
+              events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
+                          and start_date is not null)
+                          AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
+
+              @gantt.events = events
+            end
+            completed_percent
+            find_gallery
+            find_projects
+            session[:project] = @project
+            flash[:notice] = l(:notice_successful_create)
+            respond_to do |format|
+                format.js  {
+                    render:update do |page|
+                      page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
+                      page << "jQuery('#projects_menu').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
+                    end
+                }
+            end
+        else
+           respond_to do |format|
+#             format.js { render(:update) {|page| page.replace_html "notice", "#{line}"} }
+             format.js{
+                render :update do |page|
+#                  line = ''
+#                  @project.errors.full_messages.each do |err| # Boucle pour récupérer toutes les erreurs
+#                    line +="<p>#{err}</p>";
+#                  end
+#                    page.replace_html "notice", "#{line}"
+#                    page <<  "jQuery('#notice').show();"
+                  page << display_message_error(@project)
+               end
+             }
+
+#              format.js { render(:update) {|page| page.replace_html "notice", "#{display_error_msg(@project.errors.full_messages.to_s)}"} }
+#                format.js {
+#                  render :update do |page|
+#                      page << display_error_msg(@project)
+#                   end
+#                }
+            end
         end
       end
-      @project.enabled_module_names = params[:enabled_modules]
-      if @project.save
-        flash[:notice] = l(:notice_successful_create)
-        redirect_to "/projects/#{@project}/issues/index"
-      end
-    end
-    
-    
   end
 	
   # Show @project
@@ -142,9 +217,7 @@ class ProjectsController < ApplicationController
       # try to redirect to the requested menu item
       redirect_to_project_menu_item(@project, params[:jump]) && return
     end
-    @projects = Project.find :all,
-                            :conditions => Project.visible_by(User.current),
-                            :include => :parent
+   
     if !params[:project_id]
       @project = @projects.first
     else
@@ -180,7 +253,8 @@ class ProjectsController < ApplicationController
       @gantt.events = events
     end
     completed_percent
-     find_gallery
+    find_gallery
+    session[:project] = @project
     respond_to do |format|
       format.js  {
           render:update do |page|
@@ -204,7 +278,7 @@ class ProjectsController < ApplicationController
     @trackers = Tracker.all
     @repository ||= @project.repository
     @wiki ||= @project.wiki
-     @users = User.all
+    @users = User.all
   end
   
   # Edit @project
@@ -234,19 +308,42 @@ class ProjectsController < ApplicationController
           case params[:part]
             when "description"
               page << "jQuery('.project_description').html('#{escape_javascript(render:partial=>'projects/box/description',:locals=>{:project=>@project})}');"
-          when "tags"
-            @project.tag_list = ''
-            if select_tags =  params[:tags]
-              select_tags.each do |tag|
-                @project.tag_list << tag
+            when "tags"
+              @project.tag_list = ''
+              if select_tags =  params[:tags]
+                select_tags.each do |tag|
+                  @project.tag_list << tag
+                end
               end
-            end
               page << "jQuery('.project_tags').html('#{escape_javascript(render:partial=>'projects/box/tags')}');"
+          when "summary"
+            @users = User.all
+            page << "jQuery('#profile_project').html('#{escape_javascript(profile_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
           end
+          @project.save
         end
       }
     end
   end
+
+  def update_left_menu
+    @status = params[:status] ? params[:status].to_i : 1
+    c = ARCondition.new(@status == 0 ? "status <> 0" : ["status = ?", @status])
+
+    @projects = Project.find :all,
+                        :conditions => c.conditions
+
+
+
+    respond_to do |format|
+      format.js {
+        render :update do |page|         
+           page << "jQuery('#projects_menu').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
+        end
+      }
+    end
+  end
+
   
   def modules
     @project.enabled_module_names = params[:enabled_modules]
@@ -494,14 +591,19 @@ private
   end
 
   def find_gallery
-    unless @project.nil?
-      @gallery = @project.gallery
-      if @gallery.nil?
+    unless @project.nil?     
+      unless @gallery = @project.gallery
         @gallery = Gallery.create(:owned_id=>@project.id, :owned_type=>"project")
       end
     end
     @photo = Photo.new
     @photo.gallery_id = @gallery.id unless @gallery.nil?
+  end
+
+  def find_projects
+    @projects = Project.find :all,
+                            :conditions => Project.visible_by(User.current),
+                            :include => :parent
   end
   
   

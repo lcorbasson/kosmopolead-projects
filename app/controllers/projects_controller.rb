@@ -144,7 +144,16 @@ class ProjectsController < ApplicationController
                       page << "jQuery('#projects_menu').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
                     end
                 }
-            end    
+            end
+        else
+           respond_to do |format|
+             format.js{
+                render :update do |page|#                 
+                  page << display_message_error(@project)
+               end
+             }  
+            end
+
         end
       end
   end

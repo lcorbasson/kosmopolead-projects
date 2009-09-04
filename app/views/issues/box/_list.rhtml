@@ -37,10 +37,11 @@
 <% if @issues and @issues.size>0 %>
   <%= render :partial => 'issues/list', :locals => {:issues => @issues, :query => @query} %>
   <%= javascript_tag("initialize_toggle('filter');") %>
+
 <% else %>
-   <div class="no-data">
-      <%=  l(:label_no_issues) %>
-   </div>
+ <div class="no-data">
+    <%=  l(:label_no_issues) %>
+ </div>
 <% end %>
 
 <% content_for :header_tags do %>

@@ -49,7 +49,7 @@
           </p>
       <% else %>
           <p>
-            <label><%= l(:label_status_id) %></label> <%= @issue.status.name %>
+            <label><%= l(:label_status_id) %></label> <%= f.select :status_id, (@allowed_statuses.collect {|p| [p.name, p.id]}), :required => true %><%#= @issue.status.name %>
           </p>
       <% end %>
       <p>

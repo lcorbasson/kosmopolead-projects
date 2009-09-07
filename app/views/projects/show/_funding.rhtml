@@ -1,8 +1,6 @@
-<table id="funding_fields_list"></table>
-<div id="pager"></div>
-
-<% content_for :header_tags do %>
-    <%= javascript_include_tag 'jquery.jqGrid.min', 'jquery.jqgrid' %>
-<% end %>
-
-<%= javascript_tag("jQuery(document).ready(function(){initialize_funding_grid('/projects/show_funding/#{@project.identifier}/','/projects/#{@project.identifier}/funding_lines/new');})") %>
+<div class="editable_box">
+    <div class="links_edit_box">
+        <%= toggle_link "#{image_tag('/images/add.png')}","funding-line-form",:second_element=>"funding_lines_index" %>
+     </div>
+      <%= render :partial=>"funding_lines/index",:locals=>{:funding_lines=>@funding_lines} %>
+</div>

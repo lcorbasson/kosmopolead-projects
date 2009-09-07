@@ -1,0 +1,45 @@
+<div id="funding_lines_index">
+  <% if funding_lines.size>0 %>
+    <table class="list">
+      <thead><tr>
+        <%= sort_header_tag('aap', :caption => l(:label_funding_aap)) %>
+        <%= sort_header_tag('financeur', :caption => l(:label_funding_financeur)) %>
+        <%= sort_header_tag('correspondant_financeur', :caption => l(:label_funding_correspondant_financeur)) %>
+        <%= sort_header_tag('montant_demande', :caption => l(:label_funding_montant_demande)) %>
+        <%= sort_header_tag('funding_type', :caption => l(:label_funding_type)) %>
+        <%= sort_header_tag('date_accord', :caption => l(:label_funding_date_accord)) %>
+        <%= sort_header_tag('montant_accorde', :caption => l(:label_funding_montant_accorde)) %>
+        <%= sort_header_tag('date_liberation', :caption => l(:label_funding_date_liberation)) %>
+        <%= sort_header_tag('montant_libere', :caption => l(:label_funding_montant_libere)) %>
+        <th></th>
+      </tr></thead>
+      <tbody>
+    <% for funding_line in funding_lines %>
+      <tr class="<%= cycle("even", "odd") %> " id="funding_line_<%= funding_line.id %>">
+        <td style="text-align:center;"><%= funding_line.aap %></td>
+        <td style="text-align:center;"><%= funding_line.financeur %></td>
+        <td style="text-align:center;"><%= funding_line.correspondant_financeur %></td>
+        <td style="text-align:right;"><%= funding_line.montant_demande %></td>
+        <td style="text-align:center;"><%= funding_line.funding_type %></td>
+        <td style="text-align:center;"><%= funding_line.date_accord %></td>
+        <td style="text-align:right;"><%= funding_line.montant_accorde %></td>
+        <td style="text-align:center;"><%= funding_line.date_liberation %></td>
+        <td style="text-align:right;"><%= funding_line.montant_libere %></td>
+        <td style="text-align:center;"><%=  link_to_remote(image_tag('/images/delete.png'),{ :url=>project_funding_line_path(@project,funding_line),:method=>:delete,:confirm=>"Etes-vous certain de vouloir supprimer cette ligne ?"})%>
+       <%= link_to_remote(image_tag('/images/edit.png'),{ :url=>edit_project_funding_line_path(@project,funding_line),:method=>:get}) %> </td>
+      </tr>
+    <% end %>
+      </tbody>
+    </table>
+
+    <p class="pagination"><%= pagination_links_full @funding_line_pages, @funding_line_count %></p>
+    <div id="edit_funding"></div>
+  <% else %>
+     <div class="emptymessage">
+          <p><%= l(:project_add_funding) %>
+          <%= toggle_link "#{image_tag('/images/add.png')}","funding-line-form",:second_element=>"funding_lines_index" %>
+        </div>
+
+  <% end %>
+</div>
+<%= render :partial=>"funding_lines/new",:locals=>{:project=>@project} %>

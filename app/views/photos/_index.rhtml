@@ -1,10 +1,28 @@
 <% unless photos.nil?  %>
-  <% photos.each do |photo| %>
-    <div class="editable_box left">      
-        <%= link_to_remote "#{image_tag('/images/delete.png')}",{:url=>project_gallery_photo_path(@project,photo.gallery,photo) ,:method=>:delete,:confirm=>'Etes-vous sûr ?'},:class=>"links_edit_box",:style=>"position:absolute" %>
-        <div><%= image_tag photo.photo.url(:thumb) %></div>      
-    </div>
+  <% if photos.size>0 %>
+    <% photos.each do |photo| %>
+      <div class="editable_box left">
+          <%= link_to_remote "#{image_tag('/images/delete.png')}",{:url=>project_gallery_photo_path(@project,photo.gallery,photo) ,:method=>:delete,:confirm=>'Etes-vous sûr ?'},:class=>"links_edit_box",:style=>"position:absolute" %>
+          <a href="<%=  photo.photo.url(:original) %>" class='lightbox'><%= image_tag photo.photo.url(:thumb) %></a>
+      </div>
+    <% end %>
+  <% else %>
+     <div class="emptymessage">
+          <p><%= l(:project_add_photo) %>
+           <%= link_to_remote "#{image_tag('/images/add.png')}",
+                         { :url =>  {:controller => 'photos', :action => 'new',:gallery_id=>@gallery.id,:project_id=>@project},
+                           :method => 'get',
+                           :update => 'add_photo'
+                         } %>
+        </div>
+
   <% end %>
 <div class="clearer"></div>
 <% end %>
+
+<% content_for :header_tags do %>
+	<%= javascript_include_tag("lightbox/jquery.lightbox-0.5") %>
+    <%= stylesheet_link_tag("lightbox/jquery.lightbox-0.5") %>
+<% end %>
+<%= javascript_tag("jQuery().ready(function() {jQuery('.lightbox').lightBox();})") %>
 

@@ -1,5 +1,6 @@
 <% labelled_tabular_form_for :issue, @issue,
                              :url => {:action => 'edit', :id => @issue},
+                             :method=>:get,
                              :html => {:id => 'issue-form',
                                        :class => "tabular",
                                        :multipart => true} do |f| %>
@@ -7,7 +8,28 @@
     <%= error_messages_for 'time_entry' %>
     <div>
    
-    
+     <% if !@issue.is_issue? %>
+        <p>
+          <label><%= l(:label_phase_id) %></label>
+          <%= f.select :parent_id, @project.stages.collect {|i| [i.subject, i.id] }, :include_blank => true unless @issues.nil?%>
+        </p>
+    <% end %>
+    <% if @issue.is_issue? %>
+        <p>
+          <label for="parent"><%= l(:label_parent) %></label>
+          <%  Issue::RELATION_TYPE.each do |relation| %>
+            <%= radio_button_tag :issue_relation_type, relation, l("#{relation}"), :onClick => "checkTypeRelation(this,'#{type_event_project_issues_path(@project)}')" %><%= relation %>
+          <%  end %>
+          <span id="type_relation">
+          </span>
+        </p>
+        <p>
+      
+          <%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %></p>
+          <%= observe_field :issue_tracker_id, :url => { :action => :new },
+            :update => :content,
+            :with => "Form.serialize('issue-form')" %>
+      <% end %>
 
     <div class="splitcontentleft">
       <% if @issue.new_record? || @allowed_statuses.any? %>

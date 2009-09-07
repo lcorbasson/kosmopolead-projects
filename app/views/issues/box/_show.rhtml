@@ -55,20 +55,16 @@ end %>
 <%= link_to_remote_if_authorized(l(:button_quote), { :url => {:action => 'reply', :id => issue} }, :class => 'icon icon-comment') unless issue.description.blank? %>
 </div>
 <h3><%=l(:field_description)%></h3>
-
-
-
 <%= call_hook(:view_issues_show_description_bottom, :issue => issue) %>
 
-<% if authorize_for('issue_relations', 'new') || issue.relations.any? %>
 
-<% if @issue.is_issue? %>
+
 
   <div id="relations">
-  <%= render :partial => 'relations',:locals=>{:issue=>issue} %>
+    <%= render :partial => 'relations',:locals=>{:issue=>issue} %>
   </div>
-<% end %>
-<% end %>
+
+
 
 <% if User.current.allowed_to?(:add_issue_watchers, project) ||
         (issue.watchers.any? && User.current.allowed_to?(:view_issue_watchers, project)) %>

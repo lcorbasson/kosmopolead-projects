@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class IssueRelationsController < ApplicationController
-  before_filter :find_project, :authorize
+  before_filter :find_project
   
   def new
     @relation = IssueRelation.new(params[:relation])
@@ -34,6 +34,25 @@ class IssueRelationsController < ApplicationController
         end
       end
     end
+  end
+
+  def create
+    @relation = IssueRelation.new(params[:relation])
+    @relation.issue_from = @issue
+    @relation.save
+    respond_to do |format|
+      format.html { redirect_to :controller => 'issues', :action => 'show', :id => @issue }
+      format.js do
+        render :update do |page|
+          page.replace_html "relations", :partial => 'issues/relations',:locals=>{:issue=>@issue}
+          if @relation.errors.empty?
+            page << "$('relation_delay').value = ''"
+            page << "$('relation_issue_to_id').value = ''"
+          end
+        end
+      end
+    end
+    
   end
   
   def destroy

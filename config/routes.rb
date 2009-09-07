@@ -22,7 +22,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :projects,:collection=>{:add_version=>:get,:show_funding=>:get,:add=>:get,:settings=>:get} do |project|
       project.resources :members
-      project.resources :issues,:collection=>{:calendar=>:get,:gantt=>:get} do |issue|
+      project.resources :issues,:collection=>{:calendar=>:get,:gantt=>:get,:type_event=>:get} do |issue|
         issue.resources :file_attachments
         issue.resources :issue_relations
       end

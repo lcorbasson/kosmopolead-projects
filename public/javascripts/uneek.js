@@ -82,8 +82,8 @@ function activeProjectMenu(id){
     jQuery("#projects_id_"+id+" a:first").addClass("active");
 }
 
-function checkTypeRelation(t){
-    jQuery.ajax({dataType:'script', url:'issues/type_event', data:'type=' + t.value,type: "get", success: function(msg){eval(msg)}});
+function checkTypeRelation(t,url){
+    jQuery.ajax({dataType:'script', url:url, data:'type=' + t.value,type: "get", success: function(msg){eval(msg)}});
 }
 
 function initialize_funding_grid(url,edit_url){   

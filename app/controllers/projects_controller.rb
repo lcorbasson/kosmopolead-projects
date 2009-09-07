@@ -24,7 +24,7 @@ class ProjectsController < ApplicationController
   menu_item :files, :only => [:list_files, :add_file]
   menu_item :settings, :only => :settings
 
-  
+  before_filter :find_root_projects
   before_filter :find_project, :except => [ :tags_json, :index, :list, :add, :activity,:update_left_menu ]
   before_filter :find_projects,:only=>[:index]
 
@@ -47,9 +47,7 @@ class ProjectsController < ApplicationController
   
   # Lists visible projects
   def index
-    @root_projects = Project.find(:all,
-                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
-                                    :order => 'name')   
+       
     if session[:project]
       @project = session[:project]
     else
@@ -89,10 +87,7 @@ class ProjectsController < ApplicationController
     if !params[:project]
       @project = Project.new()
         @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
-        @trackers = Tracker.all
-        @root_projects = Project.find(:all,
-                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
-                                    :order => 'name')        
+        @trackers = Tracker.all             
         @time_units = TimeUnit.find(:all)
         @users = User.find(:all)
         @project.identifier = Project.next_identifier if Setting.sequential_project_identifiers?
@@ -162,10 +157,7 @@ class ProjectsController < ApplicationController
   end
 	
   # Show @project
-  def show
-    @root_projects = Project.find(:all,
-                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
-                                    :order => 'name')   
+  def show   
     if params[:jump]
       # try to redirect to the requested menu item
       redirect_to_project_menu_item(@project, params[:jump]) && return
@@ -221,10 +213,7 @@ class ProjectsController < ApplicationController
   end
 
   def settings
-    @tags = Tags.all
-    @root_projects = Project.find(:all,
-                                  :conditions => ["status = #{Project::STATUS_ACTIVE} AND id <> ?", @project.id],
-                                  :order => 'name')
+    @tags = Tags.all    
     @time_units = TimeUnit.find(:all)
     @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
     @issue_category ||= IssueCategory.new
@@ -254,10 +243,7 @@ class ProjectsController < ApplicationController
  
   def update
     @project = Project.find_by_identifier(params[:id])    
-    @project.update_attributes(params[:project])
-    @root_projects = Project.find(:all,
-                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
-                                    :order => 'name')
+    @project.update_attributes(params[:project]) 
     respond_to do |format|
       format.js {
         render :update do |page|
@@ -562,6 +548,12 @@ private
     @projects = Project.find :all,
                             :conditions => Project.visible_by(User.current),
                             :include => :parent
+  end
+
+  def find_root_projects
+    @root_projects = Project.find(:all,
+                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
+                                    :order => 'name')
   end
   
   

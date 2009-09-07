@@ -1,24 +1,25 @@
+
 # redMine - project management software
-# Copyright (C) 2006-2007  Jean-Philippe Lang
+# Copyright (C) 2006-2007 Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 class ProjectsController < ApplicationController
   menu_item :projects,:only=>[:show]
- 
- 
+
+
   menu_item :activity, :only => :activity
   menu_item :roadmap, :only => :roadmap
   menu_item :files, :only => [:list_files, :add_file]
@@ -32,11 +33,11 @@ class ProjectsController < ApplicationController
   before_filter :authorize, :except => [:add_file,:update,:show_funding, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu ]
   before_filter :require_admin, :only => [ :add, :archive, :unarchive, :destroy ]
   accept_key_auth :activity
-  
+
   helper :sort
   include SortHelper
   helper :custom_fields
-  include CustomFieldsHelper   
+  include CustomFieldsHelper
   helper :issues
   helper IssuesHelper
   helper :queries
@@ -44,10 +45,9 @@ class ProjectsController < ApplicationController
   helper :repositories
   include RepositoriesHelper
   include ProjectsHelper
-  
+
   # Lists visible projects
   def index
-       
     if session[:project]
       @project = session[:project]
     else
@@ -59,8 +59,8 @@ class ProjectsController < ApplicationController
           retrieve_query
           if @query.valid?
              events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
-                        and start_date is not null)
-                        AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
+and start_date is not null)
+AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
 
             @gantt.events = events
           end
@@ -71,49 +71,7 @@ class ProjectsController < ApplicationController
           completed_percent
           find_gallery
       end
-
-   end
-   @member ||= @project.members.new   
-   @users = User.all
-   @file_attachment = FileAttachment.new
-   @file_attachment.container_id  = @project.id
-   @file_attachment.container_type = "project"
-    @roles = Role.find :all, :order => 'builtin, position'
-    completed_percent
-    find_gallery
-       respond_to do |format|
-          format.html {
-#            @project_tree = projects.group_by {|p| p.parent || p}
-#            @project_tree.keys.each {|p| @project_tree[p] -= [p]}
-       }
-          format.atom {
-            render_feed(projects.sort_by(&:created_on).reverse.slice(0, Setting.feeds_limit.to_i),
-                                      :title => "#{Setting.app_title}: #{l(:label_project_latest)}")
-          }
-          
-        end
-  end
-  end
-  
-  # Add a new project
-  def add
-    @tags = Tags.all
-    @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
-    @trackers = Tracker.all
-    @root_projects = Project.find(:all,
-                                  :conditions => "status = #{Project::STATUS_ACTIVE}",
-                                  :order => 'name')
-    @project = Project.new(params[:project])
-    @time_units = TimeUnit.find(:all)
-    @users = User.find(:all)
-    
-    if !params[:project]
-      @project.identifier = Project.next_identifier if Setting.sequential_project_identifiers?
-      @project.trackers = Tracker.all
-      @project.is_public = Setting.default_projects_public?
-      @project.enabled_module_names = Redmine::AccessControl.available_project_modules
-      respond_to do |format|
-
+     respond_to do |format|
         format.html {}
         format.atom {
           render_feed(projects.sort_by(&:created_on).reverse.slice(0, Setting.feeds_limit.to_i),
@@ -122,14 +80,14 @@ class ProjectsController < ApplicationController
 
       end
   end
- 
+
   # Add a new project
-  def add    
+  def add
     #Call to form
     if !params[:project]
       @project = Project.new()
         @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
-        @trackers = Tracker.all             
+        @trackers = Tracker.all       
         @time_units = TimeUnit.find(:all)
         @users = User.find(:all)
         @project.identifier = Project.next_identifier if Setting.sequential_project_identifiers?
@@ -167,8 +125,8 @@ class ProjectsController < ApplicationController
             retrieve_query
             if @query.valid?
               events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
-                          and start_date is not null)
-                          AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
+and start_date is not null)
+AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
 
               @gantt.events = events
             end
@@ -185,7 +143,7 @@ class ProjectsController < ApplicationController
             end
             flash[:notice] = l(:notice_successful_create)
             respond_to do |format|
-                format.js  {
+                format.js {
                     render:update do |page|
                       page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
                       page << "jQuery('#projects_menu').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
@@ -195,23 +153,23 @@ class ProjectsController < ApplicationController
         else
            respond_to do |format|
              format.js{
-                render :update do |page|#                 
+                render :update do |page|#
                   page << display_message_error(@project)
                end
-             }  
+             }
             end
 
         end
       end
   end
-	
+
   # Show @project
-  def show   
+  def show
     if params[:jump]
       # try to redirect to the requested menu item
       redirect_to_project_menu_item(@project, params[:jump]) && return
     end
-   
+
     if !params[:id]
       @project = @projects.first
     else
@@ -223,11 +181,11 @@ class ProjectsController < ApplicationController
     @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
     @trackers = @project.rolled_up_trackers
     @users = User.all
-    
+
     cond = @project.project_condition(Setting.display_subprojects_issues?)
-   
+
     TimeEntry.visible_by(User.current) do
-      @total_hours = TimeEntry.sum(:hours, 
+      @total_hours = TimeEntry.sum(:hours,
                                    :include => :project,
                                    :conditions => cond).to_f
     end
@@ -236,14 +194,14 @@ class ProjectsController < ApplicationController
     @member ||= @project.members.new
     @users = User.all
     @file_attachment = FileAttachment.new
-    @file_attachment.container_id  = @project.id
+    @file_attachment.container_id = @project.id
     @file_attachment.container_type = "project"
     @roles = Role.find :all, :order => 'builtin, position'
     retrieve_query
     if @query.valid?
       events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
-                  and start_date is not null)
-                  AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
+and start_date is not null)
+AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
 
       @gantt.events = events
     end
@@ -251,7 +209,7 @@ class ProjectsController < ApplicationController
     find_gallery
     session[:project] = @project
     respond_to do |format|
-      format.js  {
+      format.js {
           render:update do |page|
             page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
             page << "jQuery('#sidebar_new').html('#{escape_javascript(render:partial=>'projects/sidebar_new')}');"
@@ -262,7 +220,7 @@ class ProjectsController < ApplicationController
   end
 
   def settings
-    @tags = Tags.all    
+    @tags = Tags.all 
     @time_units = TimeUnit.find(:all)
     @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
     @issue_category ||= IssueCategory.new
@@ -272,13 +230,13 @@ class ProjectsController < ApplicationController
     @wiki ||= @project.wiki
     @users = User.all
   end
-  
+
   # Edit @project
   def edit
-    if request.post?    
+    if request.post?
       @project.attributes = params[:project]
       @users = User.all
-     
+
       if @project.save
         flash[:notice] = l(:notice_successful_update)
         redirect_to :action => 'settings', :id => @project
@@ -289,10 +247,10 @@ class ProjectsController < ApplicationController
     end
   end
 
- 
+
   def update
-    @project = Project.find_by_identifier(params[:id])    
-    @project.update_attributes(params[:project]) 
+    @project = Project.find_by_identifier(params[:id])
+    @project.update_attributes(params[:project])
     respond_to do |format|
       format.js {
         render :update do |page|
@@ -301,7 +259,7 @@ class ProjectsController < ApplicationController
               page << "jQuery('.project_description').html('#{escape_javascript(render:partial=>'projects/box/description',:locals=>{:project=>@project})}');"
             when "tags"
               @project.tag_list = ''
-              if select_tags =  params[:tags]
+              if select_tags = params[:tags]
                 select_tags.each do |tag|
                   @project.tag_list << tag
                 end
@@ -330,14 +288,14 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.js {
-        render :update do |page|         
+        render :update do |page|
            page << "jQuery('#projects_menu').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
         end
       }
     end
   end
 
-  
+
   def modules
     @project.enabled_module_names = params[:enabled_modules]
     redirect_to :action => 'settings', :id => @project, :tab => 'modules'
@@ -347,29 +305,29 @@ class ProjectsController < ApplicationController
     @project.archive if request.post? && @project.active?
     redirect_to :controller => 'admin', :action => 'projects'
   end
-  
+
   def unarchive
     @project.unarchive if request.post? && !@project.active?
     redirect_to :controller => 'admin', :action => 'projects'
   end
-  
+
   # Delete @project
   def destroy
     @project_to_destroy = @project
     if request.post? and params[:confirm]
       @project_to_destroy.destroy
       redirect_to :controller => 'admin', :action => 'projects'
-    
+
     end
     # hide project in layout
     @project = nil
   end
-	
+
   # Add a new issue category to @project
   def add_issue_category
     @category = @project.issue_categories.build(params[:category])
     if request.post? and @category.save
-  	  respond_to do |format|
+   respond_to do |format|
         format.html do
           flash[:notice] = l(:notice_successful_create)
           redirect_to :action => 'settings', :tab => 'categories', :id => @project
@@ -383,39 +341,39 @@ class ProjectsController < ApplicationController
       end
     end
   end
-	
+
   # Add a new version to @project
   def add_version
-  	@version = @project.versions.build(params[:version])
-  	if request.post? and @version.save
-  	  flash[:notice] = l(:notice_successful_create)
+   @version = @project.versions.build(params[:version])
+   if request.post? and @version.save
+   flash[:notice] = l(:notice_successful_create)
       redirect_to :action => 'settings', :tab => 'versions', :id => @project
-  	end
+   end
   end
 
-  def add_file    
+  def add_file
       @file = FileAttachment.new
-      @file.container_id  = @project.id
+      @file.container_id = @project.id
       @file.container_type = "project"
       render :layout=>false
   end
-  
+
   def list_files
     sort_init 'filename', 'asc'
     sort_update 'filename' => "#{FileAttachment.table_name}.filename",
                 'created_on' => "#{FileAttachment.table_name}.created_on",
                 'size' => "#{FileAttachment.table_name}.filesize",
                 'downloads' => "#{FileAttachment.table_name}.downloads"
-                
+
     @containers = [ Project.find(@project.id, :include => :attachments, :order => sort_clause)]
     @containers += @project.versions.find(:all, :include => :attachments, :order => sort_clause).sort.reverse
     render :layout => !request.xhr?
   end
-  
+
   # Show changelog for @project
   def changelog
     @trackers = @project.trackers.find(:all, :conditions => ["is_in_chlog=?", true], :order => 'position')
-    retrieve_selected_tracker_ids(@trackers)    
+    retrieve_selected_tracker_ids(@trackers)
     @versions = @project.versions.sort
   end
 
@@ -425,10 +383,10 @@ class ProjectsController < ApplicationController
     @versions = @project.versions.sort
     @versions = @versions.select {|v| !v.completed? } unless params[:completed]
   end
-  
+
   def activity
     @days = Setting.activity_days_default.to_i
-    
+
     if params[:from]
       begin; @date_to = params[:from].to_date + 1; rescue; end
     end
@@ -437,17 +395,17 @@ class ProjectsController < ApplicationController
     @date_from = @date_to - @days
     @with_subprojects = params[:with_subprojects].nil? ? Setting.display_subprojects_issues? : (params[:with_subprojects] == '1')
     @author = (params[:user_id].blank? ? nil : User.active.find(params[:user_id]))
-    
-    @activity = Redmine::Activity::Fetcher.new(User.current, :project => @project, 
+
+    @activity = Redmine::Activity::Fetcher.new(User.current, :project => @project,
                                                              :with_subprojects => @with_subprojects,
                                                              :author => @author)
     @activity.scope_select {|t| !params["show_#{t}"].nil?}
     @activity.scope = (@author.nil? ? :default : :all) if @activity.scope.empty?
 
     events = @activity.events(@date_from, @date_to)
-    
+
     respond_to do |format|
-      format.html { 
+      format.html {
         @events_by_day = events.group_by(&:event_date)
         render :layout => false if request.xhr?
       }
@@ -461,7 +419,7 @@ class ProjectsController < ApplicationController
         render_feed(events, :title => "#{@project || Setting.app_title}: #{title}")
       }
     end
-    
+
   rescue ActiveRecord::RecordNotFound
     render_404
   end
@@ -473,13 +431,13 @@ class ProjectsController < ApplicationController
   end
 
   def show_funding
-     @page      =   params[:page].to_i # get the requested page
-     @limit     =   params[:rows].to_i # get how many rows we want to have into the grid
-     @sidx      =   params[:sidx]
-     @sord      =   params[:sord]
-     @order_by  =   "#{@sidx} #{@sord}"
- 
-     @records = @project.funding_lines.count   
+     @page = params[:page].to_i # get the requested page
+     @limit = params[:rows].to_i # get how many rows we want to have into the grid
+     @sidx = params[:sidx]
+     @sord = params[:sord]
+     @order_by = "#{@sidx} #{@sord}"
+
+     @records = @project.funding_lines.count
       if @limit>@records
         @page = 1
         @start = 0
@@ -502,19 +460,19 @@ class ProjectsController < ApplicationController
 
 
 
-  
+
 private
   # Find project of id params[:id]
   # if not found, redirect to project list
   # Used as a before_filter
   def find_project
-       
+
       @project = Project.find_by_identifier(params[:id])
-  
+
   rescue ActiveRecord::RecordNotFound
     render_404
   end
-  
+
   def find_optional_project
     return true unless params[:id]
     if params[:id].is_a?(Integer)
@@ -584,7 +542,7 @@ private
   end
 
   def find_gallery
-    unless @project.nil?     
+    unless @project.nil?
       unless @gallery = @project.gallery
         @gallery = Gallery.create(:owned_id=>@project.id, :owned_type=>"project")
       end
@@ -600,11 +558,16 @@ private
   end
 
   def find_root_projects
-    @root_projects = Project.find(:all,
+        @root_projects = Project.find(:all,
                                     :conditions => "status = #{Project::STATUS_ACTIVE}",
                                     :order => 'name')
+
   end
-  
-  
+
+
 
 end
+
+
+
+

@@ -209,7 +209,7 @@ class IssuesController < ApplicationController
      @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
     if @issue.tracker.nil?
       flash.now[:error] = 'No tracker is associated to this project. Please check the Project settings.'
-      render :nothing => true, :layout => true
+      #render :nothing => true, :layout => true
       return
     end
     if params[:issue].is_a?(Hash)
@@ -236,25 +236,17 @@ class IssuesController < ApplicationController
 
         end
       end
-    else
-       format.js{
-          render :update do |page|#
-            page << display_message_error(@issue, "fieldError")
-         end
-       }
     end
      session[:project] = @issue.project
      respond_to do |format|
           format.js {
-              render:update do |page|
-                if params[:continue]
-                   page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'new')}');"
-                else
-
-                   page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'show')}');"
-                end
-
+            render:update do |page|
+              if params[:continue]
+                 page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'new')}');"
+              else
+                 page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'show')}');"
               end
+            end
           }
      end 
   end

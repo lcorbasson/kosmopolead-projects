@@ -549,7 +549,7 @@ private
 
 
 
-    render :action => "projects", :layout => false if request.xhr?
+
   end
 
 

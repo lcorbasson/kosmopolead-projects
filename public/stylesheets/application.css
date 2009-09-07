@@ -183,6 +183,8 @@ h1 {
   line-height: 1.2em;
   border: 1px solid #ffffff;
 }
+
+#errorExplanation ul{text-align:center}
 .success_message {
   color: #529214;
   background-color: #e6efc2;

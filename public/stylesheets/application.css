@@ -1,5 +1,7 @@
 /***** Layout *****/
 
+#lbl_project {padding-left : 35px;}
+
 ul {padding:0;margin:0;}
 .right{float:right;}
 .left {float:left;}

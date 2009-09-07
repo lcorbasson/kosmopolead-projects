@@ -15,7 +15,7 @@
 <div class="splitcontentright">
     <% if @projects.any? %>
 	<div class="box">
-	<h3 class="icon22 icon22-projects"><%=l(:label_project_latest)%></h3>
+	<h3 class="icon22 icon22-projects"><span id="lbl_project"><%=l(:label_project_latest)%></span></h3>
 		<ul>
 		<% for project in @projects %>
 			<li>

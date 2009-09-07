@@ -854,7 +854,7 @@ module ApplicationHelper
    def display_message_error(my_collection, type)
      line_js ="<ul>";
     if my_collection.class==String
-      line_js +="<li>#{escape_javascript my_collection}</li>";
+      line_js +="<li>#{l("#{my_collection}")}</li>";
     else
       my_collection.errors.each{|attr,msg| line_js += "<li>- #{l("label_#{attr}")} #{l("#{msg}")}</li>" }
 
@@ -865,7 +865,7 @@ module ApplicationHelper
             setTimeout(function() {
                 jQuery('#errorExplanation').slideUp();
             }, 10000);
-            jQuery('#errorExplanation').attr('class', " + type + ")
+            jQuery('#errorExplanation').attr('class', '" + type + "')
      "
     return line_js  # envoi de line_js
    end

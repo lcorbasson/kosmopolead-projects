@@ -90,7 +90,6 @@ class ActivitySectorsController < ApplicationController
   def destroy
     @activity_sector = ActivitySector.find(params[:id])
     @activity_sector.destroy
-
     respond_to do |format|
       format.html { redirect_to(activity_sectors_url) }
     end

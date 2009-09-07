@@ -19,12 +19,12 @@
         <td style="text-align:center;"><%= funding_line.aap %></td>
         <td style="text-align:center;"><%= funding_line.financeur %></td>
         <td style="text-align:center;"><%= funding_line.correspondant_financeur %></td>
-        <td style="text-align:right;"><%= funding_line.montant_demande %></td>
+        <td style="text-align:right;"><%= number_to_currency(funding_line.montant_demande, :unit => "€", :format => "%n %u") %></td>
         <td style="text-align:center;"><%= funding_line.funding_type %></td>
         <td style="text-align:center;"><%= funding_line.date_accord %></td>
-        <td style="text-align:right;"><%= funding_line.montant_accorde %></td>
+        <td style="text-align:right;"><%= number_to_currency(funding_line.montant_accorde, :unit => "€", :format => "%n %u") %></td>
         <td style="text-align:center;"><%= funding_line.date_liberation %></td>
-        <td style="text-align:right;"><%= funding_line.montant_libere %></td>
+        <td style="text-align:right;"><%= number_to_currency(funding_line.montant_libere, :unit => "€", :format => "%n %u") %></td>
         <td style="text-align:center;"><%=  link_to_remote(image_tag('/images/delete.png'),{ :url=>project_funding_line_path(@project,funding_line),:method=>:delete,:confirm=>"Etes-vous certain de vouloir supprimer cette ligne ?"})%>
        <%= link_to_remote(image_tag('/images/edit.png'),{ :url=>edit_project_funding_line_path(@project,funding_line),:method=>:get}) %> </td>
       </tr>

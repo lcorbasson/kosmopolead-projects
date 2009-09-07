@@ -204,6 +204,7 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
     show_funding
     session[:project] = @project
     respond_to do |format|
+      format.html { render :layout=>false}
       format.js {
           render:update do |page|
             page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
@@ -542,14 +543,6 @@ private
                     :conditions=>["project_id = ?",@project.id],
 						:limit  =>  @funding_line_pages.items_per_page,
 						:offset =>  @funding_line_pages.current.offset
-
-
-
-
-
-
-
-
   end
 
 

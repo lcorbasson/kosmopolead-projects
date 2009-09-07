@@ -71,7 +71,49 @@ class ProjectsController < ApplicationController
           completed_percent
           find_gallery
       end
-     respond_to do |format|
+
+   end
+   @member ||= @project.members.new   
+   @users = User.all
+   @file_attachment = FileAttachment.new
+   @file_attachment.container_id  = @project.id
+   @file_attachment.container_type = "project"
+    @roles = Role.find :all, :order => 'builtin, position'
+    completed_percent
+    find_gallery
+       respond_to do |format|
+          format.html {
+#            @project_tree = projects.group_by {|p| p.parent || p}
+#            @project_tree.keys.each {|p| @project_tree[p] -= [p]}
+       }
+          format.atom {
+            render_feed(projects.sort_by(&:created_on).reverse.slice(0, Setting.feeds_limit.to_i),
+                                      :title => "#{Setting.app_title}: #{l(:label_project_latest)}")
+          }
+          
+        end
+  end
+  end
+  
+  # Add a new project
+  def add
+    @tags = Tags.all
+    @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
+    @trackers = Tracker.all
+    @root_projects = Project.find(:all,
+                                  :conditions => "status = #{Project::STATUS_ACTIVE}",
+                                  :order => 'name')
+    @project = Project.new(params[:project])
+    @time_units = TimeUnit.find(:all)
+    @users = User.find(:all)
+    
+    if !params[:project]
+      @project.identifier = Project.next_identifier if Setting.sequential_project_identifiers?
+      @project.trackers = Tracker.all
+      @project.is_public = Setting.default_projects_public?
+      @project.enabled_module_names = Redmine::AccessControl.available_project_modules
+      respond_to do |format|
+
         format.html {}
         format.atom {
           render_feed(projects.sort_by(&:created_on).reverse.slice(0, Setting.feeds_limit.to_i),
@@ -134,6 +176,13 @@ class ProjectsController < ApplicationController
             find_gallery
             find_projects
             session[:project] = @project
+            respond_to do |format|
+             format.js{
+                render :update do |page|
+                  page << display_message_error(l(:notice_successful_create))
+               end
+             }
+            end
             flash[:notice] = l(:notice_successful_create)
             respond_to do |format|
                 format.js  {

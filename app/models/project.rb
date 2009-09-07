@@ -82,7 +82,7 @@ class Project < ActiveRecord::Base
   validates_length_of :homepage, :maximum => 255
   validates_length_of :identifier, :in => 1..20
   validates_format_of :identifier, :with => /^[a-z0-9\-]*$/
-  validates_numericality_of :project_cost, :estimated_time
+  validates_numericality_of :project_cost, :estimated_time, :allow_nil => true
   
   before_destroy :delete_all_members
   before_save :create_gallery

@@ -72,8 +72,9 @@ module ApplicationHelper
 
   def toggle_link(name, id, options={})
     onclick = "Element.toggle('#{id}'); "
-    onclick << (options[:focus] ? "Form.Element.focus('#{options[:focus]}'); " : "this.blur(); return false;")
-    onclick << (options[:second_element] ?    "Element.toggle('#{options[:second_element]}');$('#{options[:second_element]}').blur();return false;" : "")
+    onclick << (options[:focus] ? "Form.Element.focus('#{options[:focus]}'); " : "this.blur();")
+    onclick << (options[:second_element] ?    "Element.toggle('#{options[:second_element]}');$('#{options[:second_element]}').blur();" : "")
+    onclick<<"return false;"
     link_to(name, "#", :onclick => onclick,:class=>"button btn_orange corner-all")
   end
 
@@ -799,7 +800,7 @@ module ApplicationHelper
   end
 
   def profile_box(title,content)
-    link= "#{toggle_link image_tag("/images/edit.png"), 'update-profile-form',{:second_element=>"project_infos"}}"
+    link= "#{toggle_link image_tag("/images/edit.png"), 'update-profile-form',{:second_element=>"infos_project"}}"
     content_tag(:div,
       content_tag(:div,content_tag(:div,title,:class=>"left")+content_tag(:div,link,:class=>"links_edit_box")+content_tag(:div,"",:class=>"clearer"),:class=>'profile_header')+
       content_tag(:div,content,:class=>'profile_content'),:class=>"profile editable_box")

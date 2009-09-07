@@ -47,6 +47,9 @@ class ProjectsController < ApplicationController
   
   # Lists visible projects
   def index
+    @root_projects = Project.find(:all,
+                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
+                                    :order => 'name')   
     if session[:project]
       @project = session[:project]
     else
@@ -160,6 +163,9 @@ class ProjectsController < ApplicationController
 	
   # Show @project
   def show
+    @root_projects = Project.find(:all,
+                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
+                                    :order => 'name')   
     if params[:jump]
       # try to redirect to the requested menu item
       redirect_to_project_menu_item(@project, params[:jump]) && return

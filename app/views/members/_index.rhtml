@@ -1,0 +1,12 @@
+<% if members.size>0 %>
+    <ul style="margin-right:20px;">
+      <% members.each do |member| %>
+          <%= member_thumbnail(member.user,member) %>
+      <% end %>
+    </ul>
+   <% else %>
+    <div class="emptymessage">
+        <p><%= l(:project_add_member) %>
+        <%= toggle_link image_tag("/images/add.png"), 'update-members-form'%></p>
+      </div>
+<% end %>

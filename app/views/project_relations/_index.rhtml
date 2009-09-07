@@ -1,0 +1,31 @@
+ <div class="links_edit_box">
+     <% if authorize_for('issue_relations', 'new') %>
+        <%= toggle_link image_tag('/images/add.png'), 'new-relation-form'%>
+     <% end %>
+   </div>
+
+
+  <p><strong><%=l(:label_related_project)%></strong></p>
+  <div id="project_relations">
+    <% if @project.relations.any? %>
+      <table style="width:100%">
+        <% @project.relations.each do |relation| %>
+          <tr>
+            <td><%= l(relation.project_relation_type.relation_type) %>
+                <%= h(relation.other_project(@project).project) + ' - ' if Setting.cross_project_issue_relations? %> </td>
+            <td><%=h relation.other_project(@project).name %></td>
+
+
+            <td><%= link_to_remote(image_tag('delete.png'), { :url => {:controller => 'project_relations', :action => 'destroy', :project_id => @project, :id => relation},
+                                                              :method => :delete,:confirm=>"Etes-vous sûr ?"
+                                                            }, :title => l(:label_relation_delete))  %></td>
+          </tr>
+        <% end %>
+      </table>
+    <% else %>
+       <div class="emptymessage">
+              <p><%= l(:project_add_relation) %>
+              <%= toggle_link image_tag("/images/add.png"), 'new-relation-form'%></p>
+       </div>
+    <% end %>
+  </div>

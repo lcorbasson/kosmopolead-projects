@@ -220,9 +220,10 @@ class IssuesController < ApplicationController
     
 
     if @issue.save @issue.is_issue?
+      @project = @issue.project
       @file_attachment = FileAttachment.new
-    @file_attachment.container_type="issue"
-    @file_attachment.container_id = @issue.id
+      @file_attachment.container_type="issue"
+      @file_attachment.container_id = @issue.id
       if params[:assigned_to_id]
         new_assignments = params[:assigned_to_id]
         Assignment.delete(@issue, new_assignments)
@@ -362,7 +363,7 @@ class IssuesController < ApplicationController
       else
         flash[:error] = l(:notice_failed_to_save_issues, unsaved_issue_ids.size, @issues.size, '#' + unsaved_issue_ids.join(', #'))
       end
-      redirect_to(params[:back_to] || {:controller => 'issues', :action => 'index', :project_id => @project})
+      redirect_to({:controller => 'issues', :action => 'index', :project_id => @project})
       return
     end
     # Find potential statuses the user could be allowed to switch issues to
@@ -421,7 +422,7 @@ class IssuesController < ApplicationController
         return
       end
     end
-    @issues.each(&:destroy)
+    
     redirect_to :action => 'index', :project_id => @project
   end
   

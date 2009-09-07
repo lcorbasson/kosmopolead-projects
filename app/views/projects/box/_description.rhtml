@@ -9,7 +9,7 @@
   <% end %>
 </div>
 <% remote_form_for(:project, project,
-                 :url => {:controller => 'projects', :action => 'update', :project_id => @project,:part=>'description'},
+                 :url => project_path(project,:part=>'description') ,
                  :method => :put,
                  :html => {:id => 'update-description-form',:style=>'display:none;'}) do |f| %>
   <%= f.text_area :description, :rows => 5, :class => 'wiki-edit' %>

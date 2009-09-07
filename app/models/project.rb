@@ -23,6 +23,7 @@ class Project < ActiveRecord::Base
   STATUS_ACTIVE     = 1
   STATUS_ARCHIVED   = 9
 
+  has_many :project_relations,:dependent=>:destroy
   has_many :project_partners
   has_many :partners, :through => :project_partners, :dependent => :destroy
   belongs_to :time_unit, :foreign_key=>"time_units_id"
@@ -81,6 +82,7 @@ class Project < ActiveRecord::Base
   validates_length_of :homepage, :maximum => 255
   validates_length_of :identifier, :in => 1..20
   validates_format_of :identifier, :with => /^[a-z0-9\-]*$/
+  validates_numericality_of :project_cost, :estimated_time
   
   before_destroy :delete_all_members
   before_save :create_gallery

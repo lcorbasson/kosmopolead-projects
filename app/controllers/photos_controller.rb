@@ -22,6 +22,21 @@ class PhotosController < ApplicationController
     end
   end
 
+  def destroy
+    # Make sure association callbacks are called
+    @photo = Photo.find(params[:id])
+    @photo.destroy
+    respond_to do |format|
+        format.js {
+          render(:update) {|page|
+                page.replace_html "photo_index", :partial => 'photos/index',:locals=>{:photos=>@gallery.photos}
+               }
+         }
+     end
+  rescue ::ActionController::RedirectBackError
+    redirect_to :controller => 'projects', :action => 'show', :id => @project
+  end
+
 
 private
 

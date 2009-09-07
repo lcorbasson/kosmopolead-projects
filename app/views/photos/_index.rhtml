@@ -1,13 +1,10 @@
 <% unless photos.nil?  %>
   <% photos.each do |photo| %>
-    <div class="left">
-      <div class="photo_item editable_box">
-        <div class="links_edit_box">
-          <%= link_to_remote("#{image_tag('/images/delete.png')}",{:url=>{:controller=>:photos,:action=>:destroy,:id=>photo.id,:project_id=>photo.gallery.project,:gallery_id=>photo.gallery.id},:method=>:get,:confirm=>'Etes-vous sûr ?'},:class=>"links_edit_box")  %>
-        </div>
-       <%= image_tag photo.photo.url(:thumb) %>
-      </div>
+    <div class="editable_box left">      
+        <%= link_to_remote "#{image_tag('/images/delete.png')}",{:url=>project_gallery_photo_path(@project,photo.gallery,photo) ,:method=>:delete,:confirm=>'Etes-vous sûr ?'},:class=>"links_edit_box",:style=>"position:absolute" %>
+        <div><%= image_tag photo.photo.url(:thumb) %></div>      
     </div>
   <% end %>
 <div class="clearer"></div>
 <% end %>
+

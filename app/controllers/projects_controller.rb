@@ -47,11 +47,15 @@ class ProjectsController < ApplicationController
   
   # Lists visible projects
   def index
+    @root_projects = Project.find(:all,
+                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
+                                    :order => 'name')   
     if session[:project]
       @project = session[:project]
     else
       @project = @projects.first
     end
+    @relation= ProjectRelation.new
      unless @project.nil?
           @gantt = Redmine::Helpers::Gantt.new(params)
           retrieve_query
@@ -147,6 +151,7 @@ class ProjectsController < ApplicationController
         end
     else
         #Save project
+        @relation = ProjectRelation.new
         @project = Project.new(params[:project])
         @project.enabled_module_names = params[:enabled_modules]
         if @project.save
@@ -187,42 +192,33 @@ class ProjectsController < ApplicationController
             end
         else
            respond_to do |format|
-#             format.js { render(:update) {|page| page.replace_html "notice", "#{line}"} }
              format.js{
-                render :update do |page|
-#                  line = ''
-#                  @project.errors.full_messages.each do |err| # Boucle pour récupérer toutes les erreurs
-#                    line +="<p>#{err}</p>";
-#                  end
-#                    page.replace_html "notice", "#{line}"
-#                    page <<  "jQuery('#notice').show();"
+                render :update do |page|#                 
                   page << display_message_error(@project)
                end
-             }
-
-#              format.js { render(:update) {|page| page.replace_html "notice", "#{display_error_msg(@project.errors.full_messages.to_s)}"} }
-#                format.js {
-#                  render :update do |page|
-#                      page << display_error_msg(@project)
-#                   end
-#                }
+             }  
             end
+
         end
       end
   end
 	
   # Show @project
   def show
+    @root_projects = Project.find(:all,
+                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
+                                    :order => 'name')   
     if params[:jump]
       # try to redirect to the requested menu item
       redirect_to_project_menu_item(@project, params[:jump]) && return
     end
    
-    if !params[:project_id]
+    if !params[:id]
       @project = @projects.first
     else
       find_project
     end
+    @relation = ProjectRelation.new
     @members = @project.members
     @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
     @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
@@ -283,14 +279,13 @@ class ProjectsController < ApplicationController
   
   # Edit @project
   def edit
-    if request.post?
-      @tags = Tags.all
+    if request.post?    
       @project.attributes = params[:project]
       @users = User.all
      
       if @project.save
         flash[:notice] = l(:notice_successful_update)
-        redirect_to :action => 'settings', :project_id => @project
+        redirect_to :action => 'settings', :id => @project
       else
         settings
         render :action => 'settings'
@@ -298,10 +293,13 @@ class ProjectsController < ApplicationController
     end
   end
 
-
+ 
   def update
-    @project = Project.find_by_identifier(params[:project_id])    
+    @project = Project.find_by_identifier(params[:id])    
     @project.update_attributes(params[:project])
+    @root_projects = Project.find(:all,
+                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
+                                    :order => 'name')
     respond_to do |format|
       format.js {
         render :update do |page|
@@ -316,9 +314,11 @@ class ProjectsController < ApplicationController
                 end
               end
               page << "jQuery('.project_tags').html('#{escape_javascript(render:partial=>'projects/box/tags')}');"
-          when "summary"
-            @users = User.all
-            page << "jQuery('#profile_project').html('#{escape_javascript(profile_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
+            when "summary"
+              @users = User.all
+              page << "jQuery('#profile_project').html('#{escape_javascript(profile_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
+            when "synthesis"
+              page.replace_html "tab-content-synthesis", :partial => 'projects/show/synthesis',:locals=>{:project=>@project}
           end
           @project.save
         end
@@ -347,7 +347,7 @@ class ProjectsController < ApplicationController
   
   def modules
     @project.enabled_module_names = params[:enabled_modules]
-    redirect_to :action => 'settings', :project_id => @project, :tab => 'modules'
+    redirect_to :action => 'settings', :id => @project, :tab => 'modules'
   end
 
   def archive
@@ -379,7 +379,7 @@ class ProjectsController < ApplicationController
   	  respond_to do |format|
         format.html do
           flash[:notice] = l(:notice_successful_create)
-          redirect_to :action => 'settings', :tab => 'categories', :project_id => @project
+          redirect_to :action => 'settings', :tab => 'categories', :id => @project
         end
         format.js do
           # IE doesn't support the replace_html rjs method for select box options
@@ -396,7 +396,7 @@ class ProjectsController < ApplicationController
   	@version = @project.versions.build(params[:version])
   	if request.post? and @version.save
   	  flash[:notice] = l(:notice_successful_create)
-      redirect_to :action => 'settings', :tab => 'versions', :project_id => @project
+      redirect_to :action => 'settings', :tab => 'versions', :id => @project
   	end
   end
 
@@ -516,7 +516,7 @@ private
   # Used as a before_filter
   def find_project
        
-      @project = Project.find_by_identifier(params[:project_id])
+      @project = Project.find_by_identifier(params[:id])
   
   rescue ActiveRecord::RecordNotFound
     render_404
@@ -550,7 +550,7 @@ private
       cond << " OR project_id = #{@project.id}" if @project
       @query = Query.find(params[:query_id], :conditions => cond)
       @query.project = @project
-      session[:query] = {:id => @query.id, :project_id => @query.project_id}
+      session[:query] = {:id => @query.id, :id => @query.project_id}
 
     else
       if params[:set_filter] || session[:query].nil? || session[:query][:project_id] != (@project ? @project.id : nil)

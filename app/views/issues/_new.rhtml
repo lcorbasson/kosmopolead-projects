@@ -1,3 +1,14 @@
+<% if @issue.is_issue? %>
+  <% title = "#{l(:label_issue_new)}" %>
+<% else %>
+  <%  if @issue.is_stage? %>
+          <% title = "#{l(:label_stage_new)}" %>
+ <% else %>
+    <% title = "#{l(:label_milestone_new)}" %>
+ <% end %>
+<% end %>
+
+
 <%= box(
-    "#{l(:label_issue_new)}",
+    "#{title}",
     "#{render:partial=>'issues/box/new'}") %>

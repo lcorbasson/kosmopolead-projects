@@ -1,6 +1,28 @@
-<%#
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
-%>
+<div class="editable_box">
+      <div class="links_edit_box">
+        <%= toggle_link image_tag("/images/edit.png"), 'update-synthesis-form',{:second_element=>"synthesis"}%>
+      </div>
+        <div id="synthesis">
+          <% if project.synthesis %>
+            <%= textilizable project.synthesis %>
+          <% else %>
+            <div class="emptymessage">
+                  <p><%= l(:project_add_synthesis) %>
+                  <%= toggle_link image_tag("/images/edit.png"), 'update-synthesis-form',{:second_element=>"synthesis"}%></p>
+           </div>
+          <% end %>
+        </div>
 
-<%= "_synthesis" %>
+</div>
+<% remote_form_for(:project, project,
+                 :url => project_path(project,:part=>'synthesis') ,
+                 :method => :put,
+                 :html => {:id => 'update-synthesis-form',:style=>'display:none;'}) do |f| %>
+  <%= f.text_area :synthesis, :rows => 5, :class => 'wiki-edit' %>
+  <div class="buttons">
+    <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+    <%= toggle_link l(:button_cancel), 'update-synthesis-form',{:second_element=>"synthesis"}%>
+  </div>
+<% end %>
+
+ <%= wikitoolbar_for 'project_synthesis' %>

@@ -1,4 +1,4 @@
-<% remote_form_for :project, @project, {:url => { :action => "add" },:method=>:get},:html=>{:class=>"tabular"} do |f| %>
+<% remote_form_for :project, @project, {:url => add_projects_path(),:method=>:get},:html=>{:class=>"tabular"} do |f| %>
 <%= render :partial => 'form', :locals => { :f => f } %>
 
 

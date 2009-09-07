@@ -1,11 +1,11 @@
 <%= error_messages_for 'file_attachment' %>
 
-<%= form_upload({:url=>"projects/#{@project.identifier}/file_attachments/create",:col_collection=>@file_attachment,:name_initial_form=>"upload_form_file_#{@file_attachment.id}",:name_div_id=>"upload_file_#{@file_attachment.id}"}) %>
+<%= form_upload({:url=> project_file_attachments_path(@project),:method=>:post  ,:col_collection=>@file_attachment,:name_initial_form=>"upload_form_file",:name_div_id=>"upload_file"}) %>
 <div class="editable_box">
     <div class="links_edit_box">
         <%= link_to_remote "#{image_tag('/images/add.png')}",
                          { :url => { :controller => 'file_attachments', :action => 'new',:project_id=>@project},
-                           :method => 'post',
+                           :method => 'get',
                            :update => 'add_file'
                          } %>
      </div>
@@ -17,7 +17,7 @@
           <p><%= l(:project_add_file) %>
           <%= link_to_remote "#{image_tag('/images/add.png')}",
                          { :url => { :controller => 'file_attachments', :action => 'new',:project_id=>@project},
-                           :method => 'post',
+                           :method => 'get',
                            :update => 'add_file'
                          } %>
         </div>

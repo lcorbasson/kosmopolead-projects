@@ -39,12 +39,14 @@
         <%= link_to_remote l(:button_apply),
                            { :url => { :set_filter => (@query.new_record? ? 1 : nil) },
                              :update => "content",
+                             :method=>:get,
                              :with => "Form.serialize('query_form')"
                            }, :class => 'button btn_blue corner-all' %>
 
         <%= link_to_remote l(:button_clear),
                            { :url => { :set_filter => (@query.new_record? ? 1 : nil) },
                              :update => "content",
+                             :method=>:get,
                            }, :class => 'button btn_orange corner-all' if @query.new_record? %>
       </p>
       <div class="clearer"></div>

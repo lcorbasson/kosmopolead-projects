@@ -5,4 +5,4 @@
     <%= javascript_include_tag 'jquery.jqGrid.min', 'jquery.jqgrid' %>
 <% end %>
 
-<%= javascript_tag("jQuery(document).ready(function(){initialize_funding_grid('/projects/#{@project.identifier}/show_funding/','/projects/#{@project.identifier}/funding_lines/new');})") %>
+<%= javascript_tag("jQuery(document).ready(function(){initialize_funding_grid('/projects/show_funding/#{@project.identifier}/','/projects/#{@project.identifier}/funding_lines/new');})") %>

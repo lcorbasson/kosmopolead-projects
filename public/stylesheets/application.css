@@ -116,7 +116,7 @@ body {
   font-weight:bold;
 }
 #tabs_wrapper ul li a,#places_wrapper ul li a {font-weight:bold;}
-
+#places_wrapper {margin-top:20px;}
 #tabs_wrapper ul li a.active:link {
   background-position: bottom center;
   color: #009eee;
@@ -185,6 +185,8 @@ h1 {
   line-height: 1.2em;
   border: 1px solid #ffffff;
 }
+
+#errorExplanation ul{text-align:center}
 .success_message {
   color: #529214;
   background-color: #e6efc2;
@@ -1112,7 +1114,7 @@ height:17px;
 
 .links_edit_box {display:none;float:right}
 
-#update-tags-form ul.holder{width:95%;}
+#update-tags-form ul.holder,.facebook-auto{width:380pborder:none;}
 
 
 
@@ -1139,3 +1141,5 @@ text-align:center;
 #update-profile-form p {padding:5px;}
 #update-profile-form select,#update-profile-form input{width:100px;}
 #update-profile-form label{width:150px;}
+#relation_project_to_id {width:100px;}
+#project_author .name {padding:20px;}

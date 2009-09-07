@@ -1,3 +1,4 @@
-<h2><%=h "#{@issue.tracker.name} ##{@issue.id}" %></h2>
+<%= box(
+    "#{@issue.subject}",
+    "#{render:partial=>'issues/edit'}") %>
 
-<%= render :partial => 'edit' %>

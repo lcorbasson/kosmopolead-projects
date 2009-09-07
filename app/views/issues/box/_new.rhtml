@@ -1,5 +1,5 @@
 
-<% form_for :issue, @issue,:html=>{:multipart => true, :id => 'issue-form',:class=>"tabular"} do |f| %>
+<% form_for [@project,@issue],:html=>{:multipart => true, :id => 'issue-form',:class=>"tabular"} do |f| %>
     <%= error_messages_for 'issue' %>
  
     <%= render :partial => 'issues/form', :locals => {:f => f} %>

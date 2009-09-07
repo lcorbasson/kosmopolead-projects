@@ -43,7 +43,7 @@ class Issue < ActiveRecord::Base
   has_many :relations_to, :class_name => 'IssueRelation', :foreign_key => 'issue_to_id', :dependent => :delete_all
   has_many :file_attachments,:as=>:container,:conditions=>["container_type = ?", "issue"],:dependent => :destroy
   acts_as_tree :order => "start_date",:foreign_key=>"parent_id"
-  acts_as_attachable :after_remove => :attachment_removed
+
   acts_as_customizable
   acts_as_watchable
   acts_as_searchable :columns => ['subject', "#{table_name}.description", "#{Journal.table_name}.notes"],
@@ -331,13 +331,5 @@ class Issue < ActiveRecord::Base
 
   
   private
-  
-  # Callback on attachment deletion
-  def attachment_removed(obj)
-    journal = init_journal(User.current)
-    journal.details << JournalDetail.new(:property => 'attachment',
-                                         :prop_key => obj.id,
-                                         :old_value => obj.filename)
-    journal.save
-  end
+ 
 end

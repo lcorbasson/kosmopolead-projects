@@ -1,0 +1,23 @@
+
+<% form_tag({}, :id => 'move_form') do %>
+<%= @issues.collect {|i| hidden_field_tag('ids[]', i.id)}.join %>
+
+<div class="tabular">
+<p><label for="new_project_id"><%=l(:field_project)%> :</label>
+<%= select_tag "new_project_id",
+               options_from_collection_for_select(@allowed_projects, 'id', 'name', @target_project.id),
+               :onchange => remote_function(:url => { :action => 'move' },
+                                            :method => :get,
+                                            :update => 'content',
+                                            :with => "Form.serialize('move_form')") %></p>
+
+<p><label for="new_tracker_id"><%=l(:field_tracker)%> :</label>
+<%= select_tag "new_tracker_id", "<option value=\"\">#{l(:label_no_change_option)}</option>" + options_from_collection_for_select(@trackers, "id", "name") %></p>
+</div>
+
+<div class="buttons right">
+  <%= submit_tag l(:button_move),:class=>"button btn_blue corner-all" %>
+  <%= link_to "#{l(:button_cancel)}",project_issue_path(@project,@issue),:class=>"button btn_orange corner-all" %>
+</div>
+<div class="clearer"></div>
+<% end %>

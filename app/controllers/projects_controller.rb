@@ -255,6 +255,9 @@ class ProjectsController < ApplicationController
   def update
     @project = Project.find_by_identifier(params[:id])    
     @project.update_attributes(params[:project])
+    @root_projects = Project.find(:all,
+                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
+                                    :order => 'name')
     respond_to do |format|
       format.js {
         render :update do |page|

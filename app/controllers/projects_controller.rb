@@ -134,17 +134,11 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
             find_gallery
             find_projects
             session[:project] = @project
-            respond_to do |format|
-             format.js{
-                render :update do |page|
-                  page << display_message_error(l(:notice_successful_create))
-               end
-             }
-            end
             flash[:notice] = l(:notice_successful_create)
             respond_to do |format|
                 format.js {
                     render:update do |page|
+                      page << display_message_error("notice_successful_create", "fieldNotice")
                       page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
                       page << "jQuery('#projects_menu').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
                     end
@@ -154,11 +148,10 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
            respond_to do |format|
              format.js{
                 render :update do |page|#
-                  page << display_message_error(@project)
+                  page << display_message_error(@project, "fieldError")
                end
              }
             end
-
         end
       end
   end

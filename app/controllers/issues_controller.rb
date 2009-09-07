@@ -235,7 +235,13 @@ class IssuesController < ApplicationController
 
         end
       end
-     end
+    else
+       format.js{
+          render :update do |page|#
+            page << display_message_error(@issue, "fieldError")
+         end
+       }
+    end
      session[:project] = @issue.project
      respond_to do |format|
           format.js {

@@ -74,7 +74,7 @@
 <%= javascript_tag("jQuery('#tabs').tabs({selected:1});jQuery('.more_infos').tabs({selected:1});") %>
 
 <% content_for :header_tags do %>
-<%= auto_discovery_link_tag(:atom, {:action => 'activity', :id => project, :format => 'atom', :key => User.current.rss_key}) %>
+  <%= auto_discovery_link_tag(:atom, {:action => 'activity', :id => project, :format => 'atom', :key => User.current.rss_key}) %>
 <% end %>
 <%= javascript_tag("activeProjectMenu('#{project.id}')") %>
 <% html_title(l(:label_overview)) -%>

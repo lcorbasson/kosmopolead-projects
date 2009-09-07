@@ -1,5 +1,7 @@
 /***** Layout *****/
 
+#lbl_project {padding-left : 35px;}
+
 ul {padding:0;margin:0;}
 .right{float:right;}
 .left {float:left;}
@@ -1125,7 +1127,7 @@ height:17px;
 
 .links_edit_box {display:none;float:right}
 
-#update-tags-form ul.holder{width:95%;}
+#update-tags-form ul.holder,.facebook-auto{width:380pborder:none;}
 
 
 

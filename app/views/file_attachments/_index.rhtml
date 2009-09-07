@@ -6,3 +6,5 @@
   </ul>
 <% end %>
 <div class="clearer"></div>
+<%=  javascript_include_tag("jquery/jquery.tooltip.js") %>
+<%=  javascript_tag("jQuery().ready(function() {jQuery('.file_thumbnail').tooltip({bodyHandler: function() {return jQuery(this).attr('name');},showURL: false })});")%>

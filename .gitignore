@@ -3,4 +3,6 @@
 /log/development.log
 /nbproject/
 /public/plugin_assets/
+/public/system
 tmp/
+log/*

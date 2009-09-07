@@ -781,7 +781,7 @@ module ApplicationHelper
     created_on = content_tag(:p,format_time(file.created_on),:class=>"created_on")
     thumbnail = content_tag(:li,
      link+
-      content_tag(:div,title+author+created_on,:class=>"thumbnail_infos"),:class=>"file_thumbnail thumbnail editable_box")
+      content_tag(:div,title+author+created_on,:class=>"thumbnail_infos"),:class=>"file_thumbnail thumbnail editable_box",:name=>"#{file.file_file_name}")
 
   end
 

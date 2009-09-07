@@ -136,6 +136,13 @@ class ProjectsController < ApplicationController
             find_gallery
             find_projects
             session[:project] = @project
+            respond_to do |format|
+             format.js{
+                render :update do |page|
+                  page << display_message_error(l(:notice_successful_create))
+               end
+             }
+            end
             flash[:notice] = l(:notice_successful_create)
             respond_to do |format|
                 format.js  {

@@ -45,19 +45,26 @@ class ActivitySectorsController < ApplicationController
   def create
     @activity_sector = ActivitySector.new(params[:activity_sector])
     
-    respond_to do |format|
 
-      if @activity_sector.save
-        @activity_sectors = ActivitySector.find(:all)
-        flash[:notice] = 'ActivitySector was successfully created.'
-        format.js  {
+    if @activity_sector.save
+      @activity_sectors = ActivitySector.find(:all)
+      respond_to do |format|
+       format.js{
           render :update do |page|
+            page << display_message_error("ActivitySector was successfully created.", "fieldNotice")
             page.replace_html "activity_sectors", :partial => 'activity_sectors/index'
-          end
-        }
-      else
-        format.html { render :action => "new" }
+         end
+       }
       end
+    else
+      respond_to do |format|
+       format.js{
+          render :update do |page|
+            page << display_message_error("plop" , "fieldError")
+         end
+       }
+      end
+      format.html { render :action => "new" }
     end
   end
 
@@ -86,7 +93,6 @@ class ActivitySectorsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to(activity_sectors_url) }
-      format.xml  { head :ok }
     end
   end
 

@@ -306,7 +306,7 @@ class Project < ActiveRecord::Base
 
    def self.tags_json
     rows = []
-   Tag.all.each  do  |t|
+    Tag.all.each  do  |t|
       rows << {:caption => t.name, :value => t.name}
     end
     return rows.to_json

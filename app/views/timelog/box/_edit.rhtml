@@ -15,6 +15,7 @@
 </div>
 <div class="buttons right">
   <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+  <%= link_to "#{l(:button_cancel)}",project_issue_path(@project,@issue),:class=>"button btn_orange corner-all" %>
 </div>
 <div class="clearer"></div>
 <% end %>

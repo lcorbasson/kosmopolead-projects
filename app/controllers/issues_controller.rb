@@ -186,6 +186,7 @@ class IssuesController < ApplicationController
     end	
     @priorities = Enumeration::get_values('IPRI')   
     respond_to do |format|
+      format.html {}
       format.js {
         render:update do |page|
           page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'new')}');"
@@ -378,6 +379,7 @@ class IssuesController < ApplicationController
   end
 
   def move
+    @issue = Issue.find(params[:id])
     @allowed_projects = []
     # find projects to which the user is allowed to move the issue
     if User.current.admin?
@@ -408,7 +410,7 @@ class IssuesController < ApplicationController
   end
   
   def destroy
-    @hours = TimeEntry.sum(:hours, :conditions => ['issue_id IN (?)', @issues]).to_f
+   @hours = TimeEntry.sum(:hours, :conditions => ['issue_id IN (?)', @issues]).to_f
     if @hours > 0
       case params[:todo]
       when 'destroy'
@@ -428,7 +430,7 @@ class IssuesController < ApplicationController
         return
       end
     end
-    
+    @issues.each(&:destroy)
     redirect_to :action => 'index', :project_id => @project
   end
   

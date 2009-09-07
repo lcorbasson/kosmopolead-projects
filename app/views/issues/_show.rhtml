@@ -13,8 +13,8 @@
     "#{link_to_if_authorized l(:button_log_time), {:controller => 'timelog', :action => 'edit', :issue_id => @issue}, :class => 'icon icon-time'}",
     "#{watcher_tag(@issue, User.current)}",
     "#{link_to_if_authorized l(:button_copy), {:controller => 'issues', :action => 'new', :project_id => @project, :copy_from => @issue }, :class => 'icon icon-copy'}",
-    "#{link_to_if_authorized l(:button_move), {:controller => 'issues', :action => 'move', :id => @issue }, :class => 'icon icon-move'}",
-    "#{link_to_if_authorized l(:button_delete), {:controller => 'issues', :action => 'destroy', :id => @issue}, :method => :put, :confirm => l(:text_are_you_sure), :class => 'icon icon-del'}"
+    "#{link_to l(:button_move), move_project_issue_path(@project,@issue) ,:method=>:get, :class => 'icon icon-move'}",
+    "#{link_to l(:button_delete), project_issue_path(@project,@issue), :method => :delete, :confirm => l(:text_are_you_sure), :class => 'icon icon-del'}"
     ]
 ) %>
 

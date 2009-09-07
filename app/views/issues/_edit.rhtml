@@ -72,14 +72,7 @@
     <%= f.hidden_field :lock_version %>
     <div class="buttons right">
       <%= submit_tag l(:button_submit),:class=>"button btn_blue corner-all" %>
-      <%= link_to_remote l(:label_preview),                        
-                       { :url => { :controller => 'issues', :action => 'preview', :project_id => @project, :id => @issue },
-                         :method => 'post',
-                         :update => 'preview',
-                         :with => 'Form.serialize("issue-form")',
-                         :complete => "Element.scrollTo('preview')"
-                       },:class=>"button btn_blue corner-all", :accesskey => accesskey(:preview) %>
-    </div>
+      <%= toggle_link "#{l(:button_cancel)}","update" %>    </div>
     <div class="clearer"></div>
 <% end %>
 <div id="preview" class="wiki"></div>

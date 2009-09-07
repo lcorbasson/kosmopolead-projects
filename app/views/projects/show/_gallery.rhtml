@@ -11,20 +11,11 @@
                            :update => 'add_photo'
                          } %>
      </div>
-     <% if @gallery.photos.size>0 %>
+   
         <div id="photo_index">
             <%= render:partial=>"photos/index",:locals=>{:photos=>@project.gallery.photos} %>
         </div>
-     <% else %>
-        <div class="emptymessage">
-          <p><%= l(:project_add_photo) %>
-           <%= link_to_remote "#{image_tag('/images/add.png')}",
-                         { :url =>  {:controller => 'photos', :action => 'new',:gallery_id=>@gallery.id,:project_id=>@project},
-                           :method => 'get',
-                           :update => 'add_photo'
-                         } %>
-        </div>
-     <% end %>
+    
 </div>
 <div id="add_photo">
 

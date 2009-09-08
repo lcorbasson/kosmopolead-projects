@@ -45,6 +45,10 @@
   <label><%= l(:label_is_public) %></label>
   <%= f.check_box :is_public %>
 </p>
+<p>
+  <label><%= l(:label_status) %></label>
+  <%= f.select :status, Project::STATUS %>
+</p>
 <% @project.custom_field_values.each do |value| %>
 	<p>
       <%= custom_field_tag_with_label :project, value %>

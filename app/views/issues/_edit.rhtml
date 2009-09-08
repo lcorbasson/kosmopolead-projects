@@ -1,17 +1,16 @@
-<% labelled_tabular_form_for :issue, @issue,
-                             :url => {:action => 'edit', :id => @issue},
-                             :method=>:get,
+<% remote_form_for @issue,
+                             :url => project_issue_path(@project,@issue),
+                             :method=>:put,
                              :html => {:id => 'issue-form',
                                        :class => "tabular",
                                        :multipart => true} do |f| %>
     <%= error_messages_for 'issue' %>
     <%= error_messages_for 'time_entry' %>
-    <div>
-   
+    <div>   
      <% if !@issue.is_issue? %>
         <p>
           <label><%= l(:label_phase_id) %></label>
-          <%= f.select :parent_id, @project.stages.collect {|i| [i.subject, i.id] }, :include_blank => true unless @issues.nil?%>
+          <%= f.select :parent_id, @project.stages.collect {|i| [i.subject, i.id] }, :include_blank => true unless @project.stages.nil?%>
         </p>
     <% end %>
     <% if @issue.is_issue? %>
@@ -24,7 +23,7 @@
           </span>
         </p>
         <p>
-      
+         <label><%= l(:label_tracker) %></label>
           <%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %></p>
           <%= observe_field :issue_tracker_id, :url => { :action => :new },
             :update => :content,
@@ -33,35 +32,46 @@
 
     <div class="splitcontentleft">
       <% if @issue.new_record? || @allowed_statuses.any? %>
+         <label><%= l(:label_status) %></label>
       <p><%= f.select :status_id, (@allowed_statuses.collect {|p| [p.name, p.id]}), :required => true %></p>
       <% else %>
       <p><label><%= l(:field_status) %></label><%= f.select :status_id, (@allowed_statuses.collect {|p| [p.name, p.id]}), :required => true %> <%= @issue.status.name %></p>
       <% end %>
 
-      <p><%= f.select :priority_id, (@priorities.collect {|p| [p.name, p.id]}), :required => true %></p>
-      <p><%= f.select :assigned_to_id, (@issue.assignable_users.collect {|m| [m.name, m.id]}), :include_blank => true %></p>
+      <p> <label><%= l(:label_priority) %></label><%= f.select :priority_id, (@priorities.collect {|p| [p.name, p.id]}), :required => true %></p>
+      <p> <label><%= l(:label_assigned_to) %></label><%= f.select :assigned_to_id, (@issue.assignable_users.collect {|m| [m.name, m.id]}), :include_blank => true %></p>
       <% unless @project.issue_categories.empty? %>
-      <p><%= f.select :category_id, (@project.issue_categories.collect {|c| [c.name, c.id]}), :include_blank => true %>
+      <p> <label><%= l(:label_category) %></label><%= f.select :category_id, (@project.issue_categories.collect {|c| [c.name, c.id]}), :include_blank => true %>
       <%= prompt_to_remote(l(:label_issue_category_new),
                            l(:label_issue_category_new), 'category[name]',
                            {:controller => 'projects', :action => 'add_issue_category', :id => @project},
                            :class => 'small', :tabindex => 199) if authorize_for('projects', 'add_issue_category') %></p>
       <% end %>
+      <% unless @project.versions.empty? %>
+       <label><%= l(:label_version) %></label>
       <%= content_tag('p', f.select(:fixed_version_id,
                                     (@project.versions.sort.collect {|v| [v.name, v.id]}),
-                                    { :include_blank => true })) unless @project.versions.empty? %>
+                                    { :include_blank => true })) %>
+      <% end %>
     </div>
 
     <div class="splitcontentright">
-    <p><%= f.text_field :start_date, :size => 10 %><%= calendar_for('issue_start_date') %></p>
-    <p><%= f.text_field :due_date, :size => 10 %><%= calendar_for('issue_due_date') %></p>
-    <p><%= f.text_field :estimated_hours, :size => 3 %> <%= l(:field_hours) %></p>
-    <p><%= f.select :done_ratio, ((0..10).to_a.collect {|r| ["#{r*10} %", r*10] }) %></p>
+    <p> <label><%= l(:label_start_date) %></label><%= f.text_field :start_date, :size => 10 %><%= calendar_for('issue_start_date') %></p>
+    <p> <label><%= l(:label_due_date) %></label><%= f.text_field :due_date, :size => 10 %><%= calendar_for('issue_due_date') %></p>
+    <p> <label><%= l(:label_estimated_hours) %></label><%= f.text_field :estimated_hours, :size => 3 %> <%= l(:field_hours) %></p>
+    <p> <label><%= l(:label_done_ratio) %></label><%= f.select :done_ratio, ((0..10).to_a.collect {|r| ["#{r*10} %", r*10] }) %></p>
     </div>
       <div class="clearer"></div>
+      <label><%= l(:label_description) %></label>
+      <%= f.text_area :description,
+        :cols => 60,
+        :rows => (@issue.description.blank? ? 10 : [[10, @issue.description.length / 50].max, 100].min),
+        :accesskey => accesskey(:edit),
+        :class => 'wiki-edit' %>
    <label><%= l(:label_notes) %> </label>
     <%= text_area_tag 'notes', @notes, :cols => 60, :rows => 10, :class => 'wiki-edit' %>
     <%= wikitoolbar_for 'notes' %>
+    <%= wikitoolbar_for 'issue_description' %>
     <%= call_hook(:view_issues_edit_notes_bottom, { :issue => @issue, :notes => @notes, :form => f }) %>
     <% if @issue.type == "ISSUE" %>
       <p><%=l(:label_attachment_plural)%><br /><%= render :partial => 'attachments/form' %></p>

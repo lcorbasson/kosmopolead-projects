@@ -25,10 +25,10 @@ class IssuesController < ApplicationController
   
   before_filter :find_issue, :only => [:show, :edit, :reply]
   before_filter :find_issues, :only => [:bulk_edit, :move, :destroy]
-  before_filter :find_project, :only => [:calendar,:gantt,:index,:create,:new, :update_form, :preview]
+  before_filter :find_project, :only => [:update,:calendar,:gantt,:index,:create,:new, :update_form, :preview]
 
-  before_filter :find_projects, :only => [:gantt, :index, :calendar,:new,:show,:create]
-  before_filter :authorize, :except => [:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
+  before_filter :find_projects, :only => [:update,:gantt, :index, :calendar,:new,:show,:create]
+  before_filter :authorize, :except => [:update,:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
 
   before_filter :find_optional_project, :only => [ :changes, :gantt, :calendar]
   accept_key_auth :index, :show, :changes
@@ -266,7 +266,32 @@ class IssuesController < ApplicationController
   # Attributes that can be updated on workflow transition (without :edit permission)
   # TODO: make it configurable (at least per role)
   UPDATABLE_ATTRS_ON_TRANSITION = %w(status_id assigned_to_id fixed_version_id done_ratio) unless const_defined?(:UPDATABLE_ATTRS_ON_TRANSITION)
-  
+
+  def update
+    @issue = Issue.find(params[:id])
+    if @issue.update_attributes(params[:issue])
+      @journals = @issue.journals.find(:all, :include => [:user, :details], :order => "#{Journal.table_name}.created_on ASC")
+    @journals.each_with_index {|j,i| j.indice = i+1}
+    @journals.reverse! if User.current.wants_comments_in_reverse_order?
+    #@allowed_statuses = @issue.new_statuses_allowed_to(User.current)
+    @allowed_statuses = IssueStatus.all
+    @edit_allowed = User.current.allowed_to?(:edit_issues, @project)
+    @priorities = Enumeration::get_values('IPRI')
+    @time_entry = TimeEntry.new
+    @project = @issue.project
+    @file_attachment = FileAttachment.new
+    @file_attachment.container_type="issue"
+    @file_attachment.container_id = @issue.id
+      respond_to do |format|
+        format.html {}
+        format.js {
+          render(:update) {|page| page.replace_html "content_wrapper", :partial => 'issues/show'}
+        }
+      end
+    end
+  end
+
+
   def edit
     @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
     @priorities = Enumeration::get_values('IPRI')

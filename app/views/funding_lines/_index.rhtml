@@ -1,5 +1,5 @@
 <div id="funding_lines_index">
-  <% if funding_lines.size>0 %>
+  <% if funding_lines and funding_lines.size>0  %>
     <table class="list">
       <thead><tr>
         <%= sort_header_tag('aap', :caption => l(:label_funding_aap)) %>

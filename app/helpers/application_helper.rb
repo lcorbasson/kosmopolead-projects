@@ -828,7 +828,6 @@ module ApplicationHelper
     <script>
  
         function clone_#{name_div_id}_form(){
-alert('#{concat_url}');
         jQuery.ajaxFileUpload({url:'#{concat_url}',
         secureuri:false, fileElementId:'fileToUpload', dataType: 'json',
         before_send_callback:function(formId){

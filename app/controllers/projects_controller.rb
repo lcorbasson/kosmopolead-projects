@@ -30,7 +30,7 @@ class ProjectsController < ApplicationController
   before_filter :find_projects,:only=>[:index]
 
   before_filter :find_optional_project, :only => :activity
-  before_filter :authorize, :except => [:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu ]
+  before_filter :authorize, :except => [:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu, :edit_part_description ]
   before_filter :require_admin, :only => [ :add, :archive, :unarchive, :destroy ]
   accept_key_auth :activity
 
@@ -49,7 +49,7 @@ class ProjectsController < ApplicationController
   # Lists visible projects
   def index
     if session[:project]
-      @project = session[:project]
+      @project = Project.find(session[:project].id)
     else
       @project = @projects.first
     end
@@ -426,7 +426,11 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
     tags_json = Project.tags_json
      render:text=>tags_json
   end
-
+  
+  def edit_part_description
+    @project = Project.find(params[:project_id])
+    render :layout=>false
+  end
   
 private
   # Find project of id params[:id]
@@ -545,8 +549,6 @@ private
 						:limit  =>  @funding_line_pages.items_per_page,
 						:offset =>  @funding_line_pages.current.offset
   end
-
-
 
 end
 

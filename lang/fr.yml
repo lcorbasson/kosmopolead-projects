@@ -1,5 +1,8 @@
 _gloc_rule_default: '|n| n==1 ? "" : "_plural" '
 
+STATUS_ACTIVE: Actif
+STATUS_REJECT: Rejeté
+STATUS_ARCHIVED: Fermé
 actionview_datehelper_select_day_prefix:
 actionview_datehelper_select_month_names: Janvier,Février,Mars,Avril,Mai,Juin,Juillet,Août,Septembre,Octobre,Novembre,Décembre
 actionview_datehelper_select_month_names_abbr: Jan,Fév,Mars,Avril,Mai,Juin,Juil,Août,Sept,Oct,Nov,Déc
@@ -678,6 +681,7 @@ label_project_cost: Coût du projet
 label_project_sector: Secteur
 label_sectors: Secteurs
 label_language: Langue
+label_status: Status
 
 button_login: Connexion
 button_submit: Soumettre

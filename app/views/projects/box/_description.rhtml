@@ -1,27 +1,11 @@
-<div id="description">
+<div id="test">
   <% if project.description %>
-    <%= textilizable project.description %>
-  <% else %>
-    <div class="emptymessage">
-          <p><%= l(:project_add_description) %>
-          <%= toggle_link image_tag("/images/edit.png"), 'update-description-form',{:second_element=>"description"}%></p>
-   </div>
+      <%= textilizable project.description %>
+    <% else %>
+      <div class="emptymessage">
+            <p><%= l(:project_add_description) %>
+            <%#= toggle_link image_tag("/images/edit.png"), 'test',{:second_element=>"description"}%></p>
+     </div>
   <% end %>
 </div>
-<%= link_to_remote "#{image_tag('/images/add.png')}",
-                         { :url => edit_project_path(@project),
-                           :method => 'get',
-                           :update => 'update-description-form'
-                         } %>
-<% remote_form_for(:project, project,
-                 :url => project_path(project,:part=>'description') ,
-                 :method => :put,
-                 :html => {:id => 'update-description-form',:style=>'display:none;'}) do |f| %>
-  <%= f.text_area :description, :rows => 5, :class => 'wiki-edit' %>
-  <div class="buttons">
-    <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
-    <%= toggle_link l(:button_cancel), 'update-description-form',{:second_element=>"description"} %>
-    <%= link_to l(:button_cancel), projects_path,:class=>"button btn_orange corner-all"%>
-  </div>
-<% end %>
- <%= wikitoolbar_for 'project_description' %>
+<div id="description"></div>

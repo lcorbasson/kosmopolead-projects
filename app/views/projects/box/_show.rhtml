@@ -36,7 +36,13 @@
 
     <div class="editable_box">
       <div class="links_edit_box">
-        <%= toggle_link image_tag("/images/edit.png"), 'update-description-form',{:second_element=>"description"}%>
+        <%#= toggle_link image_tag("/images/edit.png"), 'update-description-form',{:second_element=>"description"}%>
+        <%= link_to_remote "#{image_tag('/images/edit.png')}",
+                         { :url => { :controller => 'projects', :action => 'edit_part_description', :project_id => project.id},
+                           :method => 'get',
+                           :update => 'description',
+                           :with=>'toggle_description()'
+                         } %>
       </div>
       <%= grey_title("DESCRIPTION DU PROJET") %>
       <%= grey_box("#{render:partial=>'projects/box/description', :locals=>{:project=>project}}", "project_description") %>
@@ -71,4 +77,14 @@
 <% end %>
 <%= javascript_tag("activeProjectMenu('#{project.id}')") %>
 <% html_title(l(:label_overview)) -%>
+
+<script>
+  function toggle_description(){
+    $("test").toggle();
+  }
+
+   function clear_form(){
+    jQuery("#description").html('');
+  }
+</script>
 

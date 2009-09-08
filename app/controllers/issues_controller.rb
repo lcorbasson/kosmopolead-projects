@@ -270,24 +270,35 @@ class IssuesController < ApplicationController
   def update
     @issue = Issue.find(params[:id])
     if @issue.update_attributes(params[:issue])
-      @journals = @issue.journals.find(:all, :include => [:user, :details], :order => "#{Journal.table_name}.created_on ASC")
-    @journals.each_with_index {|j,i| j.indice = i+1}
-    @journals.reverse! if User.current.wants_comments_in_reverse_order?
-    #@allowed_statuses = @issue.new_statuses_allowed_to(User.current)
-    @allowed_statuses = IssueStatus.all
-    @edit_allowed = User.current.allowed_to?(:edit_issues, @project)
-    @priorities = Enumeration::get_values('IPRI')
-    @time_entry = TimeEntry.new
-    @project = @issue.project
-    @file_attachment = FileAttachment.new
-    @file_attachment.container_type="issue"
-    @file_attachment.container_id = @issue.id
-      respond_to do |format|
-        format.html {}
-        format.js {
-          render(:update) {|page| page.replace_html "content_wrapper", :partial => 'issues/show'}
-        }
+       if params[:assigned_to_id]
+        new_assignments = params[:assigned_to_id]
+        Assignment.delete(@issue, new_assignments)
+        #Création des assignations à la tâche
+        new_assignments.each do |assigned_to|
+          if !Assignment.exist?(@issue.id,assigned_to)
+            Assignment.create(:issue_id=>@issue.id, :user_id=>assigned_to)
+          end
+        end
       end
+      @journals = @issue.journals.find(:all, :include => [:user, :details], :order => "#{Journal.table_name}.created_on ASC")
+      @journals.each_with_index {|j,i| j.indice = i+1}
+      @journals.reverse! if User.current.wants_comments_in_reverse_order?
+      #@allowed_statuses = @issue.new_statuses_allowed_to(User.current)
+      @allowed_statuses = IssueStatus.all
+      @edit_allowed = User.current.allowed_to?(:edit_issues, @project)
+      @priorities = Enumeration::get_values('IPRI')
+      @time_entry = TimeEntry.new
+      @project = @issue.project
+      @file_attachment = FileAttachment.new
+      @file_attachment.container_type="issue"
+      @file_attachment.container_id = @issue.id
+        respond_to do |format|
+          format.html {}
+          format.js {
+            render(:update) {|page| 
+              page.replace_html "content_wrapper", :partial => 'issues/show'}
+          }
+        end
     end
   end
 
@@ -366,8 +377,8 @@ class IssuesController < ApplicationController
   
   # Bulk edit a set of issues
   def bulk_edit
-    if request.post?
-      @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
+
+    if request.post?    
       status = params[:status_id].blank? ? nil : IssueStatus.find_by_id(params[:status_id])
       priority = params[:priority_id].blank? ? nil : Enumeration.find_by_id(params[:priority_id])
       assigned_to = (params[:assigned_to_id].blank? || params[:assigned_to_id] == 'none') ? nil : User.find_by_id(params[:assigned_to_id])
@@ -566,6 +577,7 @@ class IssuesController < ApplicationController
 
   def update_form
     @issue = Issue.new(params[:issue])
+    
     render :action => :new, :layout => false
   end
   

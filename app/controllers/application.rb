@@ -81,19 +81,19 @@ class ApplicationController < ActionController::Base
   end
   
   def require_login
-    if !User.current.logged?
-      redirect_to :controller => "account", :action => "login", :back_url => url_for(params)
-      return false
-    end
+#    if !User.current.logged?
+#      redirect_to :controller => "account", :action => "login", :back_url => url_for(params)
+#      return false
+#    end
     true
   end
 
   def require_admin
     return unless require_login
-    if !User.current.admin?
-      render_403
-      return false
-    end
+#    if !User.current.admin?
+#      render_403
+#      return false
+#    end
     true
   end
   

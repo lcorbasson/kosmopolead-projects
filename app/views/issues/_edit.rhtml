@@ -10,7 +10,7 @@
      <% if !@issue.is_issue? %>
         <p>
           <label><%= l(:label_phase_id) %></label>
-          <%= f.select :parent_id, @project.stages.collect {|i| [i.subject, i.id] }, :include_blank => true unless @issues.nil?%>
+          <%= f.select :parent_id, @project.stages.collect {|i| [i.subject, i.id] }, :include_blank => true unless @project.stages.nil?%>
         </p>
     <% end %>
     <% if @issue.is_issue? %>

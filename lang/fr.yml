@@ -300,6 +300,10 @@ project_module_wiki: Wiki
 project_module_repository: Dépôt de sources
 project_module_boards: Forums de discussion
 
+label_project_relation__plural: Relations entre les projets
+label_status: Statut
+label_category: Catégorie
+label_priority: Priorité
 label_funding_line_new: Nouvelle ligne de financement
 label_funding_line_edit: Edition d'une ligne de financement
 label_funding_aap: AAP

@@ -7,6 +7,7 @@
             <%=  link_to_remote l(:button_add),
                          { :url => {:controller=>:file_attachments,:action=>:index,:project_id=>@project},
                            :method => 'get',
+                           :asynchronous=>true,
                            :update => 'files_index',
                            :with => "clone_upload_file_form()",
                          },:class=>"button btn_blue corner-all" %>
@@ -14,6 +15,7 @@
            <%=   link_to_remote l(:button_add),
                          { :url => {:controller=>:file_attachments,:action=>:index,:project_id=>@issue.project,:issue_id=>@issue},
                            :method => 'get',
+                           :asynchronous=>true,
                            :update => 'files_index',
                            :with => "clone_upload_file_form()",
                          },:class=>"button btn_blue corner-all" %>

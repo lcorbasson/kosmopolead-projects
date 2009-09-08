@@ -828,7 +828,7 @@ module ApplicationHelper
     <script> 
         function clone_#{name_div_id}_form(){
         jQuery.ajaxFileUpload({url:'#{concat_url}',
-        secureuri:false, fileElementId:'fileToUpload', dataType: 'json',
+        secureuri:false, fileElementId:'fileToUpload', dataType: 'json',asynchrone:true,
         before_send_callback:function(formId){
           jQuery('##{name_initial_form}:input').clone().appendTo(jQuery('#'+formId));
           #{data_textarea}

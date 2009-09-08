@@ -20,6 +20,7 @@ class Project < ActiveRecord::Base
   acts_as_taggable
     
   # Project statuses
+  STATUS = {'STATUS_ACTIVE' => 1, 'STATUS_ARCHIVED' => 9}
   STATUS_ACTIVE     = 1
   STATUS_ARCHIVED   = 9
 

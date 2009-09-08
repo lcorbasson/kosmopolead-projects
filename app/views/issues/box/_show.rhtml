@@ -77,7 +77,7 @@ end %>
     <div class="contextual">
       <%= link_to_remote "#{l(:button_add)}",
                          { :url => { :controller => 'file_attachments', :action => 'new',:issue_id=>issue,:project_id=>project},
-                           :method => 'post',
+                           :method => 'get',
                            :update => 'add_file'
                          },:class=>"icon icon-add" %>
     </div>

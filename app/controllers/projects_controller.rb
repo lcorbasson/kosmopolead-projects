@@ -30,7 +30,7 @@ class ProjectsController < ApplicationController
   before_filter :find_projects,:only=>[:index]
 
   before_filter :find_optional_project, :only => :activity
-  before_filter :authorize, :except => [:add_file,:update,:show_funding, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu ]
+  before_filter :authorize, :except => [:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu ]
   before_filter :require_admin, :only => [ :add, :archive, :unarchive, :destroy ]
   accept_key_auth :activity
 
@@ -59,8 +59,8 @@ class ProjectsController < ApplicationController
           retrieve_query
           if @query.valid?
              events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
-and start_date is not null)
-AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
+                                                                      and start_date is not null)
+                                                                      AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
 
             @gantt.events = events
           end
@@ -70,6 +70,7 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
           @roles = Role.find :all, :order => 'builtin, position'
           completed_percent
           find_gallery
+          show_funding
       end
      respond_to do |format|
         format.html {}
@@ -194,15 +195,17 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
     retrieve_query
     if @query.valid?
       events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
-and start_date is not null)
-AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
+                                                                and start_date is not null)
+                                                                AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
 
       @gantt.events = events
     end
     completed_percent
     find_gallery
+    show_funding
     session[:project] = @project
     respond_to do |format|
+      format.html { render :layout=>false}
       format.js {
           render:update do |page|
             page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
@@ -424,37 +427,7 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
      render:text=>tags_json
   end
 
-  def show_funding
-     @page = params[:page].to_i # get the requested page
-     @limit = params[:rows].to_i # get how many rows we want to have into the grid
-     @sidx = params[:sidx]
-     @sord = params[:sord]
-     @order_by = "#{@sidx} #{@sord}"
-
-     @records = @project.funding_lines.count
-      if @limit>@records
-        @page = 1
-        @start = 0
-      else
-        @start = @limit*@page - @limit
-      end
-
-      #Calcul du nombre total de pages
-      if @records<(@limit)
-        @total_pages = 1
-      else
-        @total_pages = @records.div(@limit)
-        @total_pages = @total_pages+1 if @total_pages*@limit<@records
-      end
-
-
-    render:layout=>false
-  end
-
-
-
-
-
+  
 private
   # Find project of id params[:id]
   # if not found, redirect to project list
@@ -556,6 +529,21 @@ private
                                     :conditions => "status = #{Project::STATUS_ACTIVE}",
                                     :order => 'name')
 
+  end
+
+  def show_funding
+    sort_init 'aap', 'asc'
+    sort_update %w(aap financeur correspondant_financeur montant_demande funding_type date_accord montant_accorde date_liberation montant_libere)
+
+   
+    @funding_line_count = @project.funding_lines.count
+    @funding_line_pages = Paginator.new self, @funding_line_count,
+								per_page_option,
+								params['page']
+    @funding_lines = FundingLine.find :all, :order => sort_clause,
+                    :conditions=>["project_id = ?",@project.id],
+						:limit  =>  @funding_line_pages.items_per_page,
+						:offset =>  @funding_line_pages.current.offset
   end
 
 

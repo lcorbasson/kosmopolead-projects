@@ -1,6 +1,6 @@
 <%= error_messages_for 'file_attachment' %>
 
-<%= form_upload({:url=>"/projects/#{@issue.project}/issues/#{@issue.id}/file_attachments/create",:col_collection=>@file_attachment,:name_initial_form=>"upload_form_file_#{@file_attachment.id}",:name_div_id=>"upload_file_#{@file_attachment.id}"}) %>
+<%= form_upload({:url=>project_issue_file_attachments_path(@project,@issue),:method=>:post  ,:col_collection=>@file_attachment,:name_initial_form=>"upload_form_file",:name_div_id=>"upload_file"}) %>
     <div id="files_index">
       <%= render:partial=>"file_attachments/index",:locals=>{:file_attachments=>@issue.file_attachments} %>
     </div>

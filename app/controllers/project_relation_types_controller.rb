@@ -13,5 +13,12 @@ class ProjectRelationTypesController < ApplicationController
 
   end
 
+  def destroy
+    @relation_type = ProjectRelationType.find(params[:id])
+    if @relation_type.destroy
+      redirect_to :controller=>:admin, :action=>:relations
+    end
+  end
+
   
 end

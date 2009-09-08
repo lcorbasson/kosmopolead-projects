@@ -5,7 +5,7 @@
   <%= f.text_area :description, :rows => 5, :class => 'wiki-edit' %>
   <div class="buttons">
     <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %> 
-    <%= toggle_link l(:button_cancel), 'test',{:second_element=>"update-description-form"} %>
+    <%= toggle_link l(:button_cancel), 'project-description-bloc',{:second_element=>"update-description-form"} %>
   </div>
 <% end %>
 <%= wikitoolbar_for 'project_description' %>

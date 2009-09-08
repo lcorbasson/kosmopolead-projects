@@ -1,10 +1,9 @@
-<div id="test">
+<div id="project-description-bloc">
   <% if project.description %>
       <%= textilizable project.description %>
     <% else %>
       <div class="emptymessage">
             <p><%= l(:project_add_description) %>
-            <%#= toggle_link image_tag("/images/edit.png"), 'test',{:second_element=>"description"}%></p>
      </div>
   <% end %>
 </div>

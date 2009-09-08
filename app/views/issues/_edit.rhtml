@@ -47,11 +47,11 @@
                            {:controller => 'projects', :action => 'add_issue_category', :id => @project},
                            :class => 'small', :tabindex => 199) if authorize_for('projects', 'add_issue_category') %></p>
       <% end %>
-      <% if @project.versions %>
+      <% unless @project.versions.empty? %>
        <label><%= l(:label_version) %></label>
       <%= content_tag('p', f.select(:fixed_version_id,
                                     (@project.versions.sort.collect {|v| [v.name, v.id]}),
-                                    { :include_blank => true })) unless @project.versions.empty? %>
+                                    { :include_blank => true })) %>
       <% end %>
     </div>
 

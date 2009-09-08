@@ -158,7 +158,7 @@ class IssuesController < ApplicationController
           end
         }
       end
-      render :nothing => true, :layout => true
+#      render :nothing => true, :layout => true
       return
     end
     if params[:issue].is_a?(Hash)

@@ -1,3 +1,6 @@
 <% labelled_tabular_form_for :tracker, @tracker, :url => { :action => 'edit' } do |f| %>
 <%= render :partial => 'form', :locals => { :f => f } %>
+  <div class="buttons right">
+    <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+  </div>
 <% end %>

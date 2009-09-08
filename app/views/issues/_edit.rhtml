@@ -1,6 +1,6 @@
-<% labelled_tabular_form_for :issue, @issue,
-                             :url => {:action => 'edit', :id => @issue},
-                             :method=>:get,
+<% remote_form_for @issue,
+                             :url => project_issue_path(@project,@issue),
+                             :method=>:put,
                              :html => {:id => 'issue-form',
                                        :class => "tabular",
                                        :multipart => true} do |f| %>
@@ -59,9 +59,16 @@
     <p><%= f.select :done_ratio, ((0..10).to_a.collect {|r| ["#{r*10} %", r*10] }) %></p>
     </div>
       <div class="clearer"></div>
+      <label><%= l(:label_description) %></label>
+      <%= f.text_area :description,
+        :cols => 60,
+        :rows => (@issue.description.blank? ? 10 : [[10, @issue.description.length / 50].max, 100].min),
+        :accesskey => accesskey(:edit),
+        :class => 'wiki-edit' %>
    <label><%= l(:label_notes) %> </label>
     <%= text_area_tag 'notes', @notes, :cols => 60, :rows => 10, :class => 'wiki-edit' %>
     <%= wikitoolbar_for 'notes' %>
+    <%= wikitoolbar_for 'issue_description' %>
     <%= call_hook(:view_issues_edit_notes_bottom, { :issue => @issue, :notes => @notes, :form => f }) %>
     <% if @issue.type == "ISSUE" %>
       <p><%=l(:label_attachment_plural)%><br /><%= render :partial => 'attachments/form' %></p>

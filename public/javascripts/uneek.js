@@ -113,8 +113,7 @@ function initialize_funding_grid(url,edit_url){
             loadtext: "Chargement de la liste...",
             pgtext : "Page {0} sur {1}",
             emptyrecords: "Aucune ligne",
-            viewrecords: true, //Affichage du nombre d'enregistrements courants
-            editurl:edit_url
+            viewrecords: true, //Affichage du nombre d'enregistrements courants  
         }).navGrid('#pager', {view:true}, //options        
         {reloadAfterSubmit:true,jqModal:false, closeOnEscape:true}, // del options
         {closeOnEscape:true}, // search options

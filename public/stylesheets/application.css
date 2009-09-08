@@ -252,10 +252,7 @@ table.form tr { padding: 2px 5px; }
 }
 a:link { color: #009eee; }
 a:visited { color: #009eee; }
-p {
-  margin-top:2px;
-  margin-bottom: 2px;
-}
+
 
 
 #footer {clear: both; font-size: 0.9em; color: #aaa; padding: 5px; text-align:center; }

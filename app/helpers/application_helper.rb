@@ -825,8 +825,7 @@ module ApplicationHelper
     concat_url = url+item_id
    
     data=<<-END
-    <script>
- 
+    <script> 
         function clone_#{name_div_id}_form(){
         jQuery.ajaxFileUpload({url:'#{concat_url}',
         secureuri:false, fileElementId:'fileToUpload', dataType: 'json',

@@ -177,7 +177,8 @@ class IssuesController < ApplicationController
         }
       render :nothing => true, :layout => true
       return
-    end    
+    end
+    end
     @issue.status = default_status
     @allowed_statuses = ([default_status] + default_status.find_new_statuses_allowed_to(User.current.role_for_project(@project), @issue.tracker)).uniq
     

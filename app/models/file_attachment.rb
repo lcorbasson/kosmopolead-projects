@@ -22,15 +22,13 @@ class FileAttachment < ActiveRecord::Base
   # -- paperclip
 
   has_attached_file :file,
-    :url => "/picts/:attachment/:id/:style/:filename",
-    :path => ":rails_root/public:url"
+    :path => ":rails_root/public#{PaperclipUneek::PAPERCLIP_URL}",
+    :url => PaperclipUneek::PAPERCLIP_URL
+
 
   # -- validation
 
-
   validates_attachment_presence :file
-    
-  
 
   # -- relations
   

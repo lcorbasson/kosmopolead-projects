@@ -151,7 +151,13 @@ class IssuesController < ApplicationController
     @issue_types = IssueType.find(:all)
     @users = User.all
     if @issue.tracker.nil?
-      flash.now[:error] = 'No tracker is associated to this project. Please check the Project settings.'
+      respond_to do |format|
+        format.js{
+          render :update do |page|#
+            page << display_message_error("No tracker is associated to this project. Please check the Project settings.", "fieldError")
+          end
+        }
+      end
       render :nothing => true, :layout => true
       return
     end
@@ -163,7 +169,12 @@ class IssuesController < ApplicationController
     
     default_status = IssueStatus.default
     unless default_status
-      flash.now[:error] = 'No default issue status is defined. Please check your configuration (Go to "Administration -> Issue statuses").'
+      respond_to do |format|
+        format.js{
+          render :update do |page|#
+            page << display_message_error("No default issue status is defined. Please check your configuration (Go to Administration -> Issue statuses).", "fieldError")
+          end
+        }
       render :nothing => true, :layout => true
       return
     end    

@@ -169,6 +169,7 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
     else
       find_project
     end
+    @allowed_statuses = IssueStatus.all
     @relation = ProjectRelation.new
     @members = @project.members
     @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))

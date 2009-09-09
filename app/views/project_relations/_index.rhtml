@@ -17,8 +17,8 @@
 
 
             <td><%= link_to_remote(image_tag('delete.png'), { :url => {:controller => 'project_relations', :action => 'destroy', :project_id => @project, :id => relation},
-                                                              :method => :delete,:confirm=>"Etes-vous sûr ?"
-                                                            }, :title => l(:label_relation_delete))  %></td>
+                                                              :method => :delete,:confirm=>"Etes-vous sûr ?"},
+                                                             :title => l(:label_relation_delete))  %></td>
           </tr>
         <% end %>
       </table>

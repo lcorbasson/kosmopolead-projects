@@ -117,8 +117,7 @@ function initialize_funding_grid(url,edit_url){
             loadtext: "Chargement de la liste...",
             pgtext : "Page {0} sur {1}",
             emptyrecords: "Aucune ligne",
-            viewrecords: true, //Affichage du nombre d'enregistrements courants
-            editurl:edit_url
+            viewrecords: true, //Affichage du nombre d'enregistrements courants  
         }).navGrid('#pager', {view:true}, //options        
         {reloadAfterSubmit:true,jqModal:false, closeOnEscape:true}, // del options
         {closeOnEscape:true}, // search options
@@ -139,7 +138,7 @@ function initialize_simple_funding_grid(url,edit_url){
      jQuery("#funding_fields_list").jqGrid({
             url:url,
             datatype: "json",
-            colNames:["AAP", "Financeur","Correspondant financeur","Montant demandé","Type","Date accord","Montant accordé","Date libération","Montant libéré"],
+            colNames:["AAP", "Financeur","Correspondant financeur","Montant demandé","Type","Date accord","Montant accordé","Date libération","Montant libéré",""],
             colModel:[
                 {name:'aap',index:'aap',width:80, resizable:false,sortable:true, align:"center", editable:true},
                 {name:'financeur',index:'financeur',width:100, resizable:false, sortable:true, editable:true, align:"center"},
@@ -166,7 +165,10 @@ function initialize_simple_funding_grid(url,edit_url){
                 {name:'date_liberation',index:'date_liberation', resizable:false, sortable:true, editable:true, align:"center"
 
                 },
-                {name:'montant_libere',index:'montant_libere',width:100, resizable:false, sortable:true, editable:true, align:"right"}],
+                {name:'montant_libere',index:'montant_libere',width:100, resizable:false, sortable:true, editable:true, align:"right"},
+                {name:'delete',index:'delete',width:100, resizable:false, sortable:false, editable:true, align:"right"}
+                ],
+
             multiselect: false,
             multiboxonly:true,
             pager:jQuery("#pager"),

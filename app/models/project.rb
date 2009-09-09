@@ -20,10 +20,11 @@ class Project < ActiveRecord::Base
   acts_as_taggable
     
   # Project statuses
+  STATUS = [['STATUS_ACTIVE', 1], ['STATUS_REJECT', 4], ['STATUS_ARCHIVED', 9]]
   STATUS_ACTIVE     = 1
   STATUS_ARCHIVED   = 9
 
-  has_many :project_relations,:dependent=>:destroy
+ 
   has_many :project_partners
   has_many :partners, :through => :project_partners, :dependent => :destroy
   belongs_to :time_unit, :foreign_key=>"time_units_id"
@@ -44,14 +45,14 @@ class Project < ActiveRecord::Base
   has_many :versions, :dependent => :destroy, :order => "#{Version.table_name}.effective_date DESC, #{Version.table_name}.name DESC"
   has_many :time_entries, :dependent => :delete_all
   has_many :queries, :dependent => :delete_all
-  has_many :documents, :dependent => :destroy
   has_many :news, :dependent => :delete_all, :include => :author
   has_many :issue_categories, :dependent => :delete_all, :order => "#{IssueCategory.table_name}.name"
   has_many :boards, :dependent => :destroy, :order => "position ASC"
   has_one :repository, :dependent => :destroy
   has_many :changesets, :through => :repository
   has_one :wiki, :dependent => :destroy
-  has_many :stages,:class_name=>"Issue",:foreign_key=>"issue_types_id",:include=>[:type],:conditions=>["#{IssueType.table_name}.name='STAGE'"],:dependent => :delete_all
+  has_many :issues,:dependent=>:delete_all
+  has_many :stages,:class_name=>"Issue",:foreign_key=>"issue_types_id",:include=>[:type],:conditions=>["#{IssueType.table_name}.name='STAGE'"]
   has_many :file_attachments,:as=>:container,:conditions=>["container_type = ?", "project"],:dependent => :destroy
 
 
@@ -64,8 +65,6 @@ class Project < ActiveRecord::Base
                           :association_foreign_key => 'custom_field_id'
                           
   acts_as_tree :order => "name", :counter_cache => true
-  acts_as_attachable :view_permission => :view_files,
-                     :delete_permission => :manage_files
 
   acts_as_customizable
   acts_as_searchable :columns => ['name', 'description'], :project_key => 'id', :permission => nil
@@ -73,7 +72,7 @@ class Project < ActiveRecord::Base
                 :url => Proc.new {|o| {:controller => 'projects', :action => 'show', :id => o.id}},
                 :author => nil
 
-  attr_protected :status, :enabled_module_names
+#  attr_protected :status, :enabled_module_names
   
   validates_presence_of :name, :identifier, :acronym
   validates_uniqueness_of  :identifier
@@ -85,7 +84,7 @@ class Project < ActiveRecord::Base
   validates_numericality_of :project_cost, :estimated_time, :allow_nil => true
   
   before_destroy :delete_all_members
-  before_save :create_gallery
+  after_save :create_gallery
 
   named_scope :has_module, lambda { |mod| { :conditions => ["#{Project.table_name}.id IN (SELECT em.project_id FROM #{EnabledModule.table_name} em WHERE em.name=?)", mod.to_s] } }
   

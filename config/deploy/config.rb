@@ -25,7 +25,11 @@ namespace :deploy do
 		run "rm -rf #{current_path}/vendor"
 		run "ln -s #{shared_path}/vendor #{current_path}/vendor"
 
-		## Symlink Logs
+		## Symlink FileAttachments 
+		run "rm -rf #{current_path}/public/picts"
+		run "ln -s #{shared_path}/public/picts #{current_path}/public/picts"
+		
+                ## Symlink Logs
 		run "rm -rf #{current_path}/log"
 		run "ln -s #{shared_path}/log #{current_path}/"
 		###############################################################

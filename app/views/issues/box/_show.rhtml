@@ -55,6 +55,7 @@ end %>
 <%= link_to_remote_if_authorized(l(:button_quote), { :url => {:action => 'reply', :id => issue} }, :class => 'icon icon-comment') unless issue.description.blank? %>
 </div>
 <h3><%=l(:field_description)%></h3>
+<%= textilizable issue.description %>
 <%= call_hook(:view_issues_show_description_bottom, :issue => issue) %>
 
 
@@ -77,7 +78,7 @@ end %>
     <div class="contextual">
       <%= link_to_remote "#{l(:button_add)}",
                          { :url => { :controller => 'file_attachments', :action => 'new',:issue_id=>issue,:project_id=>project},
-                           :method => 'post',
+                           :method => 'get',
                            :update => 'add_file'
                          },:class=>"icon icon-add" %>
     </div>

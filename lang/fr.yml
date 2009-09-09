@@ -1,5 +1,8 @@
 _gloc_rule_default: '|n| n==1 ? "" : "_plural" '
 
+STATUS_ACTIVE: Actif
+STATUS_REJECT: Rejeté
+STATUS_ARCHIVED: Fermé
 actionview_datehelper_select_day_prefix:
 actionview_datehelper_select_month_names: Janvier,Février,Mars,Avril,Mai,Juin,Juillet,Août,Septembre,Octobre,Novembre,Décembre
 actionview_datehelper_select_month_names_abbr: Jan,Fév,Mars,Avril,Mai,Juin,Juil,Août,Sept,Oct,Nov,Déc
@@ -300,12 +303,27 @@ project_module_wiki: Wiki
 project_module_repository: Dépôt de sources
 project_module_boards: Forums de discussion
 
+label_project_relation__plural: Relations entre les projets
+label_status: Statut
+label_category: Catégorie
+label_priority: Priorité
+label_funding_line_new: Nouvelle ligne de financement
+label_funding_line_edit: Edition d'une ligne de financement
+label_funding_aap: AAP
+label_funding_financeur: Financeur
+label_funding_correspondant_financeur: Correspondant financeur
+label_funding_montant_demande: Montant demandé
+label_funding_type: Type
+label_funding_date_accord: Date accord
+label_funding_montant_accorde: Montant accordé
+label_funding_date_liberation: Date libération
+label_funding_montant_libere: Montant libéré
 label_stage: Phase
 label_issue: Tâche
-label_milestone: Jâlon
+label_milestone: Jalon
 label_stage_new: Nouvelle phase
 label_issue_new: Nouvelle tâche
-label_milestone_new: Nouveau jâlon
+label_milestone_new: Nouveau jalon
 label_status_id: Statut
 label_priority_id: Priorité
 label_category_id: Catégorie
@@ -371,7 +389,6 @@ label_project_new: Nouveau projet
 label_project_plural: Projets
 label_project_all: Tous les projets
 label_project_latest: Derniers projets
-label_issue: Demande
 label_issue_plural: Evenements
 label_issue_view_all: Voir toutes les demandes
 label_issue_added: Demande ajoutée
@@ -668,6 +685,7 @@ label_project_cost: Coût du projet
 label_project_sector: Secteur
 label_sectors: Secteurs
 label_language: Langue
+label_status: Status
 
 button_login: Connexion
 button_submit: Soumettre
@@ -795,6 +813,7 @@ project_add_tag: Pour ajouter un tag, cliquez sur le bouton
 project_add_relation: Pour ajouter une relation, cliquez sur le bouton
 project_add_description: Pour ajouter une description, cliquez sur le bouton
 project_add_synthesis: Pour ajouter une synthèse, cliquez sur le bouton
+project_add_funding: Pour ajouter une ligne de financement, cliquez sur le bouton
 
 hours: heures
 days: jours

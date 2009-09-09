@@ -25,10 +25,10 @@ class IssuesController < ApplicationController
   
   before_filter :find_issue, :only => [:show, :edit, :reply]
   before_filter :find_issues, :only => [:bulk_edit, :move, :destroy]
-  before_filter :find_project, :only => [:calendar,:gantt,:index,:create,:new, :update_form, :preview]
+  before_filter :find_project, :only => [:update,:calendar,:gantt,:index,:create,:new, :update_form, :preview]
 
-  before_filter :find_projects, :only => [:gantt, :index, :calendar,:new,:show,:create]
-  before_filter :authorize, :except => [:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
+  before_filter :find_projects, :only => [:update,:gantt, :index, :calendar,:new,:show,:create]
+  before_filter :authorize, :except => [:update,:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
 
   before_filter :find_optional_project, :only => [ :changes, :gantt, :calendar]
   accept_key_auth :index, :show, :changes
@@ -151,8 +151,14 @@ class IssuesController < ApplicationController
     @issue_types = IssueType.find(:all)
     @users = User.all
     if @issue.tracker.nil?
-      flash.now[:error] = 'No tracker is associated to this project. Please check the Project settings.'
-      render :nothing => true, :layout => true
+      respond_to do |format|
+        format.js{
+          render :update do |page|#
+            page << display_message_error("No tracker is associated to this project. Please check the Project settings.", "fieldError")
+          end
+        }
+      end
+#      render :nothing => true, :layout => true
       return
     end
     if params[:issue].is_a?(Hash)
@@ -163,10 +169,16 @@ class IssuesController < ApplicationController
     
     default_status = IssueStatus.default
     unless default_status
-      flash.now[:error] = 'No default issue status is defined. Please check your configuration (Go to "Administration -> Issue statuses").'
+      respond_to do |format|
+        format.js{
+          render :update do |page|#
+            page << display_message_error("No default issue status is defined. Please check your configuration (Go to Administration -> Issue statuses).", "fieldError")
+          end
+        }
       render :nothing => true, :layout => true
       return
-    end    
+    end
+    end
     @issue.status = default_status
     @allowed_statuses = ([default_status] + default_status.find_new_statuses_allowed_to(User.current.role_for_project(@project), @issue.tracker)).uniq
     
@@ -209,7 +221,7 @@ class IssuesController < ApplicationController
      @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
     if @issue.tracker.nil?
       flash.now[:error] = 'No tracker is associated to this project. Please check the Project settings.'
-      render :nothing => true, :layout => true
+      #render :nothing => true, :layout => true
       return
     end
     if params[:issue].is_a?(Hash)
@@ -236,25 +248,17 @@ class IssuesController < ApplicationController
 
         end
       end
-    else
-       format.js{
-          render :update do |page|#
-            page << display_message_error(@issue, "fieldError")
-         end
-       }
     end
      session[:project] = @issue.project
      respond_to do |format|
           format.js {
-              render:update do |page|
-                if params[:continue]
-                   page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'new')}');"
-                else
-
-                   page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'show')}');"
-                end
-
+            render:update do |page|
+              if params[:continue]
+                 page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'new')}');"
+              else
+                 page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'show')}');"
               end
+            end
           }
      end 
   end
@@ -262,7 +266,43 @@ class IssuesController < ApplicationController
   # Attributes that can be updated on workflow transition (without :edit permission)
   # TODO: make it configurable (at least per role)
   UPDATABLE_ATTRS_ON_TRANSITION = %w(status_id assigned_to_id fixed_version_id done_ratio) unless const_defined?(:UPDATABLE_ATTRS_ON_TRANSITION)
-  
+
+  def update
+    @issue = Issue.find(params[:id])
+    if @issue.update_attributes(params[:issue])
+       if params[:assigned_to_id]
+        new_assignments = params[:assigned_to_id]
+        Assignment.delete(@issue, new_assignments)
+        #Création des assignations à la tâche
+        new_assignments.each do |assigned_to|
+          if !Assignment.exist?(@issue.id,assigned_to)
+            Assignment.create(:issue_id=>@issue.id, :user_id=>assigned_to)
+          end
+        end
+      end
+      @journals = @issue.journals.find(:all, :include => [:user, :details], :order => "#{Journal.table_name}.created_on ASC")
+      @journals.each_with_index {|j,i| j.indice = i+1}
+      @journals.reverse! if User.current.wants_comments_in_reverse_order?
+      #@allowed_statuses = @issue.new_statuses_allowed_to(User.current)
+      @allowed_statuses = IssueStatus.all
+      @edit_allowed = User.current.allowed_to?(:edit_issues, @project)
+      @priorities = Enumeration::get_values('IPRI')
+      @time_entry = TimeEntry.new
+      @project = @issue.project
+      @file_attachment = FileAttachment.new
+      @file_attachment.container_type="issue"
+      @file_attachment.container_id = @issue.id
+        respond_to do |format|
+          format.html {}
+          format.js {
+            render(:update) {|page| 
+              page.replace_html "content_wrapper", :partial => 'issues/show'}
+          }
+        end
+    end
+  end
+
+
   def edit
     @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
     @priorities = Enumeration::get_values('IPRI')
@@ -337,8 +377,8 @@ class IssuesController < ApplicationController
   
   # Bulk edit a set of issues
   def bulk_edit
-    if request.post?
-      @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
+
+    if request.post?    
       status = params[:status_id].blank? ? nil : IssueStatus.find_by_id(params[:status_id])
       priority = params[:priority_id].blank? ? nil : Enumeration.find_by_id(params[:priority_id])
       assigned_to = (params[:assigned_to_id].blank? || params[:assigned_to_id] == 'none') ? nil : User.find_by_id(params[:assigned_to_id])
@@ -537,6 +577,7 @@ class IssuesController < ApplicationController
 
   def update_form
     @issue = Issue.new(params[:issue])
+    
     render :action => :new, :layout => false
   end
   

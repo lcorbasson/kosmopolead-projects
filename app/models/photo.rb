@@ -11,7 +11,9 @@ class Photo < ActiveRecord::Base
 
   # -- paperclip
 
-  has_attached_file :photo,    
+  has_attached_file :photo,
+    :path => ":rails_root/public#{PaperclipUneek::PAPERCLIP_URL}",
+    :url => PaperclipUneek::PAPERCLIP_URL,
     :styles => {:thumb => "70x70>",:original=>"800x600>",:carousel => "250*180"},
     :default_style => :thumb
 

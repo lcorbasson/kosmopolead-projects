@@ -4,7 +4,7 @@
 <div class="editable_box">
     <div class="links_edit_box">
         <%= link_to_remote "#{image_tag('/images/add.png')}",
-                         { :url => { :controller => 'file_attachments', :action => 'new',:project_id=>@project},
+                         { :url => { :controller => 'file_attachments', :action => 'new',:project_id=>@project },
                            :method => 'get',
                            :update => 'add_file'
                          } %>

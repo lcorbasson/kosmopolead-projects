@@ -74,7 +74,7 @@ module ApplicationHelper
     onclick = "Element.toggle('#{id}'); "
     onclick << (options[:focus] ? "Form.Element.focus('#{options[:focus]}'); " : "this.blur();")
     onclick << (options[:second_element] ?    "Element.toggle('#{options[:second_element]}');$('#{options[:second_element]}').blur();" : "")
-    onclick<<"return false;"
+    onclick << "return false;"
     link_to(name, "#", :onclick => onclick,:class=>"button btn_orange corner-all")
   end
 
@@ -825,11 +825,10 @@ module ApplicationHelper
     concat_url = url+item_id
    
     data=<<-END
-    <script>
- 
+    <script> 
         function clone_#{name_div_id}_form(){
         jQuery.ajaxFileUpload({url:'#{concat_url}',
-        secureuri:false, fileElementId:'fileToUpload', dataType: 'json',
+        secureuri:false, fileElementId:'fileToUpload', dataType: 'json',asynchrone:true,
         before_send_callback:function(formId){
           jQuery('##{name_initial_form}:input').clone().appendTo(jQuery('#'+formId));
           #{data_textarea}

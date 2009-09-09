@@ -1,7 +1,7 @@
-<% form_for :project,@project, :url=>"/projects/edit/#{@project}",:html=>{:class=>"tabular"} do |f| %>
+<% form_for :project,@project,:url=>  "/projects/edit/#{@project.identifier}",:html=>{:class=>"tabular"} do |f| %>
 <%= render :partial => 'form', :locals => { :f => f } %>
 <div class="buttons right">
-  <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+    <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
 </div>
 <div class="clearer"></div>
 <% end %>

@@ -1,0 +1,11 @@
+<% remote_form_for(:project, @project,
+                 :url => project_path(@project,:part=>'synthesis') ,
+                 :method => :put,
+                 :html => {:id => 'update-synthesis-form'}) do |f| %>
+  <%= f.text_area :synthesis, :rows => 5, :class => 'wiki-edit' %>
+  <div class="buttons">
+    <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+    <%= toggle_link l(:button_cancel), 'project-synthesis-bloc',{:second_element=>"update-synthesis-form"} %>
+  </div>
+<% end %>
+<%= wikitoolbar_for 'project_synthesis' %>

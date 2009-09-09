@@ -93,6 +93,7 @@ jQuery(
 	               complete.prepend(feed);
 	               holder.after(complete);
 				   feed.css("width","350px");
+
 		        }
 	        	
 		        function preSet()

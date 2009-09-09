@@ -1143,8 +1143,9 @@ height:17px;
 .links_edit_box {display:none;float:right}
 
 
+#update-tags-form ul.holder,.facebook-auto{width:380px;border:none;display:block;}
 
-
+#tags_feed{width:200px;}
 
 .emptymessage {
 -moz-border-radius-bottomleft:5px;

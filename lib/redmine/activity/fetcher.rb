@@ -72,7 +72,7 @@ module Redmine
         
         @scope.each do |event_type|
           constantized_providers(event_type).each do |provider|
-            e += provider.find_events(event_type, @user, from, to, @options)
+            #e += provider.find_events(event_type, @user, from, to, @options)
           end
         end
         

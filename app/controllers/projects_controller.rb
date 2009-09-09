@@ -30,7 +30,7 @@ class ProjectsController < ApplicationController
   before_filter :find_projects,:only=>[:index]
 
   before_filter :find_optional_project, :only => :activity
-  before_filter :authorize, :except => [:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu, :edit_part_description ]
+  before_filter :authorize, :except => [:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu, :edit_part_description, :edit_part_synthesis ]
   before_filter :require_admin, :only => [ :add, :archive, :unarchive, :destroy ]
   accept_key_auth :activity
 
@@ -438,6 +438,11 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
   end
   
   def edit_part_description
+    @project = Project.find(params[:project_id])
+    render :layout=>false
+  end
+
+  def edit_part_synthesis
     @project = Project.find(params[:project_id])
     render :layout=>false
   end

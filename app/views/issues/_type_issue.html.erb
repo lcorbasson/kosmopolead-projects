@@ -1,1 +1,1 @@
-<%= select_tag :parent_id, options_for_select(@issues_sub.collect {|t| [t.subject, t.id]}) %>
+<%= select_tag "issue[parent_id]", options_for_select(@issues_sub.collect {|t| [t.subject, t.id]}) %>

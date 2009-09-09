@@ -272,7 +272,7 @@ class IssuesController < ApplicationController
       respond_to do |format|
           format.js {
             render:update do |page|
-               page << display_message_error(l(:error_can_t_do), "fieldError")
+               page << display_message_error(@issue, "fieldError")
             end
           }
        end

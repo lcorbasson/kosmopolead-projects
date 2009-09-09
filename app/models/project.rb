@@ -120,15 +120,23 @@ class Project < ActiveRecord::Base
     find(:all, :limit => count, :conditions => visible_by(user), :order => "created_on DESC")	
   end	
 
-  def self.visible_by(user=nil)
+  def self.visible_by(user=nil, community = nil)
     user ||= User.current
-    if user && user.admin?
-      return "#{Project.table_name}.status=#{Project::STATUS_ACTIVE}"
-    elsif user && user.memberships.any?
-      return "#{Project.table_name}.status=#{Project::STATUS_ACTIVE} AND (#{Project.table_name}.is_public = #{connection.quoted_true} or #{Project.table_name}.id IN (#{user.memberships.collect{|m| m.project_id}.join(',')}))"
+    if community
+      community_project_ids = user.memberships.select{|m| m.project.author == community}.collect{|m| m.project_id }
+      "#{Project.table_name}.status=#{Project::STATUS_ACTIVE} AND " +
+        (community_project_ids.empty? ? "false" : "AND #{Project.table_name}.id IN (#{community_project_ids.join(',')})")
     else
-      return "#{Project.table_name}.status=#{Project::STATUS_ACTIVE} AND #{Project.table_name}.is_public = #{connection.quoted_true}"
+      if user && user.admin?
+        return "#{Project.table_name}.status=#{Project::STATUS_ACTIVE}"
+      elsif user && user.memberships.any?
+        return "#{Project.table_name}.status=#{Project::STATUS_ACTIVE} AND (#{Project.table_name}.is_public = #{connection.quoted_true} "
+          "or #{Project.table_name}.id IN (#{user.memberships.collect{|m| m.project_id}.join(',')}))"
+      else
+        return "#{Project.table_name}.status=#{Project::STATUS_ACTIVE} AND #{Project.table_name}.is_public = #{connection.quoted_true}"
+      end
     end
+
   end
   
   def self.allowed_to_condition(user, permission, options={})

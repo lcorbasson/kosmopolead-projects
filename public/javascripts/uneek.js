@@ -4,6 +4,10 @@ jQuery().ready(function() {
     }).live("mouseout",function(){
         jQuery(".links_edit_box:first", this).hide();
     });
+
+    jQuery("#communities_button").click(function() {
+      jQuery(".community_menu_item").slideToggle();
+    });
     
 });
 

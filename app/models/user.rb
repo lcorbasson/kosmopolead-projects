@@ -41,6 +41,10 @@ class User < ActiveRecord::Base
   has_one :preference, :dependent => :destroy, :class_name => 'UserPreference'
   has_one :rss_token, :dependent => :destroy, :class_name => 'Token', :conditions => "action='feeds'"
   belongs_to :auth_source
+
+  has_many :community_memberships #, :class_name => 'CommunityMembership'
+  has_many :communities, :through => :community_memberships, :source => :community_user
+  #has_many :members_community_memberships, :class_name => 'CommunityUser'
   
   # Active non-anonymous users scope
   named_scope :active, :conditions => "#{User.table_name}.status = #{STATUS_ACTIVE}"
@@ -52,7 +56,7 @@ class User < ActiveRecord::Base
   # Prevents unauthorized assignments
   attr_protected :login, :admin, :password, :password_confirmation, :hashed_password
 	
-  validates_presence_of :login, :firstname, :lastname, :mail, :if => Proc.new { |user| !user.is_a?(AnonymousUser) }
+  validates_presence_of :login, :firstname, :lastname, :mail, :unless => Proc.new { |user| user.is_a?(AnonymousUser) or user.is_a?(CommunityUser) }
   validates_uniqueness_of :login, :if => Proc.new { |user| !user.login.blank? }
   validates_uniqueness_of :mail, :if => Proc.new { |user| !user.mail.blank? }
   # Login must contain lettres, numbers, underscores only

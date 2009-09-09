@@ -48,7 +48,7 @@ class ProjectsController < ApplicationController
 
   # Lists visible projects
   def index
-    if session[:project]
+    if session[:project] and not @community
       @project = session[:project]
     else
       @project = @projects.first
@@ -545,8 +545,9 @@ private
   end
 
   def find_projects
+    @community = CommunityUser.find(params[:community_id]) if params[:community_id]
     @projects = Project.find :all,
-                            :conditions => Project.visible_by(User.current),
+                            :conditions => Project.visible_by(User.current, @community),
                             :include => :parent
   end
 

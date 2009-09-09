@@ -24,7 +24,7 @@ class Issue < ActiveRecord::Base
 
   belongs_to :issue_type
   belongs_to :type, :class_name => 'IssueType', :foreign_key => 'issue_types_id'
-  has_and_belongs_to_many :issues,:foreign_key => 'parent_id'
+  has_many :issues, :foreign_key => 'parent_id'
   belongs_to :project
   belongs_to :tracker
   belongs_to :status, :class_name => 'IssueStatus', :foreign_key => 'status_id'

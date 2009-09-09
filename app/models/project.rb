@@ -20,7 +20,7 @@ class Project < ActiveRecord::Base
   acts_as_taggable
     
   # Project statuses
-  STATUS = {'STATUS_ACTIVE' => 1, 'STATUS_ARCHIVED' => 9}
+  STATUS = [['STATUS_ACTIVE', 1], ['STATUS_REJECT', 4], ['STATUS_ARCHIVED', 9]]
   STATUS_ACTIVE     = 1
   STATUS_ARCHIVED   = 9
 
@@ -72,7 +72,7 @@ class Project < ActiveRecord::Base
                 :url => Proc.new {|o| {:controller => 'projects', :action => 'show', :id => o.id}},
                 :author => nil
 
-  attr_protected :status, :enabled_module_names
+#  attr_protected :status, :enabled_module_names
   
   validates_presence_of :name, :identifier, :acronym
   validates_uniqueness_of  :identifier

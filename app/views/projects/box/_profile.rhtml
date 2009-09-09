@@ -18,6 +18,7 @@
     <% if project.sector and project.sector %>
        <label><%= l(:label_project_sector) %></label> <%= my_sector(current_language, project.sector).collect{|s| s.name} %><br />
     <% end %>
+       <label><%= l(:label_status) %></label> <%= l(Project::STATUS.rassoc(project.status).first) %><br/>
   </div>  
 </div>
 <% remote_form_for(:project, project,
@@ -33,7 +34,7 @@
       <p><label><%= l(:label_estimated_time) %></label> <%= f.text_field :estimated_time %>  <%= select_tag "project[time_units_id]", options_for_select(TimeUnit.all.collect {|u| [l("#{u.label}"), u.id]}) %></p>
       <p><label><%= l(:label_project_cost) %></label> <%= f.text_field :project_cost %> €</p>
       <p><label><%= l(:label_project_sector) %></label> <%= f.select :sector, list_sectors(current_language).collect{|s| [s.name, s.activity_sector_id] } %></p>
-
+      <p><label><%= l(:label_status) %></label> <%= f.select :status, Project::STATUS.collect{|key, value| [l(key), value]} %></p>
 
   <div class="buttons right">
     <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>

@@ -36,9 +36,10 @@
       <p><label><%= l(:label_project_sector) %></label> <%= f.select :sector, list_sectors(current_language).collect{|s| [s.name, s.activity_sector_id] } %></p>
       <p><label><%= l(:field_status) %></label> <%= f.select :status, Project::STATUS.collect{|key, value| [l(key), value]} %></p>
 
-  <div class="buttons right">
-    <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
-    <%= toggle_link l(:button_cancel), 'update-profile-form',{:second_element=>"infos_project"}%>
+  <div class="buttons-icons right">
+     <a class="btn_blue ui-corner-all button"  onclick="javascript:jQuery.ajax({data:jQuery.param(jQuery('#update-profile-form').serializeArray()), dataType:'script', type:'put', url:'<%= project_path(@project,:part=>'summary')%>'}); return false;"><%= image_tag("accept3.png") %></a>
+     <%= toggle_link image_tag('delete2.png'), 'update-profile-form',{:second_element=>"infos_project"}%>
+
   </div>
  
 <% end %>

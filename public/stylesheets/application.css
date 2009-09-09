@@ -181,11 +181,10 @@ h1 {
 .message, .errorExplanation {
   margin: 5px 0 15px 0;
   text-align: left;
-  line-height: 1.2em;
   border: 1px solid #ffffff;
 }
-
-#errorExplanation ul{text-align:center}
+#errorExplanation li {font-size:12px;}
+#errorExplanation ul{text-align:center;}
 .success_message {
   color: #529214;
   background-color: #e6efc2;
@@ -482,7 +481,7 @@ ul.properties li span {font-style:italic;}
 #user_firstname, #user_lastname, #user_mail,#user_login, #my_account_form select { width: 200px; }
 #send_information {margin-left:40px;}
 .pagination {font-size: 90%}
-p.pagination {margin-top:8px;}ele
+p.pagination {margin-top:8px;}
 
 /***** Tabular forms ******/
 .tabular p{
@@ -545,15 +544,15 @@ div.flash.error, #errorExplanation {
 }
 
 div.flash.notice {
-    background: url(../images/notice.png)repeat-x;
-    color: #005f00;
+    background: #6AC500;
+    color: #fff;
 }
 .fieldNotice {
   padding: 10px 0 10px 0;
-  background-color: green;
+  background-color: #6AC500;
   display: table;
   width:100%;
-  
+   font-weight:bold;
 }
 .fieldError {
   padding: 2px;
@@ -561,7 +560,18 @@ div.flash.notice {
   display: table;
   padding: 10px 0 10px 0;
   width:100%;
+   font-weight:bold;
 }
+.fieldWarning {
+  padding: 10px 0 10px 0;
+  background-color: #ffa900;
+  display: table;
+  width:100%;
+  color:#fff;
+  text-align:center;
+  font-weight:bold;
+}
+
 div.flash {color:#fff;font-weight:bold;text-align:center;}
 
 div.flash.warning {
@@ -1049,6 +1059,11 @@ height:17px;
 .buttons .btn_orange:hover {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_orange_hover.png) repeat-x}
 .buttons {margin-top:20px;}
 
+
+.buttons-icons .button {cursor:pointer;text-decoration:none;}
+.buttons-icons .btn_blue {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_blue.png) repeat-x}
+.buttons-icons .btn_orange {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_orange.png) repeat-x}
+.buttons-icons a.btn_orange{padding-top:3px;}
 
 
 #tabs {margin-bottom:20px;}

@@ -220,9 +220,13 @@ class IssuesController < ApplicationController
     @users = User.all
      @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
     if @issue.tracker.nil?
-      flash.now[:error] = 'No tracker is associated to this project. Please check the Project settings.'
-      #render :nothing => true, :layout => true
-      return
+      respond_to do |format|
+          format.js {
+            render:update do |page|
+                page << display_message_error(l(:error_no_tracker), "fieldWarning")
+            end
+          }
+      end
     end
     if params[:issue].is_a?(Hash)
       @issue.attributes = params[:issue]
@@ -230,37 +234,49 @@ class IssuesController < ApplicationController
     end
     @issue.author = User.current
     @priorities = Enumeration::get_values('IPRI')
-    
-
-    if @issue.save @issue.is_issue?
-      @project = @issue.project
-      @file_attachment = FileAttachment.new
-      @file_attachment.container_type="issue"
-      @file_attachment.container_id = @issue.id
-      if params[:assigned_to_id]
-        new_assignments = params[:assigned_to_id]
-        Assignment.delete(@issue, new_assignments)
-        #Création des assignations à la tâche
-        new_assignments.each do |assigned_to|
-          if !Assignment.exist?(@issue.id,assigned_to)
-            Assignment.create(:issue_id=>@issue.id, :user_id=>assigned_to)
+    if @issue.save and @issue.is_issue?
+        save = true
+        @project = @issue.project
+        @file_attachment = FileAttachment.new
+        @file_attachment.container_type="issue"
+        @file_attachment.container_id = @issue.id
+        # La tache est assignee
+         if params[:assigned_to_id]
+          new_assignments = params[:assigned_to_id]
+          Assignment.delete(@issue)
+          #Création des assignations à la tâche
+          new_assignments.each do |assigned_to|
+            unless Assignment.exist?(@issue.id,assigned_to)
+              @issue.assignments << Assignment.new(:issue_id=>@issue.id, :user_id=>assigned_to)
+            end
           end
-
+         else
+           # La tache n est pas assignee
+          Assignment.delete(@issue)
         end
-      end
-    end
-     session[:project] = @issue.project
-     respond_to do |format|
+        session[:project] = @issue.project
+        respond_to do |format|
+            format.js {
+              render:update do |page|
+                if params[:continue]
+                     page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'new')}');"
+                     page << display_message_error(l(:notice_successful_create), "fieldNotice")
+                else
+                     page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'show')}');"
+                     page << display_message_error(l(:notice_successful_create), "fieldNotice")
+                end
+              end
+            }
+         end
+    else
+      respond_to do |format|
           format.js {
             render:update do |page|
-              if params[:continue]
-                 page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'new')}');"
-              else
-                 page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'show')}');"
-              end
+               page << display_message_error(@issue, "fieldError")
             end
           }
-     end 
+       end
+    end     
   end
   
   # Attributes that can be updated on workflow transition (without :edit permission)
@@ -270,15 +286,19 @@ class IssuesController < ApplicationController
   def update
     @issue = Issue.find(params[:id])
     if @issue.update_attributes(params[:issue])
+      # La tache est assignee
        if params[:assigned_to_id]
         new_assignments = params[:assigned_to_id]
-        Assignment.delete(@issue, new_assignments)
+        Assignment.delete(@issue)
         #Création des assignations à la tâche
         new_assignments.each do |assigned_to|
-          if !Assignment.exist?(@issue.id,assigned_to)
-            Assignment.create(:issue_id=>@issue.id, :user_id=>assigned_to)
+          unless Assignment.exist?(@issue.id,assigned_to)
+            @issue.assignments << Assignment.new(:issue_id=>@issue.id, :user_id=>assigned_to)
           end
         end
+       else
+         # La tache n est pas assignee
+        Assignment.delete(@issue)
       end
       @journals = @issue.journals.find(:all, :include => [:user, :details], :order => "#{Journal.table_name}.created_on ASC")
       @journals.each_with_index {|j,i| j.indice = i+1}
@@ -296,10 +316,25 @@ class IssuesController < ApplicationController
           format.html {}
           format.js {
             render(:update) {|page| 
-              page.replace_html "content_wrapper", :partial => 'issues/show'}
+              page.replace_html "content_wrapper", :partial => 'issues/show'
+              page << display_message_error(l(:notice_successful_update), "fieldNotice")
+              }
           }
         end
+    else
+       respond_to do |format|
+          format.html {}
+          format.js {
+            render(:update) {|page|
+              page.replace_html "content_wrapper", :partial => 'issues/show'
+              page << display_message_error(l(:error_can_t_do), "fieldError")
+              }
+          }
+        end
+
     end
+
+
   end
 
 
@@ -318,15 +353,19 @@ class IssuesController < ApplicationController
       attrs.delete(:status_id) unless @allowed_statuses.detect {|s| s.id.to_s == attrs[:status_id].to_s}
       @issue.attributes = attrs
       if @issue.is_issue?
-        if params[:assigned_to_id]
+        # La tache est assignee
+         if params[:assigned_to_id]
           new_assignments = params[:assigned_to_id]
-          Assignment.delete(@issue, new_assignments)
+          Assignment.delete(@issue)
           #Création des assignations à la tâche
           new_assignments.each do |assigned_to|
-            if !Assignment.exist?(@issue.id,assigned_to)
-              Assignment.create(:issue_id=>@issue.id, :user_id=>assigned_to)
+            unless Assignment.exist?(@issue.id,assigned_to)
+              @issue.assignments << Assignment.new(:issue_id=>@issue.id, :user_id=>assigned_to)
             end
           end
+         else
+           # La tache n est pas assignee
+          Assignment.delete(@issue)
         end
       end
     end
@@ -470,7 +509,11 @@ class IssuesController < ApplicationController
         return
       end
     end
-    @issues.each(&:destroy)
+    if @issues.each(&:destroy)
+      flash[:notice] = l(:notice_successful_delete) unless @issues.empty?
+    else
+      flash[:error] = l(:error_can_t_do) unless @issues.empty?
+    end
     redirect_to :action => 'index', :project_id => @project
   end
   

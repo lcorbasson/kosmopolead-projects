@@ -19,24 +19,35 @@ class FundingLinesController < ApplicationController
   def update
     @funding_line = FundingLine.find(params[:id])
     @project = Project.find_by_identifier(params[:project_id])
-    if @funding_line.update_attributes(params[:funding_line])
-      show_funding
-       respond_to do |format|
-          format.js { render(:update) {|page| page.replace_html "tab-content-funding", :partial => 'funding_lines/index',:locals=>{:funding_lines=>@project.funding_lines}} }
-      end
-    end    
+    show_funding
+    respond_to do |format|
+        format.js { render(:update) {|page|
+                        if @funding_line.update_attributes(params[:funding_line])                            
+                            page.replace_html "tab-content-funding", :partial => 'funding_lines/index',:locals=>{:funding_lines=>@project.funding_lines}
+                            page << display_message_error(l(:notice_successful_update), "fieldNotice")
+                        else
+                          page << display_message_error(@funding_line, "fieldError")
+                        end
+                    }
+         }
+    end       
   end
 
   def create
     @funding_line = FundingLine.new(params[:funding_line])
     @project = Project.find_by_identifier(params[:project_id])
     @funding_line.project_id = @project.id
-    if @funding_line.save
-       show_funding
-
-      respond_to do |format|
-          format.js { render(:update) {|page| page.replace_html "tab-content-funding", :partial => 'funding_lines/index',:locals=>{:funding_lines=>@project.funding_lines}} }
-      end
+    show_funding
+    respond_to do |format|
+        format.js { render(:update) {|page|
+              if @funding_line.save                  
+                  page.replace_html "tab-content-funding", :partial => 'funding_lines/index',:locals=>{:funding_lines=>@project.funding_lines}
+                  page << display_message_error(l(:notice_successful_create), "fieldNotice")
+              else
+                  page << display_message_error(@funding_line, "fieldError")
+              end
+              }
+        }
     end
   end
 

@@ -1,17 +1,27 @@
-<%= error_messages_for 'relation' %>
-<%  values = ProjectRelation::TYPES %>
-<p><%= f.select :project_relation_type_id, ProjectRelationType.all.collect{|t| [t.relation_type, t.id]}, {}, :onchange => "setPredecessorFieldsVisibility();" %>
-<%= f.select :project_to_id,Project.all.collect{|p| [p.name, p.id]} %>
-<span id="predecessor_fields" style="display:none;">
-<%= l(:field_delay) %>: <%= f.text_field :delay, :size => 3 %> <%= l(:label_day_plural) %>
-</span>
-
-
-
-<div class="buttons">
-<%= submit_tag l(:button_add),:class=>"button btn_blue corner-all" %>
+<% if ProjectRelationType.all.size>0 %>
+  <%= error_messages_for 'relation' %>
+  <%  values = ProjectRelation::TYPES %>
+  <h3><%= l(:label_new_relation) %></h3>
+  <div style="margin-left:5px;">
+    <p><%= f.select :project_relation_type_id, ProjectRelationType.all.collect{|t| [t.relation_type, t.id]}, {}, :onchange => "setPredecessorFieldsVisibility();" %>
+    <%= f.select :project_to_id,Project.all.collect{|p| [p.name, p.id]} %>
+    <span id="predecessor_fields" style="display:none;">
+    <%= l(:field_delay) %>: <%= f.text_field :delay, :size => 3 %> <%= l(:label_day_plural) %>
+    </span>
+  </div>
+    <div class="buttons-icons right">
+      <a class="btn_blue ui-corner-all button"  onclick="javascript:jQuery.ajax({data:jQuery.param(jQuery('#new-relation-form').serializeArray()), dataType:'script', type:'post', url:'<%= project_project_relations_path(@project) %>'}); return false;"><%= image_tag("accept3.png") %></a>
+      <%= toggle_link image_tag('delete2.png'), 'new-relation-form'%>
+    </div>
+    </p>
+    <%= javascript_tag "setPredecessorFieldsVisibility();" %>
+  
+<% else %>
+  <div class="fieldWarning">
+    <%= l(:no_project_relation_type_defined) %>
+  </div>
+  <div class="buttons right">
 <%= toggle_link l(:button_cancel), 'new-relation-form'%>
 </div>
-</p>
-
-<%= javascript_tag "setPredecessorFieldsVisibility();" %>
+<% end %>
+<div class="clearer"></div>

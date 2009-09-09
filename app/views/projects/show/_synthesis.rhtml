@@ -20,18 +20,7 @@
       <div id="synthesis" style="padding-top:20px;"></div>
 </div>
 
-<%# remote_form_for(:project, project,
-                 :url => { :controller => 'projects', :action => 'edit_part_synthesis', :project_id => project.id} ,
-                 :method => :put,
-                 :html => {:id => 'update-synthesis-form',:style=>'display:none;'}) do |f| %>
-  <%#= f.text_area :synthesis, :rows => 20, :class => 'wiki-edit' %>
-  <%#*<div class="buttons">%>
-    <%#= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
-    <%#= toggle_link l(:button_cancel), 'update-synthesis-form',{:second_element=>"synthesis"}%>
-  <%#*</div>%>
-<%# end %>
 
- <%#= wikitoolbar_for 'project_synthesis' %>
 <script>
   function toggle_synthesis(){
     $("project-synthesis-bloc").toggle();

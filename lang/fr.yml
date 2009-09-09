@@ -58,6 +58,8 @@ general_pdf_encoding: ISO-8859-1
 general_day_names: Lundi,Mardi,Mercredi,Jeudi,Vendredi,Samedi,Dimanche
 general_first_day_of_week: '1'
 
+notice_login_succesful: Vous êtes désormais connecté
+notice_logout_succesful: Vous êtes désormais déconnecté
 notice_account_updated: Le compte a été mis à jour avec succès.
 notice_account_invalid_creditentials: Identifiant ou mot de passe invalide.
 notice_account_password_updated: Mot de passe mis à jour avec succès.
@@ -70,6 +72,8 @@ notice_account_activated: Votre compte a été activé. Vous pouvez à présent 
 notice_successful_create: Création effectuée avec succès.
 notice_successful_update: Mise à jour effectuée avec succès.
 notice_successful_delete: Suppression effectuée avec succès.
+notice_successful_archive: Archivage effectué avec succès.
+notice_successful_unarchive: Désarchivage effectué avec succès.
 notice_successful_connection: Connection réussie.
 notice_file_not_found: "La page à laquelle vous souhaitez accéder n'existe pas ou a été supprimée."
 notice_locking_conflict: Les données ont été mises à jour par un autre utilisateur. Mise à jour impossible.
@@ -83,6 +87,8 @@ notice_account_pending: "Votre compte a été créé et attend l'approbation de 
 notice_default_data_loaded: Paramétrage par défaut chargé avec succès.
 notice_unable_delete_version: Impossible de supprimer cette version.
 
+error_no_tracker: " Aucun traqueur n'est associé à ce projet. Veuillez vérifier les paramètres du projet."
+error_can_t_do: "Une erreur s'est produite, veuillez renouveler votre demande ultérieurement"
 error_can_t_load_default_data: "Une erreur s'est produite lors du chargement du paramétrage: %s"
 error_scm_not_found: "L'entrée et/ou la révision demandée n'existe pas dans le dépôt."
 error_scm_command_failed: "Une erreur s'est produite lors de l'accès au dépôt: %s"
@@ -303,6 +309,9 @@ project_module_wiki: Wiki
 project_module_repository: Dépôt de sources
 project_module_boards: Forums de discussion
 
+label_new_photo: Nouvelle photo
+label_new_member: Nouveau membre
+label_new_relation: Nouvelle liaison
 label_project_relation__plural: Relations entre les projets
 label_status: Statut
 label_category: Catégorie
@@ -814,6 +823,11 @@ project_add_relation: Pour ajouter une relation, cliquez sur le bouton
 project_add_description: Pour ajouter une description, cliquez sur le bouton
 project_add_synthesis: Pour ajouter une synthèse, cliquez sur le bouton
 project_add_funding: Pour ajouter une ligne de financement, cliquez sur le bouton
+
+
+no_users_to_members: "Tous les utilisateurs sont déjà intégrés au projet"
+no_project_relation_type_defined: "Vous n'avez créé aucun type de relation entre les projets."
+
 
 hours: heures
 days: jours

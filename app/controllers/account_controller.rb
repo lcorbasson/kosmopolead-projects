@@ -24,18 +24,18 @@ class AccountController < ApplicationController
   skip_before_filter :check_if_login_required, :only => [:login, :lost_password, :register, :activate]
 
   # Show user's account
-  def show
+   def show
     @user = User.active.find(params[:id])
     @custom_values = @user.custom_values
-    
+
     # show only public projects and private projects that the logged in user is also a member of
     @memberships = @user.memberships.select do |membership|
       membership.project.is_public? || (User.current.member_of?(membership.project))
     end
-    
+
     events = Redmine::Activity::Fetcher.new(User.current, :author => @user).events(nil, nil, :limit => 10)
     @events_by_day = events.group_by(&:event_date)
-    
+
   rescue ActiveRecord::RecordNotFound
     render_404
   end
@@ -65,6 +65,7 @@ class AccountController < ApplicationController
           cookies[:autologin] = { :value => token.value, :expires => 1.year.from_now }
         end
         call_hook(:controller_account_success_authentication_after, {:user => user })
+        flash[:notice] = l(:notice_login_succesful)
         redirect_to :controller => 'my', :action => 'page'
       end
     end
@@ -75,6 +76,7 @@ class AccountController < ApplicationController
     cookies.delete :autologin
     Token.delete_all(["user_id = ? AND action = ?", User.current.id, 'autologin']) if User.current.logged?
     self.logged_user = nil
+    flash[:notice] = l(:notice_logout_succesful)
     redirect_to home_url
   end
   

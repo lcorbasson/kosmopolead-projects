@@ -200,7 +200,7 @@ module IssuesHelper
 
   def show_assigned_to(issue)
     return "-" if issue.assignments.nil?
-    html =""
+    html = ""
     issue.assignments.each_with_index do |assignment,index|
       user = assignment.user     
       html += avatar(user, :size => "14") ? avatar(user, :size => "14") : ""

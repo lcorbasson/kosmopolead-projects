@@ -47,9 +47,11 @@ class ProjectsController < ApplicationController
   include ProjectsHelper
 
   # Lists visible projects
-  def index
-    if session[:project]
-      @project = Project.find(session[:project].id)
+  def index  
+    if session[:project]     
+      if !@project = Project.find(session[:project].id)
+        @project = @projects.first
+      end
     else
       @project = @projects.first
     end
@@ -141,7 +143,7 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
                     render:update do |page|
                       page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
                       page << "jQuery('#projects_menu').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
-                      page << display_message_error("notice_successful_create", "fieldNotice")
+                      page << display_message_error(l(:notice_successful_create), "fieldNotice")
                     end
                 }
             end
@@ -268,6 +270,7 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
             when "synthesis"
               page.replace_html "tab-content-synthesis", :partial => 'projects/show/synthesis',:locals=>{:project=>@project}
           end
+          page << display_message_error(l(:notice_successful_update), "fieldNotice")
           @project.save
         end
       }
@@ -300,11 +303,13 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
 
   def archive
     @project.archive if request.post? && @project.active?
+    flash[:notice] = l(:notice_successful_archive)
     redirect_to :controller => 'admin', :action => 'projects'
   end
 
   def unarchive
     @project.unarchive if request.post? && !@project.active?
+    flash[:notice] = l(:notice_successful_unarchive)
     redirect_to :controller => 'admin', :action => 'projects'
   end
 
@@ -312,9 +317,14 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
   def destroy
     @project_to_destroy = @project
     if request.post? and params[:confirm]
-      @project_to_destroy.destroy
-      redirect_to :controller => 'admin', :action => 'projects'
-
+      if @project_to_destroy.destroy
+        session[:project] = nil
+        flash[:notice] = l(:notice_successful_delete)
+        redirect_to :controller => 'admin', :action => 'projects'
+      else
+        flash[:error] = l(:error_can_t_do)
+        redirect_to :controller => 'admin', :action => 'projects'
+      end
     end
     # hide project in layout
     @project = nil

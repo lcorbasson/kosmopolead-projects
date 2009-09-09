@@ -41,7 +41,7 @@
       <p> <label><%= l(:label_priority) %></label><%= f.select :priority_id, (@priorities.collect {|p| [p.name, p.id]}), :required => true %></p>
      <p> <label><%= l(:label_assigned_to) %></label>
         <%= select_tag 'assigned_to_id[]',
-          options_for_select(@issue.assignable_users.collect {|m| [m.name, m.id]}),
+          options_for_select(@issue.assignable_users.collect {|m| [m.name, m.id]}, @issue.assignments.collect { |m| m.user_id}),
           :multiple => true, :size => 10, :style => "width:150px" %>
       </p>
      

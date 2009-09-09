@@ -20,6 +20,19 @@ class Issue < ActiveRecord::Base
 
   RELATION_TYPE = [ 'stage', 'issue', 'none']
 
+ # -- validation
+
+  validates_presence_of :subject
+  validates_presence_of :priority
+  validates_presence_of :project
+  validates_presence_of :tracker
+  validates_presence_of :author
+  validates_presence_of :status
+  validates_length_of :subject, :maximum => 255
+  validates_inclusion_of :done_ratio, :in => 0..100
+  validates_numericality_of :estimated_hours, :allow_nil => true
+
+
   # -- relations
 
   belongs_to :issue_type
@@ -56,10 +69,7 @@ class Issue < ActiveRecord::Base
   acts_as_activity_provider :find_options => {:include => [:project, :author, :tracker]},
                             :author_key => :author_id
   
-  validates_presence_of :subject, :priority, :project, :tracker, :author, :status
-  validates_length_of :subject, :maximum => 255
-  validates_inclusion_of :done_ratio, :in => 0..100
-  validates_numericality_of :estimated_hours, :allow_nil => true
+  
 
   named_scope :stages,:include=>[:type],:conditions=>["#{IssueType.table_name}.name = ?","STAGE"]
   named_scope :milestones,:include=>[:type],:conditions=>["#{IssueType.table_name}.name = ?","MILESTONE"]

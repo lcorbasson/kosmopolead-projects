@@ -731,11 +731,9 @@ module ApplicationHelper
   #   contenu
   # <% end %>
   def box(title, contenu, links=[])
-    if links.size>0
+    if links.size>0    
       links_str = "<div class='box_links'>"
-      links.each do |link|
-        links_str += "#{link}"
-      end
+      links_str += links.join(' ')      
       links_str += "</div>"
     end
 

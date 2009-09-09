@@ -65,6 +65,7 @@ class AccountController < ApplicationController
           cookies[:autologin] = { :value => token.value, :expires => 1.year.from_now }
         end
         call_hook(:controller_account_success_authentication_after, {:user => user })
+        flash[:notice] = l(:notice_login_succesful)
         redirect_to :controller => 'my', :action => 'page'
       end
     end
@@ -75,6 +76,7 @@ class AccountController < ApplicationController
     cookies.delete :autologin
     Token.delete_all(["user_id = ? AND action = ?", User.current.id, 'autologin']) if User.current.logged?
     self.logged_user = nil
+    flash[:notice] = l(:notice_logout_succesful)
     redirect_to home_url
   end
   

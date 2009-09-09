@@ -1,34 +1,34 @@
 <%= error_messages_for 'user' %>
 
 <!--[form:user]-->
+<span class="tabular">
+  <p><label><%= l("field_login") %></label><%= f.text_field :login, :required => true, :size => 25  %></p>
+  <p><label><%= l("field_firstname") %></label><%= f.text_field :firstname, :required => true %></p>
+  <p><label><%= l("field_lastname") %></label><%= f.text_field :lastname, :required => true %></p>
+  <p><label><%= l("field_mail") %></label><%= f.text_field :mail, :required => true %></p>
+  <p><label><%= l("field_language") %></label><%= f.select :language, lang_options_for_select %></p>
+  <p><label><%=  l(:label_partner) %></label><%= select_tag :partner, options_for_select(@partners.collect {|p| [p.name, p.id]}),
+            :multiple => true,:style=>"width:200px"  %></p>
 
-<p><%= f.text_field :login, :required => true, :size => 25  %></p>
-<p><%= f.text_field :firstname, :required => true %></p>
-<p><%= f.text_field :lastname, :required => true %></p>
-<p><%= f.text_field :mail, :required => true %></p>
-<p><%= f.select :language, lang_options_for_select %></p>
-<p><label><%=  l(:label_partner) %></label><%= select_tag :partner, options_for_select(@partners.collect {|p| [p.name, p.id]}),
-          :multiple => true,:style=>"width:200px"  %></p>
+  <% @user.custom_field_values.each do |value| %>
+          <p><%= custom_field_tag_with_label :user, value %></p>
+  <% end %>
 
-<% @user.custom_field_values.each do |value| %>
-	<p><%= custom_field_tag_with_label :user, value %></p>
-<% end %>
-
-<p><%= f.check_box :admin, :disabled => (@user == User.current) %></p>
-<%= call_hook(:view_users_form, :user => @user, :form => f) %>
+  <p><%= f.check_box :admin, :disabled => (@user == User.current) %></p>
+  <%= call_hook(:view_users_form, :user => @user, :form => f) %>
 
 
 
-<h3><%=l(:label_authentication)%></h3>
-<% unless @auth_sources.empty? %>
-<p><%= f.select :auth_source_id, ([[l(:label_internal), ""]] + @auth_sources.collect { |a| [a.name, a.id] }), {}, :onchange => "if (this.value=='') {Element.show('password_fields');} else {Element.hide('password_fields');}" %></p>
-<% end %>
-<div id="password_fields" style="<%= 'display:none;' if @user.auth_source %>">
-<p><label for="password"><%=l(:field_password)%><span class="required"> *</span></label>
-<%= password_field_tag 'password', nil, :size => 25  %><br />
-<em><%= l(:text_caracters_minimum, 4) %></em></p>
-<p><label for="password_confirmation"><%=l(:field_password_confirmation)%><span class="required"> *</span></label>
-<%= password_field_tag 'password_confirmation', nil, :size => 25  %></p>
-</div>
-
+  <h3><%=l(:label_authentication)%></h3>
+  <% unless @auth_sources.empty? %>
+  <p><%= f.select :auth_source_id, ([[l(:label_internal), ""]] + @auth_sources.collect { |a| [a.name, a.id] }), {}, :onchange => "if (this.value=='') {Element.show('password_fields');} else {Element.hide('password_fields');}" %></p>
+  <% end %>
+  <div id="password_fields" style="<%= 'display:none;' if @user.auth_source %>">
+  <p><label for="password"><%=l(:field_password)%><span class="required"> *</span></label>
+  <%= password_field_tag 'password', nil, :size => 25  %><br />
+  <em><%= l(:text_caracters_minimum, 4) %></em></p>
+  <p><label for="password_confirmation"><%=l(:field_password_confirmation)%><span class="required"> *</span></label>
+  <%= password_field_tag 'password_confirmation', nil, :size => 25  %></p>
+  </div>
+</span>
 <!--[eoform:user]-->

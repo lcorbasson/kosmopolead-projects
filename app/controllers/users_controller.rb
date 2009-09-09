@@ -69,6 +69,15 @@ class UsersController < ApplicationController
         Mailer.deliver_account_information(@user, params[:password]) if params[:send_information]
         flash[:notice] = l(:notice_successful_create)
         redirect_to :action => 'list'
+      else
+        respond_to do |format|
+             format.js{
+                render :update do |page|#
+                  page << display_message_error(@user, "fieldError")
+               end
+             }
+        end
+        #redirect_to :action => 'add'
       end
     end
     @auth_sources = AuthSource.find(:all)

@@ -35,7 +35,7 @@
       </div>
 
     <div class="editable_box">
-      <div class="links_edit_box">
+      <div class="links_edit_box" >
         <%#= toggle_link image_tag("/images/edit.png"), 'update-description-form',{:second_element=>"description"}%>
         <%= link_to_remote "#{image_tag('/images/edit.png')}",
                          { :url => { :controller => 'projects', :action => 'edit_part_description', :project_id => project.id},

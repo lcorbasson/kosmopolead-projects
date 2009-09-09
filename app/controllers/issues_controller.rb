@@ -237,17 +237,20 @@ class IssuesController < ApplicationController
       @file_attachment = FileAttachment.new
       @file_attachment.container_type="issue"
       @file_attachment.container_id = @issue.id
-      if params[:assigned_to_id]
-        new_assignments = params[:assigned_to_id]
-        Assignment.delete(@issue, new_assignments)
-        #Création des assignations à la tâche
-        new_assignments.each do |assigned_to|
-          if !Assignment.exist?(@issue.id,assigned_to)
-            Assignment.create(:issue_id=>@issue.id, :user_id=>assigned_to)
+        # La tache est assignee
+         if params[:assigned_to_id]
+          new_assignments = params[:assigned_to_id]
+          Assignment.delete(@issue)
+          #Création des assignations à la tâche
+          new_assignments.each do |assigned_to|
+            unless Assignment.exist?(@issue.id,assigned_to)
+              @issue.assignments << Assignment.new(:issue_id=>@issue.id, :user_id=>assigned_to)
+            end
           end
-
+         else
+           # La tache n est pas assignee
+          Assignment.delete(@issue)
         end
-      end
     end
      session[:project] = @issue.project
      respond_to do |format|
@@ -270,15 +273,19 @@ class IssuesController < ApplicationController
   def update
     @issue = Issue.find(params[:id])
     if @issue.update_attributes(params[:issue])
+      # La tache est assignee
        if params[:assigned_to_id]
         new_assignments = params[:assigned_to_id]
-        Assignment.delete(@issue, new_assignments)
+        Assignment.delete(@issue)
         #Création des assignations à la tâche
         new_assignments.each do |assigned_to|
-          if !Assignment.exist?(@issue.id,assigned_to)
-            Assignment.create(:issue_id=>@issue.id, :user_id=>assigned_to)
+          unless Assignment.exist?(@issue.id,assigned_to)
+            @issue.assignments << Assignment.new(:issue_id=>@issue.id, :user_id=>assigned_to)
           end
         end
+       else
+         # La tache n est pas assignee
+        Assignment.delete(@issue)
       end
       @journals = @issue.journals.find(:all, :include => [:user, :details], :order => "#{Journal.table_name}.created_on ASC")
       @journals.each_with_index {|j,i| j.indice = i+1}
@@ -318,15 +325,19 @@ class IssuesController < ApplicationController
       attrs.delete(:status_id) unless @allowed_statuses.detect {|s| s.id.to_s == attrs[:status_id].to_s}
       @issue.attributes = attrs
       if @issue.is_issue?
-        if params[:assigned_to_id]
+        # La tache est assignee
+         if params[:assigned_to_id]
           new_assignments = params[:assigned_to_id]
-          Assignment.delete(@issue, new_assignments)
+          Assignment.delete(@issue)
           #Création des assignations à la tâche
           new_assignments.each do |assigned_to|
-            if !Assignment.exist?(@issue.id,assigned_to)
-              Assignment.create(:issue_id=>@issue.id, :user_id=>assigned_to)
+            unless Assignment.exist?(@issue.id,assigned_to)
+              @issue.assignments << Assignment.new(:issue_id=>@issue.id, :user_id=>assigned_to)
             end
           end
+         else
+           # La tache n est pas assignee
+          Assignment.delete(@issue)
         end
       end
     end

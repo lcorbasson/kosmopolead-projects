@@ -12,12 +12,11 @@ class Assignment < ActiveRecord::Base
   end
 
   # appelé lors de la création ou l'édition d'une tache
-  def self.delete(issue, news_assigned)
+  def self.delete(issue)
     issue.assignments.each do |assignment|
-        if !news_assigned.include?(assignment.user_id)
-          assignment.destroy
-        end
+      assignment.destroy
     end
+    issue.save
   end
   
 end

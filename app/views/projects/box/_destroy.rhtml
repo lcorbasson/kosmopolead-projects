@@ -7,7 +7,7 @@
 <% end %>
 </p>
 
-    <% form_tag({:controller => 'projects', :action => 'destroy', :id => @project_to_destroy}) do %>
+    <% form_tag( "/projects/destroy/#{@project_to_destroy.identifier}" ) do %>
     <label><%= check_box_tag 'confirm', 1 %> <%= l(:general_text_Yes) %></label>
     <div class="buttons right">
       <%= submit_tag l(:button_delete),:class=>"button btn_blue corner-all" %>

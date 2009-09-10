@@ -801,7 +801,7 @@ module ApplicationHelper
     link= "#{toggle_link image_tag("/images/edit.png"), 'update-profile-form',{:second_element=>"infos_project"}}"
     content_tag(:div,
       content_tag(:div,content_tag(:div,title,:class=>"left",:style=>"max-width:90%;")+content_tag(:div,link,:class=>"links_edit_box")+content_tag(:div,"",:class=>"clearer"),:class=>'profile_header')+
-      content_tag(:div,content,:class=>'profile_content'),:class=>"profile editable_box")
+      content_tag(:div,content,:class=>'profile_content'),:class=>"profile editable_box",:style=>"max-width:100%;")
   end
 
 

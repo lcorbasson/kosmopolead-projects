@@ -1,4 +1,4 @@
-<% remote_form_for :user, user, :url => { :action => "add" },:class=>"tabular" do |f| %>
+<% form_for :user, user, :url => { :action => "add" },:class=>"tabular" do |f| %>
 <%= render :partial => 'form', :locals => { :f => f } %>
 <div class="buttons right">
   <%= submit_tag l(:button_create),:class=>"btn_blue corner-all button" %>

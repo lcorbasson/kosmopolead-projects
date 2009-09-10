@@ -91,8 +91,9 @@ jQuery(
 	               feed.attr("id", elemid + "_feed");
 	               
 	               complete.prepend(feed);
-	               holder.after(complete);
-				   feed.css("width",complete.width());
+	               holder.after(complete);                   
+				   feed.css("width","350px"); 
+
 		        }
 	        	
 		        function preSet()

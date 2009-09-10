@@ -1,8 +1,10 @@
 <% case @issue.type.name
    when "ISSUE" %>
-    <%  @title = "#{@issue.tracker.name} # #{@issue.id} : #{@issue.subject}"%>
+    <%  @title = "projet #{@issue.project.acronym} tâche #{@issue.subject}"%>
+  <%  when "STAGE" %>
+    <%  @title = "projet #{@issue.project.acronym} phase #{@issue.subject}"%>
   <% else %>
-      <%  @title = "#{l(@issue.type.name)} # #{@issue.id} : #{@issue.subject}"%>
+      <%  @title = "projet #{@issue.project.acronym} jalon #{@issue.subject}"%>
 <% end %>
 
 <%= box(

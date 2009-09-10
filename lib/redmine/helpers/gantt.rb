@@ -22,9 +22,10 @@ module Redmine
       attr_reader :year_from, :month_from, :date_from, :date_to, :zoom, :months, :events
     
       def initialize(options={})
+      
         options = options.dup
         @events = []
-        
+          puts "#{options}"
         if options[:year] && options[:year].to_i >0
           @year_from = options[:year].to_i
           if options[:month] && options[:month].to_i >=1 && options[:month].to_i <= 12

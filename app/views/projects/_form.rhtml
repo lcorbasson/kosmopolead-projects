@@ -42,10 +42,6 @@
   <%= f.select :sector, list_sectors(current_language).collect{|s| [s.name, s.activity_sector_id] } %>
 </p>
 <p>
-  <label><%= l(:label_is_public) %></label>
-  <%= f.check_box :is_public %>
-</p>
-<p>
   <label><%= l(:label_status) %></label>
   <%= f.select :status, Project::STATUS.collect{|key, value| [l(key), value]} %>
 </p>

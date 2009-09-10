@@ -3,8 +3,18 @@
       <%= textilizable project.description %>
     <% else %>
       <div class="emptymessage">
-            <p><%= l(:project_add_description) %><%=  image_tag('/images/edit.png') %></p>
+            <p><%= l(:project_add_description) %>
+               <%= link_to_remote "#{image_tag('/images/edit.png')}",
+                         { :url => { :controller => 'projects', :action => 'edit_part_description', :project_id => project.id},
+                           :method => 'get',
+                           :update=>'description',
+                           :with=>'toggle_description()'
+                         } %>
+
+            </p>
      </div>
   <% end %>
 </div>
 <div id="description"></div>
+
+

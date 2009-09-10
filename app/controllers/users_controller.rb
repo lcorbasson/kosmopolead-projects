@@ -59,6 +59,7 @@ class UsersController < ApplicationController
       @partners = Partner.all
     else
       @user = User.new(params[:user])
+      @user = User.create(params[:user])
       @user.admin = params[:user][:admin] || false
       @user.login = params[:user][:login]     
       @user.password, @user.password_confirmation = params[:password], params[:password_confirmation] unless @user.auth_source_id
@@ -68,16 +69,10 @@ class UsersController < ApplicationController
         end
         Mailer.deliver_account_information(@user, params[:password]) if params[:send_information]
         flash[:notice] = l(:notice_successful_create)
-        redirect_to :action => 'list'
+        redirect_to :controller => 'users'
       else
-        respond_to do |format|
-             format.js{
-                render :update do |page|#
-                  page << display_message_error(@user, "fieldError")
-               end
-             }
-        end
-        #redirect_to :action => 'add'
+        @partners = Partner.all
+        render :action => 'add', :layout => false if request.xhr?
       end
     end
     @auth_sources = AuthSource.find(:all)

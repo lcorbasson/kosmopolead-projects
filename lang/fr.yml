@@ -39,7 +39,8 @@ activerecord_error_not_a_date: n'est pas une date valide
 activerecord_error_greater_than_start_date: doit être postérieur à la date de début
 activerecord_error_not_same_project: n'appartient pas au même projet
 activerecord_error_circular_dependency: Cette relation créerait une dépendance circulaire
-
+activerecord_error_due_date_less_than_parent: doit être inférieure ou égale à la date de fin de son parent
+activerecord_error_start_date_greater_than_parent: doit être supérieure ou égale à la date de début de son parent
 general_fmt_age: %d an
 general_fmt_age_plural: %d ans
 general_fmt_date: %%d/%%m/%%Y
@@ -86,6 +87,7 @@ notice_no_issue_selected: "Aucune demande sélectionnée ! Cochez les demandes q
 notice_account_pending: "Votre compte a été créé et attend l'approbation de l'administrateur."
 notice_default_data_loaded: Paramétrage par défaut chargé avec succès.
 notice_unable_delete_version: Impossible de supprimer cette version.
+notice_account_created: Le compte a bien été crée
 
 error_no_tracker: " Aucun traqueur n'est associé à ce projet. Veuillez vérifier les paramètres du projet."
 error_can_t_do: "Une erreur s'est produite, veuillez renouveler votre demande ultérieurement"
@@ -309,6 +311,10 @@ project_module_wiki: Wiki
 project_module_repository: Dépôt de sources
 project_module_boards: Forums de discussion
 
+legend_milestone: Jalon
+legend_issue_in_late: Retard
+legend_issue_done: Réalisé
+legend_issue_todo: A faire
 label_new_photo: Nouvelle photo
 label_new_member: Nouveau membre
 label_new_relation: Nouvelle liaison

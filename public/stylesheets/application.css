@@ -196,7 +196,7 @@ h1 {
 }
 .error_message, .errorExplanation {
   color: #d12f19;
-  background-color: #fbe3e4;
+  background-color: #E20000;
   border-color: #fbc2c4;
 }
 .neutral_message {
@@ -627,7 +627,10 @@ table.cal td.today p.day-num {font-weight: bold;}
 /***** Tooltips ******/
 .tooltip{position:relative;z-index:24;}
 .tooltip:hover{z-index:25;color:#000;}
-.tooltip span.tip{display: none; text-align:left;}
+.tooltip span.tip{font-size:11px;display: none; text-align:left;-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+
+-moz-border-radius-topright:10px;}
 
 div.tooltip:hover span.tip{
 display:block;
@@ -823,30 +826,38 @@ background-image:url('../images/close_hl.png');
   position:absolute;
   top:0;
   height:16px;
-  border-top: 1px solid #c0c0c0;
-  border-bottom: 1px solid #c0c0c0;
-  border-right: 1px solid #c0c0c0;
+  border-top: 1px solid #DDDDDD;
+  border-bottom: 1px solid #EEEEEE;
+  border-right: 1px solid #EEEEEE;
   text-align: center;
   overflow: hidden;
 }
 
 .task {
   position: absolute;
-  height:8px;
-  font-size:0.8em;
-  color:#888;
+  height:11px;
+  font-size:11px;
+  color:#333333;
   padding:0;
   margin:0;
-  line-height:0.8em;
+  line-height:11px;
 }
 
-.task_late { background:#f66 url(../images/task_late.png); border: 1px solid #f66; }
-.task_done { background:#66f url(../images/task_done.png); border: 1px solid #66f; }  
-.task_todo { background:#aaa url(../images/task_todo.png); border: 1px solid #aaa; }
+.task_late { height:10px;background:#E20000; border: 1px solid #E20000; }
+.task_done { height:10px;background:#6AC500; border: 1px solid #6AC500; }
+.task_todo { height:10px;background:#C0C0C0; border: 1px solid #C0C0C0; }
 .milestone { background-image:url(../images/milestone.png); background-repeat: no-repeat; border: 0; }
 
 /***** Icons *****/
 .icon {
+background-position: 0% 40%;
+background-repeat: no-repeat;
+padding-left: 20px;
+padding-top: 2px;
+padding-bottom: 3px;
+}
+
+.icon_visu {
 background-position: 0% 40%;
 background-repeat: no-repeat;
 padding-left: 5px;
@@ -1059,10 +1070,10 @@ height:17px;
 .buttons .btn_orange:hover {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_orange_hover.png) repeat-x}
 .buttons {margin-top:20px;}
 
-
+.buttons-icons {margin:5px;}
 .buttons-icons .button {cursor:pointer;text-decoration:none;}
-.buttons-icons .btn_blue {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_blue.png) repeat-x}
-.buttons-icons .btn_orange {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_orange.png) repeat-x}
+.buttons-icons .btn_blue {height:20px;padding:2px 10px 2px 10px;background:url(/images/bg_blue.png) repeat-x}
+.buttons-icons .btn_orange {height:20px;padding:2px 10px 2px 10px;background:url(/images/bg_orange.png) repeat-x}
 .buttons-icons a.btn_orange{padding-top:3px;}
 
 
@@ -1130,7 +1141,7 @@ height:17px;
 #photo_index {margin-top:10px;}
 #photo_index img {margin:5px;}
 
-
+#funding_lines_index {margin-top:20px;}
 #editmodfunding_fields_list,#alertmod,#delmodfunding_fields_list,#srchmodfunding_fields_list {position:absolute;width:auto;}
 #tab-content-funding .ui-jqgrid .loading{z-index:940;}
 #gview_funding_fields_list .ui-jqgrid tr.jqgrow td{border:1px solid #DDDDDD;}
@@ -1142,9 +1153,10 @@ height:17px;
 
 .links_edit_box {display:none;float:right}
 
-#update-tags-form ul.holder,.facebook-auto{width:380pborder:none;}
 
+#update-tags-form ul.holder,.facebook-auto{width:380px;border:none;display:block;}
 
+#tags_feed{width:200px;}
 
 .emptymessage {
 -moz-border-radius-bottomleft:5px;

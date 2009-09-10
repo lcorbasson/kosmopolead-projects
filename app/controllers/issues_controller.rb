@@ -26,7 +26,7 @@ class IssuesController < ApplicationController
   before_filter :find_issue, :only => [:show, :edit, :reply]
   before_filter :find_issues, :only => [:bulk_edit, :move, :destroy]
   before_filter :find_project, :only => [:update,:calendar,:gantt,:index,:create,:new, :update_form, :preview]
-
+  before_filter :find_root_projects,:only=>[:create]
   before_filter :find_projects, :only => [:update,:gantt, :index, :calendar,:new,:show,:create]
   before_filter :authorize, :except => [:update,:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
 
@@ -209,16 +209,10 @@ class IssuesController < ApplicationController
 
 
   def create
-    @issue = Issue.new   
-    @journals = @issue.journals.find(:all, :include => [:user, :details], :order => "#{Journal.table_name}.created_on ASC")
-    @issue.copy_from(params[:copy_from]) if params[:copy_from]
-    @issue.project = @project
-    # Tracker must be set before custom field values
-    @issue.tracker ||= @project.trackers.find((params[:issue] && params[:issue][:tracker_id]) || params[:tracker_id] || :first)
-    @issue.issue_types_id ||= IssueType.find((params[:issue] && params[:issue][:issue_type_id]) || params[:issue_type_id] || :first)
-    @issue_types = IssueType.find(:all)
-    @users = User.all
-     @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
+    @issue = Issue.new(params[:issue])
+    has_error = false
+    find_info_issue
+    # Des trackers ont-ils été définis ?
     if @issue.tracker.nil?
       respond_to do |format|
           format.js {
@@ -233,42 +227,80 @@ class IssuesController < ApplicationController
       @issue.watcher_user_ids = params[:issue]['watcher_user_ids'] if User.current.allowed_to?(:add_issue_watchers, @project)
     end
     @issue.author = User.current
-    @priorities = Enumeration::get_values('IPRI')
-    if @issue.save and @issue.is_issue?
-        save = true
-        @project = @issue.project
-        @file_attachment = FileAttachment.new
-        @file_attachment.container_type="issue"
-        @file_attachment.container_id = @issue.id
-        # La tache est assignee
-         if params[:assigned_to_id]
-          new_assignments = params[:assigned_to_id]
-          Assignment.delete(@issue)
-          #Création des assignations à la tâche
-          new_assignments.each do |assigned_to|
-            unless Assignment.exist?(@issue.id,assigned_to)
-              @issue.assignments << Assignment.new(:issue_id=>@issue.id, :user_id=>assigned_to)
+    @priorities = Enumeration::get_values('IPRI')  
+    if params[:continue]
+        if @issue.save           
+            if @issue.is_issue?
+              # La tache est assignee
+               if params[:assigned_to_id]
+                create_assignments(params[:assigned_to_id])                
+               else
+                 # La tache n est pas assignee
+                Assignment.delete(@issue)
+               end
             end
-          end
-         else
-           # La tache n est pas assignee
-          Assignment.delete(@issue)
+            session[:project] = @issue.project            
+            respond_to do |format|
+                format.js {
+                  render:update do |page|
+                    page.replace_html "content_wrapper", :partial => 'new'
+                    page << display_message_error(l(:notice_successful_create), "fieldNotice")
+                  end
+                }
+             end
+        else
+         has_error = true
         end
-        session[:project] = @issue.project
-        respond_to do |format|
-            format.js {
-              render:update do |page|
-                if params[:continue]
-                     page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'new')}');"
-                     page << display_message_error(l(:notice_successful_create), "fieldNotice")
-                else
-                     page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'show')}');"
-                     page << display_message_error(l(:notice_successful_create), "fieldNotice")
-                end
-              end
-            }
-         end
     else
+      if !params[:id].blank?
+          @issue = Issue.find(params[:id])
+          if @issue.update_attributes(params[:issue])
+              @project = @issue.project
+              @file_attachment = FileAttachment.new
+              @file_attachment.container_type="issue"
+              @file_attachment.container_id = @issue.id
+              find_info_project  if @issue.is_stage?
+              respond_to do |format|
+                  format.js {
+                    render:update do |page|
+                       if @issue.is_stage?
+                         page.replace_html "content_wrapper", :partial => 'projects/show',:locals=>{:project=>@project}
+                       else
+                         page.replace_html "content_wrapper", :partial => 'show'
+                       end
+                       page << display_message_error(l(:notice_successful_create), "fieldNotice")
+                    end
+                  }
+               end
+           else
+             has_error = true
+           end
+      else         
+          find_info_issue        
+          if @issue.save
+            @file_attachment = FileAttachment.new
+              @file_attachment.container_type="issue"
+              @file_attachment.container_id = @issue.id
+              find_info_project  if @issue.is_stage?
+            find_info_project  if @issue.is_stage?
+            respond_to do |format|
+                format.js {
+                  render:update do |page|
+                     if @issue.is_stage?
+                       page.replace_html "content_wrapper", :partial => 'projects/show',:locals=>{:project=>@project}
+                     else
+                       page.replace_html "content_wrapper", :partial => 'show'
+                     end
+                     page << display_message_error(l(:notice_successful_create), "fieldNotice")
+                  end
+                }
+             end
+          else
+            has_error = true
+          end
+      end
+    end
+    if has_error
       respond_to do |format|
           format.js {
             render:update do |page|
@@ -276,7 +308,7 @@ class IssuesController < ApplicationController
             end
           }
        end
-    end     
+    end
   end
   
   # Attributes that can be updated on workflow transition (without :edit permission)
@@ -288,14 +320,7 @@ class IssuesController < ApplicationController
     if @issue.update_attributes(params[:issue])
       # La tache est assignee
        if params[:assigned_to_id]
-        new_assignments = params[:assigned_to_id]
-        Assignment.delete(@issue)
-        #Création des assignations à la tâche
-        new_assignments.each do |assigned_to|
-          unless Assignment.exist?(@issue.id,assigned_to)
-            @issue.assignments << Assignment.new(:issue_id=>@issue.id, :user_id=>assigned_to)
-          end
-        end
+         create_assignments(params[:assigned_to_id])
        else
          # La tache n est pas assignee
         Assignment.delete(@issue)
@@ -355,14 +380,7 @@ class IssuesController < ApplicationController
       if @issue.is_issue?
         # La tache est assignee
          if params[:assigned_to_id]
-          new_assignments = params[:assigned_to_id]
-          Assignment.delete(@issue)
-          #Création des assignations à la tâche
-          new_assignments.each do |assigned_to|
-            unless Assignment.exist?(@issue.id,assigned_to)
-              @issue.assignments << Assignment.new(:issue_id=>@issue.id, :user_id=>assigned_to)
-            end
-          end
+          create_assignments(params[:assigned_to_id])
          else
            # La tache n est pas assignee
           Assignment.delete(@issue)
@@ -522,22 +540,29 @@ class IssuesController < ApplicationController
     retrieve_query
    if @query.valid?
       events = []
-      # Issues that have start and due dates
-      events += Issue.find(:all,
-                           :order => "start_date, due_date",
-                           :include => [:tracker, :status, :assigned_to, :priority, :project],
-                           :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?)) and start_date is not null and due_date is not null)", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
-                           )
-      # Issues that don't have a due date but that are assigned to a version with a date
-      events += Issue.find(:all,
-                           :order => "start_date, effective_date",
-                           :include => [:tracker, :status, :assigned_to, :priority, :project, :fixed_version],
-                           :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (effective_date>=? and effective_date<=?) or (start_date<? and effective_date>?)) and start_date is not null and due_date is null and effective_date is not null)", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
-                           )
-      # Versions
-      events += Version.find(:all, :include => :project,
-                                   :conditions => ["(#{@query.project_statement}) AND effective_date BETWEEN ? AND ?", @gantt.date_from, @gantt.date_to])
+      if params[:from] == "project"
+        events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
+                                                                      and start_date is not null)
+                                                                      AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
 
+      
+      else
+        # Issues that have start and due dates
+        events += Issue.find(:all,
+                             :order => "start_date, due_date",
+                             :include => [:tracker, :status, :assigned_to, :priority, :project],
+                             :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?)) and start_date is not null and due_date is not null)", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
+                             )
+        # Issues that don't have a due date but that are assigned to a version with a date
+        events += Issue.find(:all,
+                             :order => "start_date, effective_date",
+                             :include => [:tracker, :status, :assigned_to, :priority, :project, :fixed_version],
+                             :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (effective_date>=? and effective_date<=?) or (start_date<? and effective_date>?)) and start_date is not null and due_date is null and effective_date is not null)", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
+                             )
+        # Versions
+        events += Version.find(:all, :include => :project,
+                                     :conditions => ["(#{@query.project_statement}) AND effective_date BETWEEN ? AND ?", @gantt.date_from, @gantt.date_to])
+      end
       @gantt.events = events
     end
     
@@ -549,8 +574,11 @@ class IssuesController < ApplicationController
       format.pdf  { send_data(gantt_to_pdf(@gantt, @project), :type => 'application/pdf', :filename => "#{basename}.pdf") }
       format.js  {
           render:update do |page|
-            page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'issues/gantt', :locals=>{:project=>@project})}');"
-
+            if params[:from] == "project"
+              page << "jQuery('#tab-content-gantt').html('#{escape_javascript(render:partial=>'projects/show/gantt')}');"
+            else
+              page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'issues/gantt', :locals=>{:project=>@project})}');"
+            end
           end
         }
     end
@@ -737,4 +765,53 @@ private
                             :order=>"created_on"
    
   end
+
+  def find_root_projects
+     @root_projects = Project.find(:all,
+                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
+                                    :order => 'name')
+  end
+
+  def create_assignments(assignments)
+    new_assignments = assignments
+    Assignment.delete(@issue)
+    #Création des assignations à la tâche
+    new_assignments.each do |assigned_to|
+      unless Assignment.exist?(@issue.id,assigned_to)
+        @issue.assignments << Assignment.new(:issue_id=>@issue.id, :user_id=>assigned_to)
+      end
+    end
+  end
+
+  def find_info_project
+    @relation= ProjectRelation.new
+    @member ||= @project.members.new
+    @users = User.all
+    @file_attachment = FileAttachment.new(:container_id=>@project.id,:container_type=>"project")
+    @roles = Role.find :all, :order => 'builtin, position'
+    @gantt = Redmine::Helpers::Gantt.new(params)
+    retrieve_query
+    if @query.valid?
+      events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
+                                                                and start_date is not null)
+                                                                AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
+
+      @gantt.events = events
+    end
+    @photo = Photo.new
+    @photo.gallery_id = @project.gallery.id
+  end
+
+  def find_info_issue
+     @journals = @issue.journals.find(:all, :include => [:user, :details], :order => "#{Journal.table_name}.created_on ASC")
+    @issue.copy_from(params[:copy_from]) if params[:copy_from]
+    @issue.project = @project
+    # Tracker must be set before custom field values
+    @issue.tracker ||= @project.trackers.find((params[:issue] && params[:issue][:tracker_id]) || params[:tracker_id] || :first)
+    @issue.issue_types_id ||= IssueType.find((params[:issue] && params[:issue][:issue_type_id]) || params[:issue_type_id] || :first)
+    @issue_types = IssueType.find(:all)
+    @users = User.all
+    @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
+  end
+
 end

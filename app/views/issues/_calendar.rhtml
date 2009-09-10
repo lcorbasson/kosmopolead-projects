@@ -2,10 +2,10 @@
     "#{l(:label_calendar)} - #{project.name}",
     "#{render:partial=>'issues/box/calendar'}",
     ["<span class='visu'>Visualisation</span>",
-      "#{link_to_remote(image_tag('visu_profile_off.png'),{:url=>project_path(project),:method=>:get},:class=>'icon',:name=>'Aperçu')}",
-     "#{link_to_remote(image_tag('visu_calendar_on.png'),{:url=>calendar_project_issues_path(project),:method=>:get},:class=>'icon',:name=>'Calendrier') if User.current.allowed_to?(:view_calendar, @project, :global => true)}",
-     "#{link_to_remote(image_tag('visu_gantt_off.png'), {:url=>gantt_project_issues_path(project),:method=>:get}, :class=>'icon',:name=>'Gantt') if User.current.allowed_to?(:view_gantt, @project, :global => true)}",
-     "#{link_to_remote(image_tag('visu_list_off.png'), {:url=>project_issues_path(project),:method=>:get}, :class=>'icon ',:name=>'Liste')}"
+      "#{link_to_remote(image_tag('visu_profile_off.png'),{:url=>project_path(project),:method=>:get},:class=>'icon_visu',:name=>'Aperçu')}",
+     "#{link_to_remote(image_tag('visu_calendar_on.png'),{:url=>calendar_project_issues_path(project),:method=>:get},:class=>'icon_visu',:name=>'Calendrier') if User.current.allowed_to?(:view_calendar, @project, :global => true)}",
+     "#{link_to_remote(image_tag('visu_gantt_off.png'), {:url=>gantt_project_issues_path(project),:method=>:get}, :class=>'icon_visu',:name=>'Gantt') if User.current.allowed_to?(:view_gantt, @project, :global => true)}",
+     "#{link_to_remote(image_tag('visu_list_off.png'), {:url=>project_issues_path(project),:method=>:get}, :class=>'icon_visu ',:name=>'Liste')}"
     ]
 ) %>
 

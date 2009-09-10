@@ -30,7 +30,7 @@ class ProjectsController < ApplicationController
   before_filter :find_projects,:only=>[:index]
 
   before_filter :find_optional_project, :only => :activity
-  before_filter :authorize, :except => [:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu, :edit_part_description, :edit_part_synthesis ]
+  before_filter :authorize, :except => [:index,:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu, :edit_part_description, :edit_part_synthesis ]
   before_filter :require_admin, :only => [ :add, :archive, :unarchive, :destroy ]
   accept_key_auth :activity
 
@@ -438,7 +438,8 @@ class ProjectsController < ApplicationController
   end
   
   def edit_part_description
-    @project = Project.find(params[:project_id])
+    @project = Project.find(params[:project_id])   
+
     render :layout=>false
   end
 

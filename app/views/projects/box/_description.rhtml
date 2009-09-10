@@ -7,7 +7,7 @@
                <%= link_to_remote "#{image_tag('/images/edit.png')}",
                          { :url => { :controller => 'projects', :action => 'edit_part_description', :project_id => project.id},
                            :method => 'get',
-                           :update => 'description',
+                           :update=>'description',
                            :with=>'toggle_description()'
                          } %>
 
@@ -16,3 +16,5 @@
   <% end %>
 </div>
 <div id="description"></div>
+
+

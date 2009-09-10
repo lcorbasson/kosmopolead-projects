@@ -309,6 +309,7 @@ project_module_wiki: Wiki
 project_module_repository: Dépôt de sources
 project_module_boards: Forums de discussion
 
+legend_milestone: Jalon
 legend_issue_in_late: Retard
 legend_issue_done: Réalisé
 legend_issue_todo: A faire

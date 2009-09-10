@@ -28,11 +28,17 @@ module IssuesHelper
     @cached_label_assigned_to ||= l(:field_assigned_to)
     @cached_label_priority ||= l(:field_priority)
     
-    link_to_issue(issue) + ": #{h(issue.subject)}<br /><br />" +
+    tootlip = link_to_issue(issue) + ": #{h(issue.subject)}<br /><br />" +
       "<strong>#{@cached_label_start_date}</strong>: #{format_date(issue.start_date)}<br />" +
-      "<strong>#{@cached_label_due_date}</strong>: #{format_date(issue.due_date)}<br />" +
-      "<strong>#{@cached_label_assigned_to}</strong>: #{show_assigned_to(issue)}<br />" +
+      "<strong>#{@cached_label_due_date}</strong>: #{format_date(issue.due_date)}<br />" 
+
+
+    if issue.is_issue?
+      tooltip += "<strong>#{@cached_label_assigned_to}</strong>: #{show_assigned_to(issue)}<br /> " +
       "<strong>#{@cached_label_priority}</strong>: #{issue.priority.name}"
+    end
+
+    return tootlip
   end
   
   # Returns a string of css classes that apply to the given issue
@@ -282,12 +288,20 @@ module IssuesHelper
           ret += "#{render_issue_tooltip i}"
           ret += "</span></div>"
         else
-          i_left = ((i.start_date - gantt.date_from)*zoom).floor
-          ret = "<div style='top:#{@@top}px;left:#{i_left}px;width:15px;' class='task milestone'>&nbsp;</div>"
-          ret += "<div style='top:#{@@top}px;left:#{i_left + 12}px;background:#fff;' class='task'>"
-          ret += "#{h(i.project)}"
-          ret += "<strong>#{h i}</strong>"
-          ret += "</div>"
+          if i.class == Issue and i.is_milestone?
+            i_left = ((i.start_date - gantt.date_from)*zoom).floor
+            ret = "<div style='top:#{@@top}px;left:#{i_left}px;width:15px;' class='task milestone'>&nbsp;</div>"
+            ret += "<div style='top:#{@@top}px;left:#{i_left + 12}px;background:#fff;' class='task'>"
+#            ret += "#{h(i.subject)}"
+            ret += "</div>"
+          else
+            i_left = ((i.start_date - gantt.date_from)*zoom).floor
+            ret = "<div style='top:#{@@top}px;left:#{i_left}px;width:15px;' class='task milestone'>&nbsp;</div>"
+            ret += "<div style='top:#{@@top}px;left:#{i_left + 12}px;background:#fff;' class='task'>"
+            ret += "#{h(i.project)}"
+            ret += "<strong>#{h i}</strong>"
+            ret += "</div>"
+          end
         end
         @@top = @@top + 20        
         ret += "#{tree_gantt(@@top,gantt, zoom, i.children, false) if i.class==Issue and i.children.size>0}"

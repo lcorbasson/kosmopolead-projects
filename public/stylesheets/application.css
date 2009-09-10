@@ -627,7 +627,10 @@ table.cal td.today p.day-num {font-weight: bold;}
 /***** Tooltips ******/
 .tooltip{position:relative;z-index:24;}
 .tooltip:hover{z-index:25;color:#000;}
-.tooltip span.tip{display: none; text-align:left;}
+.tooltip span.tip{font-size:11px;display: none; text-align:left;-moz-border-radius-bottomleft:10px;
+-moz-border-radius-bottomright:10px;
+
+-moz-border-radius-topright:10px;}
 
 div.tooltip:hover span.tip{
 display:block;

@@ -5,6 +5,13 @@
   </div>
   <span class="grey_title" style="float:left;margin-right:20px;"> Avancement du projet :</span><%= progress_bar([project.completed_percent, 100], :width => '40%', :legend => ('%0.0f%' % project.completed_percent)) %>
 <br/><br/>
+
+  <% unless @project.custom_field_values.empty? %>
+    <%= render :partial => 'projects/show/custom_fields', :locals=>{:project=>project} %>
+  <% end %>
+  
+  <%= grey_box("#{render:partial=>'projects/relations'}", "project_relations") %>
+
   <div class="editable_box">
     <div class="links_edit_box">
         <%= toggle_link image_tag("/images/edit.png"), 'update-tags-form',{:second_element=>"project_tags"} %>
@@ -12,12 +19,6 @@
     <%= grey_title("MOTS CLES") %>
     <%= grey_box("#{render:partial=>'projects/box/tags', :locals=>{:project=>project}}", "project_tags") %>
   </div>
-
-  <% unless @project.custom_field_values.empty? %>
-    <%= render :partial => 'projects/show/custom_fields', :locals=>{:project=>project} %>
-  <% end %>
-  
-  <%= grey_box("#{render:partial=>'projects/relations'}", "project_relations") %>
 
 </div>
 

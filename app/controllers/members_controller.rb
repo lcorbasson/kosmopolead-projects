@@ -50,6 +50,7 @@ class MembersController < ApplicationController
         format.js { render(:update) {|page|
             page.replace_html "projects_members", :partial => 'projects/show/members'
             page.replace_html "projects_partners", :partial => 'projects/show/partners'
+            page.replace_html "members-form", :partial => 'members/form',:locals=>{:display=>true}
 
         } }
       end   
@@ -74,7 +75,9 @@ class MembersController < ApplicationController
     @member = Member.find(params[:id])
     @member.destroy
     respond_to do |format|
-        format.js { render(:update) {|page| page.replace_html "projects_members", :partial => 'projects/show/members'} }
+        format.js { render(:update) {|page|
+            page.replace_html "projects_members", :partial => 'projects/show/members'
+            page.replace_html "members-form", :partial => 'members/form',:locals=>{:display=>true}} }
     end
   end
 

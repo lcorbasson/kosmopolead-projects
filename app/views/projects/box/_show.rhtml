@@ -31,7 +31,9 @@
               <%= render :partial=>"projects/show/members" %>       
           </div>
            <div class="clearer"></div>
-           <%= render :partial=>"members/form" %>
+           <div id="members-form">
+             <%= render :partial=>"members/form" %>
+           </div>
       </div>
 
     <div class="editable_box">
@@ -84,7 +86,9 @@
   }
 
    function clear_form(){
-    jQuery("#description").html('');
+    jQuery("#test").html('');
   }
 </script>
+
+
 

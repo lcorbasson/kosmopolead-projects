@@ -1,9 +1,4 @@
 jQuery().ready(function() {
-     jQuery(".editable_box").live("mouseover",function(){
-        jQuery(".links_edit_box:first", this).show();
-    }).live("mouseout",function(){
-        jQuery(".links_edit_box:first", this).hide();
-    });
 
     jQuery("#communities_button").click(function() {
       jQuery(".community_menu_item").slideToggle();

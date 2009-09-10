@@ -30,7 +30,7 @@ class ProjectsController < ApplicationController
   before_filter :find_projects,:only=>[:index]
 
   before_filter :find_optional_project, :only => :activity
-  before_filter :authorize, :except => [:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu, :edit_part_description ]
+  before_filter :authorize, :except => [:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu, :edit_part_description, :edit_part_synthesis ]
   before_filter :require_admin, :only => [ :add, :archive, :unarchive, :destroy ]
   accept_key_auth :activity
 
@@ -47,9 +47,12 @@ class ProjectsController < ApplicationController
   include ProjectsHelper
 
   # Lists visible projects
-  def index
+
+  def index  
     if session[:project] and not @community
-      @project = Project.find(session[:project].id)
+      if !@project = Project.find(session[:project].id)
+        @project = @projects.first
+      end
     else
       @project = @projects.first
     end
@@ -130,8 +133,8 @@ class ProjectsController < ApplicationController
             retrieve_query
             if @query.valid?
               events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
-and start_date is not null)
-AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
+                                and start_date is not null)
+                                AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
 
               @gantt.events = events
             end
@@ -145,7 +148,7 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
                     render:update do |page|
                       page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
                       page << "jQuery('#projects_menu').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
-                      page << display_message_error("notice_successful_create", "fieldNotice")
+                      page << display_message_error(l(:notice_successful_create), "fieldNotice")
                     end
                 }
             end
@@ -274,6 +277,7 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
             when "synthesis"
               page.replace_html "tab-content-synthesis", :partial => 'projects/show/synthesis',:locals=>{:project=>@project}
           end
+          page << display_message_error(l(:notice_successful_update), "fieldNotice")
           @project.save
         end
       }
@@ -306,11 +310,13 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
 
   def archive
     @project.archive if request.post? && @project.active?
+    flash[:notice] = l(:notice_successful_archive)
     redirect_to :controller => 'admin', :action => 'projects'
   end
 
   def unarchive
     @project.unarchive if request.post? && !@project.active?
+    flash[:notice] = l(:notice_successful_unarchive)
     redirect_to :controller => 'admin', :action => 'projects'
   end
 
@@ -318,9 +324,14 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
   def destroy
     @project_to_destroy = @project
     if request.post? and params[:confirm]
-      @project_to_destroy.destroy
-      redirect_to :controller => 'admin', :action => 'projects'
-
+      if @project_to_destroy.destroy
+        session[:project] = nil
+        flash[:notice] = l(:notice_successful_delete)
+        redirect_to :controller => 'admin', :action => 'projects'
+      else
+        flash[:error] = l(:error_can_t_do)
+        redirect_to :controller => 'admin', :action => 'projects'
+      end
     end
     # hide project in layout
     @project = nil
@@ -434,6 +445,19 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
   end
   
   def edit_part_description
+    @project = Project.find(params[:project_id])
+
+    respond_to do |format|
+        format.js do
+          render(:update) {|page| page.replace "show-description",:partial=>"edit_part_description"
+          }
+        end
+      end
+
+#    render :layout=>false
+  end
+
+  def edit_part_synthesis
     @project = Project.find(params[:project_id])
     render :layout=>false
   end

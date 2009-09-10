@@ -1,10 +1,11 @@
-<% remote_form_for :file_attachment,@file_attachment, :html=>{:id=>"upload_form_file"} do |f| %>
-<p class="buttons">
+<% remote_form_for :file_attachment,@file_attachment, :html=>{:id=>"upload_form_file",:class=>"tabular"} do |f| %>
+<h3><%= l(:label_new_file) %></h3>
+<p class="buttons-icons">
     <label><%=l(:label_file)%></label>
     <%= f.file_field :file, :id=>"fileToUpload" %>   
     <% case @file_attachment.container_type
          when "project" %>
-            <%=  link_to_remote l(:button_add),
+            <%=  link_to_remote image_tag("accept3.png"),
                          { :url => {:controller=>:file_attachments,:action=>:index,:project_id=>@project},
                            :method => 'get',
                            :asynchronous=>true,
@@ -12,7 +13,7 @@
                            :with => "clone_upload_file_form()",
                          },:class=>"button btn_blue corner-all" %>
         <%   when "issue" %>
-           <%=   link_to_remote l(:button_add),
+           <%=   link_to_remote image_tag("accept3.png"),
                          { :url => {:controller=>:file_attachments,:action=>:index,:project_id=>@issue.project,:issue_id=>@issue},
                            :method => 'get',
                            :asynchronous=>true,
@@ -23,7 +24,7 @@
         
     <% end %>
    
-  <%= toggle_link l(:button_cancel), "upload_form_file" %>
+  <%= toggle_link image_tag('delete2.png'), "upload_form_file" %>
   <%= f.hidden_field :container_id,:value=>@file_attachment.container_id %>
   <%= f.hidden_field :container_type,:value=>@file_attachment.container_type %>
 </p>

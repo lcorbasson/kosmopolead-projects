@@ -524,22 +524,29 @@ class IssuesController < ApplicationController
     retrieve_query
    if @query.valid?
       events = []
-      # Issues that have start and due dates
-      events += Issue.find(:all,
-                           :order => "start_date, due_date",
-                           :include => [:tracker, :status, :assigned_to, :priority, :project],
-                           :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?)) and start_date is not null and due_date is not null)", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
-                           )
-      # Issues that don't have a due date but that are assigned to a version with a date
-      events += Issue.find(:all,
-                           :order => "start_date, effective_date",
-                           :include => [:tracker, :status, :assigned_to, :priority, :project, :fixed_version],
-                           :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (effective_date>=? and effective_date<=?) or (start_date<? and effective_date>?)) and start_date is not null and due_date is null and effective_date is not null)", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
-                           )
-      # Versions
-      events += Version.find(:all, :include => :project,
-                                   :conditions => ["(#{@query.project_statement}) AND effective_date BETWEEN ? AND ?", @gantt.date_from, @gantt.date_to])
+      if params[:from] == "project"
+        events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
+                                                                      and start_date is not null)
+                                                                      AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
 
+      
+      else
+        # Issues that have start and due dates
+        events += Issue.find(:all,
+                             :order => "start_date, due_date",
+                             :include => [:tracker, :status, :assigned_to, :priority, :project],
+                             :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?)) and start_date is not null and due_date is not null)", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
+                             )
+        # Issues that don't have a due date but that are assigned to a version with a date
+        events += Issue.find(:all,
+                             :order => "start_date, effective_date",
+                             :include => [:tracker, :status, :assigned_to, :priority, :project, :fixed_version],
+                             :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (effective_date>=? and effective_date<=?) or (start_date<? and effective_date>?)) and start_date is not null and due_date is null and effective_date is not null)", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
+                             )
+        # Versions
+        events += Version.find(:all, :include => :project,
+                                     :conditions => ["(#{@query.project_statement}) AND effective_date BETWEEN ? AND ?", @gantt.date_from, @gantt.date_to])
+      end
       @gantt.events = events
     end
     

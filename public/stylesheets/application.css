@@ -823,26 +823,26 @@ background-image:url('../images/close_hl.png');
   position:absolute;
   top:0;
   height:16px;
-  border-top: 1px solid #c0c0c0;
-  border-bottom: 1px solid #c0c0c0;
-  border-right: 1px solid #c0c0c0;
+  border-top: 1px solid #DDDDDD;
+  border-bottom: 1px solid #EEEEEE;
+  border-right: 1px solid #EEEEEE;
   text-align: center;
   overflow: hidden;
 }
 
 .task {
   position: absolute;
-  height:8px;
-  font-size:0.8em;
-  color:#888;
+  height:11px;
+  font-size:11px;
+  color:#333333;
   padding:0;
   margin:0;
-  line-height:0.8em;
+  line-height:11px;
 }
 
-.task_late { background:#f66 url(../images/task_late.png); border: 1px solid #f66; }
-.task_done { background:#66f url(../images/task_done.png); border: 1px solid #66f; }  
-.task_todo { background:#aaa url(../images/task_todo.png); border: 1px solid #aaa; }
+.task_late { height:10px;background:#E20000; border: 1px solid #E20000; }
+.task_done { height:10px;background:#6AC500; border: 1px solid #6AC500; }
+.task_todo { height:10px;background:#C0C0C0; border: 1px solid #C0C0C0; }
 .milestone { background-image:url(../images/milestone.png); background-repeat: no-repeat; border: 0; }
 
 /***** Icons *****/

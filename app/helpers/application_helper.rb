@@ -56,7 +56,7 @@ module ApplicationHelper
     options[:class] ||= ''
     options[:class] << ' issue'
     options[:class] << ' closed' if issue.closed?
-    link_to "#{issue.tracker.name if issue.tracker}  ##{issue.id}", {:controller => "issues", :action => "show", :id => issue,:project_id=>issue.project}, options
+    link_to "#{issue.subject}", {:controller => "issues", :action => "show", :id => issue,:project_id=>issue.project}, options
   end
 
   # Generates a link to an attachment.

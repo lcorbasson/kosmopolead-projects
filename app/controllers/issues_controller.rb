@@ -551,8 +551,11 @@ class IssuesController < ApplicationController
       format.pdf  { send_data(gantt_to_pdf(@gantt, @project), :type => 'application/pdf', :filename => "#{basename}.pdf") }
       format.js  {
           render:update do |page|
-            page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'issues/gantt', :locals=>{:project=>@project})}');"
-
+            if params[:from] == "project"
+              page << "jQuery('#tab-content-gantt').html('#{escape_javascript(render:partial=>'projects/show/gantt')}');"
+            else
+              page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'issues/gantt', :locals=>{:project=>@project})}');"
+            end
           end
         }
     end

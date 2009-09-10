@@ -227,18 +227,8 @@ module IssuesHelper
     events.collect do |event| 
         if event.class ==  Issue
           ret = "<div style='height:20px;padding-left:#{event.level*20}px'>"
-          if event.is_issue?
-            ret += "Tache :  "            
-          else
-            if event.is_stage?
-              ret += "Phase :  "
-            else
-              if event.is_milestone?
-                ret += "Jalon :  "
-              end
-            end
-          end
-          ret += "#{link_to_issue event}:	#{h event.subject}<br/>"
+          
+          ret += "#{link_to_issue event}<br/>"
           ret += "</div>"
           ret += "#{tree_gantt_list(event.children) if event.children.size>0}" 
         else
@@ -283,9 +273,9 @@ module IssuesHelper
           if d_width > 0
             ret += "<div style='top:#{@@top}px;left:#{i_left}px;width:#{d_width}px;' class='task task_done'>&nbsp;</div>"
           end
-          ret += "<div style='top:#{@@top}px;left:#{i_left + i_width + 5}px;background:#fff;' class='task'>"
+          ret += "<div style='top:#{@@top+3}px;left:#{i_left + i_width + 5}px;' class='task'>"
           ret += "#{i.status.name}"
-          ret += "#{(i.done_ratio).to_i}%"
+          ret += " #{(i.done_ratio).to_i}%"
           ret += "</div>"
           ret += "<div class='tooltip' style='position: absolute;top:#{@@top}px;left:#{i_left}px;width:#{i_width}px;height:12px;'>"
           ret += "<span class='tip'>"

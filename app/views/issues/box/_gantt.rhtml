@@ -62,12 +62,12 @@
   </div>
   <p style="float:right; margin:0 10px 0 0  ;">
             <%= if @gantt.zoom < 4
-                link_to_remote image_tag('zoom_in.png'), {:url => @gantt.params.merge(:zoom => (@gantt.zoom+1)), :update => 'content'}, {:href => url_for(@gantt.params.merge(:zoom => (@gantt.zoom+1)))}
+                link_to_remote image_tag('zoom_in.png'), {:url => @gantt.params.merge(:zoom => (@gantt.zoom+1)), :update => 'content',:method=>:get}, {:href => url_for(@gantt.params.merge(:zoom => (@gantt.zoom+1)))}
               else
                 image_tag 'zoom_in_g.png'
               end %>
             <%= if @gantt.zoom > 1
-                link_to_remote image_tag('zoom_out.png'), {:url => @gantt.params.merge(:zoom => (@gantt.zoom-1)), :update => 'content'}, {:href => url_for(@gantt.params.merge(:zoom => (@gantt.zoom-1)))}
+                link_to_remote image_tag('zoom_out.png'), {:url => @gantt.params.merge(:zoom => (@gantt.zoom-1)), :update => 'content',:method=>:get}, {:href => url_for(@gantt.params.merge(:zoom => (@gantt.zoom-1)))}
               else
                 image_tag 'zoom_out_g.png'
               end %>
@@ -104,13 +104,13 @@
 
   <div style="position:relative;height:<%= t_height + 24 %>px;width:<%= subject_width + 1 %>px;">
   <div style="right:-2px;width:<%= subject_width %>px;height:<%= headers_height %>px;background: #eee;" class="gantt_hdr"></div>
-  <div style="right:-2px;width:<%= subject_width %>px;height:<%= t_height %>px;border-left: 1px solid #c0c0c0;overflow:hidden;" class="gantt_hdr"></div>
+  <div style="right:-2px;width:<%= subject_width %>px;height:<%= t_height %>px;border-left: 1px solid #DDDDDD;overflow:hidden;" class="gantt_hdr"></div>
   <%
   #
   # Tasks subjects
   #
   top = headers_height + 8 %>
-  <div style="position:absolute;top:62px;">
+  <div style="position:absolute;top:62px;left:10px;">
   <%= tree_gantt_list( @gantt.events) %>
   </div>
   </div>
@@ -118,7 +118,7 @@
   <td>
 
   <div style="position:relative;height:<%= t_height + 24 %>px;overflow:auto;">
-  <div style="width:<%= g_width-1 %>px;height:<%= headers_height %>px;background: #eee;" class="gantt_hdr">&nbsp;</div>
+  <div style="width:<%= g_width-1 %>px;height:<%= headers_height %>px;background: #EEEEEE;" class="gantt_hdr">&nbsp;</div>
   <%
   #
   # Months headers
@@ -217,6 +217,11 @@
   <td align="right"><%= link_to_remote (l(:label_next) + ' &#187;'), {:url => @gantt.params_next, :update => 'content', :complete => 'window.scrollTo(0,0)'}, {:href => url_for(@gantt.params_next)} %></td>
   </tr>
   </table>
+<div class="gantt_legend left">
+  <span class="task task_late" style="width:20px;"></span><label style="margin-left:30px;"><%= l(:legend_issue_in_late) %></label>
+  <span class="task task_done" style="width:20px;"></span><label style="margin-left:30px;"><%= l(:legend_issue_done) %></label>
+  <span class="task task_todo" style="width:20px;"></span><label style="margin-left:30px;"><%= l(:legend_issue_todo) %></label>
+</div>
 
   <p class="other-formats">
   <%= l(:label_export_to) %>

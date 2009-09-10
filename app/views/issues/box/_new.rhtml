@@ -1,25 +1,26 @@
 
-<% form_for [@project,@issue],:html=>{:multipart => true, :id => 'issue-form',:class=>"tabular"} do |f| %>
+<% form_for :issue,:html=>{:multipart => true, :id => 'issue-form',:class=>"tabular"} do |f| %>
     <%= error_messages_for 'issue' %>
  
     <%= render :partial => 'issues/form', :locals => {:f => f} %>
   
   <div id="preview" class="wiki"></div>
     <div class="buttons right">
-      <%= link_to_remote l(:button_create),
+      <%= link_to_remote @issue.id ? l(:button_save) : l(:button_create),
                          { :url => { :controller => 'issues', :action => 'create', :project_id => @project },
                            :method => 'post',
                            :update => 'content',
                            :with => "Form.serialize('issue-form')",                          
                          }, :accesskey => accesskey(:preview),:class=>"button btn_blue corner-all" %>
-
-    <%= link_to_remote l(:button_create_and_continue),
-                         { :url => { :controller => 'issues', :action => 'create', :project_id => @project,:continue=>true },
-                           :method => 'post',
-                           :update => 'content',
-                           :with => "Form.serialize('issue-form')",
-                         }, :accesskey => accesskey(:preview),:class=>"button btn_blue corner-all" %>
-
+   
+      <% unless @issue.id %>
+        <%= link_to_remote l(:button_create_and_continue),
+                             { :url => { :controller => 'issues', :action => 'create', :project_id => @project,:continue=>true },
+                               :method => 'post',
+                               :update => 'content',
+                               :with => "Form.serialize('issue-form')",
+                             }, :accesskey => accesskey(:preview),:class=>"button btn_blue corner-all" %>
+      <% end %>
 
       <%= link_to_remote l(:label_preview),
                          { :url => { :controller => 'issues', :action => 'preview', :project_id => @project },
@@ -29,6 +30,7 @@
                            :complete => "Element.scrollTo('preview')"
                          }, :accesskey => accesskey(:preview),:class=>"button btn_orange corner-all" %>
     </div>
+    <br/>
     <div class="clearer"></div>
 
 		<%= javascript_tag "Form.Element.focus('issue_subject');" %>

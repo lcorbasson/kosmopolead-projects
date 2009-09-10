@@ -1,4 +1,5 @@
-<% if @issue.new_record? %>
+<%= hidden_field_tag "id",@issue.id %>
+
   <%= f.hidden_field :issue_types_id %>    
     <% if !@issue.is_issue? %>
         <p>
@@ -19,11 +20,11 @@
           <label><%= l(:label_tracker_id) %></label>
           <%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %></p>
           <%= observe_field :issue_tracker_id, :url => { :action => :new },
-            :update => :content,
+            :update => :contehnt,
             :with => "Form.serialize('issue-form')" %>
       <% end %>
-<% end %>
-<div id="issue_descr_fields" >
+
+<div id="issue_descr_fields">
     <p>
       <label><%= l(:label_subject) %></label>
       <%= f.text_field :subject, :size => 80, :required => true %>

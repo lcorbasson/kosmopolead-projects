@@ -233,52 +233,72 @@ class IssuesController < ApplicationController
       @issue.watcher_user_ids = params[:issue]['watcher_user_ids'] if User.current.allowed_to?(:add_issue_watchers, @project)
     end
     @issue.author = User.current
-    @priorities = Enumeration::get_values('IPRI')
-    if @issue.save
-        save = true
-        @project = @issue.project
-        @file_attachment = FileAttachment.new
-        @file_attachment.container_type="issue"
-        @file_attachment.container_id = @issue.id
-        if @issue.is_issue?
-          # La tache est assignee
-           if params[:assigned_to_id]
-            new_assignments = params[:assigned_to_id]
-            Assignment.delete(@issue)
-            #Création des assignations à la tâche
-            new_assignments.each do |assigned_to|
-              unless Assignment.exist?(@issue.id,assigned_to)
-                @issue.assignments << Assignment.new(:issue_id=>@issue.id, :user_id=>assigned_to)
-              end
-            end
-           else
-             # La tache n est pas assignee
-            Assignment.delete(@issue)
-          end
-        end
-        session[:project] = @issue.project
-        respond_to do |format|
-            format.js {
-              render:update do |page|
-                if params[:continue]
-                     page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'new')}');"
-                     page << display_message_error(l(:notice_successful_create), "fieldNotice")
-                else
-                     page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'show')}');"
-                     page << display_message_error(l(:notice_successful_create), "fieldNotice")
+    @priorities = Enumeration::get_values('IPRI')    
+    if params[:continue]
+        if @issue.save
+           @project = @issue.project
+            @file_attachment = FileAttachment.new
+            @file_attachment.container_type="issue"
+            @file_attachment.container_id = @issue.id
+            if @issue.is_issue?
+              # La tache est assignee
+               if params[:assigned_to_id]
+                new_assignments = params[:assigned_to_id]
+                Assignment.delete(@issue)
+                #Création des assignations à la tâche
+                new_assignments.each do |assigned_to|
+                  unless Assignment.exist?(@issue.id,assigned_to)
+                    @issue.assignments << Assignment.new(:issue_id=>@issue.id, :user_id=>assigned_to)
+                  end
                 end
+               else
+                 # La tache n est pas assignee
+                Assignment.delete(@issue)
               end
-            }
-         end
-    else
-      respond_to do |format|
-          format.js {
-            render:update do |page|
-               page << display_message_error(@issue, "fieldError")
             end
-          }
+            session[:project] = @issue.project
+            respond_to do |format|
+                format.js {
+                  render:update do |page|
+                    page.replace_html "content_wrapper", :partial => 'new'
+                     page << display_message_error(l(:notice_successful_create), "fieldNotice")
+                  end
+                }
+             end
+        else
+          respond_to do |format|
+              format.js {
+                render:update do |page|
+                   page << display_message_error(@issue, "fieldError")
+                end
+              }
+           end
+        end
+    else
+      @issue = Issue.find(params[:id])
+      if @issue.update_attributes(params[:issue])
+          @project = @issue.project
+          @file_attachment = FileAttachment.new
+          @file_attachment.container_type="issue"
+          @file_attachment.container_id = @issue.id
+          respond_to do |format|
+              format.js {
+                render:update do |page|
+                   page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'show')}');"
+                   page << display_message_error(l(:notice_successful_create), "fieldNotice")
+                end
+              }
+           end
+       else
+          respond_to do |format|
+              format.js {
+                render:update do |page|
+                   page << display_message_error(@issue, "fieldError")
+                end
+              }
+           end
        end
-    end     
+    end
   end
   
   # Attributes that can be updated on workflow transition (without :edit permission)

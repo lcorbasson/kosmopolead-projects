@@ -234,25 +234,27 @@ class IssuesController < ApplicationController
     end
     @issue.author = User.current
     @priorities = Enumeration::get_values('IPRI')
-    if @issue.save and @issue.is_issue?
+    if @issue.save
         save = true
         @project = @issue.project
         @file_attachment = FileAttachment.new
         @file_attachment.container_type="issue"
         @file_attachment.container_id = @issue.id
-        # La tache est assignee
-         if params[:assigned_to_id]
-          new_assignments = params[:assigned_to_id]
-          Assignment.delete(@issue)
-          #Création des assignations à la tâche
-          new_assignments.each do |assigned_to|
-            unless Assignment.exist?(@issue.id,assigned_to)
-              @issue.assignments << Assignment.new(:issue_id=>@issue.id, :user_id=>assigned_to)
+        if @issue.is_issue?
+          # La tache est assignee
+           if params[:assigned_to_id]
+            new_assignments = params[:assigned_to_id]
+            Assignment.delete(@issue)
+            #Création des assignations à la tâche
+            new_assignments.each do |assigned_to|
+              unless Assignment.exist?(@issue.id,assigned_to)
+                @issue.assignments << Assignment.new(:issue_id=>@issue.id, :user_id=>assigned_to)
+              end
             end
+           else
+             # La tache n est pas assignee
+            Assignment.delete(@issue)
           end
-         else
-           # La tache n est pas assignee
-          Assignment.delete(@issue)
         end
         session[:project] = @issue.project
         respond_to do |format|

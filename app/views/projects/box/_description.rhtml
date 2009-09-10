@@ -6,8 +6,7 @@
             <p><%= l(:project_add_description) %>
                <%= link_to_remote "#{image_tag('/images/edit.png')}",
                          { :url => { :controller => 'projects', :action => 'edit_part_description', :project_id => project.id},
-                           :method => 'get',
-                           :update => 'description',
+                           :method => 'get',                          
                            :with=>'toggle_description()'
                          } %>
 
@@ -15,4 +14,6 @@
      </div>
   <% end %>
 </div>
-<div id="description"></div>
+<div id="show-description"></div>
+
+

@@ -69,7 +69,6 @@ class ProjectsController < ApplicationController
           end
           @member ||= @project.members.new
           @users = User.all
-          @active_users = User.active
           @file_attachment = FileAttachment.new(:container_id=>@project.id,:container_type=>"project")
           @roles = Role.find :all, :order => 'builtin, position'
           completed_percent
@@ -95,7 +94,6 @@ class ProjectsController < ApplicationController
         @trackers = Tracker.all       
         @time_units = TimeUnit.find(:all)
         @users = User.find(:all)
-        @active_users = User.active.all
         @project.identifier = Project.next_identifier if Setting.sequential_project_identifiers?
         @project.trackers = Tracker.all
         @project.is_public = Setting.default_projects_public?
@@ -116,7 +114,6 @@ class ProjectsController < ApplicationController
         if @project.save
             @trackers = @project.rolled_up_trackers
             @users = User.all
-            @active_users = User.active.all
             cond = @project.project_condition(Setting.display_subprojects_issues?)
             TimeEntry.visible_by(User.current) do
               @total_hours = TimeEntry.sum(:hours,
@@ -127,7 +124,6 @@ class ProjectsController < ApplicationController
             @gantt = Redmine::Helpers::Gantt.new(params)
             @member ||= @project.members.new
             @users = User.all
-            @active_users = User.active
             @file_attachment = FileAttachment.new(:container_type=>"project",:container_id=>@project.id)
             @roles = Role.find :all, :order => 'builtin, position'
             retrieve_query
@@ -195,7 +191,6 @@ class ProjectsController < ApplicationController
     @gantt = Redmine::Helpers::Gantt.new(params)
     @member ||= @project.members.new
     @users = User.all
-    @active_users = User.active
     @file_attachment = FileAttachment.new
     @file_attachment.container_id = @project.id
     @file_attachment.container_type = "project"
@@ -272,7 +267,6 @@ class ProjectsController < ApplicationController
               page << "jQuery('.project_tags').html('#{escape_javascript(render:partial=>'projects/box/tags')}');"
             when "summary"
               @users = User.all
-              @active_users = User.active
               page << "jQuery('#profile_project').html('#{escape_javascript(profile_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
             when "synthesis"
               page.replace_html "tab-content-synthesis", :partial => 'projects/show/synthesis',:locals=>{:project=>@project}

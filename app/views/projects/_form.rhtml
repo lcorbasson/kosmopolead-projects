@@ -23,11 +23,11 @@
 </p>
 <p>
   <label><%= l(:label_builder) %></label>
-  <%= f.select :builder_by, @valid_users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %>
+  <%= f.select :builder_by, @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %>
 </p>
 <p>
   <label><%= l(:label_watcher) %></label>
-  <%= f.select :watcher_id , @valid_users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %>
+  <%= f.select :watcher_id , @users.active.collect { |u|  [u.name, u.id]}, {:include_blank => true} %>
 </p>
 <p>
   <label><%= l(:label_cost) %></label>

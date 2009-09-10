@@ -29,8 +29,8 @@
       <p><label><%= l(:label_acronym) %></label> <%= f.text_field :acronym %></p>
       <p><label><%= l(:label_parent) %></label> <%= f.select :parent_id, (@root_projects.collect {|p| [p.name, p.id]}), { :include_blank => true } %></p>
       <p><label><%= l(:label_support_by) %></label> <%= f.select :author_id,  @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
-      <p><label><%= l(:label_watched_by) %></label> <%= f.select :watcher_id , @active_users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
-      <p><label><%= l(:label_build_by) %></label> <%= f.select :builder_by, @active_users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
+      <p><label><%= l(:label_watched_by) %></label> <%= f.select :watcher_id , @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
+      <p><label><%= l(:label_build_by) %></label> <%= f.select :builder_by, @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
       <p><label><%= l(:label_estimated_time) %></label> <%= f.text_field :estimated_time %>  <%= select_tag "project[time_units_id]", options_for_select(TimeUnit.all.collect {|u| [l("#{u.label}"), u.id]}) %></p>
       <p><label><%= l(:label_project_cost) %></label> <%= f.text_field :project_cost %> €</p>
       <p><label><%= l(:label_project_sector) %></label> <%= f.select :sector, list_sectors(current_language).collect{|s| [s.name, s.activity_sector_id] } %></p>

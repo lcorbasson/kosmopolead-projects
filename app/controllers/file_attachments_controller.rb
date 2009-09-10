@@ -45,7 +45,8 @@ class FileAttachmentsController < ApplicationController
       @file_attachment.container_type = "project"      
     end
     @file_attachment.author_id = User.current.id   
-    respond_to do |format|  
+    respond_to do |format|
+      format.html { redirect_to :back }
       format.js { render(:update) {|page|
           if @file_attachment.save
             if params[:project_id]

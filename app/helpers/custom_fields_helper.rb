@@ -38,7 +38,7 @@ module CustomFieldsHelper
     when "text"
       read_only ? "<p>#{custom_value.value}</p>" : text_area_tag(field_name, custom_value.value, :id => field_id, :rows => 3, :style => 'width:90%')
     when "bool"
-      check_box_tag(field_name, '1', custom_value.value.eql?(1) ? true : false , :id => field_id, :readonly => read_only) + hidden_field_tag(field_name, '0')
+      check_box_tag(field_name, '1', custom_value.value.eql?(1) ? true : false , :id => field_id, :readonly => read_only, :disabled => read_only) + hidden_field_tag(field_name, '0')
     when "list"
       blank_option = custom_field.is_required? ?
                        (custom_field.default_value.blank? ? "<option value=\"\">--- #{l(:actionview_instancetag_blank_option)} ---</option>" : '') : 

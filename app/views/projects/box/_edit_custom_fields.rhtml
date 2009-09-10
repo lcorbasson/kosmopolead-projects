@@ -12,3 +12,4 @@
      <a class="btn_blue ui-corner-all button"  onclick="javascript:jQuery.ajax({data:jQuery.param(jQuery('#edit-custom_fields-form').serializeArray()), dataType:'script', type:'put', url:'<%= project_path(@project,:part=>'custom_fields')%>'}); return false;"><%= image_tag("accept3.png") %></a>
      <%= toggle_link image_tag('delete2.png'), 'edit-custom_fields-form',{:second_element=>"show-custom_fields"}%>
   </div>
+  <div class="clearer"></div>

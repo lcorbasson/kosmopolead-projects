@@ -462,6 +462,7 @@ label_subproject_plural: Sous-projets
 label_and_its_subprojects: %s et ses sous-projets
 label_min_max_length: Longueurs mini - maxi
 label_list: Liste
+label_multi_list: Liste à choix multiple
 label_date: Date
 label_integer: Entier
 label_float: Nombre décimal

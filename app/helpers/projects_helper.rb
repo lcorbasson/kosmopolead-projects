@@ -83,10 +83,19 @@ module ProjectsHelper
 
     def list_sectors(language)
       ActivitySectorTranslation.find(:all, :conditions => {:local => language.to_s})
-   end
+    end
 
     def my_sector(language, id)
       ActivitySectorTranslation.find(:all, :conditions => {:local => language.to_s, :activity_sector_id => id})
     end
 
+    def custom_field_sort(custom_fields, bool = false)
+      boolean = []
+      other = []
+
+      custom_fields.each do |custom|
+        custom.custom_field.field_format.eql?('bool') ? boolean << custom : other << custom
+      end
+      bool ? boolean : other
+    end
 end

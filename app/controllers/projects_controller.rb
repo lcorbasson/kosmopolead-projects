@@ -269,6 +269,8 @@ AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.tab
               page << "jQuery('#profile_project').html('#{escape_javascript(profile_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
             when "synthesis"
               page.replace_html "tab-content-synthesis", :partial => 'projects/show/synthesis',:locals=>{:project=>@project}
+            when "custom_fields"
+              page.replace_html "custom_fields", :partial => 'projects/show/custom_fields',:locals=>{:project=>@project}
           end
           page << display_message_error(l(:notice_successful_update), "fieldNotice")
           @project.save

@@ -1172,4 +1172,10 @@ text-align:center;
 #relation_project_to_id {width:100px;}
 #project_author .name {padding:20px;}
 
+/*Project Custom Fields*/
+#custom_fields p{padding:5px 0 5px 10px}
+#custom_fields label{font-weight:bold;}
+.all_custom label{width:175px;}
+.boolean label{float:left;width:175px;}
+
 

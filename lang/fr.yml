@@ -86,6 +86,7 @@ notice_no_issue_selected: "Aucune demande sélectionnée ! Cochez les demandes q
 notice_account_pending: "Votre compte a été créé et attend l'approbation de l'administrateur."
 notice_default_data_loaded: Paramétrage par défaut chargé avec succès.
 notice_unable_delete_version: Impossible de supprimer cette version.
+notice_account_created: Le compte a bien été crée
 
 error_no_tracker: " Aucun traqueur n'est associé à ce projet. Veuillez vérifier les paramètres du projet."
 error_can_t_do: "Une erreur s'est produite, veuillez renouveler votre demande ultérieurement"

@@ -438,16 +438,9 @@ class ProjectsController < ApplicationController
   end
   
   def edit_part_description
-    @project = Project.find(params[:project_id])
+    @project = Project.find(params[:project_id])   
 
-    respond_to do |format|
-        format.js do
-          render(:update) {|page| page.replace "show-description",:partial=>"edit_part_description"
-          }
-        end
-      end
-
-#    render :layout=>false
+    render :layout=>false
   end
 
   def edit_part_synthesis

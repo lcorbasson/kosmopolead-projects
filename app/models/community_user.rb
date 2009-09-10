@@ -6,7 +6,7 @@ class CommunityUser < User
   has_many :users, :through => :user_memberships
 
   def name
-    lastname
+    "Communauté #{lastname}"
   end
 
   # Overrides a few properties

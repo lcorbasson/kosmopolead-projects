@@ -124,12 +124,12 @@ class Project < ActiveRecord::Base
     if community
       community_project_ids = user.memberships.select{|m| m.project.author == community}.collect{|m| m.project_id }
       "#{Project.table_name}.status=#{Project::STATUS_ACTIVE} AND " +
-        (community_project_ids.empty? ? "false" : "AND #{Project.table_name}.id IN (#{community_project_ids.join(',')})")
+        (community_project_ids.empty? ? "false" : "#{Project.table_name}.id IN (#{community_project_ids.join(',')})")
     else
       if user && user.admin?
         return "#{Project.table_name}.status=#{Project::STATUS_ACTIVE}"
       elsif user && user.memberships.any?
-        return "#{Project.table_name}.status=#{Project::STATUS_ACTIVE} AND (#{Project.table_name}.is_public = #{connection.quoted_true} "
+        return "#{Project.table_name}.status=#{Project::STATUS_ACTIVE} AND (#{Project.table_name}.is_public = #{connection.quoted_true} " +
           "or #{Project.table_name}.id IN (#{user.memberships.collect{|m| m.project_id}.join(',')}))"
       else
         return "#{Project.table_name}.status=#{Project::STATUS_ACTIVE} AND #{Project.table_name}.is_public = #{connection.quoted_true}"

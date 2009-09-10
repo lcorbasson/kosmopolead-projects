@@ -36,7 +36,7 @@
               <div id="effect_date" class="effect">
                       <%= text_field_tag 'months', @gantt.months, :size => 2 %>
                       <%= l(:label_months_from) %>
-                      <%= select_month(@gantt.month_from, :prefix => "month", :discard_type => true) %>
+                      <%= select_month(@gantt.month_from, :prefix => "month", :discard_type => true)  %>
                       <%= select_year(@gantt.year_from, :prefix => "year", :discard_type => true) %>
                       <%= hidden_field_tag 'zoom', @gantt.zoom %>
               </div>

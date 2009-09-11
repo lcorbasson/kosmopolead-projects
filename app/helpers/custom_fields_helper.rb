@@ -36,7 +36,11 @@ module CustomFieldsHelper
       text_field_tag(field_name, custom_value.value, :id => field_id, :size => 10, :readonly => read_only) +
       calendar_for(field_id)
     when "text"
-      read_only ? "<p>#{custom_value.value}</p>" : text_area_tag(field_name, custom_value.value, :id => field_id, :rows => 3, :style => 'width:90%')
+      if read_only
+        custom_value.value.is_a?(FalseClass) ? "" : text_area_tag(field_name, custom_value.value, :id => field_id, :rows => 3, :style => 'width:90%')
+      else
+        text_area_tag(field_name, custom_value.value, :id => field_id, :rows => 3, :style => 'width:90%')
+      end
     when "bool"
       check_box_tag(field_name, '1', custom_value.value.eql?(1) ? true : false , :id => field_id, :readonly => read_only, :disabled => read_only) + hidden_field_tag(field_name, '0')
     when "list"
@@ -55,7 +59,11 @@ module CustomFieldsHelper
         select_tag(field_name+'[]', options_for_select(custom_field.possible_values, custom_value.value), :id => field_id, :multiple => true)
       end
     else
-      read_only ? "<p>#{custom_value.value}</p>" : text_field_tag(field_name, custom_value.value, :id => field_id, :readonly => read_only)
+      if read_only
+        custom_value.value.is_a?(FalseClass) ? "" : "<p>#{custom_value.value}</p>"
+      else
+        text_field_tag(field_name, custom_value.value, :id => field_id)
+      end
     end
   end
   

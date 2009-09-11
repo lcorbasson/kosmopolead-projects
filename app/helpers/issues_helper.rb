@@ -250,6 +250,10 @@ module IssuesHelper
     end
   end
 
+  def top
+    @@top
+  end
+
   def tree_gantt(top,gantt,zoom, events, init = false)
     ret = ""
     if init

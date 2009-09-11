@@ -5,7 +5,7 @@
   <% end %>
     <ul class="boolean">
       <% custom_field_sort(@project.custom_field_values, true).each do |value| %>
-        <li><%= custom_field_tag_with_label :project, value, read_only = true %></li>
+        <li class="<%=  'not-first' if custom_field_sort(@project.custom_field_values).size>0 %>"><%= custom_field_tag_with_label :project, value, read_only = true %></li>
       <% end %>
     </ul>
   </ul>

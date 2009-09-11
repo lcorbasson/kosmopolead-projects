@@ -1191,5 +1191,5 @@ text-align:center;
 .all_custom label{width:175px;}
 .boolean label{float:left;width:175px;}
 #show-custom_fields ul li.not-first{border-top:1px solid #DDDDDD;}
-#show-custom_fields ul li {padding-left:5px;padding-top:10px;}
+#show-custom_fields ul li {padding-left:5px;padding-top:10px;padding-bottom:5px;}
 

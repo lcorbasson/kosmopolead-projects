@@ -22,8 +22,10 @@ module Redmine
       attr_reader :year_from, :month_from, :date_from, :date_to, :zoom, :months, :events
 
       def initialize(options={})
+
         options = options.dup
         @events = []
+          puts "#{options}"
         if options[:year] && options[:year].to_i >0
           @year_from = options[:year].to_i
           if options[:month] && options[:month].to_i >=1 && options[:month].to_i <= 12
@@ -32,27 +34,14 @@ module Redmine
             @month_from = 1
           end
         else
-          ###
           @month_from ||= Date.today.month
-
-          if Issue.find(:all, :order => "start_date") != nil
-            @year_from ||= Issue.find(:all, :order => "start_date").first.start_date.year.to_i
-          else
-            @year_from ||= Date.today.year
-          end
-
+          @year_from ||= Date.today.year
         end
 
         zoom = (options[:zoom] || User.current.pref[:gantt_zoom]).to_i
         @zoom = (zoom > 0 && zoom < 5) ? zoom : 2
-
-        @firstIssue = Issue.find(:all, :order => "start_date").first.start_date
-        @lastIssue = Issue.find(:all, :order => "due_date").first.due_date
-
-        @number_of_month = (@lastIssue.year - @firstIssue.year) * 12 + (@lastIssue.month - @firstIssue.month) + 1
-
         months = (options[:months] || User.current.pref[:gantt_months]).to_i
-        @months = (months > 0 && months < 25) ? months : @number_of_month
+        @months = (months > 0 && months < 25) ? months : 6
 
         # Save gantt parameters as user preference (zoom and months count)
         if (User.current.logged? && (@zoom != User.current.pref[:gantt_zoom] || @months != User.current.pref[:gantt_months]))

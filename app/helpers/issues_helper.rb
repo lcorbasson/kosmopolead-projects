@@ -28,7 +28,7 @@ module IssuesHelper
     @cached_label_assigned_to ||= l(:field_assigned_to)
     @cached_label_priority ||= l(:field_priority)
     
-    tootlip = link_to_issue(issue) + ": #{h(issue.subject)}<br /><br />" +
+    tooltip = link_to_issue(issue) + ": #{h(issue.subject)}<br /><br />" +
       "<strong>#{@cached_label_start_date}</strong>: #{format_date(issue.start_date)}<br />" +
       "<strong>#{@cached_label_due_date}</strong>: #{format_date(issue.due_date)}<br />" 
 
@@ -38,7 +38,7 @@ module IssuesHelper
       "<strong>#{@cached_label_priority}</strong>: #{issue.priority.name}"
     end
 
-    return tootlip
+    return tooltip
   end
   
   # Returns a string of css classes that apply to the given issue

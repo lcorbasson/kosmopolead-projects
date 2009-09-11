@@ -1,0 +1,15 @@
+<% custom_field_sort(@project.custom_field_values).each do |value| %>
+  <p>
+    <%= custom_field_tag_with_label :project, value %>
+  </p>
+<% end %>
+
+  <% custom_field_sort(@project.custom_field_values, true).each do |value| %>
+        <p><%= custom_field_tag_with_label :project, value %></p>
+  <% end %>
+
+  <div class="buttons-icons right">
+     <a class="btn_blue ui-corner-all button"  onclick="javascript:jQuery.ajax({data:jQuery.param(jQuery('#edit-custom_fields-form').serializeArray()), dataType:'script', type:'put', url:'<%= project_path(@project,:part=>'custom_fields')%>'}); return false;"><%= image_tag("accept3.png") %></a>
+     <%= toggle_link image_tag('delete2.png'), 'edit-custom_fields-form',{:second_element=>"show-custom_fields"}%>
+  </div>
+  <div class="clearer"></div>

@@ -30,7 +30,7 @@ class ProjectsController < ApplicationController
   before_filter :find_projects,:only=>[:index]
 
   before_filter :find_optional_project, :only => :activity
-  before_filter :authorize, :except => [:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu, :edit_part_description, :edit_part_synthesis ]
+  before_filter :authorize, :except => [:index,:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu, :edit_part_description, :edit_part_synthesis ]
   before_filter :require_admin, :only => [ :add, :archive, :unarchive, :destroy ]
   accept_key_auth :activity
 
@@ -270,6 +270,8 @@ class ProjectsController < ApplicationController
               page << "jQuery('#profile_project').html('#{escape_javascript(profile_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
             when "synthesis"
               page.replace_html "tab-content-synthesis", :partial => 'projects/show/synthesis',:locals=>{:project=>@project}
+            when "custom_fields"
+              page.replace_html "custom_fields", :partial => 'projects/show/custom_fields',:locals=>{:project=>@project}
           end
           page << display_message_error(l(:notice_successful_update), "fieldNotice")
           @project.save
@@ -439,16 +441,9 @@ class ProjectsController < ApplicationController
   end
   
   def edit_part_description
-    @project = Project.find(params[:project_id])
+    @project = Project.find(params[:project_id])   
 
-    respond_to do |format|
-        format.js do
-          render(:update) {|page| page.replace "show-description",:partial=>"edit_part_description"
-          }
-        end
-      end
-
-#    render :layout=>false
+    render :layout=>false
   end
 
   def edit_part_synthesis

@@ -18,6 +18,7 @@
 class CustomValue < ActiveRecord::Base
   belongs_to :custom_field
   belongs_to :customized, :polymorphic => true
+  serialize :value
 
   def after_initialize
     if custom_field && new_record? && (customized_type.blank? || (customized && customized.new_record?))

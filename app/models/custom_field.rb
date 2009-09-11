@@ -26,8 +26,9 @@ class CustomField < ActiveRecord::Base
                     "int" => { :name => :label_integer, :order => 3 },
                     "float" => { :name => :label_float, :order => 4 },
                     "list" => { :name => :label_list, :order => 5 },
-			        "date" => { :name => :label_date, :order => 6 },
-			        "bool" => { :name => :label_boolean, :order => 7 }
+                    "multi_list" => { :name => :label_multi_list, :order => 6 },
+			        "date" => { :name => :label_date, :order => 7 },
+			        "bool" => { :name => :label_boolean, :order => 8 }
   }.freeze
 
   validates_presence_of :name, :field_format
@@ -50,7 +51,7 @@ class CustomField < ActiveRecord::Base
   end
   
   def validate
-    if self.field_format == "list"
+    if self.field_format == "list" || self.field_format == "multi_list"
       errors.add(:possible_values, :activerecord_error_blank) if self.possible_values.nil? || self.possible_values.empty?
       errors.add(:possible_values, :activerecord_error_invalid) unless self.possible_values.is_a? Array
     end

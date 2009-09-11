@@ -339,6 +339,21 @@ class Project < ActiveRecord::Base
      grid_col_model.to_json   
    end
 
+   def completed_percent
+    @completed_percent = 0
+    self.issues.issues.each do |issue|
+      if issue.closed?
+        @completed_percent += 1
+      else
+        @completed_percent += issue.done_ratio
+      end
+     end
+     if @completed_percent > 0
+       @completed_percent = @completed_percent/self.issues.issues.count
+     end
+     return @completed_percent
+   end
+
 
   
 

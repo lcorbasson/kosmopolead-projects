@@ -56,7 +56,7 @@ module ApplicationHelper
     options[:class] ||= ''
     options[:class] << ' issue'
     options[:class] << ' closed' if issue.closed?
-    link_to "#{issue.tracker.name if issue.tracker}  ##{issue.id}", {:controller => "issues", :action => "show", :id => issue,:project_id=>issue.project}, options
+    link_to "#{issue.subject}", {:controller => "issues", :action => "show", :id => issue,:project_id=>issue.project}, options
   end
 
   # Generates a link to an attachment.
@@ -253,7 +253,7 @@ module ApplicationHelper
       title = []
       title << @project.name if @project
       title += @html_title if @html_title
-      title << Setting.app_title
+      title << "Kosmopolead projects"
       title.compact.join(' - ')
     else
       @html_title ||= []
@@ -794,7 +794,7 @@ module ApplicationHelper
 
   def initialize_icons_tooltip()
     html = "#{javascript_include_tag("jquery/jquery.tooltip.js")}"
-    html += "#{javascript_tag("jQuery().ready(function() {jQuery('.box_header .icon').tooltip({bodyHandler: function() {return jQuery(this).attr('name');},showURL: false })});")}"
+    html += "#{javascript_tag("jQuery().ready(function() {jQuery('.box_header .icon_visu').tooltip({bodyHandler: function() {return jQuery(this).attr('name');},showURL: false })});")}"
   end
 
   def profile_box(title,content)

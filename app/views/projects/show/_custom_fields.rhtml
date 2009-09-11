@@ -1,0 +1,6 @@
+<div class="custom_fields editable_box" id="custom_fields">
+    <div class="links_edit_box">
+        <%= toggle_link image_tag("/images/edit.png"), 'edit-custom_fields-form', {:second_element => "show-custom_fields"} %>
+    </div>
+    <%= grey_box("#{render:partial=>'projects/box/custom_fields', :locals=>{:project=>project}}", "project_custom_fields") %>
+  </div>

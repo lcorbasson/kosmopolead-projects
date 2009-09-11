@@ -1,11 +1,11 @@
-  <p style="float:right; margin:0 10px 0 0  ;">
+<p style="float:right; margin:0 10px 0 0  ;">
             <%= if @gantt.zoom < 4
-                link_to_remote image_tag('zoom_in.png'), {:url => @gantt.params.merge(:zoom => (@gantt.zoom+1)), :update => 'content'}, {:href => url_for(@gantt.params.merge(:zoom => (@gantt.zoom+1)))}
+                link_to_remote image_tag('zoom_in.png'), {:url => gantt_project_issues_path(@project,@gantt.params.merge(:zoom => (@gantt.zoom+1),:from=>"project")),:method=>:get, :update => 'content'}, {:href => url_for(@gantt.params.merge(:zoom => (@gantt.zoom+1)))}
               else
                 image_tag 'zoom_in_g.png'
               end %>
             <%= if @gantt.zoom > 1
-                link_to_remote image_tag('zoom_out.png'), {:url => @gantt.params.merge(:zoom => (@gantt.zoom-1)), :update => 'content'}, {:href => url_for(@gantt.params.merge(:zoom => (@gantt.zoom-1)))}
+                link_to_remote image_tag('zoom_out.png'), {:url => gantt_project_issues_path(@project,@gantt.params.merge(:zoom => (@gantt.zoom-1),:from=>"project")),:method=>:get, :update => 'content'}, {:href => url_for(@gantt.params.merge(:zoom => (@gantt.zoom+1)))}
               else
                 image_tag 'zoom_out_g.png'
               end %>
@@ -42,13 +42,13 @@
 
   <div style="position:relative;height:<%= t_height + 24 %>px;width:<%= subject_width + 1 %>px;">
   <div style="right:-2px;width:<%= subject_width %>px;height:<%= headers_height %>px;background: #eee;" class="gantt_hdr"></div>
-  <div style="right:-2px;width:<%= subject_width %>px;height:<%= t_height %>px;border-left: 1px solid #c0c0c0;overflow:hidden;" class="gantt_hdr"></div>
+  <div style="right:-2px;width:<%= subject_width %>px;height:<%= t_height %>px;border-left: 1px solid #EEEEEE;overflow:hidden;" class="gantt_hdr"></div>
   <%
   #
   # Tasks subjects
   #
   top = headers_height + 8 %>
-  <div style="position:absolute;top:62px;">
+  <div style="position:absolute;top:<%= top %>px;left:20px;">
   <%= tree_gantt_list( @gantt.events) %>
   </div>
   </div>
@@ -151,16 +151,22 @@
 
   <table width="100%">
   <tr>
-  <td align="left"><%= link_to_remote ('&#171; ' + l(:label_previous)), {:url => @gantt.params_previous, :update => 'content', :complete => 'window.scrollTo(0,0)'}, {:href => url_for(@gantt.params_previous)} %></td>
-  <td align="right"><%= link_to_remote (l(:label_next) + ' &#187;'), {:url => @gantt.params_next, :update => 'content', :complete => 'window.scrollTo(0,0)'}, {:href => url_for(@gantt.params_next)} %></td>
+  <td align="left"><%= link_to_remote ('&#171; ' + l(:label_previous)), {:url => gantt_project_issues_path(@project,@gantt.params_previous.merge(:from=>"project")), :update => 'content',:method=>:get, :complete => 'window.scrollTo(0,0)'}, {:href => url_for(@gantt.params_previous)} %></td>
+  <td align="right"><%= link_to_remote (l(:label_next) + ' &#187;'), {:url => gantt_project_issues_path(@project,@gantt.params_next.merge(:from=>"project")), :update => 'content',:method=>:get, :complete => 'window.scrollTo(0,0)'}, {:href => url_for(@gantt.params_next)} %></td>
   </tr>
   </table>
+<div class="gantt_legend left">
+  <span class="task task_late" style="width:20px;"></span><label style="margin-left:30px;"><%= l(:legend_issue_in_late) %></label>
+  <span class="task task_done" style="width:20px;"></span><label style="margin-left:30px;"><%= l(:legend_issue_done) %></label>
+  <span class="task task_todo" style="width:20px;"></span><label style="margin-left:30px;"><%= l(:legend_issue_todo) %></label>
+  
+</div>
 
   <p class="other-formats">
   <%= l(:label_export_to) %>
-  <span><%= link_to 'PDF', @gantt.params.merge(:format => 'pdf'), :class => 'pdf' %></span>
+  <span><%= link_to 'PDF', gantt_project_issues_path(@project,@gantt.params.merge(:format => 'pdf')), :class => 'pdf' %></span>
   <% if @gantt.respond_to?('to_image') %>
-  <span><%= link_to 'PNG', @gantt.params.merge(:format => 'png'), :class => 'image' %></span>
+  <span><%= link_to 'PNG', gantt_project_issues_path(@project,@gantt.params.merge(:format => 'png')), :class => 'image' %></span>
   <% end %>
   </p>
   <% end # query.valid? %>

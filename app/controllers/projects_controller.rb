@@ -120,7 +120,7 @@ class ProjectsController < ApplicationController
                                            :conditions => cond).to_f
             end
             @key = User.current.rss_key
-            @gantt = Redmine::Helpers::Gantt.new(params)
+            @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))
             @member ||= @project.members.new
             @users = User.all
             @file_attachment = FileAttachment.new(:container_type=>"project",:container_id=>@project.id)

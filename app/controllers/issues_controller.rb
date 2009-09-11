@@ -536,7 +536,7 @@ class IssuesController < ApplicationController
   end
   
   def gantt
-    @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))
+    @gantt = Redmine::Helpers::Gantt.new(params.merge(:project => @project))
     retrieve_query
    if @query.valid?
       events = []
@@ -789,7 +789,7 @@ private
     @users = User.all
     @file_attachment = FileAttachment.new(:container_id=>@project.id,:container_type=>"project")
     @roles = Role.find :all, :order => 'builtin, position'
-    @gantt = Redmine::Helpers::Gantt.new(params)
+    @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))
     retrieve_query
     if @query.valid?
       events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))

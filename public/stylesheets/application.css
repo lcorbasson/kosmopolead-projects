@@ -1185,9 +1185,11 @@ text-align:center;
 #project_author .name {padding:20px;}
 
 /*Project Custom Fields*/
+.project_custom_fields {padding:0;}
 #custom_fields p{padding:5px 0 5px 10px}
 #custom_fields label{font-weight:bold;}
 .all_custom label{width:175px;}
 .boolean label{float:left;width:175px;}
-
+#show-custom_fields ul li.not-first{border-top:1px solid #DDDDDD;}
+#show-custom_fields ul li {padding-left:5px;padding-top:10px;}
 

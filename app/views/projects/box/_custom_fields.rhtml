@@ -1,7 +1,7 @@
 <div id="show-custom_fields" class="custom_fields">
   <ul>
   <% custom_field_sort(@project.custom_field_values).each do |value| %>
-    <li class="all_custom"><%= custom_field_tag_with_label :project, value, read_only = true %></li>
+    <li class="all_custom <%= 'not-first' if value != custom_field_sort(@project.custom_field_values).first%>"><%= custom_field_tag_with_label :project, value, read_only = true %></li>
   <% end %>
     <ul class="boolean">
       <% custom_field_sort(@project.custom_field_values, true).each do |value| %>

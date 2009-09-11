@@ -43,9 +43,17 @@ module CustomFieldsHelper
       blank_option = custom_field.is_required? ?
                        (custom_field.default_value.blank? ? "<option value=\"\">--- #{l(:actionview_instancetag_blank_option)} ---</option>" : '') : 
                        '<option></option>'
-      read_only ? "<p>#{custom_value.value.collect.join(', ')}</p>" : select_tag(field_name, blank_option + options_for_select(custom_field.possible_values, custom_value.value), :id => field_id)
+      if read_only
+        custom_value.value.is_a?(FalseClass) ? "" : "<p>#{custom_value.value.collect.join(', ')}</p>"
+      else
+        select_tag(field_name, blank_option + options_for_select(custom_field.possible_values, custom_value.value), :id => field_id)
+      end
     when 'multi_list'
-      read_only ? "<p>#{custom_value.value.collect.join(', ')}</p>" : select_tag(field_name+'[]', options_for_select(custom_field.possible_values, custom_value.value), :id => field_id, :multiple => true)
+      if read_only
+        custom_value.value.is_a?(FalseClass) ? "" : "<p>#{custom_value.value.collect.join(', ')}</p>"
+      else
+        select_tag(field_name+'[]', options_for_select(custom_field.possible_values, custom_value.value), :id => field_id, :multiple => true)
+      end
     else
       read_only ? "<p>#{custom_value.value}</p>" : text_field_tag(field_name, custom_value.value, :id => field_id, :readonly => read_only)
     end

@@ -53,6 +53,7 @@ end
 class Query < ActiveRecord::Base
   belongs_to :project
   belongs_to :user
+  belongs_to :community
   serialize :filters
   serialize :column_names
   

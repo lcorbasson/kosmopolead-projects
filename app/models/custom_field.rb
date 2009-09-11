@@ -17,6 +17,7 @@
 
 class CustomField < ActiveRecord::Base
   has_many :custom_values, :dependent => :delete_all
+  belongs_to :community
   acts_as_list :scope => 'type = \'#{self.class}\''
   serialize :possible_values
   

@@ -43,7 +43,7 @@ class User < ActiveRecord::Base
   belongs_to :auth_source
 
   has_many :community_memberships #, :class_name => 'CommunityMembership'
-  has_many :communities, :through => :community_memberships, :source => :community_user
+  has_many :communities, :through => :community_memberships #, :source => :community_user
   #has_many :members_community_memberships, :class_name => 'CommunityUser'
   
   # Active non-anonymous users scope

@@ -55,7 +55,7 @@ class Project < ActiveRecord::Base
   has_many :stages,:class_name=>"Issue",:foreign_key=>"issue_types_id",:include=>[:type],:conditions=>["#{IssueType.table_name}.name='STAGE'"]
   has_many :file_attachments,:as=>:container,:conditions=>["container_type = ?", "project"],:dependent => :destroy
 
-
+  belongs_to :community
 
   # Custom field for the project issues
   has_and_belongs_to_many :issue_custom_fields, 

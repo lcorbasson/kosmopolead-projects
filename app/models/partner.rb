@@ -14,9 +14,7 @@ class Partner < ActiveRecord::Base
 
   has_many :partnerships, :dependent => :destroy
   has_many :members, :through => :partnerships, :source => :user
-  
 
-
- 
+  belongs_to :community
 
 end

@@ -47,6 +47,11 @@
 </p>
 <%= call_hook(:view_projects_form, :project => @project, :form => f) %>
 
+<% @project.custom_field_values.each do |value| %>
+  <p>
+    <%= custom_field_tag_with_label :project, value %>
+  </p>
+<% end %>
 
 <% unless @trackers.empty? %>
 <div class="fieldset">

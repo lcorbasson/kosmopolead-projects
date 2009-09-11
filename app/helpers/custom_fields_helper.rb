@@ -44,13 +44,13 @@ module CustomFieldsHelper
                        (custom_field.default_value.blank? ? "<option value=\"\">--- #{l(:actionview_instancetag_blank_option)} ---</option>" : '') : 
                        '<option></option>'
       if read_only
-        custom_value.value.is_a?(FalseClass) ? "" : "<p>#{custom_value.value.collect.join(', ')}</p>"
+        custom_value.value.is_a?(FalseClass)||custom_value.value.is_a?(Fixnum) ? "" : "<p>#{custom_value.value.collect.join(', ')}</p>"
       else
         select_tag(field_name, blank_option + options_for_select(custom_field.possible_values, custom_value.value), :id => field_id)
       end
     when 'multi_list'
       if read_only
-        custom_value.value.is_a?(FalseClass) ? "" : "<p>#{custom_value.value.collect.join(', ')}</p>"
+        custom_value.value.is_a?(FalseClass)||custom_value.value.is_a?(Fixnum) ? "" : "<p>#{custom_value.value.collect.join(', ')}</p>"
       else
         select_tag(field_name+'[]', options_for_select(custom_field.possible_values, custom_value.value), :id => field_id, :multiple => true)
       end

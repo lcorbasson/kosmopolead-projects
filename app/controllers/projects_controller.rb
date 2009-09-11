@@ -541,14 +541,12 @@ private
   end
 
   def find_projects
-    @projects = Project.find :all,
-                            :conditions => Project.visible_by(User.current),
+    @projects = Project.find :all,                            
                             :include => :parent
   end
 
   def find_root_projects
         @root_projects = Project.find(:all,
-                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
                                     :order => 'name')
 
   end

@@ -43,7 +43,7 @@
 </p>
 <p>
   <label><%= l(:label_status) %></label>
-  <%= f.select :status, Project::STATUS.collect{|key, value| [l(key), value]} %>
+  <%= f.select :status, ProjectStatus.all.collect{|s| [s.name, s.id]} %>
 </p>
 <%= call_hook(:view_projects_form, :project => @project, :form => f) %>
 

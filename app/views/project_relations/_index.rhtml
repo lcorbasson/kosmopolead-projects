@@ -1,11 +1,9 @@
- <div class="links_edit_box">
+<div class="links_edit_box">
      <% if authorize_for('issue_relations', 'new') %>
         <%= toggle_link image_tag('/images/add.png'), 'new-relation-form'%>
      <% end %>
-   </div>
+</div>
 
-
-  <p><strong><%=l(:label_related_project)%></strong></p>
   <div id="project_relations">
     <% if @project.relations.any? %>
       <table style="width:100%">

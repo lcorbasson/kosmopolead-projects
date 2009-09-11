@@ -150,7 +150,7 @@ class Query < ActiveRecord::Base
     
     trackers = project.nil? ? Tracker.find(:all, :order => 'position') : project.rolled_up_trackers
     
-    @available_filters = { "status_id" => { :type => :list_status, :order => 1, :values => IssueStatus.find(:all, :order => 'position').collect{|s| [s.name, s.id.to_s] } },       
+    @available_filters = { "status" => { :type => :list_status, :order => 1, :values => IssueStatus.find(:all, :order => 'position').collect{|s| [s.name, s.id.to_s] } },       
                            "tracker_id" => { :type => :list, :order => 2, :values => trackers.collect{|s| [s.name, s.id.to_s] } },                                                                                                                
                            "priority_id" => { :type => :list, :order => 3, :values => Enumeration.find(:all, :conditions => ['opt=?','IPRI'], :order => 'position').collect{|s| [s.name, s.id.to_s] } },
                            "subject" => { :type => :text, :order => 8 },  
@@ -196,7 +196,7 @@ class Query < ActiveRecord::Base
     return @available_filters_projects if @available_filters_projects    
 
     @available_filters_projects = {
-                    "status" => { :type => :list, :order => 1, :values => [[l(:label_all), ''],[l(:status_active), 1]] },
+                    "status" => { :type => :list_status, :order => 1, :values => ProjectStatus.find(:all, :order => 'position').collect{|s| [s.name, s.id.to_s] } },
                     "builder_by" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }},
                     "author_id" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }},
                     "watcher_id" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }}

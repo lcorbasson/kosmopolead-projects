@@ -36,7 +36,7 @@ module ProjectsHelper
             ]
   end
   def project_status_options_for_select()
-    [[l(:label_all), ''],[l(:status_active), 1]]
+    ProjectStatus.all.collect{|s| [s.name, s.id]}
   end
 
 

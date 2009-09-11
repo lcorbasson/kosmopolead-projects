@@ -24,7 +24,8 @@ class Project < ActiveRecord::Base
   STATUS_ACTIVE     = 1
   STATUS_ARCHIVED   = 9
 
- 
+
+  belongs_to :status,:class_name=>"ProjectStatus", :foreign_key=>"status_id"
   has_many :project_partners
   has_many :partners, :through => :project_partners, :dependent => :destroy
   belongs_to :time_unit, :foreign_key=>"time_units_id"

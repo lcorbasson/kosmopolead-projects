@@ -18,7 +18,7 @@
     <% if project.sector and project.sector %>
        <label><%= l(:label_project_sector) %></label> <%= my_sector(current_language, project.sector).collect{|s| s.name} %><br />
     <% end %>
-       <label><%= l(:field_status) %></label> <%= l(Project::STATUS.rassoc(project.status).first) %><br/>
+       <label><%= l(:field_status) %></label> <%= @project.status.name %><br/>
   </div>  
 </div>
 <% remote_form_for(:project, project,
@@ -34,7 +34,7 @@
       <p><label><%= l(:label_estimated_time) %></label> <%= f.text_field :estimated_time %>  <%= select_tag "project[time_units_id]", options_for_select(TimeUnit.all.collect {|u| [l("#{u.label}"), u.id]}) %></p>
       <p><label><%= l(:label_project_cost) %></label> <%= f.text_field :project_cost %> €</p>
       <p><label><%= l(:label_project_sector) %></label> <%= f.select :sector, list_sectors(current_language).collect{|s| [s.name, s.activity_sector_id] } %></p>
-      <p><label><%= l(:field_status) %></label> <%= f.select :status, Project::STATUS.collect{|key, value| [l(key), value]} %></p>
+      <p><label><%= l(:field_status) %></label> <%= f.select :status, ProjectStatus.all.collect{|s| [s.name, s.id]} %></p>
 
   <div class="buttons-icons right">
      <a class="btn_blue ui-corner-all button"  onclick="javascript:jQuery.ajax({data:jQuery.param(jQuery('#update-profile-form').serializeArray()), dataType:'script', type:'put', url:'<%= project_path(@project,:part=>'summary')%>'}); return false;"><%= image_tag("accept3.png") %></a>

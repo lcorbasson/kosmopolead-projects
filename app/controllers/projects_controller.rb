@@ -27,7 +27,7 @@ class ProjectsController < ApplicationController
 
   before_filter :find_root_projects
   before_filter :find_project, :except => [ :tags_json, :index, :list, :add, :activity,:update_left_menu ]
-  before_filter :find_projects,:only=>[:index]
+  before_filter :define_community_context, :find_projects,:only=>[:index]
 
   before_filter :find_optional_project, :only => :activity
   before_filter :authorize, :except => [:index,:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu, :edit_part_description, :edit_part_synthesis ]
@@ -542,7 +542,6 @@ private
   end
 
   def find_projects
-    @community = Community.find(params[:community_id]) if params[:community_id]
     @projects = Project.find :all,
                             :conditions => Project.visible_by(User.current, @community),
                             :include => :parent

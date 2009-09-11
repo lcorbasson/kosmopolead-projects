@@ -23,12 +23,28 @@ class ApplicationController < ActionController::Base
   
   before_filter :user_setup, :check_if_login_required, :set_localization
   filter_parameter_logging :password
-  
+  helper_method :current_community
+
   include Redmine::MenuManager::MenuController
   helper Redmine::MenuManager::MenuHelper
   
   REDMINE_SUPPORTED_SCM.each do |scm|
     require_dependency "repository/#{scm.underscore}"
+  end
+
+  def define_community_context
+    @current_community = Community.find(params[:community_id]) if params[:community_id]
+    session[:current_community_id] = @current_community ? @current_community.id : nil
+  end
+
+  def clear_community_context
+    @current_community = nil
+    session[:current_community_id] = nil
+  end
+
+  def current_community
+    return @current_community if defined?(@current_community)
+    @current_community = session[:current_community_id] && Community.find(session[:current_community_id])
   end
   
   def current_role

@@ -542,7 +542,7 @@ private
   end
 
   def find_projects
-    @community = CommunityUser.find(params[:community_id]) if params[:community_id]
+    @community = Community.find(params[:community_id]) if params[:community_id]
     @projects = Project.find :all,
                             :conditions => Project.visible_by(User.current, @community),
                             :include => :parent

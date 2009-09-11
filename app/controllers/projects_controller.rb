@@ -57,7 +57,7 @@ class ProjectsController < ApplicationController
     end
     @relation= ProjectRelation.new
      unless @project.nil?
-          @gantt = Redmine::Helpers::Gantt.new(params)
+          @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))
           retrieve_query
           if @query.valid?
              events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
@@ -187,7 +187,7 @@ class ProjectsController < ApplicationController
                                    :conditions => cond).to_f
     end
     @key = User.current.rss_key
-    @gantt = Redmine::Helpers::Gantt.new(params)
+    @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))
     @member ||= @project.members.new
     @users = User.all
     @file_attachment = FileAttachment.new

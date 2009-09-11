@@ -39,7 +39,7 @@
 </p>
 <p>
   <label><%= l(:label_sector) %></label>
-  <%= f.select :sector, list_sectors(current_language).collect{|s| [s.name, s.activity_sector_id] } %>
+  <%= f.select :sector, list_sectors(current_language).collect{|s| [s.name, s.activity_sector_id] }, {:include_blank => true} %>
 </p>
 <p>
   <label><%= l(:label_status) %></label>

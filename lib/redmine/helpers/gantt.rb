@@ -22,7 +22,7 @@ module Redmine
       attr_reader :year_from, :month_from, :date_from, :date_to, :zoom, :months, :events
     
       def initialize(options={})
-      
+        @project = options[:project] or raise "Missing Project"
         options = options.dup
         @events = []
           puts "#{options}"
@@ -35,11 +35,37 @@ module Redmine
           end
         else
           @month_from ||= Date.today.month
+
+          @first_issue = @project.issues.first(:order => "start_date", :conditions => ["start_date is not null"])
+          unless @first_issue.nil?
+            @first_issue = @first_issue.start_date
+          else
+            @first_issue = Date.today()
+          end
+
+          @last_issue = @project.issues.first(:order => "due_date DESC", :conditions => ["due_date is not null"] )
+          unless @last_issue.nil?
+            @last_issue = @last_issue.due_date
+          else
+            @last_issue = @first_issue + 6.month
+          end
+
+          unless @year_from
+              if @first_issue
+                @year_from = @first_issue.year.to_i
+              else
+                @year_from = Date.today.year
+              end
+          end
           @year_from ||= Date.today.year
         end
         
         zoom = (options[:zoom] || User.current.pref[:gantt_zoom]).to_i
-        @zoom = (zoom > 0 && zoom < 5) ? zoom : 2    
+        @zoom = (zoom > 0 && zoom < 5) ? zoom : 2
+        
+
+        @number_of_month = (@last_issue.year - @first_issue.year) * 12 + (@last_issue.month - @first_issue.month) + 1
+
         months = (options[:months] || User.current.pref[:gantt_months]).to_i
         @months = (months > 0 && months < 25) ? months : 6
         

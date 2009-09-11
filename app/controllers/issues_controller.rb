@@ -536,7 +536,7 @@ class IssuesController < ApplicationController
   end
   
   def gantt
-    @gantt = Redmine::Helpers::Gantt.new(params)
+    @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))
     retrieve_query
    if @query.valid?
       events = []

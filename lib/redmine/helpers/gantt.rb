@@ -64,10 +64,6 @@ module Redmine
         zoom = (options[:zoom] || User.current.pref[:gantt_zoom]).to_i
         @zoom = (zoom > 0 && zoom < 5) ? zoom : 2
 
-        p "-------------------------------------#{@last_issue}"
-        p "-------------------------------------#{@first_issue}"
-        p "-------------------------------------#{@project.id}"
-
         @number_of_month = (@last_issue.year - @first_issue.year) * 12 + (@last_issue.month - @first_issue.month) + 1
 
         months = (options[:months] || User.current.pref[:gantt_months]).to_i

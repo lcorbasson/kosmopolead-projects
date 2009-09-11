@@ -253,7 +253,7 @@ module ApplicationHelper
       title = []
       title << @project.name if @project
       title += @html_title if @html_title
-      title << Setting.app_title
+      title << "Kosmopolead projects"
       title.compact.join(' - ')
     else
       @html_title ||= []

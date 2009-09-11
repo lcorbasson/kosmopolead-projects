@@ -122,9 +122,7 @@ class Project < ActiveRecord::Base
   def self.visible_by(user=nil, community = nil)
     user ||= User.current
     if community
-      community_project_ids = user.memberships.select{|m| m.project.author == community}.collect{|m| m.project_id }
-      "#{Project.table_name}.status=#{Project::STATUS_ACTIVE} AND " +
-        (community_project_ids.empty? ? "false" : "#{Project.table_name}.id IN (#{community_project_ids.join(',')})")
+      "#{Project.table_name}.status=#{Project::STATUS_ACTIVE} AND #{Project.table_name}.community_id = #{community.id}"
     else
       if user && user.admin?
         return "#{Project.table_name}.status=#{Project::STATUS_ACTIVE}"

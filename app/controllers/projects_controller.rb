@@ -144,6 +144,7 @@ class ProjectsController < ApplicationController
                       page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
                       page << "jQuery('#projects_menu').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
                       page << display_message_error(l(:notice_successful_create), "fieldNotice")
+                      page << "Element.scrollTo('errorExplanation');"
                     end
                 }
             end
@@ -152,6 +153,7 @@ class ProjectsController < ApplicationController
              format.js{
                 render :update do |page|#
                   page << display_message_error(@project, "fieldError")
+                  page << "Element.scrollTo('errorExplanation');"
                end
              }
             end

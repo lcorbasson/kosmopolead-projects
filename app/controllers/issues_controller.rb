@@ -28,7 +28,7 @@ class IssuesController < ApplicationController
   before_filter :find_project, :only => [:update,:calendar,:gantt,:index,:create,:new, :update_form, :preview]
   before_filter :find_root_projects,:only=>[:create]
   before_filter :find_projects, :only => [:update,:gantt, :index, :calendar,:new,:show,:create]
-  before_filter :authorize, :except => [:update,:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
+#  before_filter :authorize, :except => [:update,:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
 
 #  before_filter :find_optional_project, :only => [ :changes, :gantt, :calendar]
   accept_key_auth :index, :show, :changes
@@ -218,6 +218,7 @@ class IssuesController < ApplicationController
           format.js {
             render:update do |page|
                 page << display_message_error(l(:error_no_tracker), "fieldWarning")
+                page << "Element.scrollTo('content_wrapper');"
             end
           }
       end
@@ -245,6 +246,7 @@ class IssuesController < ApplicationController
                   render:update do |page|
                     page.replace_html "content_wrapper", :partial => 'new'
                     page << display_message_error(l(:notice_successful_create), "fieldNotice")
+                     page << "Element.scrollTo('errorExplanation');"
                   end
                 }
              end
@@ -269,7 +271,8 @@ class IssuesController < ApplicationController
                          page.replace_html "content_wrapper", :partial => 'show'
                        end
                        page << display_message_error(l(:notice_successful_create), "fieldNotice")
-                    end
+                        page << "Element.scrollTo('errorExplanation');"
+                     end
                   }
                end
            else
@@ -292,7 +295,8 @@ class IssuesController < ApplicationController
                        page.replace_html "content_wrapper", :partial => 'show'
                      end
                      page << display_message_error(l(:notice_successful_create), "fieldNotice")
-                  end
+                      page << "Element.scrollTo('errorExplanation');"
+                   end
                 }
              end
           else
@@ -305,6 +309,7 @@ class IssuesController < ApplicationController
           format.js {
             render:update do |page|
                page << display_message_error(@issue, "fieldError")
+                page << "Element.scrollTo('errorExplanation');"
             end
           }
        end

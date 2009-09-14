@@ -1,6 +1,6 @@
 <% if project %>
   <%= box(
-      "#{l(:label_issue_plural)} - #{project.name}",
+      "#{l(:label_issue_plural)} - #{project.acronym}",
       "#{render:partial=>'issues/box/list'}",
       ["<span class='visu'>Visualisation</span>",
         "#{link_to_remote(image_tag('visu_profile_off.png'),{:url=>project_path(project),:method=>:get},:class=>'icon_visu',:name=>'Aperçu')}",

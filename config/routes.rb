@@ -18,6 +18,7 @@ ActionController::Routing::Routes.draw do |map|
   map.signout 'logout', :controller => 'account', :action => 'logout'
   map.connect 'queries',:controller=>'queries'
   map.connect 'project_statuses',:controller=>'project_statuses'
+  map.resources 'project_relation_types',:controller=>'project_relation_types'
 
 
   map.resources :projects,:collection=>{:add_version=>:get,:show_funding=>:get,:add=>:get,:settings=>:get, :edit_part_description => :get, :edit_part_synthesis => :get} do |project|

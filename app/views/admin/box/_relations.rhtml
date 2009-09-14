@@ -11,7 +11,7 @@
 	<td align="center"><%= relation.relation_type %>  </td>
     <td align="center"><%= relation.relation_type_sym %>  </td>
    <td align="center" style="width:10%">
-    <small><%= link_to(l(:button_delete), { :controller => 'project_relation_types', :action => 'destroy', :id => relation }, :class => 'icon icon-del') %></small>
+    <small><%= link_to(l(:button_delete),  project_relation_type_path(relation) ,:method=>:delete,:confirm=>"Etes-vous certain de vouloir supprimer ce type de relation ? Les différentes relations utilisant ce type seront supprimées." , :class => 'icon icon-del') %></small>
   </td>
   </tr>
 <% end %>

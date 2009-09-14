@@ -539,6 +539,12 @@ module ApplicationHelper
     hidden_field_tag('back_url', CGI.escape(back_url)) unless back_url.blank?
   end
 
+  def back_url
+     back_url = params[:back_url] || request.env['HTTP_REFERER']
+     back_url = CGI.unescape(back_url.to_s)
+    CGI.escape(back_url) unless back_url.blank?
+  end
+
   def check_all_links(form_name)
     link_to_function(l(:button_check_all), "checkAll('#{form_name}', true)") +
     " | " +

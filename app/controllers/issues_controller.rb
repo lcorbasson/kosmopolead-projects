@@ -228,57 +228,8 @@ class IssuesController < ApplicationController
       @issue.watcher_user_ids = params[:issue]['watcher_user_ids'] if User.current.allowed_to?(:add_issue_watchers, @project)
     end
     @issue.author = User.current
-    @priorities = Enumeration::get_values('IPRI')  
-    if params[:continue]
-        if @issue.save           
-            if @issue.is_issue?
-              # La tache est assignee
-               if params[:assigned_to_id]
-                create_assignments(params[:assigned_to_id])                
-               else
-                 # La tache n est pas assignee
-                Assignment.delete(@issue)
-               end
-            end
-            session[:project] = @issue.project            
-            respond_to do |format|
-                format.js {
-                  render:update do |page|
-                    page.replace_html "content_wrapper", :partial => 'new'
-                    page << display_message_error(l(:notice_successful_create), "fieldNotice")
-                     page << "Element.scrollTo('errorExplanation');"
-                  end
-                }
-             end
-        else
-         has_error = true
-        end
-    else
-      if !params[:id].blank?
-          @issue = Issue.find(params[:id])
-          if @issue.update_attributes(params[:issue])
-              @project = @issue.project
-              @file_attachment = FileAttachment.new
-              @file_attachment.container_type="issue"
-              @file_attachment.container_id = @issue.id
-              find_info_project  if @issue.is_stage?
-              respond_to do |format|
-                  format.js {
-                    render:update do |page|
-                       if @issue.is_stage?
-                         page.replace_html "content_wrapper", :partial => 'projects/show',:locals=>{:project=>@project}
-                       else
-                         page.replace_html "content_wrapper", :partial => 'show'
-                       end
-                       page << display_message_error(l(:notice_successful_create), "fieldNotice")
-                        page << "Element.scrollTo('errorExplanation');"
-                     end
-                  }
-               end
-           else
-             has_error = true
-           end
-      else         
+    @priorities = Enumeration::get_values('IPRI')    
+  
           find_info_issue        
           if @issue.save
             @file_attachment = FileAttachment.new
@@ -300,20 +251,10 @@ class IssuesController < ApplicationController
                 }
              end
           else
-            has_error = true
+             page << display_message_error(@issue, "fieldError")
+             page << "Element.scrollTo('errorExplanation');"
           end
-      end
-    end
-    if has_error
-      respond_to do |format|
-          format.js {
-            render:update do |page|
-               page << display_message_error(@issue, "fieldError")
-                page << "Element.scrollTo('errorExplanation');"
-            end
-          }
-       end
-    end
+     
   end
   
   # Attributes that can be updated on workflow transition (without :edit permission)

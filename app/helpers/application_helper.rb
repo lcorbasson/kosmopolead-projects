@@ -758,7 +758,8 @@ module ApplicationHelper
     name = content_tag(:p,partner.name,:class=>"name")
     thumbnail = content_tag(:li,
       content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=> project_project_partner_path(@project,partner_project),:method=>:delete,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
-      name,:class=>"user_thumbnail thumbnail editable_box")
+      tag("img", { :src => partner.logo.url(:thumb) ,:class=>"left"})+
+        name,:class=>"user_thumbnail thumbnail editable_box")
   end
 
   def member_thumbnail(user,member)

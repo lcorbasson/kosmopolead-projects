@@ -319,6 +319,8 @@ label_new_photo: Nouvelle photo
 label_new_member: Nouveau membre
 label_new_relation: Nouvelle liaison
 label_project_relation__plural: Relations entre les projets
+label_project_status_plural: Statuts de projet
+label_project_status_new: Nouveau statut de projet
 label_status: Statut
 label_category: Catégorie
 label_priority: Priorité

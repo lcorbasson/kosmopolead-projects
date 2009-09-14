@@ -30,7 +30,7 @@ class IssuesController < ApplicationController
   before_filter :find_projects, :only => [:update,:gantt, :index, :calendar,:new,:show,:create]
   before_filter :authorize, :except => [:update,:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
 
-  before_filter :find_optional_project, :only => [ :changes, :gantt, :calendar]
+#  before_filter :find_optional_project, :only => [ :changes, :gantt, :calendar]
   accept_key_auth :index, :show, :changes
 
   helper :journals
@@ -714,13 +714,6 @@ private
       render_404
   end
   
-  def find_optional_project
-    @project = Project.find_by_identifier(params[:project_id]) unless params[:project_id].blank?
-    allowed = User.current.allowed_to?({:controller => params[:controller], :action => params[:action]}, @project, :global => true)
-    allowed ? true : deny_access
-  rescue ActiveRecord::RecordNotFound
-    render_404
-  end
   
   # Retrieve query from session or build a new query
   def retrieve_query

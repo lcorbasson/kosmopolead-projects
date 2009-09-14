@@ -847,6 +847,7 @@ background-image:url('../images/close_hl.png');
 .task_done { height:10px;background:#6AC500; border: 1px solid #6AC500; }
 .task_todo { height:10px;background:#C0C0C0; border: 1px solid #C0C0C0; }
 .milestone { background-image:url(../images/milestone.png); background-repeat: no-repeat; border: 0; }
+.version { background-image:url(../images/package.png); background-repeat: no-repeat; border: 0; }
 
 /***** Icons *****/
 .icon {

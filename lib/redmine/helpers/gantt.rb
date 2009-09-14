@@ -26,6 +26,22 @@ module Redmine
         options = options.dup
         @events = []
           puts "#{options}"
+
+
+          @first_issue = @project.issues.first(:order => "start_date", :conditions => ["start_date is not null"])
+          if @first_issue.nil?
+            @first_issue = Date.today()
+          else
+            @first_issue = @first_issue.start_date
+          end
+
+          @last_issue = @project.issues.first(:order => "due_date DESC", :conditions => ["due_date is not null"] )
+          if @last_issue.nil?
+            @last_issue = @first_issue + 6.month
+          else
+            @last_issue = @last_issue.due_date
+          end
+
         if options[:year] && options[:year].to_i >0
           @year_from = options[:year].to_i
           if options[:month] && options[:month].to_i >=1 && options[:month].to_i <= 12
@@ -35,21 +51,6 @@ module Redmine
           end
         else
           @month_from ||= Date.today.month
-
-          @first_issue = @project.issues.first(:order => "start_date", :conditions => ["start_date is not null"])
-          unless @first_issue.nil?
-            @first_issue = @first_issue.start_date
-          else
-            @first_issue = Date.today()
-          end
-
-          @last_issue = @project.issues.first(:order => "due_date DESC", :conditions => ["due_date is not null"] )
-          unless @last_issue.nil?
-            @last_issue = @last_issue.due_date
-          else
-            @last_issue = @first_issue + 6.month
-          end
-
           unless @year_from
               if @first_issue
                 @year_from = @first_issue.year.to_i
@@ -62,7 +63,6 @@ module Redmine
         
         zoom = (options[:zoom] || User.current.pref[:gantt_zoom]).to_i
         @zoom = (zoom > 0 && zoom < 5) ? zoom : 2
-        
 
         @number_of_month = (@last_issue.year - @first_issue.year) * 12 + (@last_issue.month - @first_issue.month) + 1
 

@@ -67,7 +67,7 @@ module Redmine
         @number_of_month = (@last_issue.year - @first_issue.year) * 12 + (@last_issue.month - @first_issue.month) + 1
 
         months = (options[:months]).to_i
-        @months = @number_of_month #(months > 0 && months < 25) ? months : 6
+        @months = @number_of_month
         
         # Save gantt parameters as user preference (zoom and months count)
 #        if (User.current.logged? && (@zoom != User.current.pref[:gantt_zoom] || @months != User.current.pref[:gantt_months]))

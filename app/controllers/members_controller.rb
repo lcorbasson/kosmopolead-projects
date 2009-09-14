@@ -18,7 +18,7 @@
 class MembersController < ApplicationController
   before_filter :find_member, :except => [:create,:new]
   before_filter :find_project, :only => [:create,:new]
-  before_filter :authorize,:except=>[:create,:new]
+#  before_filter :authorize,:except=>[:create,:new]
 
   def new
     if params[:partner_id].blank?

@@ -319,6 +319,8 @@ label_new_photo: Nouvelle photo
 label_new_member: Nouveau membre
 label_new_relation: Nouvelle liaison
 label_project_relation__plural: Relations entre les projets
+label_project_status_plural: Statuts de projet
+label_project_status_new: Nouveau statut de projet
 label_status: Statut
 label_category: Catégorie
 label_priority: Priorité
@@ -355,7 +357,7 @@ label_resources: Ressources nécessaires
 label_estimated_hours: Temps estimé
 label_acronym: Acronyme
 label_identifier: Identifiant
-label_author: Auteur
+label_author: Porteur
 label_builder: Monté par
 label_watcher: Suivi par
 label_cost: Coût
@@ -448,8 +450,8 @@ label_administration: Administration
 label_login: Connexion
 label_logout: Déconnexion
 label_help: Aide
-label_reported_issues: Demandes soumises
-label_assigned_to_me_issues: Demandes qui me sont assignées
+label_reported_issues: Tâches que j'ai créées
+label_assigned_to_me_issues: Tâches qui me sont assignées
 label_last_login: Dernière connexion
 label_last_updates: Dernière mise à jour
 label_last_updates_plural: %d dernières mises à jour
@@ -701,7 +703,7 @@ label_project_cost: Coût du projet
 label_project_sector: Secteur
 label_sectors: Secteurs
 label_language: Langue
-label_status: Status
+label_status: Statut
 
 button_login: Connexion
 button_submit: Soumettre

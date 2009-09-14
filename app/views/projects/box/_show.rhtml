@@ -9,15 +9,23 @@
   <% unless @project.custom_field_values.empty? %>
     <%= render :partial => 'projects/show/custom_fields', :locals=>{:project=>project} %>
   <% end %>
-  
-  <%= grey_box("#{render:partial=>'projects/relations'}", "project_relations") %>
+
 
   <div class="editable_box">
-    <div class="links_edit_box">
-        <%= toggle_link image_tag("/images/edit.png"), 'update-tags-form',{:second_element=>"project_tags"} %>
-    </div>
-    <%= grey_title("MOTS CLES") %>
-    <%= grey_box("#{render:partial=>'projects/box/tags', :locals=>{:project=>project}}", "project_tags") %>
+      <div class="links_edit_box" >        
+        <%= toggle_link image_tag('/images/add.png'), 'new-relation-form'%>
+      </div>
+      <%= grey_title("#{l(:label_related_project)}") %>
+      <%= grey_box("#{render:partial=>'projects/relations'}", "project_relations") %>
+  </div>
+
+
+  <div class="editable_box">
+      <div class="links_edit_box">
+          <%= toggle_link image_tag("/images/edit.png"), 'update-tags-form' %>
+      </div>
+      <%= grey_title("MOTS CLES") %>
+      <%= grey_box("#{render:partial=>'projects/box/tags', :locals=>{:project=>project}}", "project_tags") %>
   </div>
 
 </div>

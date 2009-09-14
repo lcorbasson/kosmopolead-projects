@@ -30,8 +30,8 @@ class ProjectsController < ApplicationController
   before_filter :find_projects,:only=>[:index]
 
   before_filter :find_optional_project, :only => :activity
-  before_filter :authorize, :except => [:index,:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu, :edit_part_description, :edit_part_synthesis ]
-  before_filter :require_admin, :only => [ :add, :archive, :unarchive, :destroy ]
+#  before_filter :authorize, :except => [:index,:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu, :edit_part_description, :edit_part_synthesis ]
+#  before_filter :require_admin, :only => [ :add, :archive, :unarchive, :destroy ]
   accept_key_auth :activity
 
   helper :sort
@@ -144,6 +144,7 @@ class ProjectsController < ApplicationController
                       page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
                       page << "jQuery('#projects_menu').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
                       page << display_message_error(l(:notice_successful_create), "fieldNotice")
+                      page << "Element.scrollTo('errorExplanation');"
                     end
                 }
             end
@@ -152,6 +153,7 @@ class ProjectsController < ApplicationController
              format.js{
                 render :update do |page|#
                   page << display_message_error(@project, "fieldError")
+                  page << "Element.scrollTo('errorExplanation');"
                end
              }
             end
@@ -309,13 +311,13 @@ class ProjectsController < ApplicationController
   end
 
   def archive
-    @project.archive if request.post? && @project.active?
+    @project.archive if request.post?
     flash[:notice] = l(:notice_successful_archive)
     redirect_to :controller => 'admin', :action => 'projects'
   end
 
   def unarchive
-    @project.unarchive if request.post? && !@project.active?
+    @project.unarchive if request.post?
     flash[:notice] = l(:notice_successful_unarchive)
     redirect_to :controller => 'admin', :action => 'projects'
   end
@@ -546,14 +548,12 @@ private
   end
 
   def find_projects
-    @projects = Project.find :all,
-                            :conditions => Project.visible_by(User.current),
+    @projects = Project.find :all,                            
                             :include => :parent
   end
 
   def find_root_projects
         @root_projects = Project.find(:all,
-                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
                                     :order => 'name')
 
   end

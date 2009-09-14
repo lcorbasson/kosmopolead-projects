@@ -1179,10 +1179,10 @@ text-align:center;
 /*Project*/
 .project_infos {line-height:15px;float:right;width:70%;}
 #update-profile-form p {padding:5px;}
-#update-profile-form select,#update-profile-form input{width:100px;}
 #update-profile-form label{width:150px;}
 #relation_project_to_id {width:100px;}
 #project_author .name {padding:20px;}
+.input_number {width:100px;}
 
 /*Project Custom Fields*/
 .project_custom_fields {padding:0;}

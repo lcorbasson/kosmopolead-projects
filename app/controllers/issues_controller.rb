@@ -28,9 +28,9 @@ class IssuesController < ApplicationController
   before_filter :find_project, :only => [:update,:calendar,:gantt,:index,:create,:new, :update_form, :preview]
   before_filter :find_root_projects,:only=>[:create]
   before_filter :find_projects, :only => [:update,:gantt, :index, :calendar,:new,:show,:create]
-  before_filter :authorize, :except => [:update,:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
+#  before_filter :authorize, :except => [:update,:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
 
-  before_filter :find_optional_project, :only => [ :changes, :gantt, :calendar]
+#  before_filter :find_optional_project, :only => [ :changes, :gantt, :calendar]
   accept_key_auth :index, :show, :changes
 
   helper :journals
@@ -218,6 +218,7 @@ class IssuesController < ApplicationController
           format.js {
             render:update do |page|
                 page << display_message_error(l(:error_no_tracker), "fieldWarning")
+                page << "Element.scrollTo('content_wrapper');"
             end
           }
       end
@@ -245,6 +246,7 @@ class IssuesController < ApplicationController
                   render:update do |page|
                     page.replace_html "content_wrapper", :partial => 'new'
                     page << display_message_error(l(:notice_successful_create), "fieldNotice")
+                     page << "Element.scrollTo('errorExplanation');"
                   end
                 }
              end
@@ -269,7 +271,8 @@ class IssuesController < ApplicationController
                          page.replace_html "content_wrapper", :partial => 'show'
                        end
                        page << display_message_error(l(:notice_successful_create), "fieldNotice")
-                    end
+                        page << "Element.scrollTo('errorExplanation');"
+                     end
                   }
                end
            else
@@ -292,7 +295,8 @@ class IssuesController < ApplicationController
                        page.replace_html "content_wrapper", :partial => 'show'
                      end
                      page << display_message_error(l(:notice_successful_create), "fieldNotice")
-                  end
+                      page << "Element.scrollTo('errorExplanation');"
+                   end
                 }
              end
           else
@@ -305,6 +309,7 @@ class IssuesController < ApplicationController
           format.js {
             render:update do |page|
                page << display_message_error(@issue, "fieldError")
+                page << "Element.scrollTo('errorExplanation');"
             end
           }
        end
@@ -714,13 +719,6 @@ private
       render_404
   end
   
-  def find_optional_project
-    @project = Project.find_by_identifier(params[:project_id]) unless params[:project_id].blank?
-    allowed = User.current.allowed_to?({:controller => params[:controller], :action => params[:action]}, @project, :global => true)
-    allowed ? true : deny_access
-  rescue ActiveRecord::RecordNotFound
-    render_404
-  end
   
   # Retrieve query from session or build a new query
   def retrieve_query
@@ -768,7 +766,7 @@ private
 
   def find_root_projects
      @root_projects = Project.find(:all,
-                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
+                                    
                                     :order => 'name')
   end
 

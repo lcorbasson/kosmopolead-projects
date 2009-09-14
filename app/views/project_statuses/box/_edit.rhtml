@@ -1,0 +1,6 @@
+<% form_tag({:action => 'update', :id => @project_status}, :class => "tabular") do %>
+  <%= render :partial => 'form' %>
+  <div class="buttons right">
+       <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+  </div>
+<% end %>

@@ -1,0 +1,15 @@
+<%= error_messages_for 'project_status' %>
+
+
+<!--[form:issue_status]-->
+<p><label for="project_status_name"><%=l(:field_name)%><span class="required"> *</span></label>
+<%= text_field 'project_status', 'status_label'  %></p>
+
+
+<p><label for="project_status_is_default"><%=l(:field_is_default)%></label>
+<%= check_box 'project_status', 'is_default' %></p>
+
+<%= call_hook(:view_issue_statuses_form, :issue_status => @project_status) %>
+
+<!--[eoform:issue_status]-->
+

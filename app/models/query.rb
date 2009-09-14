@@ -150,7 +150,7 @@ class Query < ActiveRecord::Base
     
     trackers = project.nil? ? Tracker.find(:all, :order => 'position') : project.rolled_up_trackers
     
-    @available_filters = { "status_id" => { :type => :list_status, :order => 1, :values => IssueStatus.find(:all, :order => 'position').collect{|s| [s.name, s.id.to_s] } },       
+    @available_filters = { "status" => { :type => :list_status, :order => 1, :values => IssueStatus.find(:all, :order => 'position').collect{|s| [s.name, s.id.to_s] } },       
                            "tracker_id" => { :type => :list, :order => 2, :values => trackers.collect{|s| [s.name, s.id.to_s] } },                                                                                                                
                            "priority_id" => { :type => :list, :order => 3, :values => Enumeration.find(:all, :conditions => ['opt=?','IPRI'], :order => 'position').collect{|s| [s.name, s.id.to_s] } },
                            "subject" => { :type => :text, :order => 8 },  
@@ -196,7 +196,7 @@ class Query < ActiveRecord::Base
     return @available_filters_projects if @available_filters_projects    
 
     @available_filters_projects = {
-                    "status" => { :type => :list, :order => 1, :values => [[l(:label_all), ''],[l(:status_active), 1]] },
+                   "status_id" => { :type => :list_status, :order => 1, :values => ProjectStatus.find(:all, :order => 'position').collect{|s| [s.status_label, s.id.to_s] } },
                     "builder_by" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }},
                     "author_id" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }},
                     "watcher_id" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }}
@@ -376,19 +376,24 @@ class Query < ActiveRecord::Base
           is_custom_filter = true
           sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{db_table} ON #{db_table}.customized_type='Project' AND #{db_table}.customized_id=#{Project.table_name}.id AND #{db_table}.custom_field_id=#{$1} WHERE "
      else
-         db_table = Project.table_name
+         db_field = field
          if (field == "status_id")
-           db_field = 'status'
+            db_table = ProjectStatus.table_name
+           sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{db_table} ON #{db_table}.id=#{Project.table_name}.status_id WHERE #{Project.table_name}.status_id=#{v}"
          else
-            # regular field
-            db_field = field
-          end
-            sql << '('
-      end
-     
-       sql = sql + sql_for_field_projects(field, v, db_table, db_field, is_custom_filter)
+            db_table = Project.table_name
 
+         end
+         if (field != "status_id")
+            sql << '('
+         end
+      end
+     if (field != "status_id")
+        sql = sql + sql_for_field_projects(field, v, db_table, db_field, is_custom_filter)
+     end
+    
        sql << ')'
+     
        filters_clauses << sql
     end
     filters_clauses.join(' AND ')   

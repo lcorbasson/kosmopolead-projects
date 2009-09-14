@@ -2,10 +2,10 @@ class ProjectStatus < ActiveRecord::Base
 
   # -- validations
 
-  validates_presence_of :name
-  validates_uniqueness_of :name
-  validates_length_of :name, :maximum => 30
-  validates_format_of :name, :with => /^[\w\s\'\-]*$/i
+  validates_presence_of :status_label
+  validates_uniqueness_of :status_label
+  validates_length_of :status_label, :maximum => 30
+  validates_format_of :status_label, :with => /^[\w\s\'\-]*$/i
 
   # -- Gestion des positions
 

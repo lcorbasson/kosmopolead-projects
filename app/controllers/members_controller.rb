@@ -54,10 +54,7 @@ class MembersController < ApplicationController
 
         } }
       end   
-  end
-
-
-  
+  end  
 
   
   def edit
@@ -70,10 +67,10 @@ class MembersController < ApplicationController
   end
 
 
-
   def destroy
-    @member = Member.find(params[:id])
-    @member.destroy
+    member_to_destroy = Member.find(params[:id])
+    member_to_destroy.destroy
+    @member = Member.new
     respond_to do |format|
         format.js { render(:update) {|page|
             page.replace_html "projects_members", :partial => 'projects/show/members'

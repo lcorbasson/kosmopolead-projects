@@ -315,6 +315,9 @@ legend_milestone: Jalon
 legend_issue_in_late: Retard
 legend_issue_done: Réalisé
 legend_issue_todo: A faire
+
+
+label_project_relation_type_sym: Label réciproque
 label_new_photo: Nouvelle photo
 label_new_member: Nouveau membre
 label_new_relation: Nouvelle liaison

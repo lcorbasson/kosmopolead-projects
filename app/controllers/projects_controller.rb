@@ -109,6 +109,7 @@ class ProjectsController < ApplicationController
       #Save project
       @relation = ProjectRelation.new
       @project = Project.new(params[:project])
+      @project.archived = false
       @project.enabled_module_names = params[:enabled_modules]
       if @project.save
           @trackers = @project.rolled_up_trackers

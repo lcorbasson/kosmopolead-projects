@@ -422,7 +422,8 @@ class IssuesController < ApplicationController
   end
 
   def move
-    @issue = Issue.find(params[:id])
+    @issues = Issue.find_all_by_id(params[:id] || params[:ids])
+
     @allowed_projects = []
     # find projects to which the user is allowed to move the issue
     if User.current.admin?

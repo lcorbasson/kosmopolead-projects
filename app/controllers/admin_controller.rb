@@ -33,8 +33,8 @@ class AdminController < ApplicationController
     c = ARCondition.new(["#{ProjectStatus.table_name}.id = ?", @status])
     
    
-      name = "%#{params[:name].strip.downcase}%"
-      c << ["LOWER(identifier) LIKE ? OR LOWER(name) LIKE ?", name, name]
+      name = "%#{params[:name].strip.downcase}%" unless params[:name].nil?
+      c << ["LOWER(identifier) LIKE ? OR LOWER(name) LIKE ?", name, name] unless params[:name].nil?
       @project_count = Project.count(:include=>[:status],:conditions => c.conditions)
       @project_pages = Paginator.new self, @project_count,
 								per_page_option,

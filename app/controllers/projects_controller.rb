@@ -304,13 +304,13 @@ class ProjectsController < ApplicationController
   end
 
   def archive
-    @project.archive if request.post? && @project.active?
+    @project.archive if request.post?
     flash[:notice] = l(:notice_successful_archive)
     redirect_to :controller => 'admin', :action => 'projects'
   end
 
   def unarchive
-    @project.unarchive if request.post? && !@project.active?
+    @project.unarchive if request.post?
     flash[:notice] = l(:notice_successful_unarchive)
     redirect_to :controller => 'admin', :action => 'projects'
   end

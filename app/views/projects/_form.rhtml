@@ -14,7 +14,7 @@
 <% if User.current.admin? and !@root_projects.empty? %>
     <p>
         <label><%= l(:label_parent) %></label>
-        <%= f.select :parent_id, (@root_projects.collect {|p| [p.name, p.id]}), { :include_blank => true } %></p>
+        <%= f.select :parent_id, (@root_projects.collect {|p| [p.acronym, p.id]}), { :include_blank => true } %></p>
     </p>
 <% end %>
 <p>
@@ -43,7 +43,7 @@
 </p>
 <p>
   <label><%= l(:label_status) %></label>
-  <%= f.select :status, ProjectStatus.all.collect{|s| [s.name, s.id]} %>
+  <%= f.select :status_id, ProjectStatus.all.collect{|s| [s.status_label, s.id]} %>
 </p>
 <%= call_hook(:view_projects_form, :project => @project, :form => f) %>
 

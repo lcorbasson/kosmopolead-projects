@@ -1,7 +1,7 @@
 class CreateProjectStatuses < ActiveRecord::Migration
   def self.up
     create_table :project_statuses, :force => true do |t|
-      t.string   :name
+      t.string   :status_label
       t.boolean  :is_default
       t.integer  :position
       t.timestamps

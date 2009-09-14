@@ -768,7 +768,7 @@ private
 
   def find_root_projects
      @root_projects = Project.find(:all,
-                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
+                                    
                                     :order => 'name')
   end
 

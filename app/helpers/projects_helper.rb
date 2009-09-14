@@ -35,8 +35,9 @@ module ProjectsHelper
             {:name => 'partners', :partial => 'projects/show/partners', :label => :label_partners}
             ]
   end
+  
   def project_status_options_for_select()
-    ProjectStatus.all.collect{|s| [s.name, s.id]}
+    ProjectStatus.all.collect{|s| [s.status_label, s.id]}
   end
 
 

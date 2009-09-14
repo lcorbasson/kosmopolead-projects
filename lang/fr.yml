@@ -355,7 +355,7 @@ label_resources: Ressources nécessaires
 label_estimated_hours: Temps estimé
 label_acronym: Acronyme
 label_identifier: Identifiant
-label_author: Auteur
+label_author: Porteur
 label_builder: Monté par
 label_watcher: Suivi par
 label_cost: Coût
@@ -448,8 +448,8 @@ label_administration: Administration
 label_login: Connexion
 label_logout: Déconnexion
 label_help: Aide
-label_reported_issues: Demandes soumises
-label_assigned_to_me_issues: Demandes qui me sont assignées
+label_reported_issues: Tâches que j'ai créées
+label_assigned_to_me_issues: Tâches qui me sont assignées
 label_last_login: Dernière connexion
 label_last_updates: Dernière mise à jour
 label_last_updates_plural: %d dernières mises à jour

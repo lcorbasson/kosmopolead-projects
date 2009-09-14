@@ -106,59 +106,59 @@ class ProjectsController < ApplicationController
           }
         end
     else
-        #Save project
-        @relation = ProjectRelation.new
-        @project = Project.new(params[:project])
-        @project.enabled_module_names = params[:enabled_modules]
-        if @project.save
-            @trackers = @project.rolled_up_trackers
-            @users = User.all
-            cond = @project.project_condition(Setting.display_subprojects_issues?)
-            TimeEntry.visible_by(User.current) do
-              @total_hours = TimeEntry.sum(:hours,
-                                           :include => :project,
-                                           :conditions => cond).to_f
-            end
-            @key = User.current.rss_key
-            @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))
-            @member ||= @project.members.new
-            @users = User.all
-            @file_attachment = FileAttachment.new(:container_type=>"project",:container_id=>@project.id)
-            @roles = Role.find :all, :order => 'builtin, position'
-            retrieve_query
-            if @query.valid?
-              events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
-                                and start_date is not null)
-                                AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
+      #Save project
+      @relation = ProjectRelation.new
+      @project = Project.new(params[:project])
+      @project.enabled_module_names = params[:enabled_modules]
+      if @project.save
+          @trackers = @project.rolled_up_trackers
+          @users = User.all
+          cond = @project.project_condition(Setting.display_subprojects_issues?)
+          TimeEntry.visible_by(User.current) do
+            @total_hours = TimeEntry.sum(:hours,
+                                         :include => :project,
+                                         :conditions => cond).to_f
+          end
+          @key = User.current.rss_key
+          @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))
+          @member ||= @project.members.new
+          @users = User.all
+          @file_attachment = FileAttachment.new(:container_type=>"project",:container_id=>@project.id)
+          @roles = Role.find :all, :order => 'builtin, position'
+          retrieve_query
+          if @query.valid?
+            events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
+                              and start_date is not null)
+                              AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
 
-              @gantt.events = events
-            end
-            completed_percent
-            find_gallery
-            find_projects
-            session[:project] = @project
-            flash[:notice] = l(:notice_successful_create)
-            respond_to do |format|
-                format.js {
-                    render:update do |page|
-                      page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
-                      page << "jQuery('#projects_menu').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
-                      page << display_message_error(l(:notice_successful_create), "fieldNotice")
-                      page << "Element.scrollTo('errorExplanation');"
-                    end
-                }
-            end
-        else
-           respond_to do |format|
-             format.js{
-                render :update do |page|#
-                  page << display_message_error(@project, "fieldError")
-                  page << "Element.scrollTo('errorExplanation');"
-               end
-             }
-            end
-        end
+            @gantt.events = events
+          end
+          completed_percent
+          find_gallery
+          find_projects
+          session[:project] = @project
+          flash[:notice] = l(:notice_successful_create)
+          respond_to do |format|
+              format.js {
+                  render:update do |page|
+                    page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
+                    page << "jQuery('#projects_menu').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
+                    page << display_message_error(l(:notice_successful_create), "fieldNotice")
+                    page << "Element.scrollTo('errorExplanation');"
+                  end
+              }
+          end
+      else
+         respond_to do |format|
+           format.js{
+              render :update do |page|#
+                page << display_message_error(@project, "fieldError")
+                page << "Element.scrollTo('errorExplanation');"
+             end
+           }
+          end
       end
+    end
   end
 
   # Show @project

@@ -64,9 +64,14 @@ class UsersController < ApplicationController
       @user.login = params[:user][:login]     
       @user.password, @user.password_confirmation = params[:password], params[:password_confirmation] unless @user.auth_source_id
       if @user.save
-         if params[:partner]
-          @partnership = Partnership.create(:user_id=>@user.id,:partner_id=>params[:partner])
-        end
+          if params[:partner]
+            @user.partnerships.each {|partnership| partnership.destroy}
+            if params[:partner].is_a?(Array)
+              params[:partner].each { |partner| Partnership.create(:user_id=>@user.id,:partner_id=>partner) }
+            else
+              @partnership = Partnership.create(:user_id=>@user.id,:partner_id=>params[:partner])
+            end
+          end
         Mailer.deliver_account_information(@user, params[:password]) if params[:send_information]
         flash[:notice] = l(:notice_successful_create)
         redirect_to :controller => 'users'
@@ -89,6 +94,14 @@ class UsersController < ApplicationController
       # Was the account actived ? (do it before User#save clears the change)
       was_activated = (@user.status_change == [User::STATUS_REGISTERED, User::STATUS_ACTIVE])
       if @user.save
+        if params[:partner]
+            @user.partnerships.each {|partnership| partnership.destroy}
+          if params[:partner].is_a?(Array)
+            params[:partner].each { |partner| Partnership.create(:user_id=>@user.id,:partner_id=>partner) }
+          else
+            @partnership = Partnership.create(:user_id=>@user.id,:partner_id=>params[:partner])
+          end
+        end
         Mailer.deliver_account_activated(@user) if was_activated
         flash[:notice] = l(:notice_successful_update)
         # Give a string to redirect_to otherwise it would use status param as the response code

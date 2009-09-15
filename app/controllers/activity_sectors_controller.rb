@@ -44,7 +44,7 @@ class ActivitySectorsController < ApplicationController
   # POST /activity_sectors.xml
   def create
     @activity_sector = ActivitySector.new(params[:activity_sector])
-    
+    @activity_sector.community = current_community
 
     if @activity_sector.save
       @activity_sectors = ActivitySector.find(:all)

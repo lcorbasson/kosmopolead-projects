@@ -7,8 +7,14 @@ class ProjectRelationTypesController < ApplicationController
 
   def create
     @relation_type = ProjectRelationType.new(params[:project_relation_type])
+    @relation_type.community = current_community
     if @relation_type.save
-      redirect_to :controller=>:admin, :action=>:relations
+      flash['notice'] = "Le type de relation de projet a été créé avec succès."
+      redirect_to :controller => :admin, :action => :relations
+    else
+      # f.error_messages ne fonctionne pas... :/
+      flash.now['error'] = "Le label n'est pas valide."
+      render :action => 'new'
     end
 
   end
@@ -16,6 +22,7 @@ class ProjectRelationTypesController < ApplicationController
   def destroy
     @relation_type = ProjectRelationType.find(params[:id])
     if @relation_type.destroy
+      flash['notice'] = "Le type de relation de projet a été supprimé avec succès."
       redirect_to :controller=>:admin, :action=>:relations
     end
   end

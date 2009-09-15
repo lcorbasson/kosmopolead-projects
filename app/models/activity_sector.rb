@@ -1,8 +1,9 @@
 class ActivitySector < ActiveRecord::Base
   has_many :activity_sector_translations
   has_many :projects
+  belongs_to :community
   
-  validates_presence_of :identifier
+  validates_presence_of :identifier, :community
   validates_uniqueness_of :identifier
 
   after_create :add_activity_sector_translation

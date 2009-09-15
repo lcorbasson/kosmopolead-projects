@@ -56,6 +56,7 @@ class Project < ActiveRecord::Base
   has_many :file_attachments,:as=>:container,:conditions=>["container_type = ?", "project"],:dependent => :destroy
 
   belongs_to :community
+  belongs_to :activity_sector
 
   # Custom field for the project issues
   has_and_belongs_to_many :issue_custom_fields, 

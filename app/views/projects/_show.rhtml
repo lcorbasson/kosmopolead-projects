@@ -1,3 +1,44 @@
+<div class="box_filters"  id="new_query_project">
+     <div id="filters">
+        <% form_tag({ :controller => 'projects', :action => 'refresh_menu' }, :id => 'query_form') do %>
+
+          <span class="title_filter"><%= l(:label_filter_plural) %></span>
+          <div class="toggle_filter toggle close">&nbsp;&nbsp;</div>
+          <div class="clearer"></div>
+          <div class="toggler_filter toggler">
+              <div id="effect_filter" class="effect hidden" >
+                <%= render :partial => 'queries/filters', :locals => {:query => @query} %>
+                <%= hidden_field_tag :query_type,"project" %>
+                 <p class="buttons">
+                    <%= link_to_remote l(:button_apply),
+                                       { :url => {:controller => 'projects', :action => 'refresh_menu' },
+
+                                         :with => "Form.serialize('query_form')"
+                                       }, :class => 'btn_blue corner-all button' %>
+
+                    <%= link_to_remote l(:button_clear),
+                                       { :url => {:controller => 'projects', :action => 'refresh_menu'  },
+                                         
+                                       }, :class => 'btn_orange corner-all button'  %>
+                    <% if User.current.allowed_to?(:save_queries, @project, :global => true) %>
+                      <%= link_to_remote "", {:url=>{}}, :onclick =>"javascript:jQuery.ajax({data:jQuery.param(jQuery('#query_form').serializeArray()), dataType:'script', type:'post', url:'/queries/new?query_type=project'}); return false;", :class => 'icon icon-save' %>
+
+                      <%#= link_to_remote l(:button_save), {:url=>{:controller=>"queries",:action=>"new"}}, :class => 'icon icon-save' %>
+                    <% end %>
+                    </p>
+                    <div class="clearer"></div>
+
+
+              </div>
+          </div>
+         
+       
+        <% end %>
+      </div>
+  </div>
+
+
+
 <% if project.parent %>
     <%  title = "projet - #{project.parent.acronym} - #{project.acronym}"  %>
 <% else %>

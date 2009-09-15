@@ -93,9 +93,6 @@ function activeProjectMenu(id){
     jQuery("#projects_id_"+id+" a:first").addClass("active");
 }
 
-function checkTypeRelation(t,url){
-    jQuery.ajax({dataType:'script', url:url, data:'type=' + t.value,type: "get", success: function(msg){eval(msg)}});
-}
 
 function initialize_funding_grid(url,edit_url){   
      jQuery("#funding_fields_list").jqGrid({

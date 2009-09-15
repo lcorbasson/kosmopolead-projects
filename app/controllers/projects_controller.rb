@@ -578,6 +578,7 @@ private
         @query = Query.find_by_id(session[:query][:id]) if session[:query][:id]
         @query ||= Query.new(:name => "_", :project => @project, :filters => session[:query][:filters])
         @query.project = @project
+        
       end
 
     end

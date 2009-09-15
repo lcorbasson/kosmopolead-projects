@@ -16,7 +16,7 @@ ActionController::Routing::Routes.draw do |map|
   map.home '', :controller => 'my',:action=>"page"
   map.signin 'login', :controller => 'account', :action => 'login'
   map.signout 'logout', :controller => 'account', :action => 'logout'
-  map.connect 'queries',:controller=>'queries'
+  map.resources 'queries',:controller=>'queries'
   map.connect 'project_statuses',:controller=>'project_statuses'
   map.resources 'project_relation_types',:controller=>'project_relation_types'
 

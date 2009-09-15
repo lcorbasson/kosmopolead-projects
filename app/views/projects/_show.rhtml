@@ -59,6 +59,5 @@
   <%= initialize_icons_tooltip() %>
 <% else %>
   Aucun projet ne correspond à votre sélection
-
+<%= javascript_tag("jQuery().ready(function() {initialize_toggle('filter');});") %>
 <% end %>
- <%= javascript_tag("jQuery().ready(function() {initialize_toggle('filter');});") %>

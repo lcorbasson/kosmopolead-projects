@@ -3,18 +3,18 @@
     <% if @query.new_record? %>
       <div id="filters">
          <span class="title_filter"><%= l(:label_filter_plural) %></span>
-            <div class="toggle_filter toggle open">&nbsp;&nbsp;</div>
+            <div class="toggle_filter toggle close">&nbsp;&nbsp;</div>
             <div class="toggler_filter toggler">
               <div class="clearer"></div>
-                <div id="effect_filter" class="effect">
+                <div id="effect_filter" class="effect hidden">
                   <%= render :partial => 'queries/filters', :locals => {:query => @query} %>
                 </div>
             </div>
             <span class="title_filter"><%= l(:label_date_range) %></span>
-            <div class="toggle_date toggle open">&nbsp;&nbsp;</div>
-            <div class="toggler_date toggler">
+            <div class="toggle_date toggle close">&nbsp;&nbsp;</div>
+            <div class="toggler_date toggler" >
               <div class="clearer"></div>
-               <div id="effect_date" class="effect"><legend><%= l(:label_date_range) %></legend>
+               <div id="effect_date" class="effect hidden"><legend><%= l(:label_date_range) %></legend>
                       <%= select_month(@month, :prefix => "month", :discard_type => true) %>
                       <%= select_year(@year, :prefix => "year", :discard_type => true) %>
                   </div>
@@ -25,17 +25,17 @@
           <% html_title @query.name %>
            <div id="filters">
             <span class="title_filter"><%= l(:label_date_range) %></span>
-            <div class="toggle_date toggle open">&nbsp;&nbsp;</div>            
+            <div class="toggle_date toggle close">&nbsp;&nbsp;</div>
             <div class="toggler_date toggler">
               <div class="clearer"></div>
-               <div id="effect_date" class="effect"><legend><%= l(:label_date_range) %></legend>
+               <div id="effect_date" class="effect hidden"><legend><%= l(:label_date_range) %></legend>
                       <%= select_month(@month, :prefix => "month", :discard_type => true) %>
                       <%= select_year(@year, :prefix => "year", :discard_type => true) %>
                   </div>
             </div>
        </div>
       <% end %>
-      <p class="buttons">
+      <p class="buttons hidden" >
         <%= link_to_remote l(:button_apply),
                            { :url => { :set_filter => (@query.new_record? ? 1 : nil) },
                              :update => "content",

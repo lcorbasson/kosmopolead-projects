@@ -1000,8 +1000,8 @@ h2 img { vertical-align:middle; }
 
 /* Filters box */
 .box_filters {padding:10px;margin-top:2px;background: #f2f1f0 url(../images/bandeau_gris_5px.png) repeat-x bottom left;}
-.box_filters .title_filter {float:left;color:#333333;font-weight:bold;text-transform:uppercase;}
-.toggle {float:left;cursor:pointer;margin-left:10px;margin-top:7px;cursor:pointer;height:5px;width:6px;text-decoration: none; }
+.box_filters .title_filter {margin-bottom:10px;float:left;color:#333333;font-weight:bold;text-transform:uppercase;}
+.toggle {float:left;cursor:pointer;margin-left:10px;margin-top:5px;cursor:pointer;height:5px;width:6px;text-decoration: none; }
 #effect { padding: 0.4em; position: relative; }
 .toggler {margin-top:10px;}
 .toggle.open {background:url(../images/fleches.png) no-repeat 0 -5px;}
@@ -1069,7 +1069,7 @@ height:17px;
 .buttons a.btn_orange{padding-top:3px;padding-bottom:3px;vertical-align:middle;}
 .btn_blue:hover {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_blue_hover.png) repeat-x}
 .buttons .btn_orange:hover {height:20px;padding:2px 5px 2px 5px;background:url(/images/bg_orange_hover.png) repeat-x}
-.buttons {margin-top:20px;}
+.buttons {margin-top:30px;}
 
 .buttons-icons {margin:5px;}
 .buttons-icons .button {cursor:pointer;text-decoration:none;}
@@ -1194,3 +1194,10 @@ text-align:center;
 #show-custom_fields ul li.not-first{border-top:1px solid #DDDDDD;}
 #show-custom_fields ul li {padding-left:5px;padding-top:5px;}
 
+.hidden {display:none;}
+.display{display:block;}
+
+#new_query_project_menu {padding-top:5px;padding-left:10px;padding-bottom:5px;}
+#new_query_project_menu .toggler {margin-top:0;}
+#new_query_project_menu .title_filter{margin-bottom:0;}
+.toggler .buttons{margin-top:10px;}

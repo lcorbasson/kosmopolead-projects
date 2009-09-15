@@ -1,4 +1,4 @@
-class RenameSectorFromProject < ActiveRecord::Migration
+class RenameSectorIdFromProject < ActiveRecord::Migration
   def self.up
     rename_column :projects,:sector_id, :sector
   end

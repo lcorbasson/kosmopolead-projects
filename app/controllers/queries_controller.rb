@@ -77,8 +77,10 @@ class QueriesController < ApplicationController
   end
 
   def destroy
-    @query.destroy if request.post?
-    redirect_to :controller => 'queries', :action => 'index', :set_filter => 1
+   if @query.destroy
+     flash[:notice] = l(:notice_successful_destroy)
+     redirect_to :controller => 'queries', :action => 'index', :set_filter => 1
+   end
   end
 
   def projects   

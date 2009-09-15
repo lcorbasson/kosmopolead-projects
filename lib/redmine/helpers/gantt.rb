@@ -50,8 +50,9 @@ module Redmine
             @month_from = 1
           end
         else
-          @month_from ||= Date.today.month
-          unless @year_from
+          #@month_from ||= Date.today.month
+          @month_from ||= @first_issue.month
+          if @year_from.nil?
               if @first_issue
                 @year_from = @first_issue.year.to_i
               else

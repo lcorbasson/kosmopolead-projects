@@ -50,8 +50,9 @@ module Redmine
             @month_from = 1
           end
         else
-          @month_from ||= Date.today.month
-          unless @year_from
+          #@month_from ||= Date.today.month
+          @month_from ||= @first_issue.month
+          if @year_from.nil?
               if @first_issue
                 @year_from = @first_issue.year.to_i
               else
@@ -67,7 +68,12 @@ module Redmine
         @number_of_month = (@last_issue.year - @first_issue.year) * 12 + (@last_issue.month - @first_issue.month) + 1
 
         months = (options[:months]).to_i
-        @months = @number_of_month
+        if months > 0
+          @months = months
+        else
+          @months = @number_of_month
+        end
+        #@months =(months > 0 && months < 25) ? months : 6
         
         # Save gantt parameters as user preference (zoom and months count)
 #        if (User.current.logged? && (@zoom != User.current.pref[:gantt_zoom] || @months != User.current.pref[:gantt_months]))

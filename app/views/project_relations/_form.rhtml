@@ -1,6 +1,6 @@
 <% if ProjectRelationType.all.size>0 %>
   <%= error_messages_for 'relation' %>
-  <%  values = ProjectRelation::TYPES %>
+
   <h3><%= l(:label_new_relation) %></h3>
   <div style="margin-left:5px;">
     <p><%= f.select :project_relation_type_id, ProjectRelationType.all.collect{|t| [t.relation_type, t.id]}, {}, :onchange => "setPredecessorFieldsVisibility();" %>

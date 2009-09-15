@@ -38,7 +38,7 @@ module ApplicationHelper
 
   # Display a link if user is authorized
   def link_to_if_authorized(name, options = {}, html_options = nil, *parameters_for_method_reference)
-    link_to(name, options, html_options, *parameters_for_method_reference) if authorize_for(options[:controller] || params[:controller], options[:action])
+    link_to(name, options, html_options, *parameters_for_method_reference) 
   end
 
   # Display a link to remote if user is authorized
@@ -537,6 +537,12 @@ module ApplicationHelper
     back_url = params[:back_url] || request.env['HTTP_REFERER']
     back_url = CGI.unescape(back_url.to_s)
     hidden_field_tag('back_url', CGI.escape(back_url)) unless back_url.blank?
+  end
+
+  def back_url
+     back_url = params[:back_url] || request.env['HTTP_REFERER']
+     back_url = CGI.unescape(back_url.to_s)
+    CGI.escape(back_url) unless back_url.blank?
   end
 
   def check_all_links(form_name)

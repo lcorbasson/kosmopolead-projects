@@ -9,7 +9,11 @@
       <table style="width:100%">
         <% @project.relations.each do |relation| %>
           <tr>
-            <td><%= l(relation.project_relation_type.relation_type) %>
+         
+
+
+            <td><%= l(relation.label_for(@project)) %>
+             
                 <%= h(relation.other_project(@project).project) + ' - ' if Setting.cross_project_issue_relations? %> </td>
             <td><%=h relation.other_project(@project).acronym %></td>
 

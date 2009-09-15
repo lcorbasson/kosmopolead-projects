@@ -33,6 +33,7 @@ class User < ActiveRecord::Base
     :username => '#{login}'
   }
 
+  has_many :partnerships, :class_name => 'Partnership'
   has_many :memberships, :class_name => 'Member', :include => [ :project, :role ], :conditions => "#{Project.table_name}.archived = false", :order => "#{Project.table_name}.name"
   has_many :members, :dependent => :delete_all
   has_many :projects, :through => :memberships

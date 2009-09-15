@@ -1,6 +1,10 @@
-<% form_for :project_relation_type, :url=>{:action=>:create},:class=>"tabular" do |f| %>
+<% form_for :project_relation_type, :url=>{:action=>:create},:html=>{:class=>"tabular"} do |f| %>
   <p><label><%= l(:label_project_relation_type) %></label>
     <%= f.text_field :relation_type %>
+  </p>
+  <p>
+    <label><%= l(:label_project_relation_type_sym) %></label>
+    <%= f.text_field :relation_type_sym %>
   </p>
 
 

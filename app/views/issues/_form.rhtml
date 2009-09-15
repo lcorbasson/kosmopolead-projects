@@ -10,7 +10,7 @@
         <p>
           <label for="parent"><%= l(:label_parent) %></label>
           <%  Issue::RELATION_TYPE.each do |relation| %>
-            <%= radio_button_tag :issue_relation_type, relation, relation, :onClick => "checkTypeRelation(this,'#{type_event_project_issues_path(@project)}')" %><%= l("#{relation}") %>
+            <%= radio_button_tag :issue_relation_type, relation, relation, :onclick => "javascript:checkTypeRelation(this,'#{type_event_project_issues_path(@project)}')" %><%= l("#{relation}") %>
           <%  end %>
           <span id="type_relation">
           </span>
@@ -140,3 +140,9 @@
   </p>
 
 <%= wikitoolbar_for 'issue_description' %>
+
+<script>
+function checkTypeRelation(t,url){ 
+    jQuery.ajax({dataType:'script', url:url, data:'type=' + t.value,type: "get", success: function(msg){eval(msg)}});
+}
+ </script>

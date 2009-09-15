@@ -457,6 +457,65 @@ class ProjectsController < ApplicationController
     @project = Project.find(params[:project_id])
     render :layout=>false
   end
+
+  def refresh_menu
+      @query = Query.new(:name => "_")
+        @query.project = @project
+        if params[:fields] and params[:fields].is_a? Array
+          params[:fields].each do |field|
+            @query.add_filter(field, params[:operators][field], params[:values][field])
+          end
+        else
+          @query.available_filters.keys.each do |field|
+            @query.add_short_filter(field, params[field]) if params[field]
+          end
+        end
+      if @query.valid?
+        conditions = @query.statement_projects
+
+        @projects = Project.find :all,
+                             :include => [ :parent],
+                             :conditions => "#{conditions}"
+
+        @project = @projects.first unless @projects.nil?
+        @relation= ProjectRelation.new
+     unless @project.nil?
+          @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))
+          retrieve_query
+          if @query.valid?
+             events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
+                                                                      and start_date is not null)
+                                                                      AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
+
+            @gantt.events = events
+          end
+          @member ||= @project.members.new
+          @users = User.all
+          @file_attachment = FileAttachment.new(:container_id=>@project.id,:container_type=>"project")
+          @roles = Role.find :all, :order => 'builtin, position'
+          completed_percent
+          find_gallery
+          show_funding
+      end
+        respond_to do |format|
+          format.js {
+            render(:update) {|page|
+              page<<"jQuery('#sidebar_projects').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
+              page<<"jQuery('#sidebar_new').html('#{escape_javascript(render:partial=>'projects/sidebar_new')}');"
+              page<<"jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
+
+
+              }
+          }
+        end
+      else
+        # Send html if the query is not valid
+        render(:template => 'queries/index.rhtml', :layout => !request.xhr?)
+      end
+
+
+    
+  end
   
 private
   # Find project of id params[:id]
@@ -519,6 +578,7 @@ private
         @query = Query.find_by_id(session[:query][:id]) if session[:query][:id]
         @query ||= Query.new(:name => "_", :project => @project, :filters => session[:query][:filters])
         @query.project = @project
+        
       end
 
     end

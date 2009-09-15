@@ -1,20 +1,21 @@
-  <%= t.error_messages %>
+<% form_for [@activity_sector, @activity_sector_translation],:html=>{:class=>"tabular"} do |f| %>
+  <%= f.error_messages %>
+
   <p>
-    <%= t.label :activity_sector_id %><br />
-    <%= t.text_field :activity_sector_id %>
+    <label><%= l(:label_name) %></label>
+    <%= f.text_field :name %>
   </p>
   <p>
-    <%= t.label :name %><br />
-    <%= t.text_field :name %>
+    <label><%= l(:label_description) %></label>
+    <%= f.text_field :description %>
   </p>
   <p>
-    <%= t.label :description %><br />
-    <%= t.text_field :description %>
+    <label><%= l(:label_language) %></label>
+    <%= f.select :local, lang_options_for_select(false), :selected=> current_language.to_s %>
   </p>
-  <p>
-    <%= t.label :local %><br />
-    <%= t.select :local, lang_options_for_select(false), :selected=> current_language.to_s %>
+  <p class="buttons right">
+    <%= f.submit l(:button_create),:class=>"button btn_blue corner-all" %>
   </p>
-  <p>
-    <%= t.submit "Create" %>
-  </p>
+  <div class="clearer"></div>
+<% end %>
+

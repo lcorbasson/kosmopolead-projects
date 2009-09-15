@@ -318,7 +318,10 @@ legend_issue_in_late: Retard
 legend_issue_done: Réalisé
 legend_issue_todo: A faire
 
-
+label_language: Langue
+label_edit_activity_sector_translation: Edition de la traduction pour le secteur d'activité
+label_new_activity_sector_translation: Nouvelle traduction pour le secteur d'activité
+label_secteur_new: Nouveau secteur d'activité
 label_project_relation_type_sym: Label réciproque
 label_new_photo: Nouvelle photo
 label_new_member: Nouveau membre

@@ -1,4 +1,4 @@
-<h1>Add an activity_sector</h1>
+<h1><%= l(:label_secteur_new) %></h1>
 
   <%= f.error_messages %>
 
@@ -11,6 +11,7 @@
   <p><%= f.label :name %><br /> <%= f.text_field :name %></p>
   <p><%= f.label :description %><br /> <%= f.text_field :description %></p>
 
-  <p>
-    <%= f.submit "Create" %>
+  <p class="buttons right">
+    <%= f.submit l(:button_create),:class=>"button btn_blue corner-all" %>
   </p>
+  <div class="clearer"></div>

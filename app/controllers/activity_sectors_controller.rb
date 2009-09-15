@@ -51,7 +51,7 @@ class ActivitySectorsController < ApplicationController
       respond_to do |format|
        format.js{
           render :update do |page|
-            page << display_message_error("ActivitySector was successfully created.", "fieldNotice")
+            page << display_message_error(l(:notice_successful_create), "fieldNotice")
             page.replace_html "activity_sectors", :partial => 'activity_sectors/index'
          end
        }
@@ -75,7 +75,7 @@ class ActivitySectorsController < ApplicationController
 
     respond_to do |format|
       if @activity_sector.update_attributes(params[:activity_sector])
-        flash[:notice] = 'ActivitySector was successfully updated.'
+        flash[:notice] = l(:notice_successful_update)
         format.html { redirect_to(@activity_sector) }
         format.xml  { head :ok }
       else

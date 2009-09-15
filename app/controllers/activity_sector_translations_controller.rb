@@ -28,7 +28,7 @@ class ActivitySectorTranslationsController < ApplicationController
     @activity_sector_translation = @activity_sector.activity_sector_translations.new(params[:activity_sector_translation])
 
     if @activity_sector_translation.save
-      flash[:notice] = 'ActivitySectorTranslation was successfully created.'
+      flash[:notice] = l(:notice_successful_create)
       redirect_to activity_sector_path(@activity_sector)
     else
       render :action => "new"
@@ -42,7 +42,7 @@ class ActivitySectorTranslationsController < ApplicationController
     @activity_sector_translation = ActivitySectorTranslation.find(params[:id])
 
     if @activity_sector_translation.update_attributes(params[:activity_sector_translation])
-      flash[:notice] = 'ActivitySectorTranslation was successfully updated.'
+      flash[:notice] = l(:notice_successful_update)
       redirect_to activity_sector_path(@activity_sector)
     else
       render :action => "edit"

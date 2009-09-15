@@ -1201,3 +1201,6 @@ text-align:center;
 #new_query_project_menu .toggler {margin-top:0;}
 #new_query_project_menu .title_filter{margin-bottom:0;}
 .toggler .buttons{margin-top:10px;}
+
+#lightbox-container-image-data-box {min-width:280px;}
+#lightbox-container-image-box {min-width:300px;}

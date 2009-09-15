@@ -3,22 +3,20 @@
   <%= f.error_messages %>
 
   <p>
-    <%= f.label :name %>
+   <label><%= l(:label_name) %></label>
     <%= f.text_field :name %>
   </p>
   <p>
-    <%= f.label :description %>
+    <label><%= l(:label_description) %></label>
     <%= f.text_field :description %>
   </p>
   <p>
-    <%= f.label :local %>
+    <label><%= l(:label_language) %></label>
     <%= f.select :local, lang_options_for_select(false), :selected=> @activity_sector_translation.local %>
   </p>
   <p class="buttons right">
     <%= f.submit l(:button_save),:class=>"butotn btn_blue corner-all" %>
+    <%= link_to l(:button_cancel), activity_sector_path(@activity_sector),:class=>"button btn_orange corner-all" %>
   </p>
   <div class="clearer"></div>
 <% end %>
-
-<%= link_to 'Show', activity_sector_activity_sector_translation_path(@activity_sector, @activity_sector_translation) %> |
-<%= link_to 'Back', activity_sector_path(@activity_sector) %>

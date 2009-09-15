@@ -4,7 +4,11 @@
                  :url => {:controller => 'activity_sectors', :action => 'create'},
                  :method => :post,
                  :html => {:class=>"tabular",:id => 'new-activity_sector-form', :style => (@relation ? '' : 'display: none;')}) do |f| %>
-<%= render :partial => 'activity_sectors/edit', :locals => {:f => f}%>
+<%= box(
+    "#{l(:label_new_activity_sector)}",
+    "#{render:partial=>'activity_sectors/new', :locals => {:f => f}}"
+) %>
+
 <% end %>
 
 

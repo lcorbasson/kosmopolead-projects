@@ -2,6 +2,7 @@ class ActivitySectorTranslationsController < ApplicationController
   # GET /activity_sector_translations
   # GET /activity_sector_translations.xml
   layout 'base'
+    menu_item :admin
   
   def index
     @activity_sector = ActivitySector.find(params[:activity_sector_id])

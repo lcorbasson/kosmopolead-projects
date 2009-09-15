@@ -709,10 +709,13 @@ label_in_late_issues: Tâches en retard
 label_estimated_time: Temps estimé du projet
 label_project_cost: Coût du projet
 label_project_sector: Secteur
-label_sectors: Secteurs
+label_sectors: Secteurs d'activité
+label_new_activity_sector: Nouveau secteur d'activité
+label_edit_activity_sector: Edition du secteur d'activité
 label_language: Langue
 label_status: Statut
-
+label_translation: Traduction
+label_activity_sector: Traductions du secteur d'activité
 button_login: Connexion
 button_submit: Soumettre
 button_save: Sauvegarder

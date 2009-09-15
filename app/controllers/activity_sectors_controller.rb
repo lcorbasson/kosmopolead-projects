@@ -2,6 +2,7 @@ class ActivitySectorsController < ApplicationController
   # GET /activity_sectors
   # GET /activity_sectors.xml
   layout 'base'
+    menu_item :admin
 
   def index
     @activity_sectors = ActivitySector.find(:all)

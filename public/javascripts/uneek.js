@@ -73,7 +73,7 @@ function initialize_toggle(toggle) {
                jQuery('.buttons').removeClass("display");
                 jQuery('.buttons').addClass("hidden");
           }
-     }
+      }
         else {
            jQuery(".toggle_"+toggle).removeClass("close");
            jQuery(".toggle_"+toggle).addClass("open");

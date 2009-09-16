@@ -18,6 +18,7 @@ class PartnersController < ApplicationController
 								per_page_option,
 								params['page']
     @partners = Partner.find :all,:order => sort_clause,
+            :conditions => "community_id = #{current_community.id}",
 						:limit  =>  @partner_pages.items_per_page,
 						:offset =>  @partner_pages.current.offset
   
@@ -27,7 +28,8 @@ class PartnersController < ApplicationController
     if request.get?
       @partner = Partner.new()
     else
-      @partner = Partner.new(params[:partner])    
+      @partner = Partner.new(params[:partner])
+      @partner.community = current_community
       if @partner.save      
         flash[:notice] = l(:notice_successful_create)
         redirect_to :action => 'index'

@@ -64,36 +64,8 @@ body {
 }
 #status_box { float: right; }
 #tabs_wrapper ul li { float: left; }
-#tabs_wrapper ul li a:link {
-  display: block;
-  width: 89px;
-  height: 10px;
-  overflow: hidden;
-  padding: 5px;
-  margin-right: 4px;
-  text-align: center;
-  font-size: 11px;
-  text-transform: uppercase;
-  text-decoration: none;
-  background: transparent url(../images/tab.png) top center no-repeat;
-  color: #ffffff;
-}
 
-#tabs_wrapper ul li a:link {
-  display: block;
-  width: 89px;
-  height: 10px;
-  overflow: hidden;
-  padding: 5px;
-  margin-right: 4px;
-  text-align: center;
-  font-size: 11px;
-  text-transform: uppercase;
-  text-decoration: none;
-  background: transparent url(../images/tab.png) top center no-repeat;
-  color: #ffffff;
-}
-
+#tabs_wrapper ul li a:link,
 #tabs_wrapper ul li a:visited {
   display: block;
   width: 89px;
@@ -102,13 +74,12 @@ body {
   padding: 5px;
   margin-right: 4px;
   text-align: center;
-  font-size: 12px;
+  font-size: 11px;
   text-transform: uppercase;
   text-decoration: none;
   background: transparent url(../images/tab.png) top center no-repeat;
   color: #ffffff;
 }
-
 
 #tabs_wrapper ul li a.selected {
   background: transparent url(../images/tab.png) bottom center no-repeat;
@@ -133,9 +104,10 @@ body {
   font-weight: bold;
 }
 
-#places_wrapper ul li a:link {
+#places_wrapper ul li a:link,
+#places_wrapper ul li a:visited  {
   display: block;
-  font-size: 12px;
+  /*font-size: 12px;*/
   text-transform: uppercase;
   text-decoration: none;
   padding: 10px;
@@ -144,16 +116,12 @@ body {
   background-color: #190f06;
 }
 
-#places_wrapper ul li a:visited {
-  display: block;
-  font-size: 12px;
-  text-transform: uppercase;
-  text-decoration: none;
-  padding: 10px;
-  padding-left: 45px;
-  color: #ffffff;
-  background-color: #190f06;
+#places_wrapper ul li.community_menu_item a:link,
+#places_wrapper ul li.community_menu_item a:visited  {
+  padding-top: 6px;
+  padding-bottom: 6px;
 }
+
 #places_wrapper ul li a:hover {
   color: #009eee;
   font-weight: bold;

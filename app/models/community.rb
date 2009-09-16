@@ -11,4 +11,6 @@ class Community < ActiveRecord::Base
   acts_as_tree :order => "lastname"
 
   validates_presence_of :name
+
+  cattr_accessor(:current)
 end

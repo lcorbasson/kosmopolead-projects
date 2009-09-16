@@ -21,7 +21,7 @@ require 'cgi'
 class ApplicationController < ActionController::Base
   layout 'base'
   
-  before_filter :user_setup, :check_if_login_required, :set_localization
+  before_filter :user_setup, :check_if_login_required, :set_localization #, :read_current_community
   filter_parameter_logging :password
   helper_method :current_community
 
@@ -33,18 +33,25 @@ class ApplicationController < ActionController::Base
   end
 
   def define_community_context
-    @current_community = Community.find(params[:community_id]) if params[:community_id]
-    session[:current_community_id] = @current_community ? @current_community.id : nil
+    if params[:community_id] && Community.current = Community.find(params[:community_id])
+      session[:current_community_id] = Community.current.id
+    end
   end
 
+#  def read_current_community
+#    Community.current = current_community
+#  end
+
   def clear_community_context
-    @current_community = nil
     session[:current_community_id] = nil
+    Community.current = nil
   end
 
   def current_community
-    return @current_community if defined?(@current_community)
-    @current_community = session[:current_community_id] && Community.find(session[:current_community_id])
+    Community.current ||= Community.find(session[:current_community_id]) if session[:current_community_id]
+    Community.current 
+#    return @current_community if defined?(@current_community)
+#    @current_community = session[:current_community_id] && Community.find(session[:current_community_id])
   end
   
   def current_role

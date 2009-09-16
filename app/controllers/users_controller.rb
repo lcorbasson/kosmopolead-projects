@@ -40,6 +40,10 @@ class UsersController < ApplicationController
       name = "%#{params[:name].strip.downcase}%"
       c << ["LOWER(login) LIKE ? OR LOWER(firstname) LIKE ? OR LOWER(lastname) LIKE ?", name, name, name]
     end
+
+    if current_community
+      c << ["id IN (SELECT user_id from #{CommunityMembership.table_name} where community_id = ?)", current_community.id]
+    end
     
     @user_count = User.count(:conditions => c.conditions)
     @user_pages = Paginator.new self, @user_count,

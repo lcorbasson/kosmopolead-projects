@@ -25,7 +25,7 @@ class CustomFieldsController < ApplicationController
   end
 
   def list
-    @custom_fields_by_type = CustomField.find(:all).group_by {|f| f.class.name }
+    @custom_fields_by_type = CustomField.find(:all, :conditions => "community_id = #{current_community.id}").group_by {|f| f.class.name }
     @tab = params[:tab] || 'IssueCustomField'
     render :action => "list", :layout => false if request.xhr?
   end
@@ -44,7 +44,8 @@ class CustomFieldsController < ApplicationController
       else
         redirect_to :action => 'list'
         return
-    end  
+    end
+    @custom_field.community = current_community
     if request.post? and @custom_field.save
       flash[:notice] = l(:notice_successful_create)
       call_hook(:controller_custom_fields_new_after_save, :params => params, :custom_field => @custom_field)

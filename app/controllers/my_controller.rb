@@ -58,6 +58,7 @@ class MyController < ApplicationController
 
   # Edit user's account
   def account
+    clear_community_context
     @active_menu = "account"
     @user = User.current
     @pref = @user.pref

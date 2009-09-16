@@ -121,7 +121,7 @@ Redmine::MenuManager.map :account_menu do |menu|
 end
 
 Redmine::MenuManager.map :application_menu do |menu|
-  menu.push :home, { :controller => 'my', :action => 'page' }, :if => Proc.new { User.current.logged? }
+  menu.push :home, { :controller => 'my', :action => 'page' }, :if => Proc.new { User.current.logged? and not Community.current }
 #  menu.push :account, { :controller => 'my', :action => 'account' }, :if => Proc.new { User.current.logged? },  :caption => :label_account
   #  menu.push :overview, { :controller => 'projects', :action => 'index' }
   menu.push :projects, { :controller => 'projects', :action => 'index' }, :if => Proc.new { User.current.logged? },  :caption => :label_project_plural

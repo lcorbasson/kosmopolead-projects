@@ -52,11 +52,11 @@
           <%# end %>
             <div id="places_wrapper">
               <ul>
+                <li id="profile_button"><%= link_to User.current.name , '/', :class => current_community ? '' : 'active'  %></li>
                 <li id="communities_button"><%= link_to "Mes communautés", '#' %></li>
                 <% User.current.communities.each do |community| %>
                 <li class="community_menu_item" <% unless current_community %>style="display:none" <% end %>><%= link_to community.name, projects_path(:community_id => community.id), :class => (current_community == community ? 'active' : '') %></li>
                 <% end %>
-                <li id="profile_button"><%= link_to User.current.name ,"/my/account",:class=>"#{'active' if @active_menu == 'account'}"  %></li>
               </ul>
               <div class="clearer"></div>
             </div>

@@ -615,19 +615,8 @@ private
 
   end
 
-  def show_funding
-    sort_init 'aap', 'asc'
-    sort_update %w(aap financeur correspondant_financeur montant_demande funding_type date_accord montant_accorde date_liberation montant_libere)
-
-   
-    @funding_line_count = @project.funding_lines.count
-    @funding_line_pages = Paginator.new self, @funding_line_count,
-								per_page_option,
-								params['page']
-    @funding_lines = FundingLine.find :all, :order => sort_clause,
-                    :conditions=>["project_id = ?",@project.id],
-						:limit  =>  @funding_line_pages.items_per_page,
-						:offset =>  @funding_line_pages.current.offset
+  def show_funding 
+    @funding_lines = @project.funding_lines
   end
 
 end

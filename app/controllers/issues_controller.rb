@@ -82,8 +82,13 @@ class IssuesController < ApplicationController
         format.pdf  { send_data(issues_to_pdf(@issues, @project), :type => 'application/pdf', :filename => 'export.pdf') }
         format.js  {
           render:update do |page|
+            if !params[:set_filter]
              page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'issues/index', :locals=>{:project=>@project})}');"
              page << "jQuery('#project_author').html('#{escape_javascript(render:partial=>'projects/author', :locals=>{:project=>@project})}');"
+            else
+              page.replace_html "list_issues", :partial => 'issues/list', :locals => {:issues => @issues, :query => @query}
+
+            end
           end
         }
       end

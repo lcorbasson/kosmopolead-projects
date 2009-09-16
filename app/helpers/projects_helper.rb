@@ -22,8 +22,8 @@ module ProjectsHelper
   end
 
  def project_tabs
-    tabs = [{:name => 'funding', :partial => 'projects/show/funding', :label => :label_funding},
-            {:name => 'gantt', :partial => 'projects/show/gantt', :label => :label_gantt},
+    tabs = [{:name => 'gantt', :partial => 'projects/show/gantt', :label => :label_gantt},
+            {:name => 'funding', :partial => 'projects/show/funding', :label => :label_funding},
             {:name => 'synthesis', :partial => 'projects/show/synthesis', :label => :label_synthese},            
             {:name => 'files', :partial => 'projects/show/files', :label => :label_file_plural},
             {:name => 'gallery', :partial => 'projects/show/gallery', :label => :label_gallery_photos}

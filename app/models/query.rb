@@ -351,7 +351,7 @@ class Query < ActiveRecord::Base
       
       sql << ')'
       filters_clauses << sql
-    end if filters and valid?
+    end
     if self.query_type == "issue"
       (filters_clauses << project_statement).join(' AND ')
     else
@@ -421,9 +421,9 @@ class Query < ActiveRecord::Base
     when "<="
       sql = "#{db_table}.#{db_field} <= #{value.first.to_i}"
     when "o"
-      sql = "#{IssueStatus.table_name}.is_closed=#{connection.quoted_false}" if field == "status_id"
+      sql = "#{IssueStatus.table_name}.is_closed=#{connection.quoted_false}" if field == "status"
     when "c"
-      sql = "#{IssueStatus.table_name}.is_closed=#{connection.quoted_true}" if field == "status_id"
+      sql = "#{IssueStatus.table_name}.is_closed=#{connection.quoted_true}" if field == "status"
     when ">t-"
       sql = date_range_clause(db_table, db_field, - value.first.to_i, 0)
     when "<t-"

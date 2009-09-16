@@ -1,0 +1,10 @@
+<div id="activity_sectors">
+  <%= render :partial => 'activity_sectors/list_translations'%>
+</div>
+<!-- Ajout d'un identifier et d'une traduction -->
+<% remote_form_for(:activity_sector, @activity_sector,
+                 :url => {:controller => 'activity_sectors', :action => 'create'},
+                 :method => :post,
+                 :html => {:id => 'new-activity_sector-form', :style => (@relation ? '' : 'display: none;')}) do |f| %>
+<%= render :partial => 'activity_sectors/edit', :locals => {:f => f}%>
+<% end %>

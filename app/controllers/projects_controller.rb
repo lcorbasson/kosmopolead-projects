@@ -253,10 +253,6 @@ class ProjectsController < ApplicationController
   def update
     @project = Project.find_by_identifier(params[:id])
     
-    if params[:part].eql?('custom_fields')
-      CustomValue.delete(@project.custom_field_values)
-    end
-    
     @project.update_attributes(params[:project])
     respond_to do |format|
       format.js {
@@ -278,6 +274,7 @@ class ProjectsController < ApplicationController
             when "synthesis"
               page.replace_html "tab-content-synthesis", :partial => 'projects/show/synthesis',:locals=>{:project=>@project}
             when "custom_fields"
+              @project.save_custom_field_values
               page.replace_html "custom_fields", :partial => 'projects/show/custom_fields',:locals=>{:project=>@project}
           end
           page << display_message_error(l(:notice_successful_update), "fieldNotice")
@@ -473,8 +470,7 @@ class ProjectsController < ApplicationController
       if @query.valid?
         conditions = @query.statement_projects
 
-        @projects = Project.find :all,
-                             :include => [ :parent],
+        @projects = Project.find :all,                             
                              :conditions => "#{conditions}"
 
         @project = @projects.first unless @projects.nil?

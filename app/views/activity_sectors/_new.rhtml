@@ -1,12 +1,12 @@
-<% form_for @activity_sector,:html=>{:class=>"tabular"} do |f| %>
+<% form_for :activity_sector,:html=>{:class=>"tabular",:style=>"margin-top:30px;"} do |f| %>
   <%= f.error_messages %>
 
   <p>
-    <label><%=  l(:label_identifier)%></label>
+ <label><%= l(:label_identifier) %></label>
     <%= f.text_field :identifier %>
   </p>
   <p class="buttons right">
-    <%= f.submit l(:button_update),:class=>"button btn_blue corner-all" %>
+    <%= f.submit l(:button_create),:class=>"button btn_blue corner-all" %>
     <%= link_to l(:button_cancel), activity_sectors_path,:class=>"button btn_orange corner-all" %>
   </p>
   <div class="clearer"></div>

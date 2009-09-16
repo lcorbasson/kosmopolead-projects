@@ -498,8 +498,7 @@ class ProjectsController < ApplicationController
             render(:update) {|page|
               page<<"jQuery('#sidebar_projects').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
               page<<"jQuery('#sidebar_new').html('#{escape_javascript(render:partial=>'projects/sidebar_new')}');"
-              page<<"jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
-
+              page<<"jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project,:show_filters=>true})}');"
 
               }
           }
@@ -551,15 +550,13 @@ private
     if !params[:query_id].blank?
       cond = "project_id IS NULL"
       cond << " OR project_id = #{@project.id}" if @project
-      @query = Query.find(params[:query_id], :conditions => cond)
-      @query.project = @project
-      session[:query] = {:id => @query.id, :id => @query.project_id}
+      @query = Query.find(params[:query_id], :conditions => cond)    
+      session[:query] = {:id => @query.id}
 
     else
       if params[:set_filter] || session[:query].nil? || session[:query][:project_id] != (@project ? @project.id : nil)
         # Give it a name, required to be valid
-        @query = Query.new(:name => "_")
-        @query.project = @project
+        @query = Query.new(:name => "_")       
         if params[:fields] and params[:fields].is_a? Array
           params[:fields].each do |field|
             @query.add_filter(field, params[:operators][field], params[:values][field])
@@ -569,11 +566,11 @@ private
             @query.add_short_filter(field, params[field]) if params[field]
           end
         end
-        session[:query] = {:project_id => @query.project_id, :filters => @query.filters}
+        session[:query] = {:filters => @query.filters}
       else
         @query = Query.find_by_id(session[:query][:id]) if session[:query][:id]
         @query ||= Query.new(:name => "_", :project => @project, :filters => session[:query][:filters])
-        @query.project = @project
+       
         
       end
 

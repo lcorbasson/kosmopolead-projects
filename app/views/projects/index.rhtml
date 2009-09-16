@@ -1,5 +1,5 @@
 <% if @project %>
-  <%= render:partial=>"show", :locals=>{:project=>@project} %>
+  <%= render:partial=>"show", :locals=>{:project=>@project,:show_filters=>false} %>
 <% else %>
   Aucun projet à visualiser.
 <% end %>

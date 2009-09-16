@@ -338,7 +338,6 @@ class Query < ActiveRecord::Base
            sql << '('
           if (field == "status")
             db_field = 'status_id'
-            
           else
             # regular field
             db_field = field

@@ -473,8 +473,7 @@ class ProjectsController < ApplicationController
       if @query.valid?
         conditions = @query.statement_projects
 
-        @projects = Project.find :all,
-                             :include => [ :parent],
+        @projects = Project.find :all,                             
                              :conditions => "#{conditions}"
 
         @project = @projects.first unless @projects.nil?

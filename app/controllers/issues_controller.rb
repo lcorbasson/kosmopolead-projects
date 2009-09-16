@@ -28,9 +28,9 @@ class IssuesController < ApplicationController
   before_filter :find_project, :only => [:update,:calendar,:gantt,:index,:create,:new, :update_form, :preview]
   before_filter :find_root_projects,:only=>[:create]
   before_filter :find_projects, :only => [:update,:gantt, :index, :calendar,:new,:show,:create]
-  before_filter :authorize, :except => [:update,:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
+#  before_filter :authorize, :except => [:update,:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
 
-  before_filter :find_optional_project, :only => [ :changes, :gantt, :calendar]
+#  before_filter :find_optional_project, :only => [ :changes, :gantt, :calendar]
   accept_key_auth :index, :show, :changes
 
   helper :journals
@@ -82,8 +82,13 @@ class IssuesController < ApplicationController
         format.pdf  { send_data(issues_to_pdf(@issues, @project), :type => 'application/pdf', :filename => 'export.pdf') }
         format.js  {
           render:update do |page|
+            if !params[:set_filter]
              page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'issues/index', :locals=>{:project=>@project})}');"
              page << "jQuery('#project_author').html('#{escape_javascript(render:partial=>'projects/author', :locals=>{:project=>@project})}');"
+            else
+              page.replace_html "custom_fields", :partial => 'issues/list', :locals => {:issues => @issues, :query => @query}
+
+            end
           end
         }
       end
@@ -218,6 +223,7 @@ class IssuesController < ApplicationController
           format.js {
             render:update do |page|
                 page << display_message_error(l(:error_no_tracker), "fieldWarning")
+                page << "Element.scrollTo('content_wrapper');"
             end
           }
       end
@@ -227,55 +233,8 @@ class IssuesController < ApplicationController
       @issue.watcher_user_ids = params[:issue]['watcher_user_ids'] if User.current.allowed_to?(:add_issue_watchers, @project)
     end
     @issue.author = User.current
-    @priorities = Enumeration::get_values('IPRI')  
-    if params[:continue]
-        if @issue.save           
-            if @issue.is_issue?
-              # La tache est assignee
-               if params[:assigned_to_id]
-                create_assignments(params[:assigned_to_id])                
-               else
-                 # La tache n est pas assignee
-                Assignment.delete(@issue)
-               end
-            end
-            session[:project] = @issue.project            
-            respond_to do |format|
-                format.js {
-                  render:update do |page|
-                    page.replace_html "content_wrapper", :partial => 'new'
-                    page << display_message_error(l(:notice_successful_create), "fieldNotice")
-                  end
-                }
-             end
-        else
-         has_error = true
-        end
-    else
-      if !params[:id].blank?
-          @issue = Issue.find(params[:id])
-          if @issue.update_attributes(params[:issue])
-              @project = @issue.project
-              @file_attachment = FileAttachment.new
-              @file_attachment.container_type="issue"
-              @file_attachment.container_id = @issue.id
-              find_info_project  if @issue.is_stage?
-              respond_to do |format|
-                  format.js {
-                    render:update do |page|
-                       if @issue.is_stage?
-                         page.replace_html "content_wrapper", :partial => 'projects/show',:locals=>{:project=>@project}
-                       else
-                         page.replace_html "content_wrapper", :partial => 'show'
-                       end
-                       page << display_message_error(l(:notice_successful_create), "fieldNotice")
-                    end
-                  }
-               end
-           else
-             has_error = true
-           end
-      else         
+    @priorities = Enumeration::get_values('IPRI')    
+  
           find_info_issue        
           if @issue.save
             @file_attachment = FileAttachment.new
@@ -292,23 +251,15 @@ class IssuesController < ApplicationController
                        page.replace_html "content_wrapper", :partial => 'show'
                      end
                      page << display_message_error(l(:notice_successful_create), "fieldNotice")
-                  end
+                      page << "Element.scrollTo('errorExplanation');"
+                   end
                 }
              end
           else
-            has_error = true
+             page << display_message_error(@issue, "fieldError")
+             page << "Element.scrollTo('errorExplanation');"
           end
-      end
-    end
-    if has_error
-      respond_to do |format|
-          format.js {
-            render:update do |page|
-               page << display_message_error(@issue, "fieldError")
-            end
-          }
-       end
-    end
+     
   end
   
   # Attributes that can be updated on workflow transition (without :edit permission)
@@ -476,7 +427,8 @@ class IssuesController < ApplicationController
   end
 
   def move
-    @issue = Issue.find(params[:id])
+    @issues = Issue.find_all_by_id(params[:id] || params[:ids])
+
     @allowed_projects = []
     # find projects to which the user is allowed to move the issue
     if User.current.admin?
@@ -536,7 +488,7 @@ class IssuesController < ApplicationController
   end
   
   def gantt
-    @gantt = Redmine::Helpers::Gantt.new(params)
+    @gantt = Redmine::Helpers::Gantt.new(params.merge(:project => @project))
     retrieve_query
    if @query.valid?
       events = []
@@ -551,17 +503,17 @@ class IssuesController < ApplicationController
         events += Issue.find(:all,
                              :order => "start_date, due_date",
                              :include => [:tracker, :status, :assigned_to, :priority, :project],
-                             :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?)) and start_date is not null and due_date is not null)", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
+                             :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?)) and start_date is not null and due_date is not null) AND #{Issue.table_name}.parent_id is null", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
                              )
         # Issues that don't have a due date but that are assigned to a version with a date
         events += Issue.find(:all,
                              :order => "start_date, effective_date",
                              :include => [:tracker, :status, :assigned_to, :priority, :project, :fixed_version],
-                             :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (effective_date>=? and effective_date<=?) or (start_date<? and effective_date>?)) and start_date is not null and due_date is null and effective_date is not null)", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
+                             :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (effective_date>=? and effective_date<=?) or (start_date<? and effective_date>?)) and start_date is not null and due_date is null and effective_date is not null) AND #{Issue.table_name}.parent_id is null", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
                              )
         # Versions
         events += Version.find(:all, :include => :project,
-                                     :conditions => ["(#{@query.project_statement}) AND effective_date BETWEEN ? AND ?", @gantt.date_from, @gantt.date_to])
+                                     :conditions => ["(#{@query.project_statement}) AND effective_date BETWEEN ? AND ? ", @gantt.date_from, @gantt.date_to])
       end
       @gantt.events = events
     end
@@ -714,13 +666,6 @@ private
       render_404
   end
   
-  def find_optional_project
-    @project = Project.find_by_identifier(params[:project_id]) unless params[:project_id].blank?
-    allowed = User.current.allowed_to?({:controller => params[:controller], :action => params[:action]}, @project, :global => true)
-    allowed ? true : deny_access
-  rescue ActiveRecord::RecordNotFound
-    render_404
-  end
   
   # Retrieve query from session or build a new query
   def retrieve_query
@@ -768,7 +713,7 @@ private
 
   def find_root_projects
      @root_projects = Project.find(:all,
-                                    :conditions => "status = #{Project::STATUS_ACTIVE}",
+                                    
                                     :order => 'name')
   end
 
@@ -789,7 +734,7 @@ private
     @users = User.all
     @file_attachment = FileAttachment.new(:container_id=>@project.id,:container_type=>"project")
     @roles = Role.find :all, :order => 'builtin, position'
-    @gantt = Redmine::Helpers::Gantt.new(params)
+    @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))
     retrieve_query
     if @query.valid?
       events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))

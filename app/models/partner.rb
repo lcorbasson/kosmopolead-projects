@@ -2,13 +2,16 @@ class Partner < ActiveRecord::Base
 
   # -- paperclip
 
-  has_attached_file :logo,
-    :styles => {:thumb => "70x70>",:original=>"800x600>",:carousel => "250*180"},
+
+   has_attached_file :logo,
+    :path => ":rails_root/public#{PaperclipUneek::PAPERCLIP_URL}",
+    :url => PaperclipUneek::PAPERCLIP_URL,
+    :styles => {:thumb => "50x50>",:original=>"800x600>",:carousel => "250*180"},
     :default_style => :thumb
   
   # -- validation
 
-  validates_attachment_presence :logo
+ 
   validates_presence_of :name
 
 

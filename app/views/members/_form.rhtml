@@ -7,7 +7,7 @@
 
 
 
-<% remote_form_for [@project,@member],:html=>{:style=>"#{'display:none;' if !display}",:id=>"update-members-form"} do |f| %>
+<% remote_form_for  [@project,@member],:html=>{:style=>"#{'display:none;' if !display}",:id=>"update-members-form"} do |f| %>
       <h3><%= l(:label_new_member) %></h3>
       <div class="buttons-icons">
           <% if Partner.all.size>0 %>

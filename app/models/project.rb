@@ -24,7 +24,8 @@ class Project < ActiveRecord::Base
   STATUS_ACTIVE     = 1
   STATUS_ARCHIVED   = 9
 
- 
+
+  belongs_to :status,:class_name=>"ProjectStatus", :foreign_key=>"status_id"
   has_many :project_partners
   has_many :partners, :through => :project_partners, :dependent => :destroy
   belongs_to :time_unit, :foreign_key=>"time_units_id"
@@ -126,20 +127,18 @@ class Project < ActiveRecord::Base
       "#{Project.table_name}.status=#{Project::STATUS_ACTIVE} AND #{Project.table_name}.community_id = #{community.id}"
     else
       if user && user.admin?
-        return "#{Project.table_name}.status=#{Project::STATUS_ACTIVE}"
+        return "#{Project.table_name}.archived = false"
       elsif user && user.memberships.any?
-        return "#{Project.table_name}.status=#{Project::STATUS_ACTIVE} AND (#{Project.table_name}.is_public = #{connection.quoted_true} " +
-          "or #{Project.table_name}.id IN (#{user.memberships.collect{|m| m.project_id}.join(',')}))"
+        return "#{Project.table_name}.archived = false AND (#{Project.table_name}.is_public = #{connection.quoted_true} or #{Project.table_name}.id IN (#{user.memberships.collect{|m| m.project_id}.join(',')}))"
       else
-        return "#{Project.table_name}.status=#{Project::STATUS_ACTIVE} AND #{Project.table_name}.is_public = #{connection.quoted_true}"
+        return "#{Project.table_name}.archived = false AND #{Project.table_name}.is_public = #{connection.quoted_true}"
       end
     end
-
   end
   
   def self.allowed_to_condition(user, permission, options={})
     statements = []
-    base_statement = "#{Project.table_name}.status=#{Project::STATUS_ACTIVE}"
+    base_statement = "#{Project.table_name}.archived = false"
     if perm = Redmine::AccessControl.permission(permission)
       unless perm.project_module.nil?
         # If the permission belongs to a project module, make sure the module is enabled
@@ -193,18 +192,24 @@ class Project < ActiveRecord::Base
   def active?
     self.status == STATUS_ACTIVE
   end
+
+  def archived
+    self.archived
+  end
+
+ 
   
   def archive
     # Archive subprojects if any
     children.each do |subproject|
       subproject.archive
     end
-    update_attribute :status, STATUS_ARCHIVED
+    update_attribute :archived, true
   end
   
   def unarchive
     return false if parent && !parent.active?
-    update_attribute :status, STATUS_ACTIVE
+    update_attribute :archived, false
   end
   
   def active_children

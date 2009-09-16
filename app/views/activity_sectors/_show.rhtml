@@ -1,0 +1,19 @@
+  <table class="list">
+    <tr>
+      <th><%= l(:label_language) %></th>
+      <th><%= l(:label_translation) %></th>
+      <th></th>
+    </tr>
+    <% @activity_sector.activity_sector_translations.each do |a| %>
+      <tr class="<%= cycle("even", "odd") %>"><td><%= ll(a.local, :general_lang_name) %>
+        </td>
+        <td><%= a.name %></td>
+        <td><%= link_to image_tag("edit.png"), edit_activity_sector_activity_sector_translation_path(@activity_sector, a) %>
+        <%= link_to image_tag("delete.png"), [@activity_sector, a], :controller => :activity_sector_translation,:method => :delete, :confirm => "Are you sure?" %></td>
+      </tr>
+    <% end %>
+  </table>
+<div class="buttons right" style="margin-bottom:10px;margin-right:10px;">
+  <%= link_to 'Back', activity_sectors_path,:class=>"button btn_orange corner-all" %>
+</div>
+<div class="clearer"></div>

@@ -71,6 +71,7 @@ notice_can_t_change_password: Ce compte utilise une authentification externe. Im
 notice_account_lost_email_sent: Un message contenant les instructions pour choisir un nouveau mot de passe vous a été envoyé.
 notice_account_activated: Votre compte a été activé. Vous pouvez à présent vous connecter.
 notice_successful_create: Création effectuée avec succès.
+notice_successful_destroy: Suppression effectuée avec succès.
 notice_successful_update: Mise à jour effectuée avec succès.
 notice_successful_delete: Suppression effectuée avec succès.
 notice_successful_archive: Archivage effectué avec succès.
@@ -113,6 +114,7 @@ mail_body_reminder: "%d demande(s) qui vous sont assignées arrivent à échéan
 gui_validation_error: 1 erreur
 gui_validation_error_plural: %d erreurs
 
+field_reciprocity: Réciproque
 field_issue_types: Type de demande
 field_resources: Ressources nécessaires
 field_acronym: Acronyme
@@ -315,10 +317,18 @@ legend_milestone: Jalon
 legend_issue_in_late: Retard
 legend_issue_done: Réalisé
 legend_issue_todo: A faire
+
+label_language: Langue
+label_edit_activity_sector_translation: Edition de la traduction pour le secteur d'activité
+label_new_activity_sector_translation: Nouvelle traduction pour le secteur d'activité
+label_secteur_new: Nouveau secteur d'activité
+label_project_relation_type_sym: Label réciproque
 label_new_photo: Nouvelle photo
 label_new_member: Nouveau membre
 label_new_relation: Nouvelle liaison
 label_project_relation__plural: Relations entre les projets
+label_project_status_plural: Statuts de projet
+label_project_status_new: Nouveau statut de projet
 label_status: Statut
 label_category: Catégorie
 label_priority: Priorité
@@ -355,7 +365,7 @@ label_resources: Ressources nécessaires
 label_estimated_hours: Temps estimé
 label_acronym: Acronyme
 label_identifier: Identifiant
-label_author: Auteur
+label_author: Porteur
 label_builder: Monté par
 label_watcher: Suivi par
 label_cost: Coût
@@ -448,8 +458,8 @@ label_administration: Administration
 label_login: Connexion
 label_logout: Déconnexion
 label_help: Aide
-label_reported_issues: Demandes soumises
-label_assigned_to_me_issues: Demandes qui me sont assignées
+label_reported_issues: Tâches que j'ai créées
+label_assigned_to_me_issues: Tâches qui me sont assignées
 label_last_login: Dernière connexion
 label_last_updates: Dernière mise à jour
 label_last_updates_plural: %d dernières mises à jour
@@ -699,10 +709,13 @@ label_in_late_issues: Tâches en retard
 label_estimated_time: Temps estimé du projet
 label_project_cost: Coût du projet
 label_project_sector: Secteur
-label_sectors: Secteurs
+label_sectors: Secteurs d'activité
+label_new_activity_sector: Nouveau secteur d'activité
+label_edit_activity_sector: Edition du secteur d'activité
 label_language: Langue
-label_status: Status
-
+label_status: Statut
+label_translation: Traduction
+label_activity_sector: Traductions du secteur d'activité
 button_login: Connexion
 button_submit: Soumettre
 button_save: Sauvegarder

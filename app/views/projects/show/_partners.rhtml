@@ -2,7 +2,7 @@
 <% roles = Role.find_all_givable %>
 <% users = User.active.find(:all).sort - @project.users %>
 <% possible_partners = Partner.all- project_partners %>
-<div class="editable_box">
+<div class="editable_box" style="min-height:80px;min-width:70px;">
     <div class="links_edit_box">
       <%= toggle_link image_tag("/images/add.png"), 'update-members-form'%>
     </div>

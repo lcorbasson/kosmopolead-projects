@@ -1,25 +1,12 @@
-<p>
-  <b>Identifier:</b>
-  <%=h @activity_sector.identifier %>
-  <table class="list">
-    <tr>
-      <th>Langue</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-    <% @activity_sector.activity_sector_translations.each do |a| %>
-      <tr class="<%= cycle("even", "odd") %>"><td><%= ll(a.local, :general_lang_name) %>
-        </td>
-        <td><%= a.name %></td>
-        <td><%= link_to l(:button_edit), edit_activity_sector_activity_sector_translation_path(@activity_sector, a) %></td>
-        <td><%= link_to l(:button_delete), [@activity_sector, a], :controller => :activity_sector_translation,:method => :delete, :confirm => "Are you sure?" %></td>
-      </tr>
-    <% end %>
-  </table>
-</p>
+<%= box(
+    "#{l(:label_activity_sector)} #{@activity_sector.identifier}",
+    "#{render:partial=>'activity_sectors/show'}",
+    ["#{link_to image_tag("add.png"), new_activity_sector_activity_sector_translation_path(@activity_sector)}",
+      "#{link_to image_tag("edit.png"), edit_activity_sector_path(@activity_sector)}"
+    ]
+) %>
 
-<%= link_to 'new', new_activity_sector_activity_sector_translation_path(@activity_sector) %> |
-<%= link_to 'Edit', edit_activity_sector_path(@activity_sector) %> |
-<%= link_to 'Back', activity_sectors_path %>
+
+
+
 

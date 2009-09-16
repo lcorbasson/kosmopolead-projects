@@ -16,13 +16,14 @@ ActionController::Routing::Routes.draw do |map|
   map.home '', :controller => 'my',:action=>"page"
   map.signin 'login', :controller => 'account', :action => 'login'
   map.signout 'logout', :controller => 'account', :action => 'logout'
-  map.connect 'queries',:controller=>'queries'
+  map.resources 'queries',:controller=>'queries'
+  map.connect 'project_statuses',:controller=>'project_statuses'
+  map.resources 'project_relation_types',:controller=>'project_relation_types'
 
 
-
-  map.resources :projects,:collection=>{:add_version=>:get,:show_funding=>:get,:add=>:get,:settings=>:get, :edit_part_description => :get, :edit_part_synthesis => :get} do |project|
+  map.resources :projects,:collection=>{:refresh_menu=>:get,:add_version=>:get,:show_funding=>:get,:add=>:get,:settings=>:get, :edit_part_description => :get, :edit_part_synthesis => :get} do |project|
       project.resources :members
-      project.resources :issues,:member=>{:move=>:get},:collection=>{:move=>:get,:calendar=>:get,:gantt=>:get,:type_event=>:get} do |issue|
+      project.resources :issues,:member=>{:move=>:get},:collection=>{:move=>:post,:calendar=>:get,:gantt=>:get,:type_event=>:get} do |issue|
         issue.resources :file_attachments
         issue.resources :issue_relations
       end

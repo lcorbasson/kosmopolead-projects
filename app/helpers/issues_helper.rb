@@ -300,9 +300,8 @@ module IssuesHelper
             ret += "</div>"
           else
             i_left = ((i.start_date - gantt.date_from)*zoom).floor
-            ret = "<div style='top:#{@@top}px;left:#{i_left}px;width:15px;' class='task milestone'>&nbsp;</div>"
-            ret += "<div style='top:#{@@top}px;left:#{i_left + 12}px;background:#fff;' class='task'>"
-            ret += "#{h(i.project)}"
+            ret = "<div style='top:#{@@top}px;left:#{i_left}px;width:15px;' class='task version'>&nbsp;</div>"
+            ret += "<div style='top:#{@@top}px;left:#{i_left + 12}px;margin-left:5px;' class='task'>"
             ret += "<strong>#{h i}</strong>"
             ret += "</div>"
           end

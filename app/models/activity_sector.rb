@@ -1,5 +1,5 @@
 class ActivitySector < ActiveRecord::Base
-  has_many :activity_sector_translations
+  has_many :activity_sector_translations,:dependent=>:destroy
   has_many :projects
   belongs_to :community
   

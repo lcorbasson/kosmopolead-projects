@@ -123,6 +123,13 @@ end %>
 <% end %>
 
 
+  <div id="update" style="display:none;">
+  <h3><%= l(:button_update) %></h3>
+  <%= render :partial => 'edit' %>
+  </div>
+
+
+
 
 <% content_for :sidebar do %>
     <%= render :partial => 'projects/sidebar' %>

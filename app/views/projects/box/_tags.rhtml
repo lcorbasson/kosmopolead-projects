@@ -18,7 +18,6 @@
   <div class="buttons-icons right">
      <a class="btn_blue ui-corner-all button"  onclick="javascript:jQuery.ajax({data:jQuery.param(jQuery('#update-tags-form').serializeArray()), dataType:'script', type:'put', url:'<%= project_path(@project,:part=>'tags')%>'}); return false;"><%= image_tag("accept3.png") %></a>
      <%= toggle_link image_tag('delete2.png'), 'update-tags-form',{:second_element=>"project_tags"}%>
-
   </div>
   <div class="clearer"></div>
 <% end %>
@@ -34,8 +33,8 @@
             cache: true,
             filter_case: true,
             filter_hide: true,
-			firstselected: true,          
-            filter_selected: true,
+            firstselected: true,
+            filter_selected: false,
             newel: true,
             complete_text:"Commencez à taper ..."
           });

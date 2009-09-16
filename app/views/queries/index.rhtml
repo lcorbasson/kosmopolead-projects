@@ -1,11 +1,11 @@
 <%= box(
     "#{l(:label_event_query_plural)}",
-    "#{render:partial=>'queries/box/index',:locals=>{:queries=>@queries}}") %>
+    "#{render:partial=>'queries/box/index',:locals=>{:queries=>@queries}}",
+  ["#{link_to_remote l(:label_query_new), :url=> new_query_path(:project_id=>@project,:query_type=>"issue"),:method=>:get}"]) %>
 
 <%= box(
     "#{l(:label_project_query_plural)}",
     "#{render:partial=>'queries/box/projects',:locals=>{:queries=>@project_queries}}",
     ["#{toggle_link l(:label_query_new), 'new_query_project', :html=>{:class => 'icon icon-add'}}"
     ]) %>
-
 

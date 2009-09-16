@@ -151,10 +151,10 @@ class Issue < ActiveRecord::Base
     end
 
     unless self.parent_id.nil?
-      if (self.start_date<=self.parent.start_date)
+      if (self.start_date<self.parent.start_date)
           errors.add :start_date, :activerecord_error_start_date_greater_than_parent
       end
-      if (self.due_date>=self.parent.due_date)
+      if (self.due_date and self.due_date>self.parent.due_date)
          errors.add :due_date, :activerecord_error_due_date_less_than_parent
       end
     end

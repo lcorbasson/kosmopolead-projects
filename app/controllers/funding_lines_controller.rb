@@ -55,10 +55,17 @@ class FundingLinesController < ApplicationController
   def destroy
     @funding_line = FundingLine.find(params[:id])
     if @funding_line.destroy
-      @project = @funding_line.project
+       @project = @funding_line.project
        respond_to do |format|
-          format.js { render(:update) {|page| page.replace_html "tab-content-funding", :partial => 'funding_lines/index',:locals=>{:funding_lines=>@project.funding_lines}} }
+          format.js { render(:update) {|page|
+              page.replace_html "tab-content-funding", :partial => 'funding_lines/index',:locals=>{:funding_lines=>@project.funding_lines}
+              page << display_message_error(l(:notice_successful_destroy), "fieldNotice")
+             }
+
+         }
       end
+    else
+        page << display_message_error(@funding_line, "fieldError")
     end
   end
 

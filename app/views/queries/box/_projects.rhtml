@@ -45,7 +45,8 @@
                              }, :class => 'btn_blue corner-all button' %>
 
           <%= link_to_remote l(:button_clear),
-                             { :url => { :set_filter => 1 },
+                             { :url => queries_path(:set_filter => 1) ,
+                                :method=>:get,
                                :update => "content_wrapper",
                              }, :class => 'btn_orange corner-all button'  %>
           <% if User.current.allowed_to?(:save_queries, @project, :global => true) %>

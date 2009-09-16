@@ -333,12 +333,16 @@ class Query < ActiveRecord::Base
           db_table = Assignment.table_name
           db_field = 'user_id'
           sql << "#{Issue.table_name}.id IN (SELECT #{Issue.table_name}.id FROM #{Issue.table_name} LEFT OUTER JOIN #{db_table} ON #{db_table}.issue_id=#{Issue.table_name}.id WHERE  "
-          
         else
-          # regular field
-          db_table = Issue.table_name
-          db_field = field
-          sql << '('
+           db_table = Issue.table_name
+           sql << '('
+          if (field == "status")
+            db_field = 'status_id'
+            
+          else
+            # regular field
+            db_field = field
+          end
         end
       end
       
@@ -421,9 +425,9 @@ class Query < ActiveRecord::Base
     when "<="
       sql = "#{db_table}.#{db_field} <= #{value.first.to_i}"
     when "o"
-      sql = "#{IssueStatus.table_name}.is_closed=#{connection.quoted_false}" if field == "status"
+      sql = "#{IssueStatus.table_name}.is_closed=#{connection.quoted_false}" if field == "status_id"
     when "c"
-      sql = "#{IssueStatus.table_name}.is_closed=#{connection.quoted_true}" if field == "status"
+      sql = "#{IssueStatus.table_name}.is_closed=#{connection.quoted_true}" if field == "status_id"
     when ">t-"
       sql = date_range_clause(db_table, db_field, - value.first.to_i, 0)
     when "<t-"

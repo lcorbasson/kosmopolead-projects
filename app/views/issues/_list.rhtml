@@ -1,20 +1,26 @@
-<% form_tag({}) do -%>	
-  <table class="list issues" style="text-align:left;">
-    <thead>
-      <tr>
-        <th>
-          <%= link_to "", {}, :onclick => 'toggleIssuesSelection(Element.up(this, "form")); return false;', :title => "#{l(:button_check_all)}/#{l(:button_uncheck_all)}" %>
-        </th>
-        <%= sort_header_tag('id', :caption => '#', :default_order => 'desc') %>
-        <% query.columns.each do |column| %>
-          <%= column_header(column) %>
-        <% end %>
-      </tr>
-    </thead>
-    <% group = false %>
-    </tbody>
-        <%= init_tree_table(@issues, 1, '', query) %>
-    </tbody>
-  </table>
-  <p class="pagination"><%= pagination_links_full @issue_pages, @issue_count %></p>
-<% end -%>
+<% if issues and issues.size>0 %>
+  <% form_tag({}) do -%>
+    <table class="list issues" style="text-align:left;">
+      <thead>
+        <tr>
+          <th>
+            <%= link_to "", {}, :onclick => 'toggleIssuesSelection(Element.up(this, "form")); return false;', :title => "#{l(:button_check_all)}/#{l(:button_uncheck_all)}" %>
+          </th>
+          <%= sort_header_tag('id', :caption => '#', :default_order => 'desc') %>
+          <% query.columns.each do |column| %>
+            <%= column_header(column) %>
+          <% end %>
+        </tr>
+      </thead>
+      <% group = false %>
+      </tbody>
+          <%= init_tree_table(@issues, 1, '', query) %>
+      </tbody>
+    </table>
+    <p class="pagination"><%= pagination_links_full @issue_pages, @issue_count %></p>
+  <% end -%>
+<% else %>
+ <div class="no-data">
+    <%=  l(:label_no_issues) %>
+ </div>
+<% end %>

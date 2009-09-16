@@ -39,16 +39,9 @@
     </div>
 <% end %>
   <%= javascript_tag("jQuery().ready(function() {initialize_toggle('filter');});") %>
-<% if @issues and @issues.size>0 %>
+<div id="list_issues">
   <%= render :partial => 'issues/list', :locals => {:issues => @issues, :query => @query} %>
-
-
-<% else %>
- <div class="no-data">
-    <%=  l(:label_no_issues) %>
- </div>
-<% end %>
-
+</div>
 <% content_for :header_tags do %>
     <%= auto_discovery_link_tag(:atom, {:query_id => @query, :format => 'atom', :page => nil, :key => User.current.rss_key}, :title => l(:label_issue_plural)) %>
     <%= auto_discovery_link_tag(:atom, {:action => 'changes', :query_id => @query, :format => 'atom', :page => nil, :key => User.current.rss_key}, :title => l(:label_changes_details)) %>

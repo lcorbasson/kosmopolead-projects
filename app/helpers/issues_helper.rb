@@ -305,7 +305,7 @@ module IssuesHelper
           if d_width > 0
             ret += "<div style='top:#{@@top}px;left:#{i_left}px;width:#{d_width}px;' class='task task_done'>&nbsp;</div>"
           end
-          ret += "<div style='top:#{@@top+3}px;left:#{i_left + i_width + 5}px;' class='task'>"
+          ret += "<div style='top:#{@@top+3}px;left:#{i_left + i_width + 5}px;width=100px;' class='task'>"
           ret += "#{i.status.name}"
           ret += " #{(i.done_ratio).to_i}%"
           ret += "</div>"
@@ -362,7 +362,7 @@ module IssuesHelper
           if d_width > 0
             ret += "<div style='top:#{@@top}px;left:#{i_left}px;width:#{d_width}px;' class='task task_done'>&nbsp;</div>"
           end
-          ret += "<div style='top:#{@@top+3}px;left:#{i_left + i_width + 5}px;' class='task'>"
+          ret += "<div style='top:#{@@top+3}px;left:#{i_left + i_width + 5}px;width=100px;' class='task'>"
           ret += "#{i.status.name}"
           ret += " #{(i.done_ratio).to_i}%"
           ret += "</div>"

@@ -1,0 +1,5 @@
+<%= box(
+    "#{l(:label_spent_time)}",
+    "#{render:partial=>'timelog/box/new',:locals=>{:project=>@project,:issue=>@issue,:time_entry=>@time_entry}}"
+) %>
+

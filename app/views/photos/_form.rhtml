@@ -3,12 +3,8 @@
 <p class="buttons-icons">
     <label><%=l(:label_photo)%></label>
     <%= f.file_field :photo, :id=>"fileToUpload" %>
-    <%= link_to_remote image_tag("accept3.png"),
-                         { :url => { :controller => 'photos', :action => 'index',:gallery_id=>@project.gallery.id,:project_id=>@project},
-                           :method => 'get',                          
-                           :update => 'photo_index',
-                           :with => "clone_upload_photo_form()",
-                         },:class=>"button btn_blue corner-all" %>
+   <a onclick="javascript:clone_upload_photo_form();" class="button btn_blue corner-all"><%=  image_tag("accept3.png")%></a>
+                    
   <%= toggle_link image_tag('delete2.png'), "upload_form_photo" %>
   <%= f.hidden_field :gallery_id %>
 </p>

@@ -38,10 +38,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-#  def read_current_community
-#    Community.current = current_community
-#  end
-
   def clear_community_context
     session[:current_community_id] = nil
     Community.current = nil
@@ -50,8 +46,6 @@ class ApplicationController < ActionController::Base
   def current_community
     Community.current ||= Community.find(session[:current_community_id]) if session[:current_community_id]
     Community.current 
-#    return @current_community if defined?(@current_community)
-#    @current_community = session[:current_community_id] && Community.find(session[:current_community_id])
   end
   
   def current_role
@@ -104,19 +98,19 @@ class ApplicationController < ActionController::Base
   end
   
   def require_login
-#    if !User.current.logged?
-#      redirect_to :controller => "account", :action => "login", :back_url => url_for(params)
-#      return false
-#    end
+    if !User.current.logged?
+      redirect_to :controller => "account", :action => "login", :back_url => url_for(params)
+      return false
+    end
     true
   end
 
   def require_admin
     return unless require_login
-#    if !User.current.admin?
-#      render_403
-#      return false
-#    end
+    if !User.current.admin?
+      render_403
+      return false
+    end
     true
   end
   

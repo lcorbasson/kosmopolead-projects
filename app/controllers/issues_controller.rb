@@ -256,8 +256,14 @@ class IssuesController < ApplicationController
                 }
              end
           else
-             page << display_message_error(@issue, "fieldError")
-             page << "Element.scrollTo('errorExplanation');"
+            respond_to do |format|
+                format.js {
+                  render:update do |page|
+                     page << display_message_error(@issue, "fieldError")
+                     page << "Element.scrollTo('errorExplanation');"
+                  end
+                }
+            end
           end
      
   end

@@ -99,4 +99,17 @@ module ProjectsHelper
       end
       bool ? boolean : other
     end
+
+    def partner_project(project)
+      partner_name = ""
+      partnerships = project.author.partnerships
+      project_partners = project.project_partners
+      partnerships.each do |partnership|
+        partner = Partner.find(partnership.partner_id)
+        if partner_project = ProjectPartner.find(:first,:conditions=>["partner_id = ? and project_id = ?",partner.id, project.id])
+          partner_name=="" ? partner_name += partner.name : partner_name += ", "+partner.name
+        end
+      end
+      return partner_name
+    end
 end

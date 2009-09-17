@@ -318,6 +318,10 @@ legend_issue_in_late: Retard
 legend_issue_done: Réalisé
 legend_issue_todo: A faire
 
+label_spent_on: Date
+label_hours: Temps
+label_comments: Commentaires
+label_activity_id: Activité
 label_language: Langue
 label_edit_activity_sector_translation: Edition de la traduction pour le secteur d'activité
 label_new_activity_sector_translation: Nouvelle traduction pour le secteur d'activité

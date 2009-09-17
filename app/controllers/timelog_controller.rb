@@ -17,7 +17,7 @@
 
 class TimelogController < ApplicationController
   menu_item :issues
-  before_filter :find_project, :authorize, :only => [:edit, :destroy]
+  before_filter :find_project, :only => [:edit, :destroy,:new]
   before_filter :find_optional_project, :only => [:report, :details]
 
   verify :method => :post, :only => :destroy, :redirect_to => { :action => :details }
@@ -192,6 +192,25 @@ class TimelogController < ApplicationController
       end
     end
   end
+
+  def new
+    @time_entry ||= TimeEntry.new(:project => @project, :issue => @issue, :user => User.current, :spent_on => Date.today)
+    @time_entry.attributes = params[:time_entry]
+  end
+
+  def create
+    @time_entry ||= TimeEntry.new(:project => @project, :issue => @issue, :user => User.current, :spent_on => Date.today)
+    @time_entry.attributes = params[:time_entry]
+    if @time_entry.save
+      flash[:notice] = l(:notice_successful_update)
+      redirect_back_or_default :action => 'details', :project_id => @time_entry.project
+    else
+      flash[:error] =  @time_entry.errors.full_messages
+      redirect_to :action=>:new
+    end
+  end
+
+
   
   def edit
     render_403 and return if @time_entry && !@time_entry.editable_by?(User.current)
@@ -216,20 +235,14 @@ class TimelogController < ApplicationController
 
 private
   def find_project
-    if params[:id]
-      @time_entry = TimeEntry.find(params[:id])
-      @project = @time_entry.project
-    elsif params[:issue_id]
-      @issue = Issue.find(params[:issue_id])
-      @project = @issue.project
-    elsif params[:project_id]
+    if params[:project_id]
       @project = Project.find_by_identifier(params[:project_id])
-    else
-      render_404
-      return false
     end
-  rescue ActiveRecord::RecordNotFound
-    render_404
+    if params[:issue_id]
+      @issue = Issue.find(params[:issue_id])
+    end
+
+  
   end
   
   def find_optional_project

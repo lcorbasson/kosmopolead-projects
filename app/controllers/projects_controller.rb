@@ -458,16 +458,17 @@ class ProjectsController < ApplicationController
 
   def refresh_menu
       @query = Query.new(:name => "_")
-        @query.project = @project
-        if params[:fields] and params[:fields].is_a? Array
-          params[:fields].each do |field|
-            @query.add_filter(field, params[:operators][field], params[:values][field])
-          end
-        else
-          @query.available_filters.keys.each do |field|
-            @query.add_short_filter(field, params[field]) if params[field]
-          end
+      @query.project = @project
+      if params[:fields] and params[:fields].is_a? Array
+        params[:fields].each do |field|
+          @query.add_filter(field, params[:operators][field], params[:values][field])
         end
+      else
+        @query.available_filters.keys.each do |field|
+          @query.add_short_filter(field, params[field]) if params[field]
+        end
+      end
+      session[:query] =  {:filters => @query.filters}
       if @query.valid?
         conditions = @query.statement_projects
 
@@ -500,6 +501,7 @@ class ProjectsController < ApplicationController
               page<<"jQuery('#sidebar_projects').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
               page<<"jQuery('#sidebar_new').html('#{escape_javascript(render:partial=>'projects/sidebar_new')}');"
               page<<"jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project,:show_filters=>true})}');"
+
 
               }
           }
@@ -572,7 +574,6 @@ private
         @query = Query.find_by_id(session[:query][:id]) if session[:query][:id]
         @query ||= Query.new(:name => "_", :project => @project, :filters => session[:query][:filters])
        
-        
       end
 
     end

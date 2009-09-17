@@ -1,13 +1,11 @@
 <div class="contextual">
- 
-      <%= toggle_link l(:button_add), 'new-relation-form'%>
-
+      <%= toggle_link image_tag('add.png'), 'new-relation-form'%>
 </div>
 <h3><%=l(:label_related_issues)%></h3>
 
 
 <% if issue.relations.any? %>
-<table style="width:100%">
+<table style="width:100%;margin-left:10px;">
 <% issue.relations.each do |relation| %>
 <tr>
 <td><%= l(relation.label_for(issue)) %> <%= "(#{lwr(:actionview_datehelper_time_in_words_day, relation.delay)})" if relation.delay && relation.delay != 0 %>

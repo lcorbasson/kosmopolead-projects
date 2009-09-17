@@ -49,7 +49,7 @@
   #
   top = headers_height + 8 %>
   <div style="position:absolute;top:<%= top %>px;left:20px;">
-  <%= tree_gantt_list( @gantt.events) %>
+  <%= tree_gantt_list_stages(@gantt.events) %>
   </div>
   </div>
   </td>
@@ -133,7 +133,7 @@
   # Tasks
   #
   top = headers_height + 10 %>
-  <%= tree_gantt(top, @gantt,zoom,@gantt.events, true) %>
+  <%= tree_gantt_stages(top, @gantt,zoom,@gantt.events, true) %>
 
 
   <%

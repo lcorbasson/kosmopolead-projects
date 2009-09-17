@@ -59,8 +59,8 @@ general_pdf_encoding: ISO-8859-1
 general_day_names: Lundi,Mardi,Mercredi,Jeudi,Vendredi,Samedi,Dimanche
 general_first_day_of_week: '1'
 
-notice_login_succesful: Vous êtes désormais connecté
 notice_logout_succesful: Vous êtes désormais déconnecté
+notice_login_succesful: Vous êtes désormais connecté
 notice_account_updated: Le compte a été mis à jour avec succès.
 notice_account_invalid_creditentials: Identifiant ou mot de passe invalide.
 notice_account_password_updated: Mot de passe mis à jour avec succès.

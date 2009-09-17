@@ -7,6 +7,42 @@
  */
 
 //TREE TASK AND PROJECTS
+function initialize_toggle(toggle) {
+    //set effect from select menu value
+    jQuery(".toggle_"+toggle).click(function() {
+        if (jQuery(".toggle_"+toggle).hasClass("open")){
+          one_show = false;
+          jQuery(".toggle_"+toggle).removeClass("open");
+          jQuery(".toggle_"+toggle).addClass("close");
+          jQuery('#effect_'+toggle).removeClass("display");
+          jQuery('#effect_'+toggle).addClass("hidden");
+          jQuery(".effect").each(function(i){
+              if (jQuery(this).hasClass("display") && one_show == false){
+                 one_show = false;
+              }
+          });
+          if (one_show == true){
+               jQuery('.buttons').removeClass("hidden");
+               jQuery('.buttons').addClass("display");
+          }
+          else{
+               jQuery('.buttons').removeClass("display");
+                jQuery('.buttons').addClass("hidden");
+          }
+      }
+        else {
+           jQuery(".toggle_"+toggle).removeClass("close");
+           jQuery(".toggle_"+toggle).addClass("open");
+           jQuery('#effect_'+toggle).removeClass("hidden");
+           jQuery('#effect_'+toggle).addClass("display");
+           jQuery('.buttons').removeClass("hidden");
+           jQuery('.buttons').addClass("display");
+        }
+        return false;
+    });
+
+}
+
 function showChildrenProject(id){
     
     if( jQuery("#" + id + ' ul:first').css('display') == 'none' ){
@@ -48,43 +84,6 @@ function runEffect(effect){
 
 			//run the effect
 			jQuery("#"+effect).toggle(selectedEffect,options,500);
-};
-
-
-function initialize_toggle(toggle) {
-    //set effect from select menu value
-    jQuery(".toggle_"+toggle).click(function() { 
-        if (jQuery(".toggle_"+toggle).hasClass("open")){
-          one_show = false;
-          jQuery(".toggle_"+toggle).removeClass("open");
-          jQuery(".toggle_"+toggle).addClass("close");
-          jQuery('#effect_'+toggle).removeClass("display");
-          jQuery('#effect_'+toggle).addClass("hidden");
-          jQuery(".effect").each(function(i){
-              if (jQuery(this).hasClass("display") && one_show == false){
-                 one_show = false;
-              }
-          });
-          if (one_show == true){
-               jQuery('.buttons').removeClass("hidden");
-               jQuery('.buttons').addClass("display");
-          }
-          else{
-               jQuery('.buttons').removeClass("display");
-                jQuery('.buttons').addClass("hidden");
-          }
-      }
-        else {
-           jQuery(".toggle_"+toggle).removeClass("close");
-           jQuery(".toggle_"+toggle).addClass("open");
-           jQuery('#effect_'+toggle).removeClass("hidden");
-           jQuery('#effect_'+toggle).addClass("display");
-           jQuery('.buttons').removeClass("hidden");
-           jQuery('.buttons').addClass("display");
-        }
-        return false;
-    });
-    
 }
 
 
@@ -121,7 +120,7 @@ function initialize_funding_grid(url,edit_url){
             loadtext: "Chargement de la liste...",
             pgtext : "Page {0} sur {1}",
             emptyrecords: "Aucune ligne",
-            viewrecords: true, //Affichage du nombre d'enregistrements courants  
+            viewrecords: true //Affichage du nombre d'enregistrements courants  
         }).navGrid('#pager', {view:true}, //options        
         {reloadAfterSubmit:true,jqModal:false, closeOnEscape:true}, // del options
         {closeOnEscape:true}, // search options

@@ -318,7 +318,14 @@ legend_issue_in_late: Retard
 legend_issue_done: Réalisé
 legend_issue_todo: A faire
 
-
+label_spent_on: Date
+label_hours: Temps
+label_comments: Commentaires
+label_activity_id: Activité
+label_language: Langue
+label_edit_activity_sector_translation: Edition de la traduction pour le secteur d'activité
+label_new_activity_sector_translation: Nouvelle traduction pour le secteur d'activité
+label_secteur_new: Nouveau secteur d'activité
 label_project_relation_type_sym: Label réciproque
 label_new_photo: Nouvelle photo
 label_new_member: Nouveau membre
@@ -706,10 +713,13 @@ label_in_late_issues: Tâches en retard
 label_estimated_time: Temps estimé du projet
 label_project_cost: Coût du projet
 label_project_sector: Secteur
-label_sectors: Secteurs
+label_sectors: Secteurs d'activité
+label_new_activity_sector: Nouveau secteur d'activité
+label_edit_activity_sector: Edition du secteur d'activité
 label_language: Langue
 label_status: Statut
-
+label_translation: Traduction
+label_activity_sector: Traductions du secteur d'activité
 button_login: Connexion
 button_submit: Soumettre
 button_save: Sauvegarder

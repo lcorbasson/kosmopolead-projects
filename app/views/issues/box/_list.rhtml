@@ -12,7 +12,7 @@
                   <%= render :partial => 'queries/filters', :locals => {:query => @query} %>
                    <p class="buttons">
                         <%= link_to_remote l(:button_apply),
-                                           { :url => project_issues_path(@project)   ,
+                                           { :url => project_issues_path(@project,:set_filter => 1)   ,
                                              :update => "content",
                                              :method=>:get,
                                              :with => "Form.serialize('query_form')"
@@ -38,16 +38,10 @@
         </div>
     </div>
 <% end %>
-<% if @issues and @issues.size>0 %>
-  <%= render :partial => 'issues/list', :locals => {:issues => @issues, :query => @query} %>
   <%= javascript_tag("jQuery().ready(function() {initialize_toggle('filter');});") %>
-
-<% else %>
- <div class="no-data">
-    <%=  l(:label_no_issues) %>
- </div>
-<% end %>
-
+<div id="list_issues">
+  <%= render :partial => 'issues/list', :locals => {:issues => @issues, :query => @query} %>
+</div>
 <% content_for :header_tags do %>
     <%= auto_discovery_link_tag(:atom, {:query_id => @query, :format => 'atom', :page => nil, :key => User.current.rss_key}, :title => l(:label_issue_plural)) %>
     <%= auto_discovery_link_tag(:atom, {:action => 'changes', :query_id => @query, :format => 'atom', :page => nil, :key => User.current.rss_key}, :title => l(:label_changes_details)) %>

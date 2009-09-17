@@ -253,10 +253,6 @@ class ProjectsController < ApplicationController
   def update
     @project = Project.find_by_identifier(params[:id])
     
-    if params[:part].eql?('custom_fields')
-      CustomValue.delete(@project.custom_field_values)
-    end
-    
     @project.update_attributes(params[:project])
     respond_to do |format|
       format.js {
@@ -278,6 +274,7 @@ class ProjectsController < ApplicationController
             when "synthesis"
               page.replace_html "tab-content-synthesis", :partial => 'projects/show/synthesis',:locals=>{:project=>@project}
             when "custom_fields"
+              @project.save_custom_field_values
               page.replace_html "custom_fields", :partial => 'projects/show/custom_fields',:locals=>{:project=>@project}
           end
           page << display_message_error(l(:notice_successful_update), "fieldNotice")
@@ -460,21 +457,21 @@ class ProjectsController < ApplicationController
 
   def refresh_menu
       @query = Query.new(:name => "_")
-        @query.project = @project
-        if params[:fields] and params[:fields].is_a? Array
-          params[:fields].each do |field|
-            @query.add_filter(field, params[:operators][field], params[:values][field])
-          end
-        else
-          @query.available_filters.keys.each do |field|
-            @query.add_short_filter(field, params[field]) if params[field]
-          end
+      @query.project = @project
+      if params[:fields] and params[:fields].is_a? Array
+        params[:fields].each do |field|
+          @query.add_filter(field, params[:operators][field], params[:values][field])
         end
+      else
+        @query.available_filters.keys.each do |field|
+          @query.add_short_filter(field, params[field]) if params[field]
+        end
+      end
+      session[:query] =  {:filters => @query.filters}
       if @query.valid?
         conditions = @query.statement_projects
 
-        @projects = Project.find :all,
-                             :include => [ :parent],
+        @projects = Project.find :all,                             
                              :conditions => "#{conditions}"
 
         @project = @projects.first unless @projects.nil?
@@ -502,7 +499,7 @@ class ProjectsController < ApplicationController
             render(:update) {|page|
               page<<"jQuery('#sidebar_projects').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
               page<<"jQuery('#sidebar_new').html('#{escape_javascript(render:partial=>'projects/sidebar_new')}');"
-              page<<"jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
+              page<<"jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project,:show_filters=>true})}');"
 
 
               }
@@ -555,15 +552,13 @@ private
     if !params[:query_id].blank?
       cond = "project_id IS NULL"
       cond << " OR project_id = #{@project.id}" if @project
-      @query = Query.find(params[:query_id], :conditions => cond)
-      @query.project = @project
-      session[:query] = {:id => @query.id, :id => @query.project_id}
+      @query = Query.find(params[:query_id], :conditions => cond)    
+      session[:query] = {:id => @query.id}
 
     else
       if params[:set_filter] || session[:query].nil? || session[:query][:project_id] != (@project ? @project.id : nil)
         # Give it a name, required to be valid
-        @query = Query.new(:name => "_")
-        @query.project = @project
+        @query = Query.new(:name => "_")       
         if params[:fields] and params[:fields].is_a? Array
           params[:fields].each do |field|
             @query.add_filter(field, params[:operators][field], params[:values][field])
@@ -573,12 +568,11 @@ private
             @query.add_short_filter(field, params[field]) if params[field]
           end
         end
-        session[:query] = {:project_id => @query.project_id, :filters => @query.filters}
+        session[:query] = {:filters => @query.filters}
       else
         @query = Query.find_by_id(session[:query][:id]) if session[:query][:id]
         @query ||= Query.new(:name => "_", :project => @project, :filters => session[:query][:filters])
-        @query.project = @project
-        
+       
       end
 
     end
@@ -619,19 +613,8 @@ private
 
   end
 
-  def show_funding
-    sort_init 'aap', 'asc'
-    sort_update %w(aap financeur correspondant_financeur montant_demande funding_type date_accord montant_accorde date_liberation montant_libere)
-
-   
-    @funding_line_count = @project.funding_lines.count
-    @funding_line_pages = Paginator.new self, @funding_line_count,
-								per_page_option,
-								params['page']
-    @funding_lines = FundingLine.find :all, :order => sort_clause,
-                    :conditions=>["project_id = ?",@project.id],
-						:limit  =>  @funding_line_pages.items_per_page,
-						:offset =>  @funding_line_pages.current.offset
+  def show_funding 
+    @funding_lines = @project.funding_lines
   end
 
 end

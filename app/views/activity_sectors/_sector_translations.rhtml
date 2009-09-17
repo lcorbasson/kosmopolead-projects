@@ -42,10 +42,10 @@
                       edit_activity_sector_activity_sector_translation_path( sector,lang_id)
                   %>
         </td>
-        <td><%= link_to l(:button_add), new_activity_sector_activity_sector_translation_path(sector) %>
-        </td>
-        <td><%= link_to l(:button_edit), edit_activity_sector_path(sector) %></td>
-        <td><%= link_to l(:button_delete), sector, :confirm => 'Are you sure?', :method => :delete %></td>
+        <td colspan="3"><%= link_to image_tag("add.png"), new_activity_sector_activity_sector_translation_path(sector) %>
+        
+       <%= link_to image_tag("edit.png"), edit_activity_sector_path(sector) %>
+       <%= link_to image_tag("delete.png"), sector, :confirm => 'Are you sure?', :method => :delete %></td>
       </tr>
        <% end %>
   </table>

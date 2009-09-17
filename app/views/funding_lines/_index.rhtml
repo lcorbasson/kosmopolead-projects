@@ -2,15 +2,15 @@
   <% if funding_lines and funding_lines.size>0  %>
     <table class="list">
       <thead><tr>
-        <%= sort_header_tag('aap', :caption => l(:label_funding_aap)) %>
-        <%= sort_header_tag('financeur', :caption => l(:label_funding_financeur)) %>
-        <%= sort_header_tag('correspondant_financeur', :caption => l(:label_funding_correspondant_financeur)) %>
-        <%= sort_header_tag('montant_demande', :caption => l(:label_funding_montant_demande)) %>
-        <%= sort_header_tag('funding_type', :caption => l(:label_funding_type)) %>
-        <%= sort_header_tag('date_accord', :caption => l(:label_funding_date_accord)) %>
-        <%= sort_header_tag('montant_accorde', :caption => l(:label_funding_montant_accorde)) %>
-        <%= sort_header_tag('date_liberation', :caption => l(:label_funding_date_liberation)) %>
-        <%= sort_header_tag('montant_libere', :caption => l(:label_funding_montant_libere)) %>
+        <th><%= l(:label_funding_aap) %></th>
+        <th><%= l(:label_funding_financeur) %></th>
+        <th><%= l(:label_funding_correspondant_financeur) %></th>
+        <th><%= l(:label_funding_montant_demande) %></th>
+        <th><%= l(:label_funding_type) %></th>
+        <th><%= l(:label_funding_date_accord) %></th>
+        <th><%= l(:label_funding_montant_accorde) %></th>
+        <th><%= l(:label_funding_date_liberation) %></th>
+        <th><%= l(:label_funding_montant_libere) %></th>
         <th></th>
       </tr></thead>
       <tbody>
@@ -32,7 +32,7 @@
       </tbody>
     </table>
 
-    <p class="pagination"><%= pagination_links_full @funding_line_pages, @funding_line_count %></p>
+    
     <div id="edit_funding"></div>
   <% else %>
      <div class="emptymessage">

@@ -15,15 +15,14 @@ class PhotosController < ApplicationController
   def create
     @photo = Photo.new(params[:photo])
     @photo.gallery_id = @gallery.id
-    respond_to do |format|
-      format.html { redirect_to :action => :index,:controller=>:projects}
-      format.js { render(:update) {|page| 
+    responds_to_parent do
+      render(:update) {|page| 
             if @photo.save
               page.replace_html "photo_index", :partial => 'photos/index',:locals=>{:photos=>@gallery.photos}
             else
             page << display_message_error(@photo, "fieldError")
             end
-          } }
+          } 
     end
   end
 

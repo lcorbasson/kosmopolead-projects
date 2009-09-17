@@ -250,6 +250,28 @@ module IssuesHelper
     end
   end
 
+  def tree_gantt_list_stages(events)
+    ret = ""
+    events.collect do |event|
+        if event.class ==  Issue
+          ret = "<div style='height:20px;padding-left:#{event.level*20}px'>"
+
+          ret += "#{link_to_issue event}<br/>"
+          ret += "</div>"
+          ret += "#{tree_gantt_list(event.children.stages) if event.children.stages.size>0}"
+        else
+          ret = "<div style='height:20px;>"
+          ret += "<span class='icon icon-package'>"
+          ret += "Version :  "
+          ret += "#{link_to_version event}"
+          ret += "</span>"
+          ret += "</div>"
+        end
+
+
+    end
+  end
+
   def top
     @@top
   end
@@ -283,7 +305,7 @@ module IssuesHelper
           if d_width > 0
             ret += "<div style='top:#{@@top}px;left:#{i_left}px;width:#{d_width}px;' class='task task_done'>&nbsp;</div>"
           end
-          ret += "<div style='top:#{@@top+3}px;left:#{i_left + i_width + 5}px;' class='task'>"
+          ret += "<div style='top:#{@@top+3}px;left:#{i_left + i_width + 5}px;width=100px;' class='task'>"
           ret += "#{i.status.name}"
           ret += " #{(i.done_ratio).to_i}%"
           ret += "</div>"
@@ -309,6 +331,63 @@ module IssuesHelper
         @@top = @@top + 20        
         ret += "#{tree_gantt(@@top,gantt, zoom, i.children, false) if i.class==Issue and i.children.size>0}"
       end 
+  end
+
+   def tree_gantt_stages(top,gantt,zoom, events, init = false)
+    ret = ""
+    if init
+      @@top = top
+    end
+    events.collect do |i|
+      if i.class == Issue and (i.is_issue? or i.is_stage?)
+          i_start_date = (i.start_date >= gantt.date_from ? i.start_date : gantt.date_from )
+          i_end_date = ((i.due_before and i.due_before <= gantt.date_to) ? i.due_before : gantt.date_to )
+
+
+          i_done_date = i.start_date + ((i_end_date - i.start_date+1)*i.done_ratio/100).floor
+          i_done_date = (i_done_date <= gantt.date_from ? gantt.date_from : i_done_date )
+          i_done_date = (i_done_date >= gantt.date_to ? gantt.date_to : i_done_date )
+
+          i_late_date = [i_end_date, Date.today].min if i_start_date < Date.today
+
+          i_left = ((i_start_date - gantt.date_from)*zoom).floor
+          i_width = ((i_end_date - i_start_date + 1)*zoom).floor - 2                  # total width of the issue (- 2 for left and right borders)
+          d_width = ((i_done_date - i_start_date)*zoom).floor - 2                     # done width
+          l_width = i_late_date ? ((i_late_date - i_start_date+1)*zoom).floor - 2 : 0 # delay width
+
+          ret ="<div style='top:#{@@top}px;left:#{i_left}px;width:#{i_width}px;' class='task task_todo'>&nbsp;</div>"
+          if l_width > 0
+            ret += "<div style='top:#{@@top}px;left:#{i_left}px;width:#{l_width}px;' class='task task_late'>&nbsp;</div>"
+          end
+          if d_width > 0
+            ret += "<div style='top:#{@@top}px;left:#{i_left}px;width:#{d_width}px;' class='task task_done'>&nbsp;</div>"
+          end
+          ret += "<div style='top:#{@@top+3}px;left:#{i_left + i_width + 5}px;width=100px;' class='task'>"
+          ret += "#{i.status.name}"
+          ret += " #{(i.done_ratio).to_i}%"
+          ret += "</div>"
+          ret += "<div class='tooltip' style='position: absolute;top:#{@@top}px;left:#{i_left}px;width:#{i_width}px;height:12px;'>"
+          ret += "<span class='tip'>"
+          ret += "#{render_issue_tooltip i}"
+          ret += "</span></div>"
+        else
+          if i.class == Issue and i.is_milestone?
+            i_left = ((i.start_date - gantt.date_from)*zoom).floor
+            ret = "<div style='top:#{@@top}px;left:#{i_left}px;width:15px;' class='task milestone'>&nbsp;</div>"
+            ret += "<div style='top:#{@@top}px;left:#{i_left + 12}px;background:#fff;' class='task'>"
+#            ret += "#{h(i.subject)}"
+            ret += "</div>"
+          else
+            i_left = ((i.start_date - gantt.date_from)*zoom).floor
+            ret = "<div style='top:#{@@top}px;left:#{i_left}px;width:15px;' class='task version'>&nbsp;</div>"
+            ret += "<div style='top:#{@@top}px;left:#{i_left + 12}px;margin-left:5px;' class='task'>"
+            ret += "<strong>#{h i}</strong>"
+            ret += "</div>"
+          end
+        end
+        @@top = @@top + 20
+        ret += "#{tree_gantt(@@top,gantt, zoom, i.children.stages, false) if i.class==Issue and i.children.stages.size>0}"
+      end
   end
 
 

@@ -1,16 +1,8 @@
 <%= box(
     "#{l(:label_sectors)}",
-    ["<span class='icon icon-add'></span>", "#{toggle_link l(:label_secteur_new), 'new-activity_sector-form', :class => 'icon icon-add'}"]
+    "#{render:partial=>'index'}",
+    ["#{toggle_link image_tag("add.png"), 'new-activity_sector-form', :class => 'icon icon-add'}"]
     
 ) %>
 
-<div id="activity_sectors">
-  <%= render :partial => 'activity_sectors/list_translations'%>
-</div>
-<!-- Ajout d'un identifier et d'une traduction -->
-<% remote_form_for(:activity_sector, @activity_sector,
-                 :url => {:controller => 'activity_sectors', :action => 'create'},
-                 :method => :post,
-                 :html => {:id => 'new-activity_sector-form', :style => (@relation ? '' : 'display: none;')}) do |f| %>
-<%= render :partial => 'activity_sectors/edit', :locals => {:f => f}%>
-<% end %>
+

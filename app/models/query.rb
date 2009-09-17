@@ -86,7 +86,7 @@ class Query < ActiveRecord::Base
   cattr_reader :operators
     
   @@operators_by_filter_type = { :list => [ "=", "!" ],
-                                 :list_status => [ "o", "=", "!", "c", "*" ],
+                                 :list_status => [ "=", "!", "*" ],
                                  :list_optional => [ "=", "!", "!*", "*" ],
                                  :list_subprojects => [ "*", "!*", "=" ],
                                  :date => [ "<t+", ">t+", "t+", "t", "w", ">t-", "<t-", "t-" ],
@@ -333,12 +333,15 @@ class Query < ActiveRecord::Base
           db_table = Assignment.table_name
           db_field = 'user_id'
           sql << "#{Issue.table_name}.id IN (SELECT #{Issue.table_name}.id FROM #{Issue.table_name} LEFT OUTER JOIN #{db_table} ON #{db_table}.issue_id=#{Issue.table_name}.id WHERE  "
-          
         else
-          # regular field
-          db_table = Issue.table_name
-          db_field = field
-          sql << '('
+           db_table = Issue.table_name
+           sql << '('
+          if (field == "status")
+            db_field = 'status_id'
+          else
+            # regular field
+            db_field = field
+          end
         end
       end
       
@@ -351,7 +354,7 @@ class Query < ActiveRecord::Base
       
       sql << ')'
       filters_clauses << sql
-    end if filters and valid?
+    end
     if self.query_type == "issue"
       (filters_clauses << project_statement).join(' AND ')
     else

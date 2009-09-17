@@ -22,8 +22,8 @@ module ProjectsHelper
   end
 
  def project_tabs
-    tabs = [{:name => 'funding', :partial => 'projects/show/funding', :label => :label_funding},
-            {:name => 'gantt', :partial => 'projects/show/gantt', :label => :label_gantt},
+    tabs = [{:name => 'gantt', :partial => 'projects/show/gantt', :label => :label_gantt},
+            {:name => 'funding', :partial => 'projects/show/funding', :label => :label_funding},
             {:name => 'synthesis', :partial => 'projects/show/synthesis', :label => :label_synthese},            
             {:name => 'files', :partial => 'projects/show/files', :label => :label_file_plural},
             {:name => 'gallery', :partial => 'projects/show/gallery', :label => :label_gallery_photos}
@@ -98,5 +98,18 @@ module ProjectsHelper
         custom.custom_field.field_format.eql?('bool') ? boolean << custom : other << custom
       end
       bool ? boolean : other
+    end
+
+    def partner_project(project)
+      partner_name = ""
+      partnerships = project.author.partnerships
+      project_partners = project.project_partners
+      partnerships.each do |partnership|
+        partner = Partner.find(partnership.partner_id)
+        if partner_project = ProjectPartner.find(:first,:conditions=>["partner_id = ? and project_id = ?",partner.id, project.id])
+          partner_name=="" ? partner_name += partner.name : partner_name += ", "+partner.name
+        end
+      end
+      return partner_name
     end
 end

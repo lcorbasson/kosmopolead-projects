@@ -18,13 +18,13 @@ class FundingLinesController < ApplicationController
 
   def update
     @funding_line = FundingLine.find(params[:id])
-    @project = Project.find_by_identifier(params[:project_id])
-    @funding_lines = @project.funding_lines
+    @project = Project.find_by_identifier(params[:project_id])    
     show_funding
     respond_to do |format|
         format.js { render(:update) {|page|
                         if @funding_line.update_attributes(params[:funding_line])
                             @funding_line = FundingLine.new
+                            @funding_lines = @project.funding_lines
                             page.replace_html "tab-content-funding", :partial => 'projects/show/funding'
                             page << display_message_error(l(:notice_successful_update), "fieldNotice")
                         else
@@ -38,13 +38,13 @@ class FundingLinesController < ApplicationController
   def create
     @funding_line = FundingLine.new(params[:funding_line])
     @project = Project.find_by_identifier(params[:project_id])
-    @funding_line.project_id = @project.id
-    @funding_lines = @project.funding_lines
+    @funding_line.project_id = @project.id   
     show_funding
     respond_to do |format|
         format.js { render(:update) {|page|
               if @funding_line.save
                 @funding_line = FundingLine.new
+                 @funding_lines = @project.funding_lines
                   page.replace_html "tab-content-funding", :partial => 'projects/show/funding'
                   page << display_message_error(l(:notice_successful_create), "fieldNotice")
               else

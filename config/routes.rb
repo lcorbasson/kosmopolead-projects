@@ -14,6 +14,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   map.home '', :controller => 'my',:action=>"page"
+  map.faq 'faq', :controller => 'static', :action => 'faq'
   map.signin 'login', :controller => 'account', :action => 'login'
   map.signout 'logout', :controller => 'account', :action => 'logout'
   map.resources 'queries',:controller=>'queries'

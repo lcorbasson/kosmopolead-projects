@@ -33,8 +33,8 @@ module CustomFieldsHelper
     
     case custom_field.field_format
     when "date"
-      text_field_tag(field_name, custom_value.value, :id => field_id, :size => 10, :readonly => read_only) +
-      calendar_for(field_id)
+      text_field_tag(field_name, custom_value.value, :id => field_id, :size => 10, :readonly => read_only,:class=>"ui-datepicker") +
+     initialize_datepicker()
     when "text"
       if read_only
         custom_value.value.is_a?(FalseClass) ? "" : text_area_tag(field_name, custom_value.value, :id => field_id, :rows => 3, :style => 'width:90%')

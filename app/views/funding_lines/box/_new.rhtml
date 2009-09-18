@@ -26,7 +26,7 @@
     </p>
     <p>
       <label><%= l(:label_funding_date_accord) %></label>
-      <%= f.text_field :date_accord,:size=>10 %><%= calendar_for('funding_line_date_accord') %></p>
+      <%= f.text_field :date_accord,:size=>10,:class=>"ui-datepicker" %></p>
     </p>
     <p>
       <label><%= l(:label_funding_montant_accorde) %></label>
@@ -34,7 +34,7 @@
     </p>
     <p>
       <label><%= l(:label_funding_date_liberation) %></label>
-      <%= f.text_field :date_liberation,:size=>10 %><%= calendar_for('funding_line_date_liberation') %></p>
+      <%= f.text_field :date_liberation,:size=>10,:class=>"ui-datepicker" %></p>
     </p>
     <p>
       <label><%= l(:label_funding_montant_libere) %></label>
@@ -48,4 +48,4 @@
   
     <div class="clearer"></div>
 <% end %>
-
+<%= initialize_datepicker() %>

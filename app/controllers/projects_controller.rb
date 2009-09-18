@@ -447,7 +447,13 @@ class ProjectsController < ApplicationController
   def edit_part_description
     @project = Project.find(params[:project_id])   
 
-    render :layout=>false
+    respond_to do |format|
+      format.js {
+        render :update do |page|
+           page << "jQuery('#description').html('#{escape_javascript(render:partial=>'projects/edit_part_description')}');"
+        end
+      }
+    end
   end
 
   def edit_part_synthesis

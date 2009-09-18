@@ -27,8 +27,10 @@ class FundingLinesController < ApplicationController
                             @funding_lines = @project.funding_lines
                             page.replace_html "tab-content-funding", :partial => 'projects/show/funding'
                             page << display_message_error(l(:notice_successful_update), "fieldNotice")
+                            page << "Element.scrollTo('content_wrapper');"
                         else
                           page << display_message_error(@funding_line, "fieldError")
+                          page << "Element.scrollTo('content_wrapper');"
                         end
                     }
          }
@@ -37,6 +39,8 @@ class FundingLinesController < ApplicationController
 
   def create
     @funding_line = FundingLine.new(params[:funding_line])
+    @funding_line.date_accord = params[:funding_line][:date_accord]
+    @funding_line.date_liberation = params[:funding_line][:date_liberation]
     @project = Project.find_by_identifier(params[:project_id])
     @funding_line.project_id = @project.id   
     show_funding
@@ -47,8 +51,10 @@ class FundingLinesController < ApplicationController
                  @funding_lines = @project.funding_lines
                   page.replace_html "tab-content-funding", :partial => 'projects/show/funding'
                   page << display_message_error(l(:notice_successful_create), "fieldNotice")
+                  page << "Element.scrollTo('content_wrapper');"
               else
                   page << display_message_error(@funding_line, "fieldError")
+                  page << "Element.scrollTo('content_wrapper');"
               end
               }
         }
@@ -67,12 +73,14 @@ class FundingLinesController < ApplicationController
           format.js { render(:update) {|page|
               page.replace_html "tab-content-funding", :partial => 'projects/show/funding'
               page << display_message_error(l(:notice_successful_destroy), "fieldNotice")
+              page << "Element.scrollTo('content_wrapper');"
              }
 
          }
       end
     else
         page << display_message_error(@funding_line, "fieldError")
+        page << "Element.scrollTo('content_wrapper');"
     end
   end
 

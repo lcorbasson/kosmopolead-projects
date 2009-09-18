@@ -589,7 +589,7 @@ module ApplicationHelper
     javascript_tag("Calendar.setup({inputField : '#{field_id}', ifFormat : '%Y-%m-%d', button : '#{field_id}_trigger' });")
   end
 
-  def initialize_datepicker
+  def initialize_datepicker()
    javascript_tag(
      "jQuery().ready(function() {
         jQuery('.ui-datepicker').datepicker({

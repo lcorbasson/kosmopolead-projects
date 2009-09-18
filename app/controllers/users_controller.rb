@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class UsersController < ApplicationController
-  before_filter :require_admin
+  before_filter :require_admin, :require_community
   menu_item :admin
 
   helper :sort

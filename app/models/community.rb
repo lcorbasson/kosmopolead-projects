@@ -7,6 +7,7 @@ class Community < ActiveRecord::Base
   has_many :projects
   has_many :queries
   has_many :partners
+  has_many :activity_sectors
 
   acts_as_tree :order => "lastname"
 

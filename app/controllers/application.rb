@@ -47,6 +47,11 @@ class ApplicationController < ActionController::Base
     Community.current ||= Community.find(session[:current_community_id]) if session[:current_community_id]
     Community.current 
   end
+
+  def require_community
+    (flash[:error] = "Community required" and redirect_to :back) unless current_community
+    @community = current_community
+  end
   
   def current_role
     @current_role ||= User.current.role_for_project(@project)

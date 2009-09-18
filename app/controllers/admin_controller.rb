@@ -34,7 +34,7 @@ class AdminController < ApplicationController
     c = ARCondition.new(["#{ProjectStatus.table_name}.id = ?", @status])
 
     if current_community
-      c << ["community_id = ?", current_community.id]
+      c << ["#{Project.table_name}.community_id = ?", current_community.id]
     end
     
    

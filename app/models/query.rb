@@ -62,8 +62,8 @@ class Query < ActiveRecord::Base
   validates_presence_of :name, :on => :save
   validates_length_of :name, :maximum => 255
 
-  named_scope :projects, :conditions=>["query_type= ?", "project"]
-  named_scope :issues, :conditions=>["query_type= ?", "issue"]
+  named_scope :projects, :conditions=>["query_type= ?", "project"], :order => "name ASC"
+  named_scope :issues, :conditions=>["query_type= ?", "issue"], :order => "name ASC"
     
   @@operators = { "="   => :label_equals, 
                   "!"   => :label_not_equals,

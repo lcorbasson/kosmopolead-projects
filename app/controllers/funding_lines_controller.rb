@@ -59,8 +59,8 @@ class FundingLinesController < ApplicationController
   def destroy
     @funding_line = FundingLine.find(params[:id])
     if @funding_line.destroy
-      @funding_line = FundingLine.new
-       @project = @funding_line.project
+       @project = Project.find_by_identifier(params[:project_id])
+       @funding_line = FundingLine.new      
        @funding_lines = @project.funding_lines
        @funding_lines = @project.funding_lines
        respond_to do |format|

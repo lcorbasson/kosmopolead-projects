@@ -47,7 +47,17 @@ class ProjectsController < ApplicationController
   include ProjectsHelper
 
   # Lists visible projects
-  def index  
+  def index
+    if session[:query_projects]
+      @query = session[:query_projects]
+       conditions = @query.statement_projects
+
+        @projects = Project.find :all,
+                             :conditions => "#{conditions}"
+    else
+      retrieve_query
+    end
+
     if session[:project]     
       if !@project = Project.find(session[:project].id)
         @project = @projects.first
@@ -57,15 +67,12 @@ class ProjectsController < ApplicationController
     end
     @relation= ProjectRelation.new
      unless @project.nil?
-          @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))
-          retrieve_query
-          if @query.valid?
-             events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
+          @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))          
+          @gantt.events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
                                                                       and start_date is not null)
                                                                       AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
 
-            @gantt.events = events
-          end
+          
           @member ||= @project.members.new
           @users = User.all
           @file_attachment = FileAttachment.new(:container_id=>@project.id,:container_type=>"project")
@@ -164,6 +171,15 @@ class ProjectsController < ApplicationController
 
   # Show @project
   def show
+    if session[:query_projects]
+      @query = session[:query_projects]
+       conditions = @query.statement_projects
+
+        @projects = Project.find :all,
+                             :conditions => "#{conditions}"
+    else
+      retrieve_query
+    end
     if params[:jump]
       # try to redirect to the requested menu item
       redirect_to_project_menu_item(@project, params[:jump]) && return
@@ -447,7 +463,13 @@ class ProjectsController < ApplicationController
   def edit_part_description
     @project = Project.find(params[:project_id])   
 
-    render :layout=>false
+    respond_to do |format|
+      format.js {
+        render :update do |page|
+           page << "jQuery('#description').html('#{escape_javascript(render:partial=>'projects/edit_part_description')}');"
+        end
+      }
+    end
   end
 
   def edit_part_synthesis
@@ -467,7 +489,7 @@ class ProjectsController < ApplicationController
           @query.add_short_filter(field, params[field]) if params[field]
         end
       end
-      session[:query] =  {:filters => @query.filters}
+      session[:query_projects] =  @query
       if @query.valid?
         conditions = @query.statement_projects
 

@@ -589,6 +589,30 @@ module ApplicationHelper
     javascript_tag("Calendar.setup({inputField : '#{field_id}', ifFormat : '%Y-%m-%d', button : '#{field_id}_trigger' });")
   end
 
+  def initialize_datepicker()
+   javascript_tag(
+     "jQuery().ready(function() {
+        jQuery('.ui-datepicker').datepicker({
+            showOn: 'button',            
+            buttonImage: '/images/calendar.png',
+            changeMonth: true,
+            buttonImageOnly: true,
+            firstDay: 1,
+            dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+            dayNamesMin: ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa'],
+            dayNamesShort: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+            monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'],
+            monthNamesShort: ['Jan','Fev','Mar','Avr','Mai','Jui','Jui','Aou','Sep','Oct','Nov','Dec'],
+            dateFormat: 'dd/mm/yy'
+            })
+      });"
+   )
+
+  end
+
+
+ 
+
   def include_calendar_headers_tags
     unless @calendar_headers_tags_included
       @calendar_headers_tags_included = true

@@ -1271,3 +1271,6 @@ text-align:center;
 
 #lightbox-container-image-data-box {min-width:280px;}
 #lightbox-container-image-box {min-width:300px;}
+
+.ui-datepicker-trigger {margin-left:5px;
+vertical-align:middle;cursor:pointer;}

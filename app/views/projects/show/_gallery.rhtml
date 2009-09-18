@@ -12,7 +12,7 @@
                          } %>
      </div>
    
-        <div id="photo_index">
+        <div id="photo_index" style="min-width:300px;min-height:100px;">
             <%= render:partial=>"photos/index",:locals=>{:photos=>@project.gallery.photos} %>
         </div>
     

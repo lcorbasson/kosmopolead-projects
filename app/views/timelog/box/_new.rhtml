@@ -4,7 +4,7 @@
 
 <div>
 <p><label><%= l(:label_issue) %></label><%= f.text_field :issue_id, :size => 6 %> <em><%= h("#{time_entry.issue.tracker.name} ##{time_entry.issue.id}: #{time_entry.issue.subject}") if @time_entry.issue %></em></p>
-<p><label><%= l(:label_spent_on) %></label><%= f.text_field :spent_on, :size => 10, :required => true %><%= calendar_for('time_entry_spent_on') %></p>
+<p><label><%= l(:label_spent_on) %></label><%= f.text_field :spent_on, :size => 10, :required => true,:class=>"ui-datepicker" %></p>
 <p><label><%= l(:label_hours) %></label><%= f.text_field :hours, :size => 6, :required => true %></p>
 <p><label><%= l(:label_comments) %></label><%= f.text_field :comments, :size => 100 %></p>
 <p><label><%= l(:label_activity_id) %></label><%= f.select :activity_id, activity_collection_for_select_options, :required => true %></p>
@@ -19,3 +19,4 @@
 </div>
 <div class="clearer"></div>
 <% end %>
+ <%= initialize_datepicker() %>

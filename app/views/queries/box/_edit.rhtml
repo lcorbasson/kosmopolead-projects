@@ -1,7 +1,9 @@
-<% form_tag({:action => 'edit', :id => @query}, :onsubmit => 'selectAllOptions("selected_columns");') do %>
+<% form_tag(query_path(@query),:method=>:put, :onsubmit => 'selectAllOptions("selected_columns");') do %>
   <%= render :partial => 'form', :locals => {:query => @query} %>
-  <p class="buttons">
+  <p class="buttons right">
     <%= submit_tag l(:button_save),:class=>"button btn_blue corner-all" %>
+    <%= link_to l(:button_cancel),queries_path(),:class=>"button btn_orange corner-all" %>
   </p>
+  <div class="clearer"></div>
 <% end %>
 <%= javascript_tag("initialize_toggle('filter');") %>

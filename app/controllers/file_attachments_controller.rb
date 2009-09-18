@@ -45,20 +45,20 @@ class FileAttachmentsController < ApplicationController
       @file_attachment.container_type = "project"      
     end
     @file_attachment.author_id = User.current.id   
-    respond_to do |format|
-      format.html { redirect_to :back }
-      format.js { render(:update) {|page|
+    responds_to_parent do
+      render(:update) {|page|       
           if @file_attachment.save
-            if params[:project_id]
-                page.replace_html "files_index", :partial => 'file_attachments/index',:locals=>{:file_attachments=>@project.file_attachments}
+            if params[:issue_id]
+                 page.replace_html "files_index", :partial => 'file_attachments/index',:locals=>{:file_attachments=>@issue.file_attachments}
             else
-                page.replace_html "files_index", :partial => 'file_attachments/index',:locals=>{:file_attachments=>@issue.file_attachments}
+                page.replace_html "files_index", :partial => 'file_attachments/index',:locals=>{:file_attachments=>@project.file_attachments}
+               
             end
           else
              page << display_message_error(@file_attachment, "fieldError")
           end
           
-        } }
+        } 
     end
     
   end

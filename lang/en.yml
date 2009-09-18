@@ -67,6 +67,8 @@ notice_successful_create: Successful creation.
 notice_successful_update: Successful update.
 notice_successful_delete: Successful deletion.
 notice_successful_connection: Successful connection.
+notice_login_succesful: Succesful logon
+notice_logout_succesful: Succesful logout
 notice_file_not_found: The page you were trying to access doesn't exist or has been removed.
 notice_locking_conflict: Data has been updated by another user.
 notice_not_authorized: You are not authorized to access this page.

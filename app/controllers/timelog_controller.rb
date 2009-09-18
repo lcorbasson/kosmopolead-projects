@@ -202,8 +202,8 @@ class TimelogController < ApplicationController
     @time_entry ||= TimeEntry.new(:project => @project, :issue => @issue, :user => User.current, :spent_on => Date.today)
     @time_entry.attributes = params[:time_entry]
     if @time_entry.save
-      flash[:notice] = l(:notice_successful_update)
-      redirect_back_or_default :action => 'details', :project_id => @time_entry.project
+      flash[:notice] = l(:notice_successful_create)
+      redirect_to project_issue_path(@time_entry.project,@time_entry.issue)
     else
       flash[:error] =  @time_entry.errors.full_messages
       redirect_to :action=>:new

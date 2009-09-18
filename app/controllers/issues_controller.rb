@@ -25,7 +25,7 @@ class IssuesController < ApplicationController
   
   before_filter :find_issue, :only => [:show, :edit, :reply]
   before_filter :find_issues, :only => [:bulk_edit, :move, :destroy]
-  before_filter :find_project, :only => [:update,:calendar,:gantt,:index,:create,:new, :update_form, :preview]
+  before_filter :find_project, :only => [:update,:calendar,:gantt,:index,:create,:new, :update_form, :preview,:type_event]
   before_filter :find_root_projects,:only=>[:create]
   before_filter :find_projects, :only => [:update,:gantt, :index, :calendar,:new,:show,:create]
 #  before_filter :authorize, :except => [:update,:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
@@ -256,8 +256,14 @@ class IssuesController < ApplicationController
                 }
              end
           else
-             page << display_message_error(@issue, "fieldError")
-             page << "Element.scrollTo('errorExplanation');"
+            respond_to do |format|
+                format.js {
+                  render:update do |page|
+                     page << display_message_error(@issue, "fieldError")
+                     page << "Element.scrollTo('errorExplanation');"
+                  end
+                }
+            end
           end
      
   end
@@ -613,8 +619,8 @@ class IssuesController < ApplicationController
 
 
   def type_event
-    @issues_stage = Issue.stages
-    @issues_sub = Issue.all(:conditions => {:issue_types_id => '3'})
+    @issues_stage = @project.issues.stages
+    @issues_sub = @project.issues.issues
     
     # Instanciation de variable
   type = params[:type]

@@ -1,40 +1,40 @@
 <div class="show_issue">
         <%= avatar(issue.author, :size => "64") %>    
         <%  if issue.created_on != issue.updated_on %>
-        <p class="author">
+        <p class="author" style="color:#6AC500;margin-left:10px;font-weight:bold;">
         <%#= authoring issue.created_on, issue.author %>.
         <%= l(:label_updated_time, distance_of_time_in_words(Time.now, issue.updated_on)) + '.'  %>
         </p>
 <% end %>
 
-<table width="100%">
+<table width="100%" style="margin-left:10px;">
 <tr>
-    <td style="width:15%" class="status"><b><%=l(:field_status)%>:</b></td><td style="width:35%" class="status"><%= issue.status.name %></td>
-    <td style="width:15%" class="start-date"><b><%=l(:field_start_date)%>:</b></td><td style="width:35%"><%= format_date(issue.start_date) %></td>
+    <td style="width:15%;padding:5px;" class="status"><b><%=l(:field_status)%>:</b></td><td style="width:35%" class="status"><%= issue.status.name %></td>
+    <td style="width:15%;padding:5px;" class="start-date"><b><%=l(:field_start_date)%>:</b></td><td style="width:35%"><%= format_date(issue.start_date) %></td>
 </tr>
 <tr>
-    <td class="priority"><b><%=l(:field_priority)%>:</b></td><td class="priority"><%= issue.priority.name %></td>
-    <td class="due-date"><b><%=l(:field_due_date)%>:</b></td><td class="due-date"><%= format_date(issue.due_date) %></td>
+    <td class="priority" style="padding:5px;"><b><%=l(:field_priority)%>:</b></td><td class="priority"><%= issue.priority.name %></td>
+    <td class="due-date" style="padding:5px;"><b><%=l(:field_due_date)%>:</b></td><td class="due-date"><%= format_date(issue.due_date) %></td>
 </tr>
 <tr>
-    <td class="assigned-to"><b><%=l(:field_assigned_to)%>:</b></td><td><%= show_assigned_to(issue) %></td>
-    <td class="progress"><b><%=l(:field_done_ratio)%>:</b></td><td class="progress"><%= progress_bar issue.done_ratio, :width => '80px', :legend => "#{issue.done_ratio}%" %></td>
+    <td class="assigned-to" style="padding:5px;"><b><%=l(:field_assigned_to)%>:</b></td><td><%= show_assigned_to(issue) %></td>
+    <td class="progress" style="padding:5px;"><b><%=l(:field_done_ratio)%>:</b></td><td class="progress"><%= progress_bar issue.done_ratio, :width => '80px', :legend => "#{issue.done_ratio}%" %></td>
 </tr>
 <tr>
-    <td class="category"><b><%=l(:field_category)%>:</b></td><td><%=h issue.category ? issue.category.name : "-" %></td>
+    <td class="category" style="padding:5px;"><b><%=l(:field_category)%>:</b></td><td><%=h issue.category ? issue.category.name : "-" %></td>
     <% if User.current.allowed_to?(:view_time_entries, project) %>
-    <td class="spent-time"><b><%=l(:label_spent_time)%>:</b></td>
-    <td class="spent-hours"><%= issue.spent_hours > 0 ? (link_to lwr(project.time_unit_label, issue.spent_hours), {:controller => 'timelog', :action => 'details', :project_id => project, :issue_id => issue}, :class => 'icon icon-time') : "-" %></td>
+    <td class="spent-time" style="padding:5px;"><b><%=l(:label_spent_time)%>:</b></td>
+    <td class="spent-hours" style="padding:5px;"><%= issue.spent_hours > 0 ? (link_to lwr(project.time_unit_label, issue.spent_hours), {:controller => 'timelog', :action => 'details', :project_id => project, :issue_id => issue}, :class => 'icon icon-time') : "-" %></td>
     <% end %>
 </tr>
 <tr>
-    <td class="fixed-version"><b><%=l(:field_fixed_version)%>:</b></td><td><%= issue.fixed_version ? link_to_version(issue.fixed_version) : "-" %></td>
+    <td class="fixed-version" style="padding:5px;"><b><%=l(:field_fixed_version)%>:</b></td><td><%= issue.fixed_version ? link_to_version(issue.fixed_version) : "-" %></td>
     <% if issue.estimated_hours %>
-      <td class="estimated-hours"><b><%=l(:field_estimated_hours)%>:</b></td><td><%= issue.estimated_hours %><%= l(project.time_unit_label) %></td>
+      <td class="estimated-hours" style="padding:5px;"><b><%=l(:field_estimated_hours)%>:</b></td><td><%= issue.estimated_hours %><%= l(project.time_unit_label) %></td>
     <% end %>
 </tr>
 <tr>
-    <td><b><%= l(:label_resources) %></b></td><td><%= issue.resources %></td>
+    <td style="padding:5px;"><b><%= l(:label_resources) %></b></td><td><%= issue.resources %></td>
 </tr>
 <tr>
 <% n = 0 -%>
@@ -51,11 +51,9 @@ end %>
 </table>
 
 
-<div class="contextual" style="margin-top:15px;">
-<%= link_to_remote_if_authorized(l(:button_quote), { :url => {:action => 'reply', :id => issue} }, :class => 'icon icon-comment') unless issue.description.blank? %>
-</div>
+
 <h3><%=l(:field_description)%></h3>
-<%= textilizable issue.description %>
+<div style="margin-left:15px;"><%= textilizable issue.description %></div>
 <%= call_hook(:view_issues_show_description_bottom, :issue => issue) %>
 
 
@@ -76,11 +74,11 @@ end %>
 <% end %>
   <div id="files">    
     <div class="contextual">
-      <%= link_to_remote "#{l(:button_add)}",
+      <%= link_to_remote "#{image_tag('add.png')}",
                          { :url => { :controller => 'file_attachments', :action => 'new',:issue_id=>issue,:project_id=>project},
                            :method => 'get',
                            :update => 'add_file'
-                         },:class=>"icon icon-add" %>
+                         } %>
     </div>
     <h3><%= l(:label_file_plural) %></h3>
     <%= render :partial => 'issues/show/files',:locals=>{:issue=>issue} %>

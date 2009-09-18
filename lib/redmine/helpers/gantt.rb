@@ -35,11 +35,11 @@ module Redmine
             @first_issue = @first_issue.start_date
           end
 
-          @last_issue = @project.issues.first(:order => "due_date DESC", :conditions => ["due_date is not null"] )
+          @last_issue = @project.issues.first( :conditions => ["due_date is not null"],:order => "due_date DESC" )
           if @last_issue.nil?
             @last_issue = @first_issue + 6.month
           else
-            @last_issue = @last_issue.due_date
+            @last_issue = @last_issue.due_date+5.month
           end
 
         if options[:year] && options[:year].to_i >0

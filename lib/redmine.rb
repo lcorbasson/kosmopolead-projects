@@ -127,7 +127,7 @@ Redmine::MenuManager.map :application_menu do |menu|
   menu.push :projects, { :controller => 'projects', :action => 'index' }, :if => Proc.new { User.current.logged? },  :caption => :label_project_plural
   menu.push :queries, { :controller => 'queries', :action => 'index' }, :if => Proc.new { User.current.logged? }, :param => :project_id, :caption => "Requêtes"
 #  menu.push :indicators, { :controller => 'issues', :action => 'index' }, :if => Proc.new { User.current.logged? }, :param => :project_id, :caption => "Indicateurs"
-  menu.push :admin, { :controller => 'admin', :action => 'index' }, :if => Proc.new { User.current.logged? }, :last => true
+  menu.push :admin, { :controller => 'admin', :action => 'index' }, :if => Proc.new { User.current.logged? and User.current.admin? }, :last => true
 end
 
 Redmine::MenuManager.map :admin_menu do |menu|

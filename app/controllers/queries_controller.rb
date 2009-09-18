@@ -35,6 +35,7 @@ class QueriesController < ApplicationController
     @query.user = User.current
     @query.is_public = false unless (@query.project && current_role.allowed_to?(:manage_public_queries)) || User.current.admin?
     @query.column_names = nil if params[:default_columns]
+    @query.community = current_community unless @query.project
     
     params[:fields].each do |field|
       @query.add_filter(field, params[:operators][field], params[:values][field])
@@ -141,7 +142,7 @@ class QueriesController < ApplicationController
   
 private
   def find_query
-    @query = current_community ? current_community.queries.find(params[:id]) : Query.find(params[:id])
+    @query = Query.find(params[:id])
     @project = @query.project
     render_403 unless @query.editable_by?(User.current)
   rescue ActiveRecord::RecordNotFound
@@ -158,7 +159,7 @@ private
   # Retrieve query from session or build a new query
   def retrieve_query
     if !params[:query_id].blank?     
-      @query = current_community ? current_community.queries.find(params[:query_id]) : Query.find(params[:query_id])
+      @query = Query.find(params[:query_id])
     else
       if params[:set_filter]
         # Give it a name, required to be valid
@@ -190,8 +191,18 @@ private
       :conditions => Project.visible_by(User.current),
       :include => :parent
 
-    @queries = Query.issues.all(:conditions => ["(is_public = ? OR user_id = ?) and (project_id IS NULL OR project_id IN (?))",
-        true, (User.current.logged? ? User.current.id : 0), @projects])
+    query_terms = "(is_public = ? OR user_id = ?) and (project_id IS NULL OR project_id IN (?))"
+    query_params = [true, (User.current.logged? ? User.current.id : 0), @projects]
+
+    if current_community
+      query_terms << "and (community_id is null or community_id = ?)"
+      query_params << current_community.id
+    end
+
+    @queries = Query.issues.all(:conditions => [query_terms, query_params].flatten)
+
+#    @queries = Query.issues.all(:conditions => ["(is_public = ? OR user_id = ?) and (project_id IS NULL OR project_id IN (?)) and (community_id IS",
+#        true, (User.current.logged? ? User.current.id : 0), @projects])
 
     @project_queries = Query.projects.all(:conditions => ["(is_public = ? OR user_id = ?) and (project_id IS NULL OR project_id IN (?))",
         true, (User.current.logged? ? User.current.id : 0), @projects])

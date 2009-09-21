@@ -96,6 +96,7 @@ body {
   font-size: 11px;
   background-color: #372d24;
   color: #ffffff;
+  min-width:850px;
 }
 #header_wrapper {
   height: 70px;

@@ -65,6 +65,7 @@ module Redmine
       
       module Helper
         def wikitoolbar_for(field_id)
+          
         end
       
         def heads_for_wiki_formatter

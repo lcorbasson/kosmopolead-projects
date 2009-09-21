@@ -1,5 +1,71 @@
 /***** Layout *****/
 
+
+/***** FAQ *****/
+
+
+.index_faq
+{
+    border:2px solid #DDD ;
+    width:99%;
+    /*max-width:1179px;*/
+    -moz-border-radius:5px;
+    background-color:#FFF;
+    padding:5px;
+}
+
+.en_tete_faq
+{
+    width:100%;
+    /*max-width:1179px;*/
+    background:url("../images/bg_bloc_admin.png") repeat-x;
+    height:18px;
+    border:0;
+    -moz-border-radius-topright:5px;
+    -moz-border-radius-topleft:5px;
+    padding-left : 5px;
+    padding-right: 5px;
+    padding-top: 2px;
+}
+
+.contenu_faq
+{
+    background-color:#EEE;
+    border:0;
+    padding:5px;
+    width:100%;
+   /* max-width:1179px;*/
+    -moz-border-radius-bottomright:5px;
+    -moz-border-radius-bottomleft:5px;
+}
+
+.float_left
+{
+    float:left;
+}
+
+.float_right
+{
+    float:right;
+}
+
+.clearer
+{
+    clear:both;
+}
+
+.reponse_faq
+{
+    margin-top:20px;
+    width:99%;
+    /*max-width:1179px;*/
+    -moz-border-radius:5px;
+    border:0;
+}
+
+/***** FIN DE LA FAQ *****/
+
+
 #lbl_project {padding-left : 35px;}
 
 ul {padding:0;margin:0;}
@@ -20,7 +86,6 @@ ul {padding:0;margin:0;}
 #top-menu #loggedas { float: right; margin-right: 0.5em; color: #fff; }
 
 #account {float:right;}
-
 #quick-search {float:right;}
 
 #main {background-color:#EEEEEE;}
@@ -1175,3 +1240,6 @@ text-align:center;
 
 #lightbox-container-image-data-box {min-width:280px;}
 #lightbox-container-image-box {min-width:300px;}
+
+.ui-datepicker-trigger {margin-left:5px;
+vertical-align:middle;cursor:pointer;}

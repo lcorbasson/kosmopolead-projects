@@ -85,7 +85,7 @@ module Redmine
           links << content_tag('li', 
             link_to(h(caption), url, item.html_options(:selected => selected)))
         end
-        links.empty? ? nil : content_tag('ul', links.join("\n"))
+        links.empty? ? nil: content_tag('ul', links.join("\n"))
       end
 
       def menu_items_for(menu, project=nil)

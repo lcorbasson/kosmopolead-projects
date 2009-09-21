@@ -49,11 +49,10 @@
                                 :method=>:get,
                                :update => "content_wrapper",
                              }, :class => 'btn_orange corner-all button'  %>
-          <% if User.current.allowed_to?(:save_queries, @project, :global => true) %>
-            <%= link_to_remote "", {:url=>{}}, :onclick =>"javascript:jQuery.ajax({data:jQuery.param(jQuery('#query_form').serializeArray()), dataType:'script', type:'post', url:'/queries/new?query_type=project'}); return false;", :class => 'icon icon-save' %>
-
+          <%# if User.current.allowed_to?(:save_queries, @project, :global => true) %>
+            <%= link_to_remote "<img src='/images/save.png'>", {:url=>{}}, :onclick =>"javascript:jQuery.ajax({data:jQuery.param(jQuery('#query_form').serializeArray()), dataType:'script', type:'post', url:'/queries/new?query_type=project'}); return false;", :style => "padding-left:10px;" %>
             <%#= link_to_remote l(:button_save), {:url=>{:controller=>"queries",:action=>"new"}}, :class => 'icon icon-save' %>
-          <% end %>
+          <%# end %>
           </p>
           <div class="clearer"></div>
           </fieldset>

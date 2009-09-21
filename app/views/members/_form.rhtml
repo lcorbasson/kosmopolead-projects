@@ -9,7 +9,7 @@
 
 <% remote_form_for  [@project,@member],:html=>{:style=>"#{'display:none;' if !display}",:id=>"update-members-form"} do |f| %>
       <h3><%= l(:label_new_member) %></h3>
-      <div class="buttons-icons">
+      <div class="buttons-icons add-member">
           <% if Partner.all.size>0 %>
             <%= l(:label_partner) %>:
             <%= select_tag :partner_id, "<option value=""></option>"+options_for_select(Partner.all.collect {|p| [p.name, p.id]}) %>
@@ -18,11 +18,12 @@
           <%  if users.size>0 %>
               <%= l(:label_user) %>:
               <span id="member_users">
-                <%= f.select :user_id, users.collect{|user| [user.name, user.id]} %>
+                <%= f.select :user_id, users.collect{|user| [user.name, user.id]}, :style => "width:30px;" %>
               </span>
+              <br />
               <%= l(:label_role) %>: <%= f.select :role_id, roles.collect{|role| [role.name, role.id]}, :selected => nil %>
 
-            <a class="btn_blue ui-corner-all button"  onclick="javascript:jQuery.ajax({data:jQuery.param(jQuery('#update-members-form').serializeArray()), dataType:'script', type:'post', url:'<%= project_members_path(@project)%>'}); return false;"><%= image_tag("accept3.png") %></a>
+              <a class="btn_blue ui-corner-all button"  onclick="javascript:jQuery.ajax({data:jQuery.param(jQuery('#update-members-form').serializeArray()), dataType:'script', type:'post', url:'<%= project_members_path(@project)%>'}); return false;"><%= image_tag("accept3.png") %></a>
             <%= toggle_link image_tag('delete2.png'), 'update-members-form'%>
           <% else %>
               <%= toggle_link image_tag('delete2.png'), 'update-members-form'%><br/><br/>
@@ -30,6 +31,5 @@
                 <%= l(:no_users_to_members) %>             
               </div>
           <% end %>
-          
       </div>
 <% end %>

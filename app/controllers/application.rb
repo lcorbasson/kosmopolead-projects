@@ -48,6 +48,10 @@ class ApplicationController < ActionController::Base
     Community.current 
   end
 
+  def current_community!
+    current_community or raise "No current community"
+  end
+
   def require_community
     (flash[:error] = "Community required" and redirect_to :back) unless current_community
     @community = current_community

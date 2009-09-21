@@ -1,7 +1,7 @@
-<%  project_partners = @project.project_partners.find(:all) %>
+<% project_partners = @project.project_partners.find(:all) %>
 <% roles = Role.find_all_givable %>
 <% users = User.active.find(:all).sort - @project.users %>
-<% possible_partners = Partner.all- project_partners %>
+<% possible_partners = @project.community.partners - project_partners %>
 <div class="editable_box" style="min-height:80px;min-width:70px;">
     <div class="links_edit_box">
       <%= toggle_link image_tag("/images/add.png"), 'update-members-form'%>
@@ -9,7 +9,7 @@
     <% if project_partners.size>0 %>
       <ul style="margin-right:20px;">
         <% project_partners.each do |project_partner| %>
-            <%= partner_thumbnail(project_partner.partner,project_partner) %>
+            <%= partner_thumbnail(project_partner.partner, project_partner) %>
         <% end %>
       </ul>
     <% else %>

@@ -76,7 +76,7 @@ class Project < ActiveRecord::Base
 
 #  attr_protected :status, :enabled_module_names
   
-  validates_presence_of :name, :identifier, :acronym, :status
+  validates_presence_of :name, :identifier, :acronym, :status, :community
   validates_uniqueness_of  :identifier
   validates_associated :repository, :wiki
   validates_length_of :acronym, :maximum => 30

@@ -4,11 +4,10 @@
   </div>
   <div class="box_content members">
     <% members = Member.find(:all,
-                             :conditions => "#{Project.visible_by(User.current)} AND #{Project.table_name}.id = #{Member.table_name}.project_id",                             
-                             :include => [:project])
+                             :conditions => Project.visible_by(User.current), #"#{Project.visible_by(User.current)} AND #{Project.table_name}.id = #{Member.table_name}.project_id",
+                             :joins => [:project])
                            %>
     <% if members && members.any? %>
-      <% form_tag({}) do %>
           <table class="list members">           
               <tbody>
                 <% for member in members %>
@@ -23,10 +22,9 @@
                 <% end %>
               </tbody>
           </table>
-      <% end %>
-      <% else %>
-          <p class="nodata"><%= l(:label_no_data) %></p>
-      <% end %>
+    <% else %>
+      <p class="nodata"><%= l(:label_no_data) %></p>
+    <% end %>
 
     <% content_for :header_tags do %>
     <%= auto_discovery_link_tag(:atom,

@@ -711,7 +711,7 @@ private
 
   def find_projects
     @projects = Project.find :all,
-                            :conditions => "#{Project.visible_by(User.current)}",
+                            :conditions => Project.visible_by(User.current),
                             :include => :parent,
                             :order=>"created_on"
    

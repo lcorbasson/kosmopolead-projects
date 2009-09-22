@@ -138,7 +138,7 @@ class Issue < ActiveRecord::Base
   end
   
   def validate
-    if self.due_date.nil? && @attributes['due_date'] && !@attributes['due_date'].empty?
+    if self.due_date.nil? 
       errors.add :due_date, :activerecord_error_not_a_date
     end
     

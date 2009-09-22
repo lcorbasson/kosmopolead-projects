@@ -20,7 +20,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources 'queries',:controller=>'queries'
   map.connect 'project_statuses',:controller=>'project_statuses'
   map.resources 'project_relation_types',:controller=>'project_relation_types'
-
+  map.connect 'watchers',:controller=>'watchers'
 
   map.resources :projects,:collection=>{:refresh_menu=>:get,:add_version=>:get,:show_funding=>:get,:add=>:get,:settings=>:get, :edit_part_description => :get, :edit_part_synthesis => :get} do |project|
       project.resources :members

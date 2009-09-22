@@ -412,7 +412,7 @@ table p {margin:0;}
     text-transform:uppercase;
 }
 
-.in_late {padding:0 10px 0 10px;}
+
 table.issues_list a,table.issues_list{color:#777777;}
 table.issues_list tr.active, table.issues_list tr.active a {font-weight:bold;color:#009EEE;}
 table.issues tfoot td {border-right:none;}

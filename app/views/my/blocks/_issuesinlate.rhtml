@@ -4,9 +4,9 @@
   </div>
   <div class="box_content in_late">
     <% issues_in_late = Issue.find(:all,
-                                          :conditions => ["#{Issue.table_name}.author_id=? AND #{Project.table_name}.archived=false AND #{IssueType.table_name}.name = 'ISSUE'   AND #{Issue.table_name}.due_date<?", user.id, Date.today],
+                                    :conditions => ["#{Issue.table_name}.author_id=? AND #{Project.table_name}.archived=false AND #{IssueType.table_name}.name = 'ISSUE' AND #{Issue.table_name}.due_date<? AND #{Assignment.table_name}.user_id = ?", user.id, Date.today,user.id],
                                     :limit => 10,
-                                    :include => [ :status, :project, :tracker, :type ],
+                                    :include => [ :status, :project, :tracker, :type, :assignments ],
                                     :order => "#{Issue.table_name}.updated_on DESC") %>
     <%= render :partial => 'issues/list_late', :locals => { :issues => issues_in_late } %>
     <%# if issues_in_late.length > 0 %>

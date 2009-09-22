@@ -56,6 +56,8 @@ class Project < ActiveRecord::Base
   has_many :stages,:class_name=>"Issue",:foreign_key=>"issue_types_id",:include=>[:type],:conditions=>["#{IssueType.table_name}.name='STAGE'"]
   has_many :file_attachments,:as=>:container,:conditions=>["container_type = ?", "project"],:dependent => :destroy
 
+  belongs_to :community
+  belongs_to :activity_sector
 
   # Custom field for the project issues
   has_and_belongs_to_many :issue_custom_fields, 
@@ -74,7 +76,7 @@ class Project < ActiveRecord::Base
 
 #  attr_protected :status, :enabled_module_names
   
-  validates_presence_of :name, :identifier, :acronym
+  validates_presence_of :name, :identifier, :acronym, :status, :community
   validates_uniqueness_of  :identifier
   validates_associated :repository, :wiki
   validates_length_of :acronym, :maximum => 30
@@ -87,8 +89,9 @@ class Project < ActiveRecord::Base
   after_save :create_gallery
 
   named_scope :has_module, lambda { |mod| { :conditions => ["#{Project.table_name}.id IN (SELECT em.project_id FROM #{EnabledModule.table_name} em WHERE em.name=?)", mod.to_s] } }
-  
 
+  named_scope :visible, :conditions => {:archived => false}
+  named_scope :public, :conditions => {:is_public => true}
 
   def identifier=(identifier)
     super unless identifier_frozen?
@@ -119,14 +122,19 @@ class Project < ActiveRecord::Base
     find(:all, :limit => count, :conditions => visible_by(user), :order => "created_on DESC")	
   end	
 
-  def self.visible_by(user=nil)
+  def self.visible_by(user=nil, community = nil)
     user ||= User.current
-    if user && user.admin?
-      return "#{Project.table_name}.archived = false"
-    elsif user && user.memberships.any?
-      return "#{Project.table_name}.archived = false AND (#{Project.table_name}.is_public = #{connection.quoted_true} or #{Project.table_name}.id IN (#{user.memberships.collect{|m| m.project_id}.join(',')}))"
+
+    if community
+      "#{Project.table_name}.archived = false AND #{Project.table_name}.community_id = #{community.id}"
     else
-      return "#{Project.table_name}.archived = false AND #{Project.table_name}.is_public = #{connection.quoted_true}"
+      if user && user.admin?
+        return "#{Project.table_name}.archived = false"
+      elsif user && user.memberships.any?
+        return "#{Project.table_name}.archived = false AND (#{Project.table_name}.is_public = #{connection.quoted_true} or #{Project.table_name}.id IN (#{user.memberships.collect{|m| m.project_id}.join(',')}))"
+      else
+        return "#{Project.table_name}.archived = false AND #{Project.table_name}.is_public = #{connection.quoted_true}"
+      end
     end
   end
   

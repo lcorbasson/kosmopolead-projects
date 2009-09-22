@@ -21,10 +21,8 @@ class QueriesController < ApplicationController
   before_filter :find_queries, :only => [:projects,:index]
   before_filter :find_optional_project, :only => [:edit,:new,:index]
 
-   helper :sort
+  helper :sort
   include SortHelper
-
- 
 
   def index
    retrieve_query
@@ -37,6 +35,7 @@ class QueriesController < ApplicationController
     @query.user = User.current
     @query.is_public = false unless (@query.project && current_role.allowed_to?(:manage_public_queries)) || User.current.admin?
     @query.column_names = nil if params[:default_columns]
+    @query.community = current_community unless @query.project
     
     params[:fields].each do |field|
       @query.add_filter(field, params[:operators][field], params[:values][field])
@@ -68,6 +67,7 @@ class QueriesController < ApplicationController
       @query.project = nil if params[:query_is_for_all]
       @query.is_public = false unless (@query.project && current_role.allowed_to?(:manage_public_queries)) || User.current.admin?
       @query.column_names = nil if params[:default_columns]
+      @query.community = current_community
       
       if @query.save
         flash[:notice] = l(:notice_successful_update)
@@ -159,9 +159,7 @@ private
   # Retrieve query from session or build a new query
   def retrieve_query
     if !params[:query_id].blank?     
-      @query = Query.find(params[:query_id])  
-  
-
+      @query = Query.find(params[:query_id])
     else
       if params[:set_filter]
         # Give it a name, required to be valid
@@ -179,28 +177,35 @@ private
         end
         
       else
-         @query = Query.new(:name => "_")
-         @query.query_type = "project"
-           @query.available_filters_projects.keys.each do |field|
-        @query.add_short_filter(field, params[field]) if params[field]
-      end
+        @query = Query.new(:name => "_")
+        @query.query_type = "project"
+        @query.available_filters_projects.keys.each do |field|
+          @query.add_short_filter(field, params[field]) if params[field]
+        end
       end
     end
   end
 
   def find_queries
     @projects = Project.find :all,
-                            :conditions => Project.visible_by(User.current),
-                            :include => :parent
+      :conditions => Project.visible_by(User.current),
+      :include => :parent
 
+    query_terms = "(is_public = ? OR user_id = ?) and (project_id IS NULL OR project_id IN (?))"
+    query_params = [true, (User.current.logged? ? User.current.id : 0), @projects]
 
-    @queries = Query.find(:all,
-                            :order => "name ASC",
-                            :conditions => ["(is_public = ? OR user_id = ?) and (project_id IS NULL OR project_id IN (?)) and query_type='issue'", true, (User.current.logged? ? User.current.id : 0),@projects])
+    if current_community
+      query_terms << "and (community_id is null or community_id = ?)"
+      query_params << current_community.id
+    end
 
-    @project_queries = Query.find(:all,
-                            :order => "name ASC",
-                            :conditions => ["(is_public = ? OR user_id = ?) and (project_id IS NULL OR project_id IN (?)) and query_type='project'", true, (User.current.logged? ? User.current.id : 0),@projects])
+    @queries = Query.issues.all(:conditions => [query_terms] + query_params)
+
+#    @queries = Query.issues.all(:conditions => ["(is_public = ? OR user_id = ?) and (project_id IS NULL OR project_id IN (?)) and (community_id IS",
+#        true, (User.current.logged? ? User.current.id : 0), @projects])
+
+    @project_queries = Query.projects.all(:conditions => ["(is_public = ? OR user_id = ?) and (project_id IS NULL OR project_id IN (?))",
+        true, (User.current.logged? ? User.current.id : 0), @projects])
     end
 
 end

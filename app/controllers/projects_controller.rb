@@ -27,7 +27,7 @@ class ProjectsController < ApplicationController
 
   before_filter :find_root_projects
   before_filter :find_project, :except => [ :tags_json, :index, :list, :add, :activity,:update_left_menu ]
-  before_filter :find_projects,:only=>[:index]
+  before_filter :define_community_context, :find_projects,:only=>[:index]
 
   before_filter :find_optional_project, :only => :activity
 #  before_filter :authorize, :except => [:index,:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu, :edit_part_description, :edit_part_synthesis ]
@@ -48,123 +48,125 @@ class ProjectsController < ApplicationController
 
   # Lists visible projects
   def index
+
+    # TODO cékoi ?
     if session[:query_projects]
       @query = session[:query_projects]
-       conditions = @query.statement_projects
-
-        @projects = Project.find :all,
-                             :conditions => "#{conditions}"
+      conditions = @query.statement_projects
+      @projects = Project.all(:conditions => "#{conditions}")
     else
       retrieve_query
     end
 
-    if session[:project]     
-      if !@project = Project.find(session[:project].id)
-        @project = @projects.first
-      end
+    # projet en session
+    if session[:project] and not current_community
+      @project = Project.find(session[:project].id) || @projects.first
     else
       @project = @projects.first
     end
-    @relation= ProjectRelation.new
-     unless @project.nil?
-          @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))          
-          @gantt.events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
-                                                                      and start_date is not null)
-                                                                      AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
+    
+    @relation = ProjectRelation.new
 
-          
-          @member ||= @project.members.new
-          @users = User.all
-          @file_attachment = FileAttachment.new(:container_id=>@project.id,:container_type=>"project")
-          @roles = Role.find :all, :order => 'builtin, position'
-          completed_percent
-          find_gallery
-          show_funding
-      end
-     respond_to do |format|
-        format.html {}
-        format.atom {
-          render_feed(projects.sort_by(&:created_on).reverse.slice(0, Setting.feeds_limit.to_i),
-                                    :title => "#{Setting.app_title}: #{l(:label_project_latest)}")
-        }
+    unless @project.nil?
+      @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))
+      @gantt.events = Issue.find(:all, :include=>[:type], :conditions => ["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
+        and start_date is not null)
+        AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
 
-      end
+      @member ||= @project.members.new
+      @users = User.all
+      @file_attachment = FileAttachment.new(:container_id=>@project.id,:container_type=>"project")
+      @roles = Role.find :all, :order => 'builtin, position'
+      completed_percent
+      find_gallery
+      show_funding
+    end
+
+    respond_to do |format|
+      format.html {}
+      format.atom {
+        render_feed(projects.sort_by(&:created_on).reverse.slice(0, Setting.feeds_limit.to_i),
+          :title => "#{Setting.app_title}: #{l(:label_project_latest)}")
+      }
+    end
   end
 
   # Add a new project
   def add
+    require_community
     #Call to form
     if !params[:project]
-      @project = Project.new()
-        @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
-        @trackers = Tracker.all       
-        @time_units = TimeUnit.find(:all)
-        @users = User.find(:all)
-        @project.identifier = Project.next_identifier if Setting.sequential_project_identifiers?
-        @project.trackers = Tracker.all
-        @project.is_public = Setting.default_projects_public?
-        @project.enabled_module_names = Redmine::AccessControl.available_project_modules
-        respond_to do |format|
-          format.html {}
-          format.js {
-             render :update do |page|
-                page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/add')}');"
-             end
-          }
-        end
+      @project = Project.new :community => current_community
+      @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
+      @trackers = Tracker.all
+      @time_units = TimeUnit.find(:all)
+      @users = current_community.users
+      @project.identifier = Project.next_identifier if Setting.sequential_project_identifiers?
+      @project.trackers = Tracker.all
+      @project.is_public = Setting.default_projects_public?
+      @project.enabled_module_names = Redmine::AccessControl.available_project_modules
+      respond_to do |format|
+        format.html {}
+        format.js {
+           render :update do |page|
+              page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/add')}');"
+           end
+        }
+      end
     else
       #Save project
       @relation = ProjectRelation.new
       @project = Project.new(params[:project])
       @project.archived = false
       @project.enabled_module_names = params[:enabled_modules]
+      @project.community = current_community
       if @project.save
-          @trackers = @project.rolled_up_trackers
-          @users = User.all
-          cond = @project.project_condition(Setting.display_subprojects_issues?)
-          TimeEntry.visible_by(User.current) do
-            @total_hours = TimeEntry.sum(:hours,
-                                         :include => :project,
-                                         :conditions => cond).to_f
-          end
-          @key = User.current.rss_key
-          @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))
-          @member ||= @project.members.new
-          @users = User.all
-          @file_attachment = FileAttachment.new(:container_type=>"project",:container_id=>@project.id)
-          @roles = Role.find :all, :order => 'builtin, position'
-          retrieve_query
-          if @query.valid?
-            events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
-                              and start_date is not null)
-                              AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
+        @trackers = @project.rolled_up_trackers
+        @users = User.all
+        cond = @project.project_condition(Setting.display_subprojects_issues?)
+        TimeEntry.visible_by(User.current) do
+          @total_hours = TimeEntry.sum(:hours,
+                                       :include => :project,
+                                       :conditions => cond).to_f
+        end
+        @key = User.current.rss_key
+        @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))
+        @member ||= @project.members.new
+        @users = User.all
+        @file_attachment = FileAttachment.new(:container_type=>"project",:container_id=>@project.id)
+        @roles = Role.find :all, :order => 'builtin, position'
+        retrieve_query
+        if @query.valid?
+          events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
+                            and start_date is not null)
+                            AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
 
-            @gantt.events = events
+          @gantt.events = events
+        end
+        completed_percent
+        find_gallery
+        find_projects
+        session[:project] = @project
+        flash[:notice] = l(:notice_successful_create)
+        respond_to do |format|
+          format.js do
+            render:update do |page|
+              page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
+              page << "jQuery('#projects_menu').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
+              page << display_message_error(l(:notice_successful_create), "fieldNotice")
+              page << "Element.scrollTo('errorExplanation');"
+            end
           end
-          completed_percent
-          find_gallery
-          find_projects
-          session[:project] = @project
-          flash[:notice] = l(:notice_successful_create)
-          respond_to do |format|
-              format.js {
-                  render:update do |page|
-                    page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
-                    page << "jQuery('#projects_menu').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
-                    page << display_message_error(l(:notice_successful_create), "fieldNotice")
-                    page << "Element.scrollTo('errorExplanation');"
-                  end
-              }
-          end
+        end
       else
-         respond_to do |format|
-           format.js{
-              render :update do |page|#
-                page << display_message_error(@project, "fieldError")
-                page << "Element.scrollTo('errorExplanation');"
-             end
-           }
+        respond_to do |format|
+          format.js do
+            render :update do |page|#
+               page << display_message_error(@project, "fieldError")
+               page << "Element.scrollTo('errorExplanation');"
+            end
           end
+        end
       end
     end
   end
@@ -173,10 +175,8 @@ class ProjectsController < ApplicationController
   def show
     if session[:query_projects]
       @query = session[:query_projects]
-       conditions = @query.statement_projects
-
-        @projects = Project.find :all,
-                             :conditions => "#{conditions}"
+      conditions = @query.statement_projects
+      @projects = Project.all :conditions => "#{conditions}"
     else
       retrieve_query
     end
@@ -625,7 +625,8 @@ private
   end
 
   def find_projects
-    @projects = Project.find :all,                            
+    @projects = Project.find :all,
+                            :conditions => Project.visible_by(User.current, current_community),
                             :include => :parent
   end
 

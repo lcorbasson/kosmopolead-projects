@@ -1,11 +1,13 @@
 class ActivitySectorsController < ApplicationController
+  before_filter :require_admin, :require_community
   # GET /activity_sectors
   # GET /activity_sectors.xml
   layout 'base'
-    menu_item :admin
+  menu_item :admin
+
 
   def index
-    @activity_sectors = ActivitySector.find(:all)
+    @activity_sectors = @community.activity_sectors
 #    if params[:local]
 #      @activity_sector_translations = ActivitySectorTranslation.all(:all, :conditions => {:local => params[:local]})
 #    else
@@ -16,8 +18,7 @@ class ActivitySectorsController < ApplicationController
   # GET /activity_sectors/1
   # GET /activity_sectors/1.xml
   def show
-    @activity_sector = ActivitySector.find(params[:id])
-    @activity_sector_translationss = ActivitySectorTranslation.find(:all, :conditions => {:activity_sector_id => @activity_sector.id})
+    @activity_sector = @community.activity_sectors.find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
@@ -28,7 +29,7 @@ class ActivitySectorsController < ApplicationController
   # GET /activity_sectors/new
   # GET /activity_sectors/new.xml
   def new
-    @activity_sector = ActivitySector.new
+    @activity_sector = @community.activity_sectors.build
 
     respond_to do |format|
       format.html # new.html.erb
@@ -38,17 +39,16 @@ class ActivitySectorsController < ApplicationController
 
   # GET /activity_sectors/1/edit
   def edit
-    @activity_sector = ActivitySector.find(params[:id])
+    @activity_sector = @community.activity_sectors.find(params[:id])
   end
 
   # POST /activity_sectors
   # POST /activity_sectors.xml
   def create
-    @activity_sector = ActivitySector.new(params[:activity_sector])
-    
+    @activity_sector = @community.activity_sectors.build(params[:activity_sector])
 
     if @activity_sector.save
-      @activity_sectors = ActivitySector.find(:all)
+      @activity_sectors = @community.activity_sectors
       respond_to do |format|
        format.js{
           render :update do |page|
@@ -72,7 +72,7 @@ class ActivitySectorsController < ApplicationController
   # PUT /activity_sectors/1
   # PUT /activity_sectors/1.xml
   def update
-    @activity_sector = ActivitySector.find(params[:id])
+    @activity_sector = @community.activity_sectors.find(params[:id])
 
     respond_to do |format|
       if @activity_sector.update_attributes(params[:activity_sector])
@@ -89,19 +89,15 @@ class ActivitySectorsController < ApplicationController
   # DELETE /activity_sectors/1
   # DELETE /activity_sectors/1.xml
   def destroy
-    @activity_sector = ActivitySector.find(params[:id])
+    @activity_sector = @community.activity_sectors.find(params[:id])
     @activity_sector.destroy
     respond_to do |format|
       format.html { redirect_to(activity_sectors_url) }
     end
   end
 
-  def f_translation=(attributes)
-      # Process the attributes hash
-  end
-
   def sector_translations
-    @activity_sectors = ActivitySector.find(:all)
+    @activity_sectors = @community.activity_sectors
     #@activity_sector_translations = ActivitySectorTranslation.all(:all, :conditions => {:local => params[:local]})
     @local =  params[:local]
 

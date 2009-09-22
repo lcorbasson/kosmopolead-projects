@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class CustomFieldsController < ApplicationController
-  before_filter :require_admin
+  before_filter :require_admin, :require_community
   menu_item :admin
 
   def index
@@ -25,7 +25,7 @@ class CustomFieldsController < ApplicationController
   end
 
   def list
-    @custom_fields_by_type = CustomField.find(:all).group_by {|f| f.class.name }
+    @custom_fields_by_type = @community.custom_fields.group_by {|f| f.class.name }
     @tab = params[:tab] || 'IssueCustomField'
     render :action => "list", :layout => false if request.xhr?
   end
@@ -44,7 +44,8 @@ class CustomFieldsController < ApplicationController
       else
         redirect_to :action => 'list'
         return
-    end  
+    end
+    @custom_field.community = current_community
     if request.post? and @custom_field.save
       flash[:notice] = l(:notice_successful_create)
       call_hook(:controller_custom_fields_new_after_save, :params => params, :custom_field => @custom_field)
@@ -54,7 +55,7 @@ class CustomFieldsController < ApplicationController
   end
 
   def edit
-    @custom_field = CustomField.find(params[:id])
+    @custom_field = @community.custom_fields.find(params[:id])
     if request.post? and @custom_field.update_attributes(params[:custom_field])
       if @custom_field.is_a? IssueCustomField
         @custom_field.trackers = params[:tracker_ids] ? Tracker.find(params[:tracker_ids]) : []
@@ -67,7 +68,7 @@ class CustomFieldsController < ApplicationController
   end
 
   def move
-    @custom_field = CustomField.find(params[:id])
+    @custom_field = @community.custom_fields.find(params[:id])
     case params[:position]
     when 'highest'
       @custom_field.move_to_top
@@ -82,7 +83,7 @@ class CustomFieldsController < ApplicationController
   end
   
   def destroy
-    @custom_field = CustomField.find(params[:id]).destroy
+    @custom_field = @community.custom_fields.find(params[:id]).destroy
     redirect_to :action => 'list', :tab => @custom_field.class.name
   rescue
     flash[:error] = "Unable to delete custom field"

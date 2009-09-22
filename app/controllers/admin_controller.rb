@@ -30,7 +30,12 @@ class AdminController < ApplicationController
     sort_update %w(name is_public created_on)
     
     @status = params[:status] ? params[:status].to_i : 1
+
     c = ARCondition.new(["#{ProjectStatus.table_name}.id = ?", @status])
+
+    if current_community
+      c << ["#{Project.table_name}.community_id = ?", current_community.id]
+    end
     
    
       name = "%#{params[:name].strip.downcase}%" unless params[:name].nil?
@@ -56,8 +61,9 @@ class AdminController < ApplicationController
     @relations_pages = Paginator.new self, @relations_count,
 								per_page_option,
 								params['page']
-              @relations = ProjectRelationType.find :all,
-						:limit  =>  @relations_pages.items_per_page
+    @relations = ProjectRelationType.find :all,
+      :conditions => current_community ? ["community_id = ?", current_community.id] : nil,
+      :limit => @relations_pages.items_per_page
 
     render :action => "relations", :layout => false if request.xhr?
 

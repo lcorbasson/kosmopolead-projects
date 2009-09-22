@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class UsersController < ApplicationController
-  before_filter :require_admin
+  before_filter :require_admin, :require_community
   menu_item :admin
 
   helper :sort
@@ -39,6 +39,10 @@ class UsersController < ApplicationController
     unless params[:name].blank?
       name = "%#{params[:name].strip.downcase}%"
       c << ["LOWER(login) LIKE ? OR LOWER(firstname) LIKE ? OR LOWER(lastname) LIKE ?", name, name, name]
+    end
+
+    if current_community
+      c << ["id IN (SELECT user_id from #{CommunityMembership.table_name} where community_id = ?)", current_community.id]
     end
     
     @user_count = User.count(:conditions => c.conditions)

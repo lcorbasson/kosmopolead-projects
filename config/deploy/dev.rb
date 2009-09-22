@@ -24,7 +24,7 @@ set :repository,  "git@github.com:uneek/kosmopolead-projects.git"
 # Repository Type
 set :scm, "git"
 # Branch
-set :branch, "master"
+set :branch, "communities"
 
 #	SSH Settings
 #############################################################

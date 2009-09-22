@@ -17,7 +17,7 @@
 
 class WatchersController < ApplicationController
   before_filter :find_project
-  before_filter :require_login, :check_project_privacy, :only => [:watch, :unwatch]
+  before_filter :require_login, :only => [:watch, :unwatch]
   before_filter :authorize, :only => :new
   
   verify :method => :post,

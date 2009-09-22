@@ -1,5 +1,15 @@
+<% case @issue.type.name
+   when "ISSUE" %>
+    <%  @title = "projet #{@issue.project.acronym} tâche #{@issue.subject}"%>
+  <%  when "STAGE" %>
+    <%  @title = "projet #{@issue.project.acronym} phase #{@issue.subject}"%>
+  <% else %>
+      <%  @title = "projet #{@issue.project.acronym} jalon #{@issue.subject}"%>
+<% end %>
+
+
 <%= box(
-    "#{l(:label_spent_time)}",
+    "#{l(:label_spent_time_on)} #{@title}",
     "#{render:partial=>'timelog/box/new',:locals=>{:project=>@project,:issue=>@issue,:time_entry=>@time_entry}}"
 ) %>
 

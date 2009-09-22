@@ -32,29 +32,33 @@ module QueriesHelper
       cv = issue.custom_values.detect {|v| v.custom_field_id == column.custom_field.id}
       show_value(cv)
     else
-      value = issue.send(column.name)
-      if value.is_a?(Date)
-        format_date(value)
-      elsif value.is_a?(Time)
-        format_time(value)
+      if column.is_a?(QueryIssueTypeColumn)
+        l(issue.type.name)
       else
-        case column.name
-        when :subject
-        h((!@project.nil? && @project != issue.project) ? "#{issue.project.name} - " : '') +
-          link_to(h(value), :controller => 'issues', :action => 'show', :id => issue)
-        when :project
-          link_to(h(value), :controller => 'projects', :action => 'show', :id => value)
-        when :assigned_to
-          show_assigned_to_list(issue)
-          #link_to(h(value), :controller => 'account', :action => 'show', :id => value)
-        when :author
-          link_to(h(value), :controller => 'account', :action => 'show', :id => value)
-        when :done_ratio
-          progress_bar(value, :width => '80px')
-        when :fixed_version
-          link_to(h(value), { :controller => 'versions', :action => 'show', :id => issue.fixed_version_id })
+        value = issue.send(column.name)
+        if value.is_a?(Date)
+          format_date(value)
+        elsif value.is_a?(Time)
+          format_time(value)
         else
-          h(value)
+          case column.name
+          when :subject
+          h((!@project.nil? && @project != issue.project) ? "#{issue.project.name} - " : '') +
+            link_to(h(value), :controller => 'issues', :action => 'show', :id => issue)
+          when :project
+            link_to(h(value), :controller => 'projects', :action => 'show', :id => value)
+          when :assigned_to
+            show_assigned_to_list(issue)
+            #link_to(h(value), :controller => 'account', :action => 'show', :id => value)
+          when :author
+            link_to(h(value), :controller => 'account', :action => 'show', :id => value)
+          when :done_ratio
+            progress_bar(value, :width => '80px')
+          when :fixed_version
+            link_to(h(value), { :controller => 'versions', :action => 'show', :id => issue.fixed_version_id })
+          else
+            h(value)
+          end
         end
       end
     end

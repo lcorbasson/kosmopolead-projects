@@ -1,10 +1,10 @@
 <% case @issue.type.name
    when "ISSUE" %>
-    <%  @title = "projet #{@issue.project.acronym} tâche #{@issue.subject}"%>
+    <%  @title = "projet #{link_to_project @issue.project} > tâche #{link_to_issue @issue}"%>
   <%  when "STAGE" %>
-    <%  @title = "projet #{@issue.project.acronym} phase #{@issue.subject}"%>
+    <%  @title = "projet #{link_to_project @issue.project} > phase #{link_to_issue @issue}"%>
   <% else %>
-      <%  @title = "projet #{@issue.project.acronym} jalon #{@issue.subject}"%>
+      <%  @title = "projet #{link_to_project @issue.project} > jalon #{link_to_issue @issue}"%>
 <% end %>
 
 <%= box(

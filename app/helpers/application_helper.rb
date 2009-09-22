@@ -59,6 +59,12 @@ module ApplicationHelper
     link_to "#{issue.subject}", {:controller => "issues", :action => "show", :id => issue,:project_id=>issue.project}, options
   end
 
+  def link_to_project(project, options={})
+    options[:class] ||= ''
+    options[:class] << ' project'  
+    link_to_remote "#{project.acronym}", {:url=>project_path(project),:method=>:get}, options
+  end
+
   # Generates a link to an attachment.
   # Options:
   # * :text - Link text (default to attachment filename)

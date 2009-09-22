@@ -1,5 +1,5 @@
 <%= box(
-    "#{l(:label_calendar)} - #{project.name}",
+    "#{l(:label_calendar)} - #{project.acronym}",
     "#{render:partial=>'issues/box/calendar'}",
     ["<span class='visu'>Visualisation</span>",
       "#{link_to_remote(image_tag('visu_profile_off.png'),{:url=>project_path(project),:method=>:get},:class=>'icon_visu',:name=>'Aperçu')}",

@@ -1091,6 +1091,7 @@ height:17px;
 
 /* Blocks*/
 .box_header .icon {height:16px;width:16px;margin-right:5px;}
+.box_title a {color:#009EEE;}
 .box_title {font-size:12px;padding-top:3px;float:left}
 .box_links {float:right;margin-right: 5px;}
 .box_links a {font-size:10px;}

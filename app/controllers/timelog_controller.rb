@@ -250,9 +250,9 @@ private
       @issue = Issue.find(params[:issue_id])
       @project = @issue.project
     elsif !params[:project_id].blank?
-      @project = Project.find(params[:project_id])
+      @project = Project.find_by_identifier(params[:project_id])
     end
-    deny_access unless User.current.allowed_to?(:view_time_entries, @project, :global => true)
+    
   end
   
   # Retrieves the date range based on predefined ranges or specific from/to param dates

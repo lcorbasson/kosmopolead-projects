@@ -27,7 +27,7 @@ ActionController::Routing::Routes.draw do |map|
       project.resources :issues,:member=>{:move=>:get},:collection=>{:move=>:post,:calendar=>:get,:gantt=>:get,:type_event=>:get} do |issue|
         issue.resources :file_attachments
         issue.resources :issue_relations
-        issue.resources :time_entries,:controller=>"timelog"
+        issue.resources :time_entries,:controller=>"timelog",:collection=>{:details=>:get}
       end
       project.resources :gallery do |gallery|
         gallery.resources :photos

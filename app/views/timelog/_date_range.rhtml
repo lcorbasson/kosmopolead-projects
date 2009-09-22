@@ -1,4 +1,4 @@
-<fieldset id="filters"><legend><%= l(:label_date_range) %></legend>
+<h3><%= l(:label_date_range) %></h3>
 <p>
 <%= radio_button_tag 'period_type', '1', !@free_period %>
 <%= select_tag 'period', options_for_period_select(params[:period]),
@@ -13,16 +13,18 @@
 <%= l(:label_date_to) %>
 <%= text_field_tag 'to', @to, :size => 10,:class=>"ui-datepicker" %>
 </span>
-<%= submit_tag l(:button_apply), :name => nil %>
 </p>
+<div class="buttons" style="margin-left:10px;">
+<%= submit_tag l(:button_apply), :name => nil,:class=>"button btn_blue corner-all" %>
+</div>
 </fieldset>
 
 <div class="tabs">
 <% url_params = @free_period ? { :from => @from, :to => @to } : { :period => params[:period] } %>
 <ul>
-    <li><%= link_to(l(:label_details), url_params.merge({:controller => 'timelog', :action => 'details', :project_id => @project }),
+    <li><%= link_to(l(:label_details), url_params.merge({:controller => 'timelog', :action => 'details'}),
                                        :class => (@controller.action_name == 'details' ? 'selected' : nil)) %></li>
-    <li><%= link_to(l(:label_report), url_params.merge({:controller => 'timelog', :action => 'report', :project_id => @project}),
+    <li><%= link_to(l(:label_report), url_params.merge({:controller => 'timelog', :action => 'report'}),
                                        :class => (@controller.action_name == 'report' ? 'selected' : nil)) %></li>
 </ul>
 </div>

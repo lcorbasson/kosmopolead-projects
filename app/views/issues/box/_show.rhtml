@@ -22,10 +22,10 @@
 </tr>
 <tr>
     <td class="category" style="padding:5px;"><b><%=l(:field_category)%>:</b></td><td><%=h issue.category ? issue.category.name : "-" %></td>
-    <% if User.current.allowed_to?(:view_time_entries, project) %>
+ 
     <td class="spent-time" style="padding:5px;"><b><%=l(:label_spent_time)%>:</b></td>
-    <td class="spent-hours" style="padding:5px;"><%= issue.spent_hours > 0 ? (link_to lwr(project.time_unit_label, issue.spent_hours), {:controller => 'timelog', :action => 'details', :project_id => project, :issue_id => issue}, :class => 'icon icon-time') : "-" %></td>
-    <% end %>
+    <td class="spent-hours" style="padding:5px;"><%= issue.spent_hours > 0 ? (link_to  "#{issue.spent_hours} #{l(@project.time_unit_label)}", details_project_issue_time_entries_path(project,issue)   , :class => 'icon icon-time') : "-" %></td>
+
 </tr>
 <tr>
     <td class="fixed-version" style="padding:5px;"><b><%=l(:field_fixed_version)%>:</b></td><td><%= issue.fixed_version ? link_to_version(issue.fixed_version) : "-" %></td>

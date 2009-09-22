@@ -616,7 +616,7 @@ label_feed_plural: Flux RSS
 label_changes_details: Détails de tous les changements
 label_issue_tracking: Suivi des demandes
 label_spent_time: Temps passé
-label_spent_time_on: Temps passé sur : 
+label_spent_time_on: Temps passé sur
 label_f_hour: %.2f heure
 label_f_hour_plural: %.2f heures
 label_time_tracking: Suivi du temps

@@ -47,49 +47,48 @@ class ProjectsController < ApplicationController
   include ProjectsHelper
 
   # Lists visible projects
-  def index  
+  def index
+
+    # TODO cékoi ?
     if session[:query_projects]
       @query = session[:query_projects]
-       conditions = @query.statement_projects
-
-        @projects = Project.find :all,
-                             :conditions => "#{conditions}"
+      conditions = @query.statement_projects
+      @projects = Project.all(:conditions => "#{conditions}")
     else
       retrieve_query
     end
 
-    if session[:project] and not @community
-
-      if !@project = Project.find(session[:project].id)
-        @project = @projects.first
-      end
+    # projet en session
+    if session[:project] and not current_community
+      @project = Project.find(session[:project].id) || @projects.first
     else
       @project = @projects.first
     end
-    @relation= ProjectRelation.new
-     unless @project.nil?
-          @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))          
-          @gantt.events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
-                                                                      and start_date is not null)
-                                                                      AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
+    
+    @relation = ProjectRelation.new
 
-          
-          @member ||= @project.members.new
-          @users = User.all
-          @file_attachment = FileAttachment.new(:container_id=>@project.id,:container_type=>"project")
-          @roles = Role.find :all, :order => 'builtin, position'
-          completed_percent
-          find_gallery
-          show_funding
-      end
-     respond_to do |format|
-        format.html {}
-        format.atom {
-          render_feed(projects.sort_by(&:created_on).reverse.slice(0, Setting.feeds_limit.to_i),
-                                    :title => "#{Setting.app_title}: #{l(:label_project_latest)}")
-        }
+    unless @project.nil?
+      @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))
+      @gantt.events = Issue.find(:all, :include=>[:type], :conditions => ["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
+        and start_date is not null)
+        AND #{Issue.table_name}.parent_id is null and project_id = ? and #{IssueType.table_name}.name='STAGE'", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to,@project.id])
 
-      end
+      @member ||= @project.members.new
+      @users = User.all
+      @file_attachment = FileAttachment.new(:container_id=>@project.id,:container_type=>"project")
+      @roles = Role.find :all, :order => 'builtin, position'
+      completed_percent
+      find_gallery
+      show_funding
+    end
+
+    respond_to do |format|
+      format.html {}
+      format.atom {
+        render_feed(projects.sort_by(&:created_on).reverse.slice(0, Setting.feeds_limit.to_i),
+          :title => "#{Setting.app_title}: #{l(:label_project_latest)}")
+      }
+    end
   end
 
   # Add a new project
@@ -176,10 +175,8 @@ class ProjectsController < ApplicationController
   def show
     if session[:query_projects]
       @query = session[:query_projects]
-       conditions = @query.statement_projects
-
-        @projects = Project.find :all,
-                             :conditions => "#{conditions}"
+      conditions = @query.statement_projects
+      @projects = Project.all :conditions => "#{conditions}"
     else
       retrieve_query
     end

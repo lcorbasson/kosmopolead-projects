@@ -109,7 +109,7 @@ ContextMenu.prototype = {
     var max_height;
 
     $('context-menu').style['left'] = (render_x + 'px');
-    $('context-menu').style['top'] = (render_y + 'px');		
+    $('context-menu').style['top'] = ((render_y - 80) + 'px');
     Element.update('context-menu', '');
 
     new Ajax.Updater({success:'context-menu'}, this.url, 
@@ -143,7 +143,7 @@ ContextMenu.prototype = {
 				 if (render_x <= 0) render_x = 1;
 				 if (render_y <= 0) render_y = 1;
 				 $('context-menu').style['left'] = (render_x + 'px');
-				 $('context-menu').style['top'] = (render_y + 'px');
+				 $('context-menu').style['top'] = ((render_y - 80) + 'px');
 				 
          Effect.Appear('context-menu', {duration: 0.20});
          if (window.parseStylesheets) { window.parseStylesheets(); } // IE

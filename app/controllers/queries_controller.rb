@@ -199,7 +199,7 @@ private
       query_params << current_community.id
     end
 
-    @queries = Query.issues.all(:conditions => [query_terms, query_params].flatten)
+    @queries = Query.issues.all(:conditions => [query_terms] + query_params)
 
 #    @queries = Query.issues.all(:conditions => ["(is_public = ? OR user_id = ?) and (project_id IS NULL OR project_id IN (?)) and (community_id IS",
 #        true, (User.current.logged? ? User.current.id : 0), @projects])

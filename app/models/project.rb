@@ -126,7 +126,7 @@ class Project < ActiveRecord::Base
     user ||= User.current
 
     if community
-      "#{Project.table_name}.status=#{Project::STATUS_ACTIVE} AND #{Project.table_name}.community_id = #{community.id}"
+      "#{Project.table_name}.archived = false AND #{Project.table_name}.community_id = #{community.id}"
     else
       if user && user.admin?
         return "#{Project.table_name}.archived = false"

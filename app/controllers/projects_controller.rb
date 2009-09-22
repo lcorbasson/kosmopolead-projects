@@ -626,7 +626,7 @@ private
 
   def find_projects
     @projects = Project.find :all,
-                            :conditions => Project.visible_by(User.current, @community),
+                            :conditions => Project.visible_by(User.current, current_community),
                             :include => :parent
   end
 

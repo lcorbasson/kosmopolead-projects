@@ -89,8 +89,9 @@ class Project < ActiveRecord::Base
   after_save :create_gallery
 
   named_scope :has_module, lambda { |mod| { :conditions => ["#{Project.table_name}.id IN (SELECT em.project_id FROM #{EnabledModule.table_name} em WHERE em.name=?)", mod.to_s] } }
-  
 
+  named_scope :visible, :conditions => {:archived => false}
+  named_scope :public, :conditions => {:is_public => true}
 
   def identifier=(identifier)
     super unless identifier_frozen?
@@ -123,6 +124,7 @@ class Project < ActiveRecord::Base
 
   def self.visible_by(user=nil, community = nil)
     user ||= User.current
+
     if community
       "#{Project.table_name}.status=#{Project::STATUS_ACTIVE} AND #{Project.table_name}.community_id = #{community.id}"
     else

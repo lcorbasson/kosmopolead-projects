@@ -27,10 +27,8 @@ class MyController < ApplicationController
              'issuesassignedtome' => :label_assigned_to_me_issues,
              'issuesinlate' => :label_in_late_issues,
              'issuesreportedbyme' => :label_reported_issues,
-             'issueswatched' => :label_watched_issues,
-             'news' => :label_news_latest,
-             'calendar' => :label_calendar,
-             'documents' => :label_document_plural,
+             'issueswatched' => :label_watched_issues,            
+             'calendar' => :label_calendar,            
              'timelog' => :label_spent_time
            }.freeze
 

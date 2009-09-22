@@ -217,6 +217,7 @@ h1 {
   margin: 5px 0 15px 0;
   text-align: left;
   border: 1px solid #ffffff;
+  color:white;
 }
 #errorExplanation li {font-size:12px;}
 #errorExplanation ul{text-align:center;}
@@ -230,7 +231,7 @@ h1 {
   border-color: #fbf1a0;
 }
 .error_message, .errorExplanation {
-  color: #d12f19;
+  color: white;
   background-color: #E20000;
   border-color: #fbc2c4;
 }

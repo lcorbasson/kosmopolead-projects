@@ -418,6 +418,7 @@ table.issues_list tr.active, table.issues_list tr.active a {font-weight:bold;col
 table.issues tfoot td {border-right:none;}
 table.issues tfoot {height:10px;background:url(../images/entete_bloc_5px.png) repeat-x ;}
 table.issues td,table.issues th {border-right:2px solid #DDDDDD;text-align:left;padding-left:10px;}
+table.members td {padding:5px 10px 5px 10px;}
 table.issues_list td,table.issues_list th {border-right:2px solid #DDDDDD;}
 table.issues td.last {border-right:none;}
 table.issues thead {background:#EEEEEE;font-weight:bold;}

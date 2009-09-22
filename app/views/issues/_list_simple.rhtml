@@ -3,7 +3,7 @@
 	<table class="list issues">	
 		<tbody>	
           <% for issue in issues %>
-            <tr id="issue-<%= issue.id %>" class="hascontextmenu <%= cycle('odd', 'even') %> <%= css_issue_classes(issue) %>">
+            <tr id="issue-<%= issue.id %>" class="hascontextmenu <%= cycle('even', 'odd') %> <%= css_issue_classes(issue) %>">
                
                 <td class="subject">
                     <%= link_to h(issue.subject), :controller => 'issues', :action => 'show', :id => issue %>

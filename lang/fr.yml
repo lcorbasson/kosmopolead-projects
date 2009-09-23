@@ -855,6 +855,7 @@ project_add_funding: Pour ajouter une ligne de financement, cliquez sur le bouto
 no_users_to_members: "Tous les utilisateurs sont déjà intégrés au projet"
 no_project_relation_type_defined: "Vous n'avez créé aucun type de relation entre les projets."
 
+frequently_asked_questions: Questions fréquemment posées
 
 hours: heures
 days: jours

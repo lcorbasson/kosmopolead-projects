@@ -46,8 +46,18 @@ module Redmine
         end
         
         def available_custom_fields
-          CustomField.find(:all, :conditions => "type = '#{self.class.name}CustomField'",
-                                 :order => 'position')
+          # ajouté pour prise en compte communautés
+          if self.is_a? Project
+            community = self.community
+          elsif self.is_a? Issue
+            community = self.project.community
+          elsif self.is_a? TimeEntry
+            community = self.project.community
+          else
+            raise "CustomField community not found for #{self.class.name}"
+          end
+
+          community.custom_fields.all(:conditions => "type = '#{self.class.name}CustomField'", :order => 'position')
         end
         
         def custom_field_values=(values)

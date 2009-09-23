@@ -710,7 +710,7 @@ private
     end
   end
 
- 
+
 
   def find_root_projects
      @root_projects = Project.find(:all,

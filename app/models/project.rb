@@ -125,17 +125,32 @@ class Project < ActiveRecord::Base
   def self.visible_by(user=nil, community = nil)
     user ||= User.current
 
+    query = ["#{Project.table_name}.archived = ?"]
+    params = [false]
+
     if community
-      "#{Project.table_name}.archived = false AND #{Project.table_name}.community_id = #{community.id}"
-    else
-      if user && user.admin?
-        return "#{Project.table_name}.archived = false"
-      elsif user && user.memberships.any?
-        return "#{Project.table_name}.archived = false AND (#{Project.table_name}.is_public = #{connection.quoted_true} or #{Project.table_name}.id IN (#{user.memberships.collect{|m| m.project_id}.join(',')}))"
-      else
-        return "#{Project.table_name}.archived = false AND #{Project.table_name}.is_public = #{connection.quoted_true}"
-      end
+      query << "#{Project.table_name}.community_id = ?"
+      params << community.id
     end
+
+    unless user.admin?
+      query << "#{Project.table_name}.id in ?"
+      params << user.memberships.collect(&:project_id)
+    end
+
+    [query.join(" AND ")] + params
+
+#    if community
+#      "#{Project.table_name}.archived = false AND #{Project.table_name}.community_id = #{community.id}"
+#    else
+#      if user && user.admin?
+#        return "#{Project.table_name}.archived = false"
+#      elsif user && user.memberships.any?
+#        return "#{Project.table_name}.archived = false AND (#{Project.table_name}.is_public = #{connection.quoted_true} or #{Project.table_name}.id IN (#{user.memberships.collect{|m| m.project_id}.join(',')}))"
+#      else
+#        return "#{Project.table_name}.archived = false AND #{Project.table_name}.is_public = #{connection.quoted_true}"
+#      end
+#    end
   end
   
   def self.allowed_to_condition(user, permission, options={})

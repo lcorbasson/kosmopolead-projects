@@ -21,9 +21,9 @@ namespace :deploy do
 		## Symlink database
 		run "ln -s #{shared_path}/config/database.yml #{current_path}/config/database.yml"
 
-		## Symlink Extensions and Plugins
-		run "rm -rf #{current_path}/vendor"
-		run "ln -s #{shared_path}/vendor #{current_path}/vendor"
+		## Symlink Extensions and Plugins (désactivé pour redmine)
+#		run "rm -rf #{current_path}/vendor"
+#		run "ln -s #{shared_path}/vendor #{current_path}/vendor"
 
 		## Symlink FileAttachments 
 		run "rm -rf #{current_path}/public/picts"

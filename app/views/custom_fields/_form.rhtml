@@ -75,7 +75,7 @@ function deleteValueField(e) {
 //]]>
 </script>
 
-<div class="box">
+<div>
 <p><%= f.text_field :name, :required => true %></p>
 <p><%= f.select :field_format, custom_field_formats_for_select, {}, :onchange => "toggle_custom_field_format();" %></p>
 <p><label for="custom_field_min_length"><%=l(:label_min_max_length)%></label>
@@ -91,15 +91,15 @@ function deleteValueField(e) {
 <%= call_hook(:view_custom_fields_form_upper_box, :custom_field => @custom_field, :form => f) %>
 </div>
 
-<div class="box">
+
 <% case @custom_field.type.to_s
 when "IssueCustomField" %>
     
-    <fieldset><legend><%=l(:label_tracker_plural)%></legend>
+   <h3><%=l(:label_tracker_plural)%></h3>
     <% for tracker in @trackers %>
         <%= check_box_tag "tracker_ids[]", tracker.id, (@custom_field.trackers.include? tracker) %> <%= tracker.name %>
     <% end %>
-    </fieldset>
+   
     &nbsp;
     <p><%= f.check_box :is_required %></p>
     <p><%= f.check_box :is_for_all %></p>
@@ -118,5 +118,5 @@ when "IssueCustomField" %>
 
 <% end %>
 <%= call_hook(:"view_custom_fields_form_#{@custom_field.type.to_s.underscore}", :custom_field => @custom_field, :form => f) %>
-</div>
+
 <%= javascript_tag "toggle_custom_field_format();" %>

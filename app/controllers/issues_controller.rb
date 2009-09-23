@@ -19,6 +19,7 @@ class IssuesController < ApplicationController
 
   menu_item :projects
 
+  before_filter :construct_menu
 
   menu_item :new_issue, :only => :news
 
@@ -27,7 +28,7 @@ class IssuesController < ApplicationController
   before_filter :find_issues, :only => [:bulk_edit, :move, :destroy]
   before_filter :find_project, :only => [:update,:calendar,:gantt,:index,:create,:new, :update_form, :preview,:type_event]
   before_filter :find_root_projects,:only=>[:create]
-  before_filter :find_projects, :only => [:update,:gantt, :index, :calendar,:new,:show,:create]
+  before_filter :only => [:update,:gantt, :index, :calendar,:new,:show,:create]
 #  before_filter :authorize, :except => [:update,:type_event,:type_stage,:create,:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu]
 
 #  before_filter :find_optional_project, :only => [ :changes, :gantt, :calendar]
@@ -709,13 +710,7 @@ private
     end
   end
 
-  def find_projects
-    @projects = Project.find :all,
-                            :conditions => "#{Project.visible_by(User.current)}",
-                            :include => :parent,
-                            :order=>"created_on"
-   
-  end
+ 
 
   def find_root_projects
      @root_projects = Project.find(:all,

@@ -19,15 +19,16 @@
 class ProjectsController < ApplicationController
   menu_item :projects,:only=>[:show]
 
-
   menu_item :activity, :only => :activity
   menu_item :roadmap, :only => :roadmap
   menu_item :files, :only => [:list_files, :add_file]
   menu_item :settings, :only => :settings
 
+  before_filter :construct_menu
+
   before_filter :find_root_projects
   before_filter :find_project, :except => [ :tags_json, :index, :list, :add, :activity,:update_left_menu ]
-  before_filter :define_community_context, :find_projects,:only=>[:index]
+  before_filter :define_community_context,:only=>[:index]
 
   before_filter :find_optional_project, :only => :activity
 #  before_filter :authorize, :except => [:index,:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu, :edit_part_description, :edit_part_synthesis ]
@@ -51,18 +52,9 @@ class ProjectsController < ApplicationController
 
     # TODO cékoi ?
     if session[:query_projects]
-      @query = session[:query_projects]
-      conditions = @query.statement_projects
-      @projects = Project.all(:conditions => "#{conditions}")
+      @query = session[:query_projects]     
     else
       retrieve_query
-    end
-
-    # projet en session
-    if session[:project] and not current_community
-      @project = Project.find(session[:project].id) || @projects.first
-    else
-      @project = @projects.first
     end
     
     @relation = ProjectRelation.new
@@ -145,7 +137,6 @@ class ProjectsController < ApplicationController
         end
         completed_percent
         find_gallery
-        find_projects
         session[:project] = @project
         flash[:notice] = l(:notice_successful_create)
         respond_to do |format|
@@ -174,9 +165,7 @@ class ProjectsController < ApplicationController
   # Show @project
   def show
     if session[:query_projects]
-      @query = session[:query_projects]
-      conditions = @query.statement_projects
-      @projects = Project.all :conditions => "#{conditions}"
+      @query = session[:query_projects]  
     else
       retrieve_query
     end
@@ -272,7 +261,7 @@ class ProjectsController < ApplicationController
     @project.update_attributes(params[:project])
     respond_to do |format|
       format.js {
-        render :update do |page|
+        render(:update) {|page|
           case params[:part]
             when "description"
               page << "jQuery('.project_description').html('#{escape_javascript(render:partial=>'projects/box/description',:locals=>{:project=>@project})}');"
@@ -295,7 +284,7 @@ class ProjectsController < ApplicationController
           end
           page << display_message_error(l(:notice_successful_update), "fieldNotice")
           @project.save
-        end
+      }
       }
     end
   end
@@ -624,11 +613,6 @@ private
     @photo.gallery_id = @gallery.id unless @gallery.nil?
   end
 
-  def find_projects
-    @projects = Project.find :all,
-                            :conditions => Project.visible_by(User.current, current_community),
-                            :include => :parent
-  end
 
   def find_root_projects
         @root_projects = Project.find(:all,

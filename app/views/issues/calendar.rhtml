@@ -1,8 +1,5 @@
 <%= render:partial=>"calendar",:locals=>{:project=>@project} %>
 
 
-<% content_for :sidebar do %>
-    <%= render :partial => 'projects/sidebar' %>
-<% end %>
 
 <% html_title(l(:label_calendar)) -%>

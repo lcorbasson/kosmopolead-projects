@@ -13,7 +13,12 @@
             <%= textilizable project.synthesis %>
           <% else %>
             <div class="emptymessage">
-                  <p><%= l(:project_add_synthesis) %>
+                  <p><%= l(:project_add_synthesis) %><%= link_to_remote "#{image_tag('/images/edit.png')}",
+                         { :url => { :controller => 'projects', :action => 'edit_part_synthesis', :project_id => project.id},
+                           :method => 'get',
+                           :update => 'synthesis',
+                           :with=>'toggle_synthesis()'
+                         } %></p>
            </div>
         <% end %>
       </div>

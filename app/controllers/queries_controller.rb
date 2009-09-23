@@ -17,6 +17,8 @@
 
 class QueriesController < ApplicationController
   menu_item :queries
+  
+ 
   before_filter :find_query, :except => [:projects,:new,:index]
   before_filter :find_queries, :only => [:projects,:index]
   before_filter :find_optional_project, :only => [:edit,:new,:index]

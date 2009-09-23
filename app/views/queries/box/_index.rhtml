@@ -6,16 +6,16 @@
     <tr class="<%= cycle('odd', 'even') %>">
       <td>
         <%  if query.query_type=="issue" %>
-          <%= link_to_remote query.name, {:url=>{:controller => 'issues', :action => 'index', :project_id => @project, :query_id => query}} %>
+          <%= link_to_remote query.name, {:url=> project_issues_path(@project, :project_id => @project, :query_id => query),:method=>:get} %>
         <% else %>
-          <%= link_to_remote query.name, {:url=>{:controller => 'queries', :action => 'projects',  :query_id => query}} %>
+          <%= link_to_remote query.name, {:url=>projects_queries_path(:query_id => query),:method=>:get} %>
         <% end %>
       </td>
       <td align="right">
         <small>
         <% if query.editable_by?(User.current) %>
-        <%= link_to image_tag("edit.png"), {:controller => 'queries', :action => 'edit', :id => query}, :class => 'icon' %>
-        <%= link_to image_tag("delete.png"),  query_path(query),:method=>:delete,:confirm=>"Etes-vous certain de vouloir supprimer cette requête ?" , :class => 'icon' %>
+        <%= link_to image_tag("edit.png"), {:controller => 'queries', :action => 'edit', :id => query} %>
+        <%= link_to image_tag("delete.png"),  query_path(query),:method=>:delete,:confirm=>"Etes-vous certain de vouloir supprimer cette requête ?" %>
         </small>
       <% end %>
       </td>

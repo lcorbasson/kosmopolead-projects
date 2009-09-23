@@ -17,6 +17,9 @@
 
 class TimelogController < ApplicationController
   menu_item :issues
+
+  before_filter :construct_menu
+
   before_filter :find_project, :only => [:edit, :destroy,:new]
   before_filter :find_optional_project, :only => [:report, :details]
 

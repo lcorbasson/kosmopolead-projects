@@ -2,21 +2,15 @@
   <%= avatar user %>
 </div>
 <div class="user_infos splitcontentright">
-   <div class="name">
-   </div>
-   <ul>
-   <% unless @user.pref.hide_mail %>
-		<li><%=l(:field_mail)%>: <%= mail_to(h(@user.mail), nil, :encode => 'javascript') %></li>
-	<% end %>
-	<% for custom_value in @custom_values %>
-	<% if !custom_value.value.empty? %>
-    <li><%= custom_value.custom_field.name%>: <%=h show_value(custom_value) %></li>
-	<% end %>
-	<% end %>
+  <div class="name"></div>
+  <ul>
+  <% unless @user.pref.hide_mail %>
+    <li><%=l(:field_mail)%>: <%= mail_to(h(@user.mail), nil, :encode => 'javascript') %></li>
+  <% end %>
     <li><%=l(:label_registered_on)%>: <%= format_date(@user.created_on) %></li>
-	<% unless @user.last_login_on.nil? %>
-		<li><%=l(:field_last_login_on)%>: <%= format_date(@user.last_login_on) %></li>
-	<% end %>
-    </ul>
+  <% unless @user.last_login_on.nil? %>
+    <li><%=l(:field_last_login_on)%>: <%= format_date(@user.last_login_on) %></li>
+  <% end %>
+  </ul>
 </div>
 <div class="clearer"></div>

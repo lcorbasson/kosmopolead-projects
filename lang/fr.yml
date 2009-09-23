@@ -339,6 +339,8 @@ label_priority: Priorité
 label_funding_line_new: Nouvelle ligne de financement
 label_funding_line_edit: Edition d'une ligne de financement
 label_funding_aap: AAP
+label_funding_beneficiary: Bénéficiaire
+label_funding_application_date: Date demande
 label_funding_financeur: Financeur
 label_funding_correspondant_financeur: Correspondant financeur
 label_funding_montant_demande: Montant demandé

@@ -133,9 +133,15 @@ class Project < ActiveRecord::Base
       params << community.id
     end
 
+# soucis avec ce bout de code, erreur SQL si aucune membership
+#    unless user.admin?
+#      query << "#{Project.table_name}.id in (?)"
+#      params << user.memberships.collect(&:project_id)
+#    end
+
     unless user.admin?
-      query << "#{Project.table_name}.id in ?"
-      params << user.memberships.collect(&:project_id)
+      query << "#{Project.table_name}.id in (select project_id from #{Member.table_name} where user_id = ?)"
+      params << user.id
     end
 
     [query.join(" AND ")] + params

@@ -66,7 +66,9 @@
     </div>
     <% end %>
 
-    <%= yield :sidebar %>
+    <div id="sidebar">
+      <%= render(:layout => @sidebar) unless @sidebar=="" %>
+    </div>
     <%= call_hook :view_layouts_base_sidebar %>
 
   </div>
@@ -93,3 +95,4 @@
 
 </body>
 </html>
+

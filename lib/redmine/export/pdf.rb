@@ -143,7 +143,7 @@ module Redmine
           pdf.Cell(30, row_height, issue.tracker.name, 0, 0, 'L', 1)
           pdf.Cell(30, row_height, issue.status.name, 0, 0, 'L', 1)
           pdf.Cell(30, row_height, issue.priority.name, 0, 0, 'L', 1)
-          pdf.Cell(40, row_height, issue.assigned_to ? issue.assigned_to.to_s : '', 0, 0, 'L', 1)
+          pdf.Cell(40, row_height, issue.assignments ? show_assigned_to(issue) : '', 0, 0, 'L', 1)
           pdf.Cell(25, row_height, format_date(issue.updated_on), 0, 0, 'L', 1)
           pdf.MultiCell(0, row_height, (project == issue.project ? issue.subject : "#{issue.project} - #{issue.subject}"))
           pdf.Line(10, pdf.GetY, 287, pdf.GetY)
@@ -263,16 +263,15 @@ module Redmine
           pdf.Ln
         end
         
-        if issue.attachments.any?
+        if issue.file_attachments.any?
           pdf.SetFontStyle('B',9)
           pdf.Cell(190,5, l(:label_attachment_plural), "B")
           pdf.Ln
-          for attachment in issue.attachments
+          for file_attachment in issue.file_attachments
             pdf.SetFontStyle('',8)
-            pdf.Cell(80,5, attachment.filename)
-            pdf.Cell(20,5, number_to_human_size(attachment.filesize),0,0,"R")
-            pdf.Cell(25,5, format_date(attachment.created_on),0,0,"R")
-            pdf.Cell(65,5, attachment.author.name,0,0,"R")
+            pdf.Cell(80,5, file_attachment.file_file_name)
+            pdf.Cell(25,5, format_date(file_attachment.created_on),0,0,"R")
+            pdf.Cell(65,5, file_attachment.author.name,0,0,"R")
             pdf.Ln
           end
         end

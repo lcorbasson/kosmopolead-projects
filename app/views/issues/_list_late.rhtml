@@ -27,7 +27,7 @@
                     <%= link_to h(issue.id), :controller => 'issues', :action => 'show', :id => issue %>
                 </td>
                 <td class="subject">
-                    <%= link_to h(issue.subject), :controller => 'issues', :action => 'show', :id => issue %>
+                    <%= link_to_issue(issue)  %>
                 </td>
                 <td>
                   <%=  show_assigned_to(issue) %>

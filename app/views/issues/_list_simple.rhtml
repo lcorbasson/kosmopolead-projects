@@ -6,7 +6,7 @@
             <tr id="issue-<%= issue.id %>" class="hascontextmenu <%= cycle('even', 'odd') %> <%= css_issue_classes(issue) %>">
                
                 <td class="subject">
-                    <%= link_to h(issue.subject), :controller => 'issues', :action => 'show', :id => issue %>
+                    <%= link_to_issue(issue) %>
                 </td>
                 <td class="date">
                     <%= issue.date_range %>

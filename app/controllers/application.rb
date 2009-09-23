@@ -21,7 +21,7 @@ require 'cgi'
 class ApplicationController < ActionController::Base
   layout 'base'
   
-  before_filter :user_setup, :check_if_login_required, :set_localization #, :read_current_community
+  before_filter :user_setup, :check_if_login_required, :set_localization, :current_community
   filter_parameter_logging :password
   helper_method :current_community
 

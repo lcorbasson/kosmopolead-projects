@@ -10,14 +10,8 @@
   <p><label><%=  l(:label_partner) %></label><%= select_tag "partner[]", options_for_select(@partners.collect {|p| [p.name, p.id]}),
             :multiple => true,:style=>"width:200px"  %></p>
 
-  <% @user.custom_field_values.each do |value| %>
-          <p><%= custom_field_tag_with_label :user, value %></p>
-  <% end %>
-
   <p><label><%=  l(:field_admin) %></label><%= f.check_box :admin, :disabled => (@user == User.current) %></p>
   <%= call_hook(:view_users_form, :user => @user, :form => f) %>
-
-
 
   <h3><%=l(:label_authentication)%></h3>
   <% unless @auth_sources.empty? %>

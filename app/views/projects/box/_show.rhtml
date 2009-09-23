@@ -6,7 +6,7 @@
   <span class="grey_title" style="float:left;margin-right:20px;"> Avancement du projet :</span><%= progress_bar([project.completed_percent, 100], :width => '40%', :legend => ('%0.0f%' % project.completed_percent)) %>
 <br/><br/>
 
-  <% unless @project.custom_field_values.empty? %>
+  <% unless project.custom_field_values.empty? %>
     <%= render :partial => 'projects/show/custom_fields', :locals=>{:project=>project} %>
   <% end %>
 

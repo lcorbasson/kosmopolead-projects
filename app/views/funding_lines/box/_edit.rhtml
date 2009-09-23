@@ -9,12 +9,20 @@
       <%= f.text_field :aap %>
     </p>
     <p>
+      <label><%= l(:label_funding_application_date) %></label>
+      <%= f.text_field :application_date,:size=>10,:class=>"ui-datepicker" %>
+    </p>
+    <p>
       <label><%= l(:label_funding_financeur) %></label>
       <%= f.text_field :financeur %>
     </p>
     <p>
       <label><%= l(:label_funding_correspondant_financeur) %></label>
       <%= f.text_field :correspondant_financeur %>
+    </p>
+        <p>
+      <label><%= l(:label_funding_beneficiary) %></label>
+      <%= f.text_field :beneficiary %>
     </p>
     <p>
       <label><%= l(:label_funding_montant_demande) %></label>

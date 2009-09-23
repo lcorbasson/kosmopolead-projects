@@ -1,4 +1,6 @@
 class ProjectStatusesController < ApplicationController
+  before_filter :require_admin, :require_community
+  menu_item :admin
 
   def index
     list
@@ -6,16 +8,16 @@ class ProjectStatusesController < ApplicationController
   end
 
   def list
-    @project_status_pages, @project_statuses = paginate :project_statuses, :per_page => 25
+    @project_statuses = @community.project_statuses
     render :action => "list", :layout => false if request.xhr?
   end
 
   def new
-    @project_status = ProjectStatus.new
+    @project_status = @community.project_statuses.build
   end
 
   def create
-    @project_status = ProjectStatus.new(params[:project_status])
+    @project_status = @community.project_statuses.build(params[:project_status])
     if @project_status.save
       flash[:notice] = l(:notice_successful_create)
       redirect_to :action => 'list'
@@ -25,11 +27,11 @@ class ProjectStatusesController < ApplicationController
   end
 
   def edit
-    @project_status = ProjectStatus.find(params[:id])
+    @project_status = @community.project_statuses.find(params[:id])
   end
 
   def update
-    @project_status = ProjectStatus.find(params[:id])
+    @project_status = @community.project_statuses.find(params[:id])
     if @project_status.update_attributes(params[:project_status])
       flash[:notice] = l(:notice_successful_update)
       redirect_to :action => 'list'
@@ -39,7 +41,7 @@ class ProjectStatusesController < ApplicationController
   end
   
   def move
-    @project_status = ProjectStatus.find(params[:id])
+    @project_status = @community.project_statuses.find(params[:id])
     case params[:position]
     when 'highest'
       @project_status.move_to_top
@@ -54,7 +56,7 @@ class ProjectStatusesController < ApplicationController
   end
 
   def destroy
-    ProjectStatus.find(params[:id]).destroy
+    @community.project_statuses.find(params[:id]).destroy
     redirect_to :action => 'list'
   rescue
     flash[:error] = "Unable to delete issue status"

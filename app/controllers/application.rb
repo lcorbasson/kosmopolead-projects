@@ -21,14 +21,40 @@ require 'cgi'
 class ApplicationController < ActionController::Base
   layout 'base'
   
-  before_filter :user_setup, :check_if_login_required, :set_localization
+  before_filter :user_setup, :check_if_login_required, :set_localization #, :read_current_community
   filter_parameter_logging :password
-  
+  helper_method :current_community
+
   include Redmine::MenuManager::MenuController
   helper Redmine::MenuManager::MenuHelper
   
   REDMINE_SUPPORTED_SCM.each do |scm|
     require_dependency "repository/#{scm.underscore}"
+  end
+
+  def define_community_context
+    if params[:community_id] && Community.current = Community.find(params[:community_id])
+      session[:current_community_id] = Community.current.id
+    end
+  end
+
+  def clear_community_context
+    session[:current_community_id] = nil
+    Community.current = nil
+  end
+
+  def current_community
+    Community.current ||= Community.find(session[:current_community_id]) if session[:current_community_id]
+    Community.current 
+  end
+
+  def current_community!
+    current_community or raise "No current community"
+  end
+
+  def require_community
+    (flash[:error] = "Community required" and redirect_to :back) unless current_community
+    @community = current_community
   end
   
   def current_role
@@ -81,19 +107,19 @@ class ApplicationController < ActionController::Base
   end
   
   def require_login
-#    if !User.current.logged?
-#      redirect_to :controller => "account", :action => "login", :back_url => url_for(params)
-#      return false
-#    end
+    if !User.current.logged?
+      redirect_to :controller => "account", :action => "login", :back_url => url_for(params)
+      return false
+    end
     true
   end
 
   def require_admin
     return unless require_login
-#    if !User.current.admin?
-#      render_403
-#      return false
-#    end
+    if !User.current.admin?
+      render_403
+      return false
+    end
     true
   end
   
@@ -232,16 +258,23 @@ class ApplicationController < ActionController::Base
     request.env['HTTP_USER_AGENT'] =~ %r{MSIE} ? ERB::Util.url_encode(name) : name
   end
 
-#  def display_error_msg(my_collection)
-#    line_js ="";
-#    if my_collection.class==String
-#      line_js +="<div><p>#{escape_javascript my_collection}</p></div>";
-#    else
-#      my_collection.errors.full_messages.each do |err| # Boucle pour récupérer toutes les erreurs
-#        line_js +="<p>#{escape_javascript err}</p>";
-#      end
-#    end
-#    line_js="#{escape_javascript line_js}";
-#    return line_js  # envoi de line_js
-#  end
+  def construct_menu
+    if session[:query_projects]
+      query = session[:query_projects]
+      conditions = query.statement_projects
+      @projects = Project.all(:conditions => "#{conditions}")
+    else
+      @projects = Project.find :all,
+                            :conditions => Project.visible_by(User.current, current_community),
+                            :include => :parent
+    end
+    # projet en session
+    if session[:project] and not current_community
+       @project = Project.find(session[:project].id) || @projects.first
+    else
+        @project = @projects.first
+    end
+    @sidebar = "projects/sidebar"
+  end
+
 end

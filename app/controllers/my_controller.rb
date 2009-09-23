@@ -49,12 +49,14 @@ class MyController < ApplicationController
 
   # Show user's page
   def page
+    clear_community_context
     @user = User.current
     @blocks = @user.pref[:my_page_layout] || DEFAULT_LAYOUT
   end
 
   # Edit user's account
   def account
+    clear_community_context
     @active_menu = "account"
     @user = User.current
     @pref = @user.pref

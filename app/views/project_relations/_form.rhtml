@@ -1,11 +1,11 @@
-<% projects = Project.all-@project.to_a %>
+<% projects = @project.community.projects - @project.to_a %>
 <% if ProjectRelationType.all.size>0 %>
   <%= error_messages_for 'relation' %>
 
   <h3><%= l(:label_new_relation) %></h3>
   <div style="margin-left:5px;">
-    <p><%= f.select :project_relation_type_id, ProjectRelationType.all.collect{|t| [t.relation_type, t.id]}, {}, :onchange => "setPredecessorFieldsVisibility();" %>
-    <%= f.select :project_to_id,projects.collect{|p| [p.acronym, p.id]} %>
+    <p><%= f.select :project_relation_type_id, @project.community.project_relation_types.collect{|t| [t.relation_type, t.id]}, {}, :onchange => "setPredecessorFieldsVisibility();" %>
+    <%= f.select :project_to_id, projects.collect{|p| [p.acronym, p.id]} %>
     <span id="predecessor_fields" style="display:none;">
     <%= l(:field_delay) %>: <%= f.text_field :delay, :size => 3 %> <%= l(:label_day_plural) %>
     </span>

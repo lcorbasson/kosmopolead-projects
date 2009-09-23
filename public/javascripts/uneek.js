@@ -1,4 +1,10 @@
+jQuery().ready(function() {
 
+    jQuery("#communities_button").click(function() {
+      jQuery(".community_menu_item").slideToggle();
+    });
+    
+});
 
 
 /* 

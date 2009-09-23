@@ -1,4 +1,4 @@
-<% remote_form_for :file_attachment,@file_attachment, :html=>{:id=>"upload_form_file",:class=>"tabular"} do |f| %>
+<% form_for :file_attachment,@file_attachment, :html=>{:id=>"upload_form_file",:class=>"tabular"} do |f| %>
 <h3><%= l(:label_new_file) %></h3>
 <p class="buttons-icons">
     <label><%=l(:label_file)%></label>

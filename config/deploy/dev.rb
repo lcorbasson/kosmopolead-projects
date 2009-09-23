@@ -23,6 +23,8 @@ set :rails_env, "development"
 set :repository,  "git@github.com:uneek/kosmopolead-projects.git"
 # Repository Type
 set :scm, "git"
+# Branch
+set :branch, "master"
 
 #	SSH Settings
 #############################################################

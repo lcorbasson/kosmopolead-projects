@@ -1,3 +1,4 @@
+
 <% form_for :project_relation_type, :url=>{:action=>:create},:html=>{:class=>"tabular"} do |f| %>
   <p><label><%= l(:label_project_relation_type) %></label>
     <%= f.text_field :relation_type %>
@@ -7,8 +8,7 @@
     <%= f.text_field :relation_type_sym %>
   </p>
 
-
   <div class="buttons right">
     <%= submit_tag l(:button_save),:class=>"btn_blue button corner-all" %>
   </div>
-  <% end %>
+<% end %>

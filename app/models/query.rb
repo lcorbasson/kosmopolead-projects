@@ -50,9 +50,21 @@ class QueryCustomFieldColumn < QueryColumn
   end
 end
 
+class QueryIssueTypeColumn < QueryColumn
+
+  def initialize(name, sort)
+    self.name = name
+    self.sortable = false   
+  end
+
+  
+end
+
+
 class Query < ActiveRecord::Base
   belongs_to :project
   belongs_to :user
+  belongs_to :community
   serialize :filters
   serialize :column_names
   
@@ -61,8 +73,8 @@ class Query < ActiveRecord::Base
   validates_presence_of :name, :on => :save
   validates_length_of :name, :maximum => 255
 
-  named_scope :projects, :conditions=>["query_type= ?", "project"]
-  named_scope :issues, :conditions=>["query_type= ?", "issue"]
+  named_scope :projects, :conditions=>["query_type= ?", "project"], :order => "name ASC"
+  named_scope :issues, :conditions=>["query_type= ?", "issue"], :order => "name ASC"
     
   @@operators = { "="   => :label_equals, 
                   "!"   => :label_not_equals,
@@ -113,6 +125,7 @@ class Query < ActiveRecord::Base
     QueryColumn.new(:estimated_hours, :sortable => "#{Issue.table_name}.estimated_hours"),
     QueryColumn.new(:done_ratio, :sortable => "#{Issue.table_name}.done_ratio"),
     QueryColumn.new(:created_on, :sortable => "#{Issue.table_name}.created_on", :default_order => 'desc'),
+    QueryIssueTypeColumn.new(:issue_type, :sortable => "#{IssueType.table_name}.name", :default_order => 'desc'),
   ]
   cattr_reader :available_columns
   
@@ -253,7 +266,9 @@ class Query < ActiveRecord::Base
     @available_columns += (project ? 
                             project.all_issue_custom_fields :
                             IssueCustomField.find(:all, :conditions => {:is_for_all => true})
-                           ).collect {|cf| QueryCustomFieldColumn.new(cf) }      
+                           ).collect {|cf| QueryCustomFieldColumn.new(cf) }
+
+
   end
   
   def columns

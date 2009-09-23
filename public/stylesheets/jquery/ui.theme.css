@@ -14,7 +14,7 @@
 /* Component containers
 ----------------------------------*/
 .ui-widget { font-family: Verdana,Arial,sans-serif; font-size: 1.1em; }
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Verdana,Arial,sans-serif; font-size: 1em; }
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { /*font-family: Verdana,Arial,sans-serif; font-size: 1em;*/ }
 .ui-widget-header { border: 1px solid #AAAAAA; background: #CCCCCC url(/images/ui/cccccc_40x100_textures_03_highlight_soft_75.png) repeat-x scroll 50% 50%; color: #877D6E; font-weight: bold; }
 .ui-widget-header a { color: #877D6E; }
 .ui-widget-content {background: #ffffff; color: #222222; }

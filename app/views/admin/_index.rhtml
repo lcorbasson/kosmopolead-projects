@@ -1,28 +1,7 @@
 <div class="content_admin">
   <%= render :partial => 'no_data' if @no_configuration_data %>
 
-  <div class="icon22">
-    <div class="bloc_admin">
-      <%= image_tag("/images/icone_projet.png") %>
-      <p class="links">
-        <%= link_to l(:label_project_plural), :controller => 'admin', :action => 'projects' %> |
-        <%= link_to l(:label_project_status_plural), :controller => 'project_statuses' %> |
-        <%= link_to l(:label_project_relation), :controller => 'admin', :action => 'relations' %> |
-        <%= link_to l(:label_activity_sectors), :controller => 'activity_sectors'%>
-       
-      </p>
-    </div>
-  </div>
-
-  <div class="icon22">
-    <div class="bloc_admin">
-      <%= image_tag("/images/icone_utilisateur.png") %>
-       <p class="links">
-          <%= link_to l(:label_user_plural), :controller => 'users' %> |
-          <%= link_to l(:label_partner_plural), :controller => 'partners' %>
-       </p>
-    </div>
-  </div>
+  <h2>Générique</h2>
 
   <div class="icon22">
     <div class="bloc_admin">
@@ -40,15 +19,6 @@
           <%= link_to l(:label_tracker_plural), :controller => 'trackers' %> |
           <%= link_to l(:label_issue_status_plural), :controller => 'issue_statuses' %> |
           <%= link_to l(:label_workflow), :controller => 'workflows', :action => 'edit' %>
-       </p>
-    </div>
-  </div>
-
-  <div class="icon22">
-    <div class="bloc_admin">
-      <%= image_tag("/images/icone_workflow.png") %>
-       <p class="links">
-          <%= link_to l(:label_custom_field_plural), :controller => 'custom_fields' %>
        </p>
     </div>
   </div>
@@ -77,7 +47,48 @@
       :class => ["icon22", "icon22-#{item.name}"].join(' ') %>
   <% end -%>
 
- 
+  <% html_title(l(:label_administration)) -%>
+
+  <% if current_community %>
+
+  <h2>Relatif à la communauté</h2>
+
+  <div class="icon22">
+    <div class="bloc_admin">
+      <%= image_tag("/images/icone_projet.png") %>
+      <p class="links">
+        <%= link_to l(:label_project_plural), :controller => 'admin', :action => 'projects' %> |
+        <%= link_to l(:label_project_status_plural), :controller => 'project_statuses' %> |
+        <%= link_to l(:label_project_relation), :controller => 'admin', :action => 'relations' %> |
+        <%= link_to l(:label_activity_sectors), :controller => 'activity_sectors'%>
+      </p>
+    </div>
+  </div>
+
+  <div class="icon22">
+    <div class="bloc_admin">
+      <%= image_tag("/images/icone_utilisateur.png") %>
+       <p class="links">
+          <%= link_to l(:label_user_plural), :controller => 'users' %> |
+          <%= link_to l(:label_partner_plural), :controller => 'partners' %>
+       </p>
+    </div>
+  </div>
+
+  <div class="icon22">
+    <div class="bloc_admin">
+      <%= image_tag("/images/icone_workflow.png") %>
+       <p class="links">
+          <%= link_to l(:label_custom_field_plural), :controller => 'custom_fields' %>
+       </p>
+    </div>
+  </div>
+
+  <% end %>
+
+  <h2>Personnel</h2>
+
+
   <div class="icon22">
      <div class="bloc_admin">
         <p class="links">
@@ -86,5 +97,5 @@
      </div>
   </div>
 
-  <% html_title(l(:label_administration)) -%>
+
 </div>

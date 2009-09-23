@@ -36,7 +36,7 @@ class MembersController < ApplicationController
       @project.members << Member.new(params[:member]) if request.post?
       @members = @project.members
       @member ||= @project.members.new
-      @users = User.all
+      @users = User.active.all
       @roles = Role.find :all, :order => 'builtin, position'
       if !params[:partner_id].blank?
         @partner = Partner.find(params[:partner_id])

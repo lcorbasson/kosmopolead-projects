@@ -489,8 +489,7 @@ module Redmine
         pdf.SetFillColor(255, 255, 255)
         projects.each do |project|
           pdf.Cell(15, row_height, project.name, 0, 0, 'L', 1)
-          pdf.MultiCell(155,5, project.description,"BR")
-          
+          pdf.MultiCell(155,5, project.description ? project.description : "","BR")          
           pdf.Cell(30, row_height, project.author ? project.author.name: "", 0, 0, 'L', 1)
           pdf.Cell(30, row_height, project.watcher ? project.watcher.name : "", 0, 0, 'L', 1)
           pdf.Cell(30, row_height, project.builder ? project.builder.name : "", 0, 0, 'L', 1)

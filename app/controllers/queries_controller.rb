@@ -23,10 +23,17 @@ class QueriesController < ApplicationController
   before_filter :find_queries, :only => [:projects,:index]
   before_filter :find_optional_project, :only => [:edit,:new,:index]
 
+ 
+ 
+  helper :custom_fields
+  include CustomFieldsHelper
   helper :sort
   include SortHelper
+  include IssuesHelper
   include ProjectsHelper
+  helper :timelog
   include Redmine::Export::PDF
+
 
   def index
    retrieve_query

@@ -129,7 +129,7 @@ module ProjectsHelper
                   ]
       # Export project custom fields if project is given
       # otherwise export custom fields marked as "For all projects"
-      custom_fields = ProjectCustomField.for_all
+      custom_fields = ProjectCustomField.all
       custom_fields.each {|f| headers << f.name}  
       csv << headers.collect {|c| begin; ic.iconv(c.to_s); rescue; c.to_s; end }
       # csv lines

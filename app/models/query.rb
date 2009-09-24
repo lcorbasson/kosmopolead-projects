@@ -199,7 +199,7 @@ class Query < ActiveRecord::Base
       add_custom_fields_filters(@project.all_issue_custom_fields)
     else
       # global filters for cross project issue list
-      add_custom_fields_filters(IssueCustomField.find(:all, :conditions => {:is_filter => true, :is_for_all => true}))
+      add_custom_fields_filters(IssueCustomField.find(:all, :conditions => {:community_id => Community.current, :is_filter => true, :is_for_all => true}))
     end
     @available_filters
   end
@@ -208,12 +208,20 @@ class Query < ActiveRecord::Base
   def available_filters_projects
     return @available_filters_projects if @available_filters_projects    
 
+    if Community.current
+      users = Community.current.users
+      project_statuses = Community.current.project_statuses
+    else
+      users = User.current.communities.collect(&:users).flatten.uniq
+      project_statuses = User.current.communities.collect(&:project_statuses).flatten.uniq
+    end
+
     @available_filters_projects = {
-                   "status_id" => { :type => :list_status, :order => 1, :values => ProjectStatus.find(:all, :order => 'position').collect{|s| [s.status_label, s.id.to_s] } },
-                    "builder_by" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }},
-                    "author_id" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }},
-                    "watcher_id" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }}
-                  }
+      "status_id" => { :type => :list_status, :order => 1, :values => project_statuses.collect{|s| [s.status_label, s.id.to_s] } },
+      "builder_by" => { :type => :list, :order => 1, :values => users.collect{|u| [u.name, u.id.to_s] }},
+      "author_id" => { :type => :list, :order => 1, :values => users.collect{|u| [u.name, u.id.to_s] }},
+      "watcher_id" => { :type => :list, :order => 1, :values => users.collect{|u| [u.name, u.id.to_s] }}
+    }
     add_custom_fields_filters_projects(CustomField.all(:conditions=>["type = 'ProjectCustomField'"]))
  
     

@@ -21,7 +21,7 @@ require 'cgi'
 class ApplicationController < ActionController::Base
   layout 'base'
   
-  before_filter :user_setup, :check_if_login_required, :set_localization, :current_community
+  before_filter :user_setup, :check_if_login_required, :set_localization, :define_community_context, :current_community
   filter_parameter_logging :password
   helper_method :current_community
 
@@ -33,7 +33,8 @@ class ApplicationController < ActionController::Base
   end
 
   def define_community_context
-    if params[:community_id] && Community.current = Community.find(params[:community_id])
+    if params[:community_id]
+      Community.current = Community.find(params[:community_id])
       session[:current_community_id] = Community.current.id
     end
   end
@@ -264,6 +265,7 @@ class ApplicationController < ActionController::Base
       conditions = query.statement_projects
       @projects = Project.all(:conditions => "#{conditions}")
     else
+#      raise "#{current_community.id}"
       @projects = Project.find :all,
                             :conditions => Project.visible_by(User.current, current_community),
                             :include => :parent

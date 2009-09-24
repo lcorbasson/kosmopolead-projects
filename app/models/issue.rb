@@ -138,10 +138,14 @@ class Issue < ActiveRecord::Base
   end
   
   def validate
-    if self.due_date.nil? 
-      errors.add :due_date, :activerecord_error_not_a_date
+    unless due_date.nil?
+      errors.add(:due_date, :activerecord_error_not_a_date) if self.due_date =~ /^\d{2}\/\d{2}\/\d{4}$/
     end
-    
+#    if self.due_date.nil?
+#      errors.add :due_date, :activerecord_error_not_a_date
+#    end
+    errors.add(:start_date, :activerecord_error_not_a_date) if self.start_date =~ /^\d{2}\/\d{2}\/\d{4}$/
+
     if self.due_date and self.start_date and self.due_date < self.start_date
       errors.add :due_date, :activerecord_error_greater_than_start_date
     end

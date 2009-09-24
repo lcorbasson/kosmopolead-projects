@@ -12,7 +12,7 @@
       <div class="buttons-icons add-member">
           <% if Partner.all.size>0 %>
             <%= l(:label_partner) %>:
-            <%= select_tag :partner_id, "<option value=""></option>"+options_for_select(Partner.all.collect {|p| [p.name, p.id]}) %>
+            <%= select_tag :partner_id, "<option value=""></option>"+options_for_select(@project.community.partners.collect {|p| [p.name, p.id]}) %>
             <%= observe_field :partner_id,:url =>  new_project_member_path(@project,:change=>true),:method=>:get,:with => "Form.serialize('update-members-form')" %>
           <% end %>
           <%  if users.size>0 %>

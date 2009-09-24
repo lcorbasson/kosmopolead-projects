@@ -28,7 +28,7 @@ class ProjectsController < ApplicationController
 
   before_filter :find_root_projects
   before_filter :find_project, :except => [ :tags_json, :index, :list, :add, :activity,:update_left_menu ]
-  before_filter :define_community_context,:only=>[:index]
+#  before_filter :define_community_context, :only=>[:index]
 
   before_filter :find_optional_project, :only => :activity
 #  before_filter :authorize, :except => [:index,:add_file,:update, :tags_json,:index, :list, :add, :archive, :unarchive, :destroy, :activity,:update_left_menu, :edit_part_description, :edit_part_synthesis ]
@@ -59,7 +59,7 @@ class ProjectsController < ApplicationController
     
     @relation = ProjectRelation.new
 
-    unless @project.nil?
+    if @project
       @gantt = Redmine::Helpers::Gantt.new(params.merge( :project => @project))
       @gantt.events = Issue.find(:all, :include=>[:type], :conditions => ["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
         and start_date is not null)
@@ -185,7 +185,7 @@ class ProjectsController < ApplicationController
     @subprojects = @project.children.find(:all, :conditions => Project.visible_by(User.current))
     @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
     @trackers = @project.rolled_up_trackers
-    @users = User.all
+    @users = @project.community.users
 
     cond = @project.project_condition(Setting.display_subprojects_issues?)
 
@@ -615,9 +615,7 @@ private
 
 
   def find_root_projects
-        @root_projects = Project.find(:all,
-                                    :order => 'name')
-
+    @root_projects = current_community ? current_community.projects.all(:order => 'name') : Project.all(:order => 'name')
   end
 
   def show_funding 

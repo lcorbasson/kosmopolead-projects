@@ -184,7 +184,7 @@ class Query < ActiveRecord::Base
     end
     @available_filters["assigned_to_id"] = { :type => :list, :order => 4, :values => user_values } unless user_values.empty?
     @available_filters["author_id"] = { :type => :list, :order => 5, :values => user_values } unless user_values.empty?
-  
+
     if project
       # project specific filters
       unless @project.issue_categories.empty?
@@ -198,8 +198,18 @@ class Query < ActiveRecord::Base
       end
       add_custom_fields_filters(@project.all_issue_custom_fields)
     else
+      # si on est dans une communauté
+      if Community.current
+        # on récupère les CustomField de la communauté
+        custom_fields = Community.current.project_custom_fields
+      else
+        # sinon ceux de toutes les communautés de l'utilisateur
+        custom_fields = User.current.communities.collect(&:project_custom_fields).flatten.uniq
+      end
+
       # global filters for cross project issue list
-      add_custom_fields_filters(IssueCustomField.find(:all, :conditions => {:is_filter => true, :is_for_all => true}))
+      add_custom_fields_filters(custom_fields.select{|f| f.is_filter && f.is_for_all })
+#      add_custom_fields_filters(IssueCustomField.find(:all, :conditions => {:community_id => Community.current, :is_filter => true, :is_for_all => true}))
     end
     @available_filters
   end
@@ -208,14 +218,24 @@ class Query < ActiveRecord::Base
   def available_filters_projects
     return @available_filters_projects if @available_filters_projects    
 
+    if Community.current
+      users = Community.current.users
+      project_statuses = Community.current.project_statuses
+      custom_fields = Community.current.project_custom_fields
+    else
+      users = User.current.communities.collect(&:users).flatten.uniq
+      project_statuses = User.current.communities.collect(&:project_statuses).flatten.uniq
+      custom_fields = User.current.communities.collect(&:project_custom_fields).flatten.uniq
+    end
+
     @available_filters_projects = {
-                   "status_id" => { :type => :list_status, :order => 1, :values => ProjectStatus.find(:all, :order => 'position').collect{|s| [s.status_label, s.id.to_s] } },
-                    "builder_by" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }},
-                    "author_id" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }},
-                    "watcher_id" => { :type => :list, :order => 1, :values => User.find(:all).collect{|u| [u.name, u.id.to_s] }}
-                  }
-    add_custom_fields_filters_projects(CustomField.all(:conditions=>["type = 'ProjectCustomField'"]))
- 
+      "status_id" => { :type => :list_status, :order => 1, :values => project_statuses.collect{|s| [s.status_label, s.id.to_s] } },
+      "builder_by" => { :type => :list, :order => 1, :values => users.collect{|u| [u.name, u.id.to_s] }},
+      "author_id" => { :type => :list, :order => 1, :values => users.collect{|u| [u.name, u.id.to_s] }},
+      "watcher_id" => { :type => :list, :order => 1, :values => users.collect{|u| [u.name, u.id.to_s] }}
+    }
+
+    add_custom_fields_filters_projects(custom_fields)
     
     @available_filters_projects
   end

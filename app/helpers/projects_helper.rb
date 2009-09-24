@@ -15,6 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+require 'csv'
 module ProjectsHelper
   def link_to_version(version, options = {})
     return '' unless version && version.is_a?(Version)
@@ -112,4 +113,39 @@ module ProjectsHelper
       end
       return partner_name
     end
+
+    def projects_to_csv(projects, query = nil)
+    ic = Iconv.new(l(:general_csv_encoding), 'UTF-8')
+    decimal_separator = l(:general_csv_decimal_separator)
+    export = StringIO.new
+    CSV::Writer.generate(export, l(:general_csv_separator)) do |csv|
+      # csv header fields
+      headers = [                
+                  l(:field_project),
+                  l(:field_description),
+                  l(:field_author),
+                  l(:field_watched_by),
+                  l(:field_buid_by)
+                  ]
+      # Export project custom fields if project is given
+      # otherwise export custom fields marked as "For all projects"
+      custom_fields = ProjectCustomField.for_all
+      custom_fields.each {|f| headers << f.name}  
+      csv << headers.collect {|c| begin; ic.iconv(c.to_s); rescue; c.to_s; end }
+      # csv lines
+      projects.each do |project|
+        fields = [
+                  project.name,
+                  project.description,
+                  project.author ? project.author.name : "",
+                  project.author ? project.watcher.name : "",
+                  project.author ? project.builder.name : ""
+                  ]
+        custom_fields.each {|f| fields << show_value(project.custom_value_for(f)) }      
+        csv << fields.collect {|c| begin; ic.iconv(c.to_s); rescue; c.to_s; end }
+      end
+    end
+    export.rewind
+    export
+  end
 end

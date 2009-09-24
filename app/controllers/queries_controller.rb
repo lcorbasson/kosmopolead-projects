@@ -25,6 +25,8 @@ class QueriesController < ApplicationController
 
   helper :sort
   include SortHelper
+  include ProjectsHelper
+  include Redmine::Export::PDF
 
   def index
    retrieve_query
@@ -109,13 +111,7 @@ class QueriesController < ApplicationController
 
 
     if @query.valid?
-      limit = per_page_option
-      respond_to do |format|
-        format.html { }
-        format.atom { }
-        format.csv  { limit = Setting.issues_export_limit.to_i }
-        format.pdf  { limit = Setting.issues_export_limit.to_i }
-      end
+      limit = per_page_option     
       conditions = @query.statement_projects
 
       @project_count = Project.count( :conditions => conditions)
@@ -126,6 +122,9 @@ class QueriesController < ApplicationController
                            :limit  =>  limit,
                            :offset =>  @project_pages.current.offset
       respond_to do |format|
+         format.html { }       
+        format.csv  { send_data(projects_to_csv(@projects, @query).read, :type => 'text/csv; header=present', :filename => "#{@query.name}.csv") }
+        format.pdf  { send_data(projects_to_pdf(@projects, @query), :type => 'application/pdf', :filename => "#{@query.name}.pdf") }
         format.js {
         render:update do |page|
             page << "jQuery('#projects_list').html('#{escape_javascript(render:partial=>'projects/index')}');"

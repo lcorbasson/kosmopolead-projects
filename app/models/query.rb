@@ -100,6 +100,7 @@ class Query < ActiveRecord::Base
   @@operators_by_filter_type = { :list => [ "=", "!" ],
                                  :list_status => [ "=", "!", "*" ],
                                  :list_optional => [ "=", "!", "!*", "*" ],
+                                 :list_multiple => [ "=", "!", "!*", "*" ],
                                  :list_subprojects => [ "*", "!*", "=" ],
                                  :date => [ "<t+", ">t+", "t+", "t", "w", ">t-", "<t-", "t-" ],
                                  :date_past => [ ">t-", "<t-", "t-", "t", "w" ],
@@ -391,9 +392,10 @@ class Query < ActiveRecord::Base
           # custom field
           db_table = CustomValue.table_name
           db_field = 'value'
-          is_custom_filter = true
+          is_custom_filter = true         
           sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{db_table} ON #{db_table}.customized_type='Project' AND #{db_table}.customized_id=#{Project.table_name}.id AND #{db_table}.custom_field_id=#{$1} WHERE "
-     else
+
+      else
          db_field = field
          if (field == "status_id")
             db_table = ProjectStatus.table_name
@@ -476,8 +478,8 @@ class Query < ActiveRecord::Base
   def sql_for_field_projects(field, value, db_table, db_field, is_custom_filter)
     sql = ''
     case operator_for field
-    when "="
-      sql = "#{db_table}.#{db_field} IN (" + value.collect{|val| "'#{connection.quote_string(val)}'"}.join(",") + ")"
+    when "="      
+          sql = "#{db_table}.#{db_field} IN (" + value.collect{|val| "'#{connection.quote_string(val)}'"}.join(",") + ")"
     when "!"
       sql = "(#{db_table}.#{db_field} IS NULL OR #{db_table}.#{db_field} NOT IN (" + value.collect{|val| "'#{connection.quote_string(val)}'"}.join(",") + "))"
     when "!*"
@@ -534,6 +536,8 @@ class Query < ActiveRecord::Base
         options = { :type => :text, :order => 20 }
       when "list"
         options = { :type => :list_optional, :values => field.possible_values, :order => 20}
+      when "multi_list"
+        options = { :type => :list_multiple, :values => field.possible_values, :order => 20}
       when "date"
         options = { :type => :date, :order => 20 }
       when "bool"
@@ -554,6 +558,8 @@ class Query < ActiveRecord::Base
         options = { :type => :text, :order => 20 }
       when "list"
         options = { :type => :list_optional, :values => field.possible_values, :order => 20}
+      when "multi_list"
+        options = { :type => :list_multiple, :values => field.possible_values, :order => 20}
       when "date"
         options = { :type => :date, :order => 20 }
       when "bool"

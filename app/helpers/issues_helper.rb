@@ -216,6 +216,18 @@ module IssuesHelper
     return html
   end
 
+  def show_assigned_to_pdf(issue)
+    return "-" if issue.assignments.nil?
+    html = ""
+    issue.assignments.each_with_index do |assignment,index|
+      user = assignment.user
+      html += avatar(user, :size => "14") ? avatar(user, :size => "14") : ""
+      html += user.name
+      html += (index==issue.assignments.size-1)? "":","
+    end
+    return html
+  end
+
    def show_assigned_to_list(issue)
     return "-" if issue.assignments.nil?
     html =""

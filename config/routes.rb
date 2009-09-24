@@ -17,7 +17,7 @@ ActionController::Routing::Routes.draw do |map|
   map.faq 'faq', :controller => 'static', :action => 'faq'
   map.signin 'login', :controller => 'account', :action => 'login'
   map.signout 'logout', :controller => 'account', :action => 'logout'
-  map.resources 'queries',:controller=>'queries'
+  map.resources :queries,:collection=>{:projects=>:get}
   map.connect 'project_statuses',:controller=>'project_statuses'
   map.resources 'project_relation_types',:controller=>'project_relation_types'
   map.connect 'watchers',:controller=>'watchers'

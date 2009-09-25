@@ -468,6 +468,11 @@ class ProjectsController < ApplicationController
     render :layout=>false
   end
 
+  def edit_part_profile
+    @project = Project.find(params[:project_id])
+    render :layout=>false
+  end
+
   def refresh_menu
       @query = Query.new(:name => "_")
       @query.project = @project

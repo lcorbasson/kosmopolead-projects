@@ -1,4 +1,4 @@
-<div class="project_infos" >
+<div id="project_infos">
   <div  id="infos_project">
     <% if  project.author %>
       <label><%= l(:label_support_by) %></label> <%= project.author.name %><%= " - #{partner_project(project)}" unless partner_project(project).nil? %><br/>
@@ -19,33 +19,9 @@
        <label><%= l(:label_project_sector) %></label> <%= my_sector(current_language, project.sector).collect{|s| s.name}%><br />
     <% end %>
     <label><%= l(:field_status) %></label> <%= @project.status.status_label %><br/>
-  </div>  
-</div>
-<% remote_form_for(:project, project,
-                 :url =>  project_path(@project,:part=>'summary'),
-                 :method => :put,
-                 :html => {:id => 'update-profile-form',:class=>"tabular",:style=>'display:none;'}) do |f| %>
-      <p><label><%= l(:label_name) %></label> <%= f.text_field :name %></p>
-      <p><label><%= l(:label_acronym) %></label> <%= f.text_field :acronym %></p>
-      <p><label><%= l(:label_parent) %></label> <%= f.select :parent_id, (@root_projects.collect {|p| [p.acronym, p.id]}), { :include_blank => true } %></p>
-      <p><label><%= l(:label_support_by) %></label><%= text_field_tag("field_autocomplete_author","#{@project.author.name if @project.author}") %><%= f.hidden_field :author_id, :class=>"ac_input"%> <%#= f.select :author_id,  @project.community.users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
-      <p><label><%= l(:label_watched_by) %></label><%= text_field_tag("field_autocomplete_watcher","#{@project.watcher.name if @project.watcher}") %><%= f.hidden_field :watcher_id, :class=>"ac_input"%></p>
-      <p><label><%= l(:label_build_by) %></label> <%= text_field_tag("field_autocomplete_builder","#{@project.builder.name if @project.builder}") %><%= f.hidden_field :builder_by, :class=>"ac_input"%></p>
-      <p><label><%= l(:label_estimated_time) %></label> <%= f.text_field :estimated_time,:class=>"input_number" %>  <%= select_tag "project[time_units_id]", options_for_select(TimeUnit.all.collect {|u| [l("#{u.label}"), u.id]}) %></p>
-      <p><label><%= l(:label_project_cost) %></label> <%= f.text_field :project_cost,:class=>"input_number" %> €</p>
-      <p><label><%= l(:label_project_sector) %></label> <%= f.select :sector, @project.community.activity_sector_translations(current_language).collect{|s| [s.name, s.activity_sector_id] } %></p>
-      <p><label><%= l(:field_status) %></label> <%= f.select :status_id, @project.community.project_statuses.collect{|s| [s.status_label, s.id]} %></p>
-
-  <div class="buttons-icons right">
-     <a class="btn_blue ui-corner-all button"  onclick="javascript:jQuery.ajax({data:jQuery.param(jQuery('#update-profile-form').serializeArray()), dataType:'script', type:'put', url:'<%= project_path(@project,:part=>'summary')%>'}); return false;"><%= image_tag("accept3.png") %></a>
-     <%= toggle_link image_tag('delete2.png'), 'update-profile-form',{:second_element=>"infos_project"}%>
-
   </div>
- 
-<% end %>
- <div class="clearer"></div>
+</div>
+<div id="project-form"></div>
 
-  <%= javascript_include_tag("jquery-ui/autocomplete/jquery.autocomplete") %>
-  <%= stylesheet_link_tag("jquery/autocomplete/jquery.autocomplete") %>
 
-<%= javascript_tag("initialize_autocomplete_author_project('#{@project.identifier}');initialize_autocomplete_watcher_project('#{@project.identifier}');initialize_autocomplete_builder_project('#{@project.identifier}')") %>
+

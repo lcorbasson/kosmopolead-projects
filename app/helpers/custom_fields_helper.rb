@@ -98,11 +98,13 @@ module CustomFieldsHelper
     field_format
     case field_format
     when "date"
-      begin; format_date(value.to_date); rescue; value end
+      value.is_a?(FalseClass)||value.is_a?(Fixnum) ? "" : begin; format_date(value.to_date); rescue; value end
     when "bool"
       l_YesNo(value == "1")
     when 'multi_list'
         value.is_a?(FalseClass)||value.is_a?(Fixnum) ? "" : "#{value.collect.join(', ')}"
+    when 'list'
+        value.is_a?(FalseClass)||value.is_a?(Fixnum) ? "" : value
     else
       value
     end

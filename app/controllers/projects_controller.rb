@@ -264,7 +264,7 @@ class ProjectsController < ApplicationController
       format.js {
         render(:update) {|page|
           case params[:part]
-            when "description"
+            when "description"             
               page << "jQuery('.project_description').html('#{escape_javascript(render:partial=>'projects/box/description',:locals=>{:project=>@project})}');"
             when "tags"
               @project.tag_list = ''
@@ -274,17 +274,20 @@ class ProjectsController < ApplicationController
                 end
               end
               page << "jQuery('.project_tags').html('#{escape_javascript(render:partial=>'projects/box/tags')}');"
-            when "summary"
+            when "summary"              
               @users = User.all
               page << "jQuery('#profile_project').html('#{escape_javascript(profile_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
-            when "synthesis"
+            when "synthesis"              
               page.replace_html "tab-content-synthesis", :partial => 'projects/show/synthesis',:locals=>{:project=>@project}
-            when "custom_fields"
-              @project.save_custom_field_values
+            when "custom_fields"                
               page.replace_html "custom_fields", :partial => 'projects/show/custom_fields',:locals=>{:project=>@project}
+          end          
+          if @project.save
+            page << display_message_error(l(:notice_successful_update), "fieldNotice")
+          else
+            page << display_message_error(@issue, "fieldError")
           end
-          page << display_message_error(l(:notice_successful_update), "fieldNotice")
-          @project.save
+          page << "Element.scrollTo('errorExplanation');"
       }
       }
     end
@@ -296,8 +299,6 @@ class ProjectsController < ApplicationController
 
     @projects = Project.find :all,
                         :conditions => c.conditions
-
-
 
     respond_to do |format|
       format.js {

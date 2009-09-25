@@ -100,6 +100,8 @@ module CustomFieldsHelper
       begin; format_date(value.to_date); rescue; value end
     when "bool"
       l_YesNo(value == "1")
+    when 'multi_list'
+        value.is_a?(FalseClass)||value.is_a?(Fixnum) ? "" : "#{value.collect.join(', ')}"
     else
       value
     end

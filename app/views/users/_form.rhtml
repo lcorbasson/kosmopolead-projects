@@ -2,12 +2,12 @@
 
 <!--[form:user]-->
 <span class="tabular">
-  <p><label><%= l("field_login") %></label><%= f.text_field :login, :required => true, :size => 25  %></p>
-  <p><label><%= l("field_firstname") %></label><%= f.text_field :firstname, :required => true %></p>
-  <p><label><%= l("field_lastname") %></label><%= f.text_field :lastname, :required => true %></p>
-  <p><label><%= l("field_mail") %></label><%= f.text_field :mail, :required => true %></p>
-  <p><label><%= l("field_language") %></label><%= f.select :language, lang_options_for_select %></p>
-  <p><label><%=  l(:label_partner) %></label><%= select_tag "partner[]", options_for_select(@partners.collect {|p| [p.name, p.id]}),
+  <p><%= f.text_field :login, :required => true, :size => 25  %></p>
+  <p><%= f.text_field :firstname, :required => true %></p>
+  <p><%= f.text_field :lastname, :required => true %></p>
+  <p><%= f.text_field :mail, :required => true %></p>
+  <p><%= f.select :language, lang_options_for_select %></p>
+  <p><%= select_tag "partner[]", options_for_select(@partners.collect {|p| [p.name, p.id]},@user.partnerships.collect { |ps| ps.partner.id}   ),
             :multiple => true,:style=>"width:200px"  %></p>
 
   <p><label><%=  l(:field_admin) %></label><%= f.check_box :admin, :disabled => (@user == User.current) %></p>
@@ -18,10 +18,10 @@
   <p><%= f.select :auth_source_id, ([[l(:label_internal), ""]] + @auth_sources.collect { |a| [a.name, a.id] }), {}, :onchange => "if (this.value=='') {Element.show('password_fields');} else {Element.hide('password_fields');}" %></p>
   <% end %>
   <div id="password_fields" style="<%= 'display:none;' if @user.auth_source %>">
-  <p><label for="password"><%=l(:field_password)%><span class="required"> *</span></label>
+  <p>
   <%= password_field_tag 'password', nil, :size => 25  %><br />
   <em><%= l(:text_caracters_minimum, 4) %></em></p>
-  <p><label for="password_confirmation"><%=l(:field_password_confirmation)%><span class="required"> *</span></label>
+  <p>
   <%= password_field_tag 'password_confirmation', nil, :size => 25  %></p>
   </div>
 </span>

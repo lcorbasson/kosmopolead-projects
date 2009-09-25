@@ -7,3 +7,4 @@
 public/picts
 tmp/
 log/*
+lib/tasks/emc2/data/*

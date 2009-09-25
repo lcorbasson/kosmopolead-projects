@@ -57,14 +57,14 @@ class User < ActiveRecord::Base
   # Prevents unauthorized assignments
   attr_protected :login, :admin, :password, :password_confirmation, :hashed_password
 	
-  validates_presence_of :login, :firstname, :lastname, :mail, :unless => Proc.new { |user| user.is_a?(AnonymousUser) or user.is_a?(CommunityUser) }
+  validates_presence_of :login, :lastname, :unless => Proc.new { |user| user.is_a?(AnonymousUser) or user.is_a?(CommunityUser) }
   validates_uniqueness_of :login, :if => Proc.new { |user| !user.login.blank? }
-  validates_uniqueness_of :mail, :if => Proc.new { |user| !user.mail.blank? }
+#  validates_uniqueness_of :mail, :if => Proc.new { |user| !user.mail.blank? }
   # Login must contain lettres, numbers, underscores only
   validates_format_of :login, :with => /^[a-z0-9_\-@\.]*$/i
-  validates_length_of :login, :maximum => 30
+#  validates_length_of :login, :maximum => 30
   validates_format_of :firstname, :lastname, :with => /^[\w\s\'\-\.]*$/i
-  validates_length_of :firstname, :lastname, :maximum => 30
+#  validates_length_of :firstname, :lastname, :maximum => 30
   validates_format_of :mail, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, :allow_nil => true
   validates_length_of :mail, :maximum => 60, :allow_nil => true
   validates_length_of :password, :minimum => 4, :allow_nil => true

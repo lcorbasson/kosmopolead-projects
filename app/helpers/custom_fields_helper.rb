@@ -94,7 +94,8 @@ module CustomFieldsHelper
   
   # Return a string used to display a custom value
   def format_value(value, field_format)
-    return "" unless value && !value.empty?
+    return "" unless value && !value.nil?
+    field_format
     case field_format
     when "date"
       begin; format_date(value.to_date); rescue; value end

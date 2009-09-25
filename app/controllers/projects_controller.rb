@@ -105,10 +105,11 @@ class ProjectsController < ApplicationController
            end
         }
       end
-    else
+    else     
       #Save project
       @relation = ProjectRelation.new
-      @project = Project.new(params[:project])
+      @project = current_community.projects.build
+      @project.attributes = params[:project]
       @project.archived = false
       @project.enabled_module_names = params[:enabled_modules]
       @project.community = current_community
@@ -520,10 +521,13 @@ class ProjectsController < ApplicationController
         # Send html if the query is not valid
         render(:template => 'queries/index.rhtml', :layout => !request.xhr?)
       end
-
-
-    
   end
+
+  def list_members
+   @members = Community.current.users.like("#{params[:q]}%")
+    render :layout=>false
+  end
+
   
 private
   # Find project of id params[:id]

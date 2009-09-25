@@ -520,10 +520,13 @@ class ProjectsController < ApplicationController
         # Send html if the query is not valid
         render(:template => 'queries/index.rhtml', :layout => !request.xhr?)
       end
-
-
-    
   end
+
+  def list_members
+   @members = @project.community.users.like("#{params[:q]}%")
+    render :layout=>false
+  end
+
   
 private
   # Find project of id params[:id]

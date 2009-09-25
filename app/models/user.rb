@@ -49,6 +49,8 @@ class User < ActiveRecord::Base
   
   # Active non-anonymous users scope
   named_scope :active, :conditions => "#{User.table_name}.status = #{STATUS_ACTIVE}"
+
+  named_scope :like, lambda { |like| { :conditions => ["#{User.table_name}.firstname LIKE ? or #{User.table_name}.lastname LIKE ?",like,like] } }
   
 #  acts_as_customizable
   

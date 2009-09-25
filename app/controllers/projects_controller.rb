@@ -105,10 +105,11 @@ class ProjectsController < ApplicationController
            end
         }
       end
-    else
+    else     
       #Save project
       @relation = ProjectRelation.new
-      @project = Project.new(params[:project])
+      @project = current_community.projects.build
+      @project.attributes = params[:project]
       @project.archived = false
       @project.enabled_module_names = params[:enabled_modules]
       @project.community = current_community
@@ -263,7 +264,7 @@ class ProjectsController < ApplicationController
       format.js {
         render(:update) {|page|
           case params[:part]
-            when "description"
+            when "description"             
               page << "jQuery('.project_description').html('#{escape_javascript(render:partial=>'projects/box/description',:locals=>{:project=>@project})}');"
             when "tags"
               @project.tag_list = ''
@@ -273,17 +274,20 @@ class ProjectsController < ApplicationController
                 end
               end
               page << "jQuery('.project_tags').html('#{escape_javascript(render:partial=>'projects/box/tags')}');"
-            when "summary"
+            when "summary"              
               @users = User.all
               page << "jQuery('#profile_project').html('#{escape_javascript(profile_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
-            when "synthesis"
+            when "synthesis"              
               page.replace_html "tab-content-synthesis", :partial => 'projects/show/synthesis',:locals=>{:project=>@project}
-            when "custom_fields"
-              @project.save_custom_field_values
+            when "custom_fields"                
               page.replace_html "custom_fields", :partial => 'projects/show/custom_fields',:locals=>{:project=>@project}
+          end          
+          if @project.save
+            page << display_message_error(l(:notice_successful_update), "fieldNotice")
+          else
+            page << display_message_error(@issue, "fieldError")
           end
-          page << display_message_error(l(:notice_successful_update), "fieldNotice")
-          @project.save
+          page << "Element.scrollTo('errorExplanation');"
       }
       }
     end
@@ -295,8 +299,6 @@ class ProjectsController < ApplicationController
 
     @projects = Project.find :all,
                         :conditions => c.conditions
-
-
 
     respond_to do |format|
       format.js {
@@ -520,10 +522,13 @@ class ProjectsController < ApplicationController
         # Send html if the query is not valid
         render(:template => 'queries/index.rhtml', :layout => !request.xhr?)
       end
-
-
-    
   end
+
+  def list_members
+   @members = Community.current.users.like("#{params[:q]}%")
+    render :layout=>false
+  end
+
   
 private
   # Find project of id params[:id]

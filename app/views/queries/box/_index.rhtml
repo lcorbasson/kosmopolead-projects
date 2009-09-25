@@ -6,7 +6,7 @@
     <tr class="<%= cycle('odd', 'even') %>">
       <td>
         <%  if query.query_type=="issue" %>
-          <%= link_to_remote query.name, {:url=> project_issues_path(@project, :project_id => @project, :query_id => query),:method=>:get} %>
+          <%= link_to_remote query.name, {:url=> project_issues_path(session[:project], :project_id => @project, :query_id => query),:method=>:get} %>
         <% else %>
           <%= link_to_remote query.name, {:url=>projects_queries_path(:query_id => query),:method=>:get} %>
         <% end %>

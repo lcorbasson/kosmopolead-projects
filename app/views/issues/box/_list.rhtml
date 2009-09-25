@@ -40,6 +40,13 @@
 <div id="list_issues">
   <%= render :partial => 'issues/list', :locals => {:issues => @issues, :query => @query} %>
 </div>
+<p class="other-formats">
+  <%= l(:label_export_to) %>
+  <span><%= link_to 'Atom', {:query_id => @query, :format => 'atom', :key => User.current.rss_key}, :class => 'feed' %></span>
+  <span><%= link_to 'CSV', {:format => 'csv'}, :class => 'csv' %></span>
+  <span><%= link_to 'PDF', {:format => 'pdf'}, :class => 'pdf' %></span>
+</p>
+
 <% content_for :header_tags do %>
     <%= auto_discovery_link_tag(:atom, {:query_id => @query, :format => 'atom', :page => nil, :key => User.current.rss_key}, :title => l(:label_issue_plural)) %>
     <%= auto_discovery_link_tag(:atom, {:action => 'changes', :query_id => @query, :format => 'atom', :page => nil, :key => User.current.rss_key}, :title => l(:label_changes_details)) %>

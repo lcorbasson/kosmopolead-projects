@@ -143,7 +143,7 @@ module Redmine
           pdf.Cell(30, row_height, issue.tracker.name, 0, 0, 'L', 1)
           pdf.Cell(30, row_height, issue.status.name, 0, 0, 'L', 1)
           pdf.Cell(30, row_height, issue.priority.name, 0, 0, 'L', 1)
-          pdf.Cell(40, row_height, issue.assignments ? show_assigned_to(issue) : '', 0, 0, 'L', 1)
+          pdf.Cell(40, row_height, issue.assignments ? show_assigned_to_pdf(issue) : '', 0, 0, 'L', 1)
           pdf.Cell(25, row_height, format_date(issue.updated_on), 0, 0, 'L', 1)
           pdf.MultiCell(0, row_height, (project == issue.project ? issue.subject : "#{issue.project} - #{issue.subject}"))
           pdf.Line(10, pdf.GetY, 287, pdf.GetY)
@@ -455,6 +455,55 @@ module Redmine
         pdf.Line(15, top, subject_width+g_width, top)
         pdf.Output
       end
+
+     
+
+      # Returns a PDF string of a list of projects
+      def projects_to_pdf(projects, query)
+        pdf = IFPDF.new(current_language)
+        title = query ? "#{query.name}" : ""
+        pdf.SetTitle(title)
+        pdf.AliasNbPages
+        pdf.footer_date = format_date(Date.today)
+        pdf.AddPage("L")
+        row_height = 7
+
+        # title
+        pdf.SetFontStyle('B',11)
+        pdf.Cell(190,10, title)
+        pdf.Ln
+
+        # headers
+        pdf.SetFontStyle('B',10)
+        pdf.SetFillColor(230, 230, 230)      
+        pdf.Cell(30, row_height, l(:field_project), 0, 0, 'L', 1)
+        pdf.Cell(30, row_height, l(:field_author), 0, 0, 'L', 1)
+        pdf.Cell(30, row_height, l(:field_watched_by), 0, 0, 'L', 1)
+        pdf.Cell(40, row_height, l(:field_build_by), 0, 0, 'L', 1)
+        custom_fields = ProjectCustomField.all
+        custom_fields.each {|f|pdf.Cell(40, row_height, f.name, 0, 0, 'L', 1)}
+        pdf.Line(10, pdf.GetY, 287, pdf.GetY)
+        pdf.Ln
+        pdf.Line(10, pdf.GetY, 287, pdf.GetY)
+        pdf.SetY(pdf.GetY() + 1)
+
+        # rows
+        pdf.SetFontStyle('',9)
+        pdf.SetFillColor(255, 255, 255)
+        projects.each do |project|        
+          pdf.Cell(30, row_height, project.name, 0, 0, 'L', 1)
+          pdf.Cell(30, row_height, project.author ? project.author.name : "", 0, 0, 'L', 1)
+          pdf.Cell(30, row_height, project.watcher ? project.watcher.name : "", 0, 0, 'L', 1)
+          pdf.Cell(40, row_height, project.builder ? project.builder.name : "", 0, 0, 'L', 1)
+          custom_fields.each {|f| pdf.Cell(40, row_height, show_value(project.custom_value_for(f)), 0, 0, 'L', 1)}
+          pdf.Ln
+          pdf.Line(10, pdf.GetY, 287, pdf.GetY)
+          pdf.SetY(pdf.GetY() + 1)
+        end
+        pdf.Output
+      end
+
+
     end
   end
 end

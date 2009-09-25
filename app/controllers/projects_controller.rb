@@ -523,7 +523,7 @@ class ProjectsController < ApplicationController
   end
 
   def list_members
-   @members = @project.community.users.like("#{params[:q]}%")
+   @members = Community.current.users.like("#{params[:q]}%")
     render :layout=>false
   end
 

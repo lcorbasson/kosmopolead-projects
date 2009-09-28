@@ -246,3 +246,26 @@ function initialize_autocomplete_builder_project(project){
         jQuery("#project_designer_id").val(data[1]);
     });
 }
+
+
+function initialize_autocomplete_partner_project(project){
+    jQuery("#field_autocomplete_partner").autocomplete("/projects/list_partners_community/",{
+        matchContains: false
+   });
+     jQuery("#field_autocomplete_partner").result(function(event, data, formatted) {
+        jQuery("#partner_id").val(data[1]);
+        partner_id = jQuery("#partner_id").val();
+         jQuery.ajax({
+                type: "get",
+                url: "projects/list_partnerships?partner_id="+partner_id,
+                success: function(msg){
+                    eval(msg)  ;
+                }
+            });
+    });
+    jQuery("#field_autocomplete_partner").change(function() {
+        jQuery("#partner_id").val(jQuery("#field_autocomplete_partner").val());
+
+    });
+
+}

@@ -553,6 +553,24 @@ class ProjectsController < ApplicationController
      end
   end
 
+  def list_partners_community
+      @community = current_community
+      @partners = @community.partners
+      render :layout=>false
+  end
+
+  def list_partnerships
+    @partner = Partner.find(params[:partner_id])
+    respond_to do |format|
+          format.js {
+            render(:update) {|page|
+              page.replace_html "member_users", content_tag('select', options_from_collection_for_select(@partner.members, 'id', 'name'), :id => 'user_id', :name => 'user_id')
+
+              }
+          }
+     end
+  end
+
   
 private
   # Find project of id params[:id]

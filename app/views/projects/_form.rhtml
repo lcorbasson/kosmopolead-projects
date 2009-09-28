@@ -24,7 +24,7 @@
 </p>
 <p>
   <label><%= l(:label_builder) %></label>
-  <%= text_field_tag("field_autocomplete_builder","#{@project.builder.name if @project.builder}") %><%= f.hidden_field :builder_by, :class=>"ac_input"%>
+  <%= text_field_tag("field_autocomplete_builder","#{@project.builder.name if @project.builder}") %><%= f.hidden_field :designer_id, :class=>"ac_input"%>
   <%#= f.select :builder_by, @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %>
 </p>
 <p>

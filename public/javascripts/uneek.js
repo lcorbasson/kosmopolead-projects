@@ -232,6 +232,6 @@ function initialize_autocomplete_builder_project(project){
         matchContains: false
    });
    jQuery("#field_autocomplete_builder").result(function(event, data, formatted) {
-        jQuery("#project_builder_by").val(data[1]);
+        jQuery("#project_designer_id").val(data[1]);
     });
 }

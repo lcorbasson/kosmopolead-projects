@@ -18,7 +18,9 @@
     <% if project.sector and project.sector %>
        <label><%= l(:label_project_sector) %></label> <%= my_sector(current_language, project.sector).collect{|s| s.name}%><br />
     <% end %>
-    <label><%= l(:field_status) %></label> <%= @project.status.status_label %><br/>
+    <% if @project.status %>
+      <label><%= l(:field_status) %></label> <%= @project.status.status_label %>
+    <% end %>
   </div>
 </div>
 <div id="project-form"></div>

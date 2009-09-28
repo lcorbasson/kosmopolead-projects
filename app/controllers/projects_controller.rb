@@ -291,7 +291,7 @@ class ProjectsController < ApplicationController
           if @project.save
             page << display_message_error(l(:notice_successful_update), "fieldNotice")
           else
-            page << display_message_error(@issue, "fieldError")
+            page << display_message_error(@project, "fieldError")
           end
           page << "Element.scrollTo('errorExplanation');"
       }

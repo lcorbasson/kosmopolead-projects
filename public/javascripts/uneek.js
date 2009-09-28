@@ -227,11 +227,11 @@ function initialize_autocomplete_watcher_project(project){
     });
 }
 
-function initialize_autocomplete_builder_project(project){
-    jQuery("#field_autocomplete_builder").autocomplete("/projects/"+project+"/list_members/",{
+function initialize_autocomplete_designer_project(project){
+    jQuery("#field_autocomplete_designer").autocomplete("/projects/"+project+"/list_members/",{
         matchContains: false
    });
-   jQuery("#field_autocomplete_builder").result(function(event, data, formatted) {
+   jQuery("#field_autocomplete_designer").result(function(event, data, formatted) {
         jQuery("#project_designer_id").val(data[1]);
     });
 }

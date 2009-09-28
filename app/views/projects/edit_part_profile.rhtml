@@ -7,7 +7,7 @@
       <p><label><%= l(:label_parent) %></label> <%= f.select :parent_id, (@root_projects.collect {|p| [p.acronym, p.id]}), { :include_blank => true } %></p>
       <p><label><%= l(:label_support_by) %></label><%= text_field_tag("field_autocomplete_author","#{@project.author.name if @project.author}") %><%= f.hidden_field :author_id, :class=>"ac_input"%> <%#= f.select :author_id,  @project.community.users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
       <p><label><%= l(:label_watched_by) %></label><%= text_field_tag("field_autocomplete_watcher","#{@project.watcher.name if @project.watcher}") %><%= f.hidden_field :watcher_id, :class=>"ac_input"%></p>
-      <p><label><%= l(:label_build_by) %></label> <%= text_field_tag("field_autocomplete_builder","#{@project.builder.name if @project.builder}") %><%= f.hidden_field :designer_id, :class=>"ac_input"%></p>
+      <p><label><%= l(:label_designed_by) %></label> <%= text_field_tag("field_autocomplete_designer","#{@project.designer.name if @project.designer}") %><%= f.hidden_field :designer_id, :class=>"ac_input"%></p>
       <p><label><%= l(:label_estimated_time) %></label> <%= f.text_field :estimated_time,:class=>"input_number" %>  <%= select_tag "project[time_units_id]", options_for_select(TimeUnit.all.collect {|u| [l("#{u.label}"), u.id]}) %></p>
       <p><label><%= l(:label_project_cost) %></label> <%= f.text_field :project_cost,:class=>"input_number" %> €</p>
       <p><label><%= l(:label_project_sector) %></label> <%= f.select :sector, @project.community.activity_sector_translations(current_language).collect{|s| [s.name, s.activity_sector_id] } %></p>
@@ -24,4 +24,4 @@
 
 
 
-<%= javascript_tag("initialize_autocomplete_author_project('#{@project.identifier}');initialize_autocomplete_watcher_project('#{@project.identifier}');initialize_autocomplete_builder_project('#{@project.identifier}')") %>
+<%= javascript_tag("initialize_autocomplete_author_project('#{@project.identifier}');initialize_autocomplete_watcher_project('#{@project.identifier}');initialize_autocomplete_designer_project('#{@project.identifier}')") %>

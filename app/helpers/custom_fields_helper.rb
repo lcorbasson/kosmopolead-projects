@@ -42,7 +42,7 @@ module CustomFieldsHelper
 
     when "text"
       if read_only
-        custom_value.value.is_a?(FalseClass) ? "" : text_area_tag(field_name, custom_value.value, :id => field_id, :rows => 3, :style => 'width:90%')
+        custom_value.value.is_a?(FalseClass) ? "" : "<p>#{custom_value.value}</p>"
       else
         text_area_tag(field_name, custom_value.value, :id => field_id, :rows => 3, :style => 'width:90%')
       end

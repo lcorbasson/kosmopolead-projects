@@ -4,7 +4,7 @@ class ActivitySector < ActiveRecord::Base
   belongs_to :community
   
   validates_presence_of :identifier, :community
-  validates_uniqueness_of :identifier
+  validates_uniqueness_of :identifier, :scope => [:community_id]
 
   after_create :add_activity_sector_translation
 

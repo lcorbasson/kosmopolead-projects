@@ -212,7 +212,7 @@ module ApplicationHelper
 
     html = ''
     html << link_to_remote(('&#171; ' + l(:label_previous)),
-                            {:update => 'content',
+                            {:update => 'content_wrapper',
                              :url => url_param.merge(page_param => paginator.current.previous),
                              :complete => 'window.scrollTo(0,0)'},
                             {:href => url_for(:params => url_param.merge(page_param => paginator.current.previous))}) + ' ' if paginator.current.previous
@@ -220,13 +220,13 @@ module ApplicationHelper
     html << (pagination_links_each(paginator, options) do |n|
       link_to_remote(n.to_s,
                       {:url => {:params => url_param.merge(page_param => n)},
-                       :update => 'content',
+                       :update => 'content_wrapper',
                        :complete => 'window.scrollTo(0,0)'},
                       {:href => url_for(:params => url_param.merge(page_param => n))})
     end || '')
 
     html << ' ' + link_to_remote((l(:label_next) + ' &#187;'),
-                                 {:update => 'content',
+                                 {:update => 'content_wrapper',
                                   :url => url_param.merge(page_param => paginator.current.next),
                                   :complete => 'window.scrollTo(0,0)'},
                                  {:href => url_for(:params => url_param.merge(page_param => paginator.current.next))}) if paginator.current.next
@@ -243,7 +243,7 @@ module ApplicationHelper
     url_param.clear if url_param.has_key?(:set_filter)
 
     links = Setting.per_page_options_array.collect do |n|
-      n == selected ? n : link_to_remote(n, {:update => "content", :url => params.dup.merge(:per_page => n)},
+      n == selected ? n : link_to_remote(n, {:update => "content_wrapper", :url => params.dup.merge(:per_page => n)},
                                             {:href => url_for(url_param.merge(:per_page => n))})
     end
     links.size > 1 ? l(:label_display_per_page, links.join(', ')) : nil
@@ -609,7 +609,7 @@ module ApplicationHelper
             dayNamesShort: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
             monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'],
             monthNamesShort: ['Jan','Fev','Mar','Avr','Mai','Jui','Jui','Aou','Sep','Oct','Nov','Dec'],
-            dateFormat: 'dd/mm/yy'
+            dateFormat: 'yy-mm-dd'
             })
       });"
    )
@@ -835,7 +835,13 @@ module ApplicationHelper
   end
 
   def profile_box(title,content)
-    link= "#{toggle_link image_tag("/images/edit.png"), 'update-profile-form',{:second_element=>"infos_project"}}"
+    link = link_to_remote "#{image_tag('/images/edit.png')}",
+                         { :url => { :controller => 'projects', :action => 'edit_part_profile', :project_id => @project.id},
+                           :method => 'get',
+                           :update=>'project-form',
+                           :with=>'toggle_profile()'
+                         }
+#    link= "#{toggle_link image_tag("/images/edit.png"), 'update-profile-form',{:second_element=>"infos_project"}}"
     content_tag(:div,
       content_tag(:div,content_tag(:div,title,:class=>"left",:style=>"max-width:90%;")+content_tag(:div,link,:class=>"links_edit_box")+content_tag(:div,"",:class=>"clearer"),:class=>'profile_header')+
       content_tag(:div,content,:class=>'profile_content'),:class=>"profile editable_box",:style=>"max-width:100%;")

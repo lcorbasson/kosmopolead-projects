@@ -75,7 +75,7 @@ module ProjectsHelper
       rows=[]
        if @project.funding_lines.size>0
         @project.funding_lines.each do |line|
-          rows << {:id=>line.id,:cell=>[line.aap,line.financeur,line.correspondant_financeur,line.montant_demande,line.funding_type,line.date_accord,line.montant_accorde,line.date_liberation,line.montant_libere,"#{link_to_remote(image_tag('/images/delete.png'),{ :url=>project_funding_line_path(@project,line),:method=>:delete,:confirm=>"Etes-vous certain de vouloir supprimer cette ligne ?"})} #{link_to_remote(image_tag('/images/edit.png'),{ :url=>edit_project_funding_line_path(@project,line),:method=>:get})}"]}
+          rows << {:id=>line.id,:cell=>[line.aap,line.backer,line.backer_correspondent,line.asked_amount,line.funding_type,line.agreed_on,line.agreed_amount,line.released_on,line.released_amount,"#{link_to_remote(image_tag('/images/delete.png'),{ :url=>project_funding_line_path(@project,line),:method=>:delete,:confirm=>"Etes-vous certain de vouloir supprimer cette ligne ?"})} #{link_to_remote(image_tag('/images/edit.png'),{ :url=>edit_project_funding_line_path(@project,line),:method=>:get})}"]}
         end
       end
      hash_json = {"page"=>@page,"total"=>@total_pages,"records"=>@records,"rows"=>rows}
@@ -138,8 +138,8 @@ module ProjectsHelper
                   project.name,
                   project.description,
                   project.author ? project.author.name : "",
-                  project.author ? project.watcher.name : "",
-                  project.author ? project.builder.name : ""
+                  project.watcher ? project.watcher.name : "",
+                  project.designer ? project.designer.name : ""
                   ]
         custom_fields.each {|f| fields << show_value(project.custom_value_for(f)) }      
         csv << fields.collect {|c| begin; ic.iconv(c.to_s); rescue; c.to_s; end }

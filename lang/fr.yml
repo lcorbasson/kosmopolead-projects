@@ -89,6 +89,8 @@ notice_account_pending: "Votre compte a été créé et attend l'approbation de 
 notice_default_data_loaded: Paramétrage par défaut chargé avec succès.
 notice_unable_delete_version: Impossible de supprimer cette version.
 notice_account_created: Le compte a bien été crée
+unable_to_delete_project_status: Une erreur est survenue lors d ela suppression du statut de projet
+cant_delete_project_status_because_relations: Vous ne pouvez pas supprimer ce statut de projet puisqu'il existe des projets ayant ce statut
 
 error_no_tracker: " Aucun traqueur n'est associé à ce projet. Veuillez vérifier les paramètres du projet."
 error_can_t_do: "Une erreur s'est produite, veuillez renouveler votre demande ultérieurement"
@@ -114,13 +116,12 @@ mail_body_reminder: "%d demande(s) qui vous sont assignées arrivent à échéan
 gui_validation_error: 1 erreur
 gui_validation_error_plural: %d erreurs
 
-field_build_by: Monté par
 field_reciprocity: Réciproque
 field_issue_types: Type de demande
 field_resources: Ressources nécessaires
 field_acronym: Acronyme
 field_time_units: Unité de temps
-field_build_by: Monté par
+field_designed_by: Monté par
 field_watched_by: Suivi par
 field_name: Nom
 field_description: Description
@@ -192,6 +193,8 @@ field_comments: Commentaire
 field_url: URL
 field_start_page: Page de démarrage
 field_subproject: Sous-projet
+field_weeks: Semaines
+field_months: Mois
 field_hours: Heures
 field_days: Jours
 field_activity: Activité
@@ -210,7 +213,7 @@ field_searchable: Utilisé pour les recherches
 field_default_value: Valeur par défaut
 field_comments_sorting: Afficher les commentaires
 field_parent_title: Page parent
-field_builder_by: Monté par
+field_designer: Monté par
 field_watcher: Suivi par
 field_project_cost: Cout du projet
 field_estimated_time: Temps estimé
@@ -319,6 +322,7 @@ legend_issue_in_late: Retard
 legend_issue_done: Réalisé
 legend_issue_todo: A faire
 
+label_change_password: Modification du mot de passe
 label_spent_on: Date
 label_hours: Temps
 label_comments: Commentaires
@@ -341,15 +345,15 @@ label_funding_line_new: Nouvelle ligne de financement
 label_funding_line_edit: Edition d'une ligne de financement
 label_funding_aap: AAP
 label_funding_beneficiary: Bénéficiaire
-label_funding_application_date: Date demande
-label_funding_financeur: Financeur
-label_funding_correspondant_financeur: Correspondant financeur
-label_funding_montant_demande: Montant demandé
+label_funding_asked_on: Date demande
+label_funding_asked_amount: Montant demandé
+label_funding_backer: Financeur
+label_funding_backer_correspondent: Correspondant financeur
 label_funding_type: Type
-label_funding_date_accord: Date accord
-label_funding_montant_accorde: Montant accordé
-label_funding_date_liberation: Date libération
-label_funding_montant_libere: Montant libéré
+label_funding_agreed_on: Date accord
+label_funding_agreed_amount: Montant accordé
+label_funding_released_on: Date libération
+label_funding_released_amount: Montant libéré
 label_stage: Phase
 label_issue: Tâche
 label_milestone: Jalon
@@ -373,7 +377,7 @@ label_estimated_hours: Temps estimé
 label_acronym: Acronyme
 label_identifier: Identifiant
 label_author: Porteur
-label_builder: Monté par
+label_designer: Monté par
 label_watcher: Suivi par
 label_cost: Coût
 label_sector: Secteur d'activité
@@ -409,7 +413,7 @@ label_account: Mon compte
 label_parent: Parent
 label_new: Nouveau
 label_support_by: Porté par
-label_build_by: Monté par
+label_designed_by: Monté par
 label_watched_by: Suivi par
 label_project_author: Porteur de projet
 label_no_issues: Aucun événement
@@ -863,6 +867,8 @@ no_project_relation_type_defined: "Vous n'avez créé aucun type de relation ent
 
 frequently_asked_questions: Questions fréquemment posées
 
+months: mois
+weeks: semaines
 hours: heures
 days: jours
 STAGE: Phase

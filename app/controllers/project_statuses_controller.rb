@@ -56,11 +56,17 @@ class ProjectStatusesController < ApplicationController
   end
 
   def destroy
-    @community.project_statuses.find(params[:id]).destroy
-    redirect_to :action => 'list'
-  rescue
-    flash[:error] = "Unable to delete issue status"
-    redirect_to :action => 'list'
+    @project_status = @community.project_statuses.find(params[:id])    
+    if @projects_with_status = Project.find(:all,:conditions=>["status_id = ?",@project_status.id])
+      flash[:error] = l(:cant_delete_project_status_because_relations)
+    else
+      if @project_status.destroy
+        flash[:notice] = l(:notice_successful_update)
+      else
+        flash[:error] = l(:unable_to_delete_project_status)
+      end
+    end
+    redirect_to :action => 'list' 
   end  	
 
 

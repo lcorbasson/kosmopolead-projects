@@ -479,7 +479,7 @@ module Redmine
         pdf.Cell(30, row_height, l(:field_project), 0, 0, 'L', 1)
         pdf.Cell(30, row_height, l(:field_author), 0, 0, 'L', 1)
         pdf.Cell(30, row_height, l(:field_watched_by), 0, 0, 'L', 1)
-        pdf.Cell(40, row_height, l(:field_build_by), 0, 0, 'L', 1)
+        pdf.Cell(40, row_height, l(:field_designed_by), 0, 0, 'L', 1)
         custom_fields = ProjectCustomField.all
         custom_fields.each {|f|pdf.Cell(40, row_height, f.name, 0, 0, 'L', 1)}
         pdf.Line(10, pdf.GetY, 287, pdf.GetY)
@@ -494,7 +494,7 @@ module Redmine
           pdf.Cell(30, row_height, project.name, 0, 0, 'L', 1)
           pdf.Cell(30, row_height, project.author ? project.author.name : "", 0, 0, 'L', 1)
           pdf.Cell(30, row_height, project.watcher ? project.watcher.name : "", 0, 0, 'L', 1)
-          pdf.Cell(40, row_height, project.builder ? project.builder.name : "", 0, 0, 'L', 1)
+          pdf.Cell(40, row_height, project.designer ? project.designer.name : "", 0, 0, 'L', 1)
           custom_fields.each {|f| pdf.Cell(40, row_height, show_value(project.custom_value_for(f)), 0, 0, 'L', 1)}
           pdf.Ln
           pdf.Line(10, pdf.GetY, 287, pdf.GetY)

@@ -105,6 +105,8 @@ module CustomFieldsHelper
         value.is_a?(FalseClass)||value.is_a?(Fixnum) ? "" : "#{value.collect.join(', ')}"
     when 'list'
         value.is_a?(FalseClass)||value.is_a?(Fixnum) ? "" : value
+    when 'text'
+        value.is_a?(FalseClass)||value.is_a?(Fixnum) ? "" : value
     else
       value
     end

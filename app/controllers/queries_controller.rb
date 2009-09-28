@@ -112,9 +112,9 @@ class QueriesController < ApplicationController
 
   def projects   
     retrieve_query
-    sort_init 'id', 'desc'
-    sort_update({'id' => "#{Project.table_name}.id"}.merge(@query.columns.inject({}) {|h, c| h[c.name.to_s] = c.sortable; h}))
-
+    sort_init "#{Project.table_name}.name", 'desc'
+    sort_update ({"name"=>"#{Project.table_name}.name","is_public"=>"#{Project.table_name}.is_public","created_on"=>"#{Project.table_name}.created_on"})
+    
 
 
     if @query.valid?

@@ -10,10 +10,15 @@
         "#{render:partial=>'my/box/informations',:locals=>{:f=>f}}"
     ) %>
 
+  <%= box(
+        "#{l(:label_change_password)}",
+        "#{render:partial=>'my/box/change_password',:locals=>{:f=>f}}"
+    ) %>
+
 </div>
 
 <div class="splitcontentright">
-  <%= box(
+  <%#= box(
         "#{l(:field_mail_notification)}",
         "#{render:partial=>'my/box/notifications',:locals=>{:f=>f}}"
     ) %>

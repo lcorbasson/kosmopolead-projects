@@ -241,7 +241,7 @@ class Query < ActiveRecord::Base
 
     @available_filters_projects = {
       "status_id" => { :type => :list_status, :order => 1, :values => project_statuses.collect{|s| [s.status_label, s.id.to_s] } },
-      "builder_by" => { :type => :list, :order => 1, :values => users.collect{|u| [u.name, u.id.to_s] }},
+      "designer_id" => { :type => :list, :order => 1, :values => users.collect{|u| [u.name, u.id.to_s] }},
       "author_id" => { :type => :list, :order => 1, :values => users.collect{|u| [u.name, u.id.to_s] }},
       "watcher_id" => { :type => :list, :order => 1, :values => users.collect{|u| [u.name, u.id.to_s] }}
     }

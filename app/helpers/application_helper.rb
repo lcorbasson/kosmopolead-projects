@@ -609,7 +609,7 @@ module ApplicationHelper
             dayNamesShort: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
             monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'],
             monthNamesShort: ['Jan','Fev','Mar','Avr','Mai','Jui','Jui','Aou','Sep','Oct','Nov','Dec'],
-            dateFormat: 'dd/mm/yy'
+            dateFormat: 'yy-mm-dd'
             })
       });"
    )

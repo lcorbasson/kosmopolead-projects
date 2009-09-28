@@ -27,7 +27,7 @@ class AdminController < ApplicationController
 	
   def projects
     sort_init 'name', 'asc'
-    sort_update %w(name is_public created_on)
+    sort_update %w(name  created_on)
     
     @status = params[:status] ? params[:status].to_i : 1
 

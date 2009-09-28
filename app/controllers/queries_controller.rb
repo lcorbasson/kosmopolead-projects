@@ -113,7 +113,7 @@ class QueriesController < ApplicationController
   def projects   
     retrieve_query
     sort_init "#{Project.table_name}.name", 'desc'
-    sort_update ({"name"=>"#{Project.table_name}.name","is_public"=>"#{Project.table_name}.is_public","created_on"=>"#{Project.table_name}.created_on"})
+    sort_update ({"name"=>"#{Project.table_name}.name","created_on"=>"#{Project.table_name}.created_on"})
     
 
 

@@ -41,7 +41,7 @@ class Project < ActiveRecord::Base
   has_many :relations_to, :class_name => 'ProjectRelation', :foreign_key => 'project_to_id', :dependent => :delete_all
   belongs_to :author,:class_name=>"User",:foreign_key=>"author_id"
   belongs_to :watcher,:class_name=>"User",:foreign_key=>"watcher_id"
-  belongs_to :builder,:class_name=>"User",:foreign_key=>"builder_by"
+  belongs_to :builder,:class_name=>"User",:foreign_key=>"designer_id"
   has_many :issue_changes, :through => :issues, :source => :journals
   has_many :versions, :dependent => :destroy, :order => "#{Version.table_name}.effective_date DESC, #{Version.table_name}.name DESC"
   has_many :time_entries, :dependent => :delete_all

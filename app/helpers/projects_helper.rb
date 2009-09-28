@@ -138,8 +138,8 @@ module ProjectsHelper
                   project.name,
                   project.description,
                   project.author ? project.author.name : "",
-                  project.author ? project.watcher.name : "",
-                  project.author ? project.designer.name : ""
+                  project.watcher ? project.watcher.name : "",
+                  project.designer ? project.designer.name : ""
                   ]
         custom_fields.each {|f| fields << show_value(project.custom_value_for(f)) }      
         csv << fields.collect {|c| begin; ic.iconv(c.to_s); rescue; c.to_s; end }

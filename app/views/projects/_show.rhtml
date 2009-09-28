@@ -2,7 +2,7 @@
      <div id="filters">
         <% form_tag({ :controller => 'projects', :action => 'refresh_menu' }, :id => 'query_form') do %>
 
-          <span class="title_filter"><%= l(:label_filter_plural) %></span>
+          <span class="title_filter <%= 'active' if !@query.filters.empty?%>"><%= l(:label_filter_plural) %></span>
           <div class="toggle_filter toggle <%= show_filters ? 'open' : 'close' %>">&nbsp;&nbsp;</div>
           <div class="clearer"></div>
           <div class="toggler_filter toggler">

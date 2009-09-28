@@ -206,7 +206,7 @@ class ProjectsController < ApplicationController
     @file_attachment.container_id = @project.id
     @file_attachment.container_type = "project"
     @roles = Role.find :all, :order => 'builtin, position'
-    retrieve_query
+   
     if @query.valid?
       events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
                                                                 and start_date is not null)

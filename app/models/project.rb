@@ -323,6 +323,10 @@ class Project < ActiveRecord::Base
         l(:field_hours)
       when "days"
         l(:field_days)
+      when "weeks"
+        l(:field_weeks)
+      when "months"
+        l(:field_months)
       end
   end
   def level

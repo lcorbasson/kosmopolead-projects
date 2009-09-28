@@ -121,7 +121,7 @@ module SortHelper
     url_options = params.has_key?(:set_filter) ? sort_options : params.merge(sort_options)
 
    link_to_remote(caption,
-                  {:url=>url_options},
+                  {:url=>url_options,:method=>:get},
                   {:href => url_for(url_options)}) +
     (icon ? nbsp(2) + image_tag(icon) : '')
 

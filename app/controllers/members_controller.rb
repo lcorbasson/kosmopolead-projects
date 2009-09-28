@@ -33,7 +33,8 @@ class MembersController < ApplicationController
 
 
   def create    
-      @project.members << Member.new(params[:member]) if request.post?
+      @project.members << Member.new(:role_id=>params[:member][:role_id],:user_id=>params[:user_id]) if request.post?
+      @project.save
       @members = @project.members
       @member ||= @project.members.new
       @users = User.active.all

@@ -191,6 +191,8 @@ field_comments: Commentaire
 field_url: URL
 field_start_page: Page de démarrage
 field_subproject: Sous-projet
+field_weeks: Semaines
+field_months: Mois
 field_hours: Heures
 field_days: Jours
 field_activity: Activité
@@ -857,6 +859,8 @@ no_project_relation_type_defined: "Vous n'avez créé aucun type de relation ent
 
 frequently_asked_questions: Questions fréquemment posées
 
+months: mois
+weeks: semaines
 hours: heures
 days: jours
 STAGE: Phase

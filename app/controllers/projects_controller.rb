@@ -128,6 +128,9 @@ class ProjectsController < ApplicationController
         @users = User.all
         @file_attachment = FileAttachment.new(:container_type=>"project",:container_id=>@project.id)
         @roles = Role.find :all, :order => 'builtin, position'
+        if params[:partner_id]
+          @partner = ProjectPartner.create(:project_id=>@project.id,:partner_id=>params[:partner_id])
+        end
         retrieve_query
         if @query.valid?
           events = Issue.find(:all,:include=>[:type],:conditions=>["(((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?))
@@ -276,6 +279,9 @@ class ProjectsController < ApplicationController
               page << "jQuery('.project_tags').html('#{escape_javascript(render:partial=>'projects/box/tags')}');"
             when "summary"              
               @users = User.all
+              if params[:partner_id]
+                @partner = ProjectPartner.create(:project_id=>@project.id,:partner_id=>params[:partner_id])
+              end
               page << "jQuery('#profile_project').html('#{escape_javascript(profile_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
             when "synthesis"              
               page.replace_html "tab-content-synthesis", :partial => 'projects/show/synthesis',:locals=>{:project=>@project}
@@ -529,9 +535,40 @@ class ProjectsController < ApplicationController
       end
   end
 
-  def list_members
+  def list_members_community
    @members = Community.current.users.like("#{params[:q]}%")
     render :layout=>false
+  end
+
+  def list_partners
+      @user = User.find(params[:user_id])
+      @partners = @user.partnerships.collect { |ps| ps.partner}
+      respond_to do |format|
+          format.js {
+            render(:update) {|page|
+              page.replace_html "list_partners", content_tag('label',l(:label_partner))+content_tag('select', options_from_collection_for_select(@partners, 'id', 'name'), :id => 'partner_id', :name => 'partner_id')
+              
+              }
+          }
+     end
+  end
+
+  def list_partners_community
+      @community = current_community
+      @partners = @community.partners
+      render :layout=>false
+  end
+
+  def list_partnerships
+    @partner = Partner.find(params[:partner_id])
+    respond_to do |format|
+          format.js {
+            render(:update) {|page|
+              page.replace_html "member_users", content_tag('select', options_from_collection_for_select(@partner.members, 'id', 'name'), :id => 'user_id', :name => 'user_id')
+
+              }
+          }
+     end
   end
 
   

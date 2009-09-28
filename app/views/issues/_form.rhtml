@@ -18,9 +18,7 @@
         <p>
           <label><%= l(:label_tracker_id) %></label>
           <%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %></p>
-          <%= observe_field :issue_tracker_id, :url => { :action => :new },
-            :update => :contehnt,
-            :with => "Form.serialize('issue-form')" %>
+          
       <% end %>
 
 <div id="issue_descr_fields">
@@ -136,7 +134,7 @@
   </p>
   <p>
     <label><%= l(:label_estimated_hours) %></label>
-    <%= f.text_field :estimated_hours %>  <%= l(@project.time_unit_label) %>
+    <%= f.text_field :estimated_hours %>  <%= @project.time_unit_label%>
   </p>
 
 <%= wikitoolbar_for 'issue_description' %>

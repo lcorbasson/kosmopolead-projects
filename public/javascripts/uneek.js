@@ -106,17 +106,17 @@ function initialize_funding_grid(url,edit_url){
             colNames:["AAP", "Financeur","Correspondant financeur","Montant demandé","Type","Date accord","Montant accordé","Date libération","Montant libéré"],
             colModel:[
                 {name:'aap',index:'aap',width:80, resizable:false,sortable:true, align:"center", editable:true},
-                {name:'financeur',index:'financeur',width:100, resizable:false, sortable:true, editable:true, align:"center"},
-                {name:'correspondant',index:'correspondant', resizable:false, sortable:true, editable:true, align:"center"},
-                {name:'montant_demande',index:'montant_demande',width:100, resizable:true, sortable:false, editable:true, align:"right" },
+                {name:'backer',index:'backer',width:100, resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'backer_correspondent',index:'backer_correspondent', resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'asked_amount',index:'asked_amount',width:100, resizable:true, sortable:false, editable:true, align:"right" },
                 {name:'funding_type',index:'type', width:100,resizable:false, sortable:true, editable:true, align:"center"},
-                {name:'date_accord',index:'date_accord', resizable:false, sortable:true, editable:true, align:"center",
+                {name:'agreed_on',index:'agreed_on', resizable:false, sortable:true, editable:true, align:"center",
                    editoptions:{size:12}},
-                {name:'montant_accorde',index:'montant_accorde',width:100, resizable:false, sortable:true, editable:true, align:"right"},
-                {name:'date_liberation',index:'date_liberation', resizable:false, sortable:true, editable:true, align:"center"
+                {name:'asked_amount',index:'asked_amount',width:100, resizable:false, sortable:true, editable:true, align:"right"},
+                {name:'released_on',index:'released_on', resizable:false, sortable:true, editable:true, align:"center"
                      
                 },
-                {name:'montant_libere',index:'montant_libere',width:100, resizable:false, sortable:true, editable:true, align:"right"}],
+                {name:'released_amount',index:'released_amount',width:100, resizable:false, sortable:true, editable:true, align:"right"}],
             multiselect: false,
             multiboxonly:true,
             pager:jQuery("#pager"),
@@ -150,11 +150,11 @@ function initialize_simple_funding_grid(url,edit_url){
             colNames:["AAP", "Financeur","Correspondant financeur","Montant demandé","Type","Date accord","Montant accordé","Date libération","Montant libéré",""],
             colModel:[
                 {name:'aap',index:'aap',width:80, resizable:false,sortable:true, align:"center", editable:true},
-                {name:'financeur',index:'financeur',width:100, resizable:false, sortable:true, editable:true, align:"center"},
-                {name:'correspondant',index:'correspondant', resizable:false, sortable:true, editable:true, align:"center"},
-                {name:'montant_demande',index:'montant_demande',width:100, resizable:true, sortable:false, editable:true, align:"right" },
+                {name:'backer',index:'backer',width:100, resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'backer_correspondent',index:'backer_correspondent', resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'asked_amount',index:'asked_amount',width:100, resizable:true, sortable:false, editable:true, align:"right" },
                 {name:'type',index:'type', width:100,resizable:false, sortable:true, editable:true, align:"center"},
-                {name:'date_accord',index:'date_accord', resizable:false, sortable:true, editable:true, align:"center",
+                {name:'agreed_on',index:'agreed_on', resizable:false, sortable:true, editable:true, align:"center",
                    editoptions:{size:12//,
 //                        dataInit:function(el){
 //                            jQuery(el).datepicker({dateFormat:'yy-mm-dd'});
@@ -170,11 +170,11 @@ function initialize_simple_funding_grid(url,edit_url){
 //                        }
                     }
                 },
-                {name:'montant_accorde',index:'montant_accorde',width:100, resizable:false, sortable:true, editable:true, align:"right"},
-                {name:'date_liberation',index:'date_liberation', resizable:false, sortable:true, editable:true, align:"center"
+                {name:'agreed_amount',index:'agreed_amount',width:100, resizable:false, sortable:true, editable:true, align:"right"},
+                {name:'released_on',index:'released_on', resizable:false, sortable:true, editable:true, align:"center"
 
                 },
-                {name:'montant_libere',index:'montant_libere',width:100, resizable:false, sortable:true, editable:true, align:"right"},
+                {name:'released_amount',index:'released_amount',width:100, resizable:false, sortable:true, editable:true, align:"right"},
                 {name:'delete',index:'delete',width:100, resizable:false, sortable:false, editable:true, align:"right"}
                 ],
 
@@ -206,32 +206,67 @@ function sector_activity_show(t){
 }
 
 function initialize_autocomplete_author_project(project){    
-    jQuery("#field_autocomplete_author").autocomplete("/projects/"+project+"/list_members/",{
+    jQuery("#field_autocomplete_author").autocomplete("/projects/list_members_community/",{
         matchContains: false
    });
      jQuery("#field_autocomplete_author").result(function(event, data, formatted) {
-        jQuery("#project_author_id").val(data[1]);
+        jQuery("#project_author_id").val(data[1]);         
+        user_id = jQuery("#project_author_id").val();
+         jQuery.ajax({
+                type: "get",
+                url: "projects/list_partners?user_id="+user_id,
+                success: function(msg){
+                    eval(msg)  ;
+                }
+            });
     });
     jQuery("#field_autocomplete_author").change(function() {
         jQuery("#project_author_id").val(jQuery("#field_autocomplete_author").val());
+       
     });
 
 }
 
 function initialize_autocomplete_watcher_project(project){
-    jQuery("#field_autocomplete_watcher").autocomplete("/projects/"+project+"/list_members/",{
+    jQuery("#field_autocomplete_watcher").autocomplete("/projects/list_members_community/",{
         matchContains: false
    });
      jQuery("#field_autocomplete_watcher").result(function(event, data, formatted) {
         jQuery("#project_watcher_id").val(data[1]);
+
+
     });
 }
 
-function initialize_autocomplete_builder_project(project){
-    jQuery("#field_autocomplete_builder").autocomplete("/projects/"+project+"/list_members/",{
+
+function initialize_autocomplete_designer_project(project){
+    jQuery("#field_autocomplete_designer").autocomplete("/projects/list_members_community/",{
         matchContains: false
    });
-   jQuery("#field_autocomplete_builder").result(function(event, data, formatted) {
-        jQuery("#project_builder_by").val(data[1]);
+   jQuery("#field_autocomplete_designer").result(function(event, data, formatted) {
+        jQuery("#project_designer_id").val(data[1]);
     });
+}
+
+
+function initialize_autocomplete_partner_project(project){
+    jQuery("#field_autocomplete_partner").autocomplete("/projects/list_partners_community/",{
+        matchContains: false
+   });
+     jQuery("#field_autocomplete_partner").result(function(event, data, formatted) {
+        jQuery("#partner_id").val(data[1]);
+        partner_id = jQuery("#partner_id").val();
+         jQuery.ajax({
+                type: "get",
+                url: "projects/list_partnerships?partner_id="+partner_id,
+                success: function(msg){
+                    eval(msg)  ;
+                }
+            });
+    });
+    jQuery("#field_autocomplete_partner").change(function() {
+        jQuery("#partner_id").val(jQuery("#field_autocomplete_partner").val());
+
+    });
+
 }

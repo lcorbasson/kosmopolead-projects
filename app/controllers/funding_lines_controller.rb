@@ -39,8 +39,8 @@ class FundingLinesController < ApplicationController
 
   def create
     @funding_line = FundingLine.new(params[:funding_line])
-    @funding_line.date_accord = params[:funding_line][:date_accord]
-    @funding_line.date_liberation = params[:funding_line][:date_liberation]
+    @funding_line.agreed_on = params[:funding_line][:agreed_on]
+    @funding_line.released_on = params[:funding_line][:released_on]
     @project = Project.find_by_identifier(params[:project_id])
     @funding_line.project_id = @project.id   
     show_funding
@@ -88,7 +88,7 @@ class FundingLinesController < ApplicationController
 
   def show_funding
     sort_init 'aap', 'asc'
-    sort_update %w(aap financeur correspondant_financeur montant_demande funding_type date_accord montant_accorde date_liberation montant_libere)
+    sort_update %w(aap backer backer_correspondent asked_amount funding_type agreed_on agreed_on released_on released_amount)
 
 
       @funding_line_count = @project.funding_lines.count

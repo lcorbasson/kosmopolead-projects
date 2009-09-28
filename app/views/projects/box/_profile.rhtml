@@ -6,8 +6,8 @@
     <% if  project.watcher %>
        <label><%= l(:label_watched_by) %></label> <%= project.watcher.name %><br/>
     <% end %>
-    <% if  project.builder %>
-       <label><%= l(:label_build_by) %></label> <%= project.builder.name %><br/>
+    <% if  project.designer %>
+       <label><%= l(:label_designed_by) %></label> <%= project.designer.name %><br/>
     <% end %>
     <% if project.estimated_time and project.estimated_time > 0 %>
        <label><%= l(:label_estimated_time) %></label> <%= project.estimated_time %> <%= l("#{project.time_unit.label}") %><br />

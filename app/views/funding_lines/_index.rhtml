@@ -3,32 +3,32 @@
     <table class="list">
       <thead><tr>
         <th><%= l(:label_funding_aap) %></th>
-        <th><%= l(:label_funding_application_date) %></th>
-        <th><%= l(:label_funding_financeur) %></th>
-        <th><%= l(:label_funding_correspondant_financeur) %></th>
+        <th><%= l(:label_funding_asked_on) %></th>
+        <th><%= l(:label_funding_backer) %></th>
+        <th><%= l(:label_funding_backer_correspondent) %></th>
         <th><%= l(:label_funding_beneficiary) %></th>
-        <th><%= l(:label_funding_montant_demande) %></th>
+        <th><%= l(:label_funding_asked_amount) %></th>
         <th><%= l(:label_funding_type) %></th>
-        <th><%= l(:label_funding_date_accord) %></th>
-        <th><%= l(:label_funding_montant_accorde) %></th>
-        <th><%= l(:label_funding_date_liberation) %></th>
-        <th><%= l(:label_funding_montant_libere) %></th>
+        <th><%= l(:label_funding_agreed_on) %></th>
+        <th><%= l(:label_funding_agreed_amount) %></th>
+        <th><%= l(:label_funding_released_on) %></th>
+        <th><%= l(:label_funding_released_amount) %></th>
         <th></th>
       </tr></thead>
       <tbody>
     <% for funding_line in funding_lines %>
       <tr class="<%= cycle("even", "odd") %> " id="funding_line_<%= funding_line.id %>">
         <td style="text-align:center;"><%= funding_line.aap %></td>
-        <td style="text-align:center;"><%= funding_line.application_date %></td>
-        <td style="text-align:center;"><%= funding_line.financeur %></td>
-        <td style="text-align:center;"><%= funding_line.correspondant_financeur %></td>
+        <td style="text-align:center;"><%= funding_line.asked_on %></td>
+        <td style="text-align:center;"><%= funding_line.backer %></td>
+        <td style="text-align:center;"><%= funding_line.backer_correspondent %></td>
         <td style="text-align:center;"><%= funding_line.beneficiary %></td>
-        <td style="text-align:right;"><%= number_to_currency(funding_line.montant_demande, :unit => "€", :format => "%n %u") %></td>
+        <td style="text-align:right;"><%= number_to_currency(funding_line.asked_amount, :unit => "€", :format => "%n %u") %></td>
         <td style="text-align:center;"><%= funding_line.funding_type %></td>
-        <td style="text-align:center;"><%= format_date(funding_line.date_accord) %></td>
-        <td style="text-align:right;"><%= number_to_currency(funding_line.montant_accorde, :unit => "€", :format => "%n %u") %></td>
-        <td style="text-align:center;"><%= format_date(funding_line.date_liberation) %></td>
-        <td style="text-align:right;"><%= number_to_currency(funding_line.montant_libere, :unit => "€", :format => "%n %u") %></td>
+        <td style="text-align:center;"><%= format_date(funding_line.agreed_on) %></td>
+        <td style="text-align:right;"><%= number_to_currency(funding_line.agreed_amount, :unit => "€", :format => "%n %u") %></td>
+        <td style="text-align:center;"><%= format_date(funding_line.released_on) %></td>
+        <td style="text-align:right;"><%= number_to_currency(funding_line.released_amount, :unit => "€", :format => "%n %u") %></td>
         <td style="text-align:center;"><%= link_to_remote(image_tag('/images/edit.png'),{ :url=>edit_project_funding_line_path(@project,funding_line),:method=>:get}) %>
         <%=  link_to_remote(image_tag('/images/delete.png'),{ :url=>project_funding_line_path(@project,funding_line),:method=>:delete,:confirm=>"Etes-vous certain de vouloir supprimer cette ligne ?"})%></td>
       </tr>

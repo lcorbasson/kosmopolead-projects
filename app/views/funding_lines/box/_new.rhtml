@@ -4,49 +4,49 @@
                              :html => {:id => 'new-funding-line-form',
                                        :class => "tabular"} do |f| %>
     <%= error_messages_for 'funding_line' %>
-    <p>
+<p>
       <label><%= l(:label_funding_aap) %></label>
       <%= f.text_field :aap %>
     </p>
     <p>
-      <label><%= l(:label_funding_application_date) %></label>
-      <%= f.text_field :application_date,:size=>10,:class=>"ui-datepicker" %>
+      <label><%= l(:label_funding_asked_on) %></label>
+      <%= f.text_field :asked_on,:size=>10,:class=>"ui-datepicker" %>
     </p>
     <p>
-      <label><%= l(:label_funding_financeur) %></label>
-      <%= f.text_field :financeur %>
+      <label><%= l(:label_funding_backer) %></label>
+      <%= f.text_field :backer %>
     </p>
     <p>
-      <label><%= l(:label_funding_correspondant_financeur) %></label>
-      <%= f.text_field :correspondant_financeur %>
+      <label><%= l(:label_funding_backer_correspondent) %></label>
+      <%= f.text_field :backer_correspondent %>
     </p>
-    <p>
+        <p>
       <label><%= l(:label_funding_beneficiary) %></label>
       <%= f.text_field :beneficiary %>
     </p>
     <p>
-      <label><%= l(:label_funding_montant_demande) %></label>
-      <%= f.text_field :montant_demande %> €
+      <label><%= l(:label_funding_asked_amount) %></label>
+      <%= f.text_field :asked_amount %> €
     </p>
     <p>
       <label><%= l(:label_funding_type) %></label>
       <%= f.text_field :funding_type %>
     </p>
     <p>
-      <label><%= l(:label_funding_date_accord) %></label>
-      <%= f.text_field :date_accord,:size=>10,:class=>"ui-datepicker" %>
+      <label><%= l(:label_funding_agreed_on) %></label>
+      <%= f.text_field :agreed_on,:size=>10,:class=>"ui-datepicker" %></p>
     </p>
     <p>
-      <label><%= l(:label_funding_montant_accorde) %></label>
-      <%= f.text_field :montant_accorde %> €
+      <label><%= l(:label_funding_agreed_amount) %></label>
+      <%= f.text_field :agreed_amount %> €
     </p>
     <p>
-      <label><%= l(:label_funding_date_liberation) %></label>
-      <%= f.text_field :date_liberation,:size=>10,:class=>"ui-datepicker" %>
+      <label><%= l(:label_funding_released_on) %></label>
+      <%= f.text_field :released_on,:size=>10,:class=>"ui-datepicker" %></p>
     </p>
     <p>
-      <label><%= l(:label_funding_montant_libere) %></label>
-      <%= f.text_field :montant_libere %> €
+      <label><%= l(:label_funding_released_amount) %></label>
+      <%= f.text_field :released_amount %> €
     </p>
 
     <div class="buttons-icons right">

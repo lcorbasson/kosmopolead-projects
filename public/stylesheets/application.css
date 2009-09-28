@@ -1239,6 +1239,7 @@ text-align:center;
 #new_query_project_menu {padding-top:5px;padding-left:10px;padding-bottom:5px;}
 #new_query_project_menu .toggler {margin-top:0;}
 #new_query_project_menu .title_filter{margin-bottom:0;}
+#new_query_project_menu .title_filter.active {color:#009EEE;}
 .toggler .buttons{margin-top:10px;}
 
 #new-activity_sector-form {margin-top:20px;}

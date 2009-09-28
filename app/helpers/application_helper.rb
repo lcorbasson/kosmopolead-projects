@@ -212,7 +212,7 @@ module ApplicationHelper
 
     html = ''
     html << link_to_remote(('&#171; ' + l(:label_previous)),
-                            {:update => 'content',
+                            {:update => 'content_wrapper',
                              :url => url_param.merge(page_param => paginator.current.previous),
                              :complete => 'window.scrollTo(0,0)'},
                             {:href => url_for(:params => url_param.merge(page_param => paginator.current.previous))}) + ' ' if paginator.current.previous
@@ -220,13 +220,13 @@ module ApplicationHelper
     html << (pagination_links_each(paginator, options) do |n|
       link_to_remote(n.to_s,
                       {:url => {:params => url_param.merge(page_param => n)},
-                       :update => 'content',
+                       :update => 'content_wrapper',
                        :complete => 'window.scrollTo(0,0)'},
                       {:href => url_for(:params => url_param.merge(page_param => n))})
     end || '')
 
     html << ' ' + link_to_remote((l(:label_next) + ' &#187;'),
-                                 {:update => 'content',
+                                 {:update => 'content_wrapper',
                                   :url => url_param.merge(page_param => paginator.current.next),
                                   :complete => 'window.scrollTo(0,0)'},
                                  {:href => url_for(:params => url_param.merge(page_param => paginator.current.next))}) if paginator.current.next
@@ -243,7 +243,7 @@ module ApplicationHelper
     url_param.clear if url_param.has_key?(:set_filter)
 
     links = Setting.per_page_options_array.collect do |n|
-      n == selected ? n : link_to_remote(n, {:update => "content", :url => params.dup.merge(:per_page => n)},
+      n == selected ? n : link_to_remote(n, {:update => "content_wrapper", :url => params.dup.merge(:per_page => n)},
                                             {:href => url_for(url_param.merge(:per_page => n))})
     end
     links.size > 1 ? l(:label_display_per_page, links.join(', ')) : nil

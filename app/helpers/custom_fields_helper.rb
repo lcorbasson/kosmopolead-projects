@@ -34,17 +34,17 @@ module CustomFieldsHelper
     case custom_field.field_format
     when "date"
       if read_only
-        custom_value.value.is_a?(FalseClass) ? "" : "<p>#{custom_value.value}</p>"
+        custom_value.value.is_a?(Integer)|| custom_value.value.is_a?(FalseClass) ? "" : "<p>#{custom_value.value}</p>"
       else
-        text_field_tag(field_name, custom_value.value, :id => field_id, :size => 10, :readonly => read_only,:class=>"ui-datepicker") +
-       initialize_datepicker()
+        text_field_tag(field_name, custom_value.value.is_a?(Integer)|| custom_value.value.is_a?(FalseClass) ? "" : custom_value.value, :id => field_id, :size => 10, :readonly => read_only,:class=>"ui-datepicker") +
+        initialize_datepicker()
       end
 
     when "text"
       if read_only
-        custom_value.value.is_a?(FalseClass) ? "" : "<p>#{custom_value.value}</p>"
+        custom_value.value.is_a?(Integer)|| custom_value.value.is_a?(FalseClass) ? "" : "<p>#{custom_value.value}</p>"
       else
-        text_area_tag(field_name, custom_value.value, :id => field_id, :rows => 3, :style => 'width:90%')
+        text_area_tag(field_name, custom_value.value.is_a?(Integer)|| custom_value.value.is_a?(FalseClass) ? "" : custom_value.value, :id => field_id, :rows => 3, :style => 'width:90%')
       end
     when "bool"
       check_box_tag(field_name, '1', custom_value.value.eql?(1) ? true : false , :id => field_id, :readonly => read_only, :disabled => read_only) + hidden_field_tag(field_name, '0')

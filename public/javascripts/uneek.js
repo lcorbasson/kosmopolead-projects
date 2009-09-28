@@ -106,17 +106,17 @@ function initialize_funding_grid(url,edit_url){
             colNames:["AAP", "Financeur","Correspondant financeur","Montant demandé","Type","Date accord","Montant accordé","Date libération","Montant libéré"],
             colModel:[
                 {name:'aap',index:'aap',width:80, resizable:false,sortable:true, align:"center", editable:true},
-                {name:'financeur',index:'financeur',width:100, resizable:false, sortable:true, editable:true, align:"center"},
-                {name:'correspondant',index:'correspondant', resizable:false, sortable:true, editable:true, align:"center"},
-                {name:'montant_demande',index:'montant_demande',width:100, resizable:true, sortable:false, editable:true, align:"right" },
+                {name:'backer',index:'backer',width:100, resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'backer_correspondent',index:'backer_correspondent', resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'asked_amount',index:'asked_amount',width:100, resizable:true, sortable:false, editable:true, align:"right" },
                 {name:'funding_type',index:'type', width:100,resizable:false, sortable:true, editable:true, align:"center"},
-                {name:'date_accord',index:'date_accord', resizable:false, sortable:true, editable:true, align:"center",
+                {name:'agreed_on',index:'agreed_on', resizable:false, sortable:true, editable:true, align:"center",
                    editoptions:{size:12}},
-                {name:'montant_accorde',index:'montant_accorde',width:100, resizable:false, sortable:true, editable:true, align:"right"},
-                {name:'date_liberation',index:'date_liberation', resizable:false, sortable:true, editable:true, align:"center"
+                {name:'asked_amount',index:'asked_amount',width:100, resizable:false, sortable:true, editable:true, align:"right"},
+                {name:'released_on',index:'released_on', resizable:false, sortable:true, editable:true, align:"center"
                      
                 },
-                {name:'montant_libere',index:'montant_libere',width:100, resizable:false, sortable:true, editable:true, align:"right"}],
+                {name:'released_amount',index:'released_amount',width:100, resizable:false, sortable:true, editable:true, align:"right"}],
             multiselect: false,
             multiboxonly:true,
             pager:jQuery("#pager"),
@@ -150,11 +150,11 @@ function initialize_simple_funding_grid(url,edit_url){
             colNames:["AAP", "Financeur","Correspondant financeur","Montant demandé","Type","Date accord","Montant accordé","Date libération","Montant libéré",""],
             colModel:[
                 {name:'aap',index:'aap',width:80, resizable:false,sortable:true, align:"center", editable:true},
-                {name:'financeur',index:'financeur',width:100, resizable:false, sortable:true, editable:true, align:"center"},
-                {name:'correspondant',index:'correspondant', resizable:false, sortable:true, editable:true, align:"center"},
-                {name:'montant_demande',index:'montant_demande',width:100, resizable:true, sortable:false, editable:true, align:"right" },
+                {name:'backer',index:'backer',width:100, resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'backer_correspondent',index:'backer_correspondent', resizable:false, sortable:true, editable:true, align:"center"},
+                {name:'asked_amount',index:'asked_amount',width:100, resizable:true, sortable:false, editable:true, align:"right" },
                 {name:'type',index:'type', width:100,resizable:false, sortable:true, editable:true, align:"center"},
-                {name:'date_accord',index:'date_accord', resizable:false, sortable:true, editable:true, align:"center",
+                {name:'agreed_on',index:'agreed_on', resizable:false, sortable:true, editable:true, align:"center",
                    editoptions:{size:12//,
 //                        dataInit:function(el){
 //                            jQuery(el).datepicker({dateFormat:'yy-mm-dd'});
@@ -170,11 +170,11 @@ function initialize_simple_funding_grid(url,edit_url){
 //                        }
                     }
                 },
-                {name:'montant_accorde',index:'montant_accorde',width:100, resizable:false, sortable:true, editable:true, align:"right"},
-                {name:'date_liberation',index:'date_liberation', resizable:false, sortable:true, editable:true, align:"center"
+                {name:'agreed_amount',index:'agreed_amount',width:100, resizable:false, sortable:true, editable:true, align:"right"},
+                {name:'released_on',index:'released_on', resizable:false, sortable:true, editable:true, align:"center"
 
                 },
-                {name:'montant_libere',index:'montant_libere',width:100, resizable:false, sortable:true, editable:true, align:"right"},
+                {name:'released_amount',index:'released_amount',width:100, resizable:false, sortable:true, editable:true, align:"right"},
                 {name:'delete',index:'delete',width:100, resizable:false, sortable:false, editable:true, align:"right"}
                 ],
 

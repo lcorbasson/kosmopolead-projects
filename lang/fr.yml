@@ -342,15 +342,15 @@ label_funding_line_new: Nouvelle ligne de financement
 label_funding_line_edit: Edition d'une ligne de financement
 label_funding_aap: AAP
 label_funding_beneficiary: Bénéficiaire
-label_funding_application_date: Date demande
-label_funding_financeur: Financeur
-label_funding_correspondant_financeur: Correspondant financeur
-label_funding_montant_demande: Montant demandé
+label_funding_asked_on: Date demande
+label_funding_asked_amount: Montant demandé
+label_funding_backer: Financeur
+label_funding_backer_correspondent: Correspondant financeur
 label_funding_type: Type
-label_funding_date_accord: Date accord
-label_funding_montant_accorde: Montant accordé
-label_funding_date_liberation: Date libération
-label_funding_montant_libere: Montant libéré
+label_funding_agreed_on: Date accord
+label_funding_agreed_amount: Montant accordé
+label_funding_released_on: Date libération
+label_funding_released_amount: Montant libéré
 label_stage: Phase
 label_issue: Tâche
 label_milestone: Jalon

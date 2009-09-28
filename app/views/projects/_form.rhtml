@@ -20,20 +20,21 @@
 <p>
   <label><%= l(:label_author) %></label>
   <%= text_field_tag("field_autocomplete_author","#{@project.author.name if @project.author}") %><%= f.hidden_field :author_id, :class=>"ac_input"%>
+<<<<<<< HEAD:app/views/projects/_form.rhtml
 
 </p>
 <p id="list_partners">
   
+=======
+>>>>>>> e5756176c7535936dbd8d2e64be3ce9af4e69c81:app/views/projects/_form.rhtml
 </p>
 <p>
-  <label><%= l(:label_builder) %></label>
-  <%= text_field_tag("field_autocomplete_builder","#{@project.builder.name if @project.builder}") %><%= f.hidden_field :designer_id, :class=>"ac_input"%>
-  <%#= f.select :builder_by, @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %>
+  <label><%= l(:label_designer) %></label>
+  <%= text_field_tag("field_autocomplete_designer","#{@project.designer.name if @project.designer}") %><%= f.hidden_field :designer_id, :class=>"ac_input"%>
 </p>
 <p>
   <label><%= l(:label_watcher) %></label>
   <%= text_field_tag("field_autocomplete_watcher","#{@project.watcher.name if @project.watcher}") %><%= f.hidden_field :watcher_id, :class=>"ac_input"%>
-  <%#= f.select :watcher_id , @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %>
 </p>
 <p>
   <label><%= l(:label_cost) %></label>
@@ -93,4 +94,4 @@
 
 <%= javascript_include_tag("jquery-ui/autocomplete/jquery.autocomplete") %>
   <%= stylesheet_link_tag("jquery/autocomplete/jquery.autocomplete") %>
-<%= javascript_tag("initialize_autocomplete_author_project('#{@project.identifier}');initialize_autocomplete_watcher_project('#{@project.identifier}');initialize_autocomplete_builder_project('#{@project.identifier}')") %>
+<%= javascript_tag("initialize_autocomplete_author_project('#{@project.identifier}');initialize_autocomplete_watcher_project('#{@project.identifier}');initialize_autocomplete_designer_project('#{@project.identifier}')") %>

@@ -1249,3 +1249,6 @@ text-align:center;
 
 .ui-datepicker-trigger {margin-left:5px;
 vertical-align:middle;cursor:pointer;}
+
+#role_form .fieldset {margin-left:10px;margin-right:10px;}
+.check_all_links {margin-left:10px;margin-bottom:10px;}

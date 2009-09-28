@@ -85,7 +85,7 @@ function toggle_multi_select(field) {
         </select>
         <%= link_to_function image_tag('bullet_toggle_plus.png'), "toggle_multi_select('#{field}');", :style => "vertical-align: bottom;" %>
     <% when :date, :date_past %>
-        <%= text_field_tag "values[#{field}][]", query.values_for(field), :id => "values_#{field}", :size => 3, :class => "select-small" %> <%= l(:label_day_plural) %>
+        <%= text_field_tag "values[#{field}][]", query.values_for(field), :id => "values_#{field}", :size => 10, :class => "ui-datepicker" %> <%= l(:label_day_plural) %>
     <% when :string, :text %>
         <%= text_field_tag "values[#{field}][]", query.values_for(field), :id => "values_#{field}", :size => 30, :class => "select-small" %>
     <% when :integer %>
@@ -104,3 +104,4 @@ function toggle_multi_select(field) {
 </td>
 </tr>
 </table>
+ <%= initialize_datepicker() %>

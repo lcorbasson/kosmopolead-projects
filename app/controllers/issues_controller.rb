@@ -87,8 +87,8 @@ class IssuesController < ApplicationController
              page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'issues/index', :locals=>{:project=>@project})}');"
              page << "jQuery('#project_author').html('#{escape_javascript(render:partial=>'projects/author', :locals=>{:project=>@project})}');"
             else
-              page.replace_html "custom_fields", :partial => 'issues/list', :locals => {:issues => @issues, :query => @query}
-
+              #page.replace_html "custom_fields", :partial => 'issues/list', :locals => {:issues => @issues, :query => @query}
+              page.replace_html "list_issues", :partial => 'issues/list', :locals => {:issues => @issues, :query => @query}
             end
           end
         }

@@ -84,25 +84,35 @@ class Query < ActiveRecord::Base
                   "*"   => :label_all,
                   ">="   => '>=',
                   "<="   => '<=',
-                  "<t+" => :label_in_less_than,
-                  ">t+" => :label_in_more_than,
+                  "<t+" => :label_in_less_than_date,
+                  ">t+" => :label_in_more_than_date,
                   "t+"  => :label_in,
                   "t"   => :label_today,
                   "w"   => :label_this_week,
-                  ">t-" => :label_less_than_ago,
-                  "<t-" => :label_more_than_ago,
-                  "t-"  => :label_ago,
+                  ">t-" => :label_less_than_ago_date,
+                  "<t-" => :label_more_than_ago_date,
+                  "t-"  => :label_ago_date,
                   "~"   => :label_contains,
                   "!~"  => :label_not_contains }
 
   cattr_reader :operators
-    
+
+#    @@operators_by_filter_type = { :list => [ "=", "!" ],
+#                                 :list_status => [ "=", "!", "*" ],
+#                                 :list_optional => [ "=", "!", "!*", "*" ],
+#                                 :list_multiple => [ "=", "!", "!*", "*" ],
+#                                 :list_subprojects => [ "*", "!*", "=" ],
+#                                 :date => [ "<t+", ">t+", "t+", "t", "w", ">t-", "<t-", "t-" ],
+#                                 :date_past => [ ">t-", "<t-", "t-", "t", "w" ],
+#                                 :string => [ "=", "~", "!", "!~" ],
+#                                 :text => [  "~", "!~" ],
+#                                 :integer => [ "=", ">=", "<=", "!*", "*" ] }
   @@operators_by_filter_type = { :list => [ "=", "!" ],
                                  :list_status => [ "=", "!", "*" ],
                                  :list_optional => [ "=", "!", "!*", "*" ],
                                  :list_multiple => [ "=", "!", "!*", "*" ],
                                  :list_subprojects => [ "*", "!*", "=" ],
-                                 :date => [ "<t+", ">t+", "t+", "t", "w", ">t-", "<t-", "t-" ],
+                                 :date => [ "<t+", ">t+", "t", "w", "t-" ],
                                  :date_past => [ ">t-", "<t-", "t-", "t", "w" ],
                                  :string => [ "=", "~", "!", "!~" ],
                                  :text => [  "~", "!~" ],
@@ -457,40 +467,39 @@ class Query < ActiveRecord::Base
       sql = "#{db_table}.#{db_field} IS NOT NULL"
       sql << " AND #{db_table}.#{db_field} <> ''" if is_custom_filter
     when ">="
-      sql = "#{db_table}.#{db_field} >= #{value.first.to_i}"
+      sql = "#{db_table}.#{db_field} >= #{value.first}"
     when "<="
-      sql = "#{db_table}.#{db_field} <= #{value.first.to_i}"
+      sql = "#{db_table}.#{db_field} <= #{value.first}"
     when "o"
       sql = "#{IssueStatus.table_name}.is_closed=#{connection.quoted_false}" if field == "status_id"
     when "c"
       sql = "#{IssueStatus.table_name}.is_closed=#{connection.quoted_true}" if field == "status_id"
     when ">t-"
-      sql = date_range_clause(db_table, db_field, - value.first.to_i, 0)
+      sql = date_range_clause(db_table, db_field, value, nil)
     when "<t-"
-      sql = date_range_clause(db_table, db_field, nil, - value.first.to_i)
+      sql = date_range_clause(db_table, db_field, nil, value)
     when "t-"
-      sql = date_range_clause(db_table, db_field, - value.first.to_i, - value.first.to_i)
+       sql = date_range_clause(db_table, db_field, value, (Date.parse(value.first.delete("&quot;")) + 1).strftime("%Y-%m-%d") )
     when ">t+"
-      sql = date_range_clause(db_table, db_field, value.first.to_i, nil)
+      sql = date_range_clause(db_table, db_field, value, nil)
     when "<t+"
-      sql = date_range_clause(db_table, db_field, 0, value.first.to_i)
+      sql = date_range_clause(db_table, db_field, nil, value)
     when "t+"
-      sql = date_range_clause(db_table, db_field, value.first.to_i, value.first.to_i)
+      sql = date_range_clause(db_table, db_field, value, value)
     when "t"
-      sql = date_range_clause(db_table, db_field, 0, 0)
+      sql = date_range_clause(db_table, db_field, Date.today, Date.today + 1)
     when "w"
       from = l(:general_first_day_of_week) == '7' ?
       # week starts on sunday
       ((Date.today.cwday == 7) ? Time.now.at_beginning_of_day : Time.now.at_beginning_of_week - 1.day) :
         # week starts on monday (Rails default)
-        Time.now.at_beginning_of_week
-      sql = "#{db_table}.#{db_field} BETWEEN '%s' AND '%s'" % [connection.quoted_date(from), connection.quoted_date(from + 7.days)]
+        Date.today.at_beginning_of_week
+      sql = "#{db_table}.#{db_field} BETWEEN '%s' AND '%s'" % [from, from + 7.day]
     when "~"
       sql = "#{db_table}.#{db_field} LIKE '%#{connection.quote_string(value.first)}%'"
     when "!~"
       sql = "#{db_table}.#{db_field} NOT LIKE '%#{connection.quote_string(value.first)}%'"
     end
-    
     return sql
   end
 
@@ -509,38 +518,38 @@ class Query < ActiveRecord::Base
       sql = "#{db_table}.#{db_field} IS NOT NULL"
       sql << " AND #{db_table}.#{db_field} <> ''" if is_custom_filter
     when ">="
-      sql = "#{db_table}.#{db_field} >= #{value.first.to_i}"
+      sql = "#{db_table}.#{db_field} >= #{value}"
     when "<="
-      sql = "#{db_table}.#{db_field} <= #{value.first.to_i}"
+      sql = "#{db_table}.#{db_field} <= #{value}"
     when "o"
       sql = "#{Project.table_name}.status=1" if field == "status"
     when "c"
       sql = "#{Project.table_name}.status=0" if field == "status"
     when ">t-"
-      sql = date_range_clause(db_table, db_field, - value.first.to_i, 0)
+      sql = date_range_clause(db_table, db_field, value, nil)
     when "<t-"
-      sql = date_range_clause(db_table, db_field, nil, - value.first.to_i)
+      sql = date_range_clause(db_table, db_field, nil, value)
     when "t-"
-      sql = date_range_clause(db_table, db_field, - value.first.to_i, - value.first.to_i)
+      sql = date_range_clause(db_table, db_field, value, (Date.parse(value.first.delete("&quot;")) + 1).strftime("%Y-%m-%d") )
     when ">t+"
-      sql = date_range_clause(db_table, db_field, value.first.to_i, nil)
+      sql = date_range_clause(db_table, db_field, value, nil)
     when "<t+"
-      sql = date_range_clause(db_table, db_field, 0, value.first.to_i)
+      sql = date_range_clause(db_table, db_field, nil, value)
     when "t+"
-      sql = date_range_clause(db_table, db_field, value.first.to_i, value.first.to_i)
+      sql = date_range_clause(db_table, db_field, value, value)
     when "t"
-      sql = date_range_clause(db_table, db_field, 0, 0)
+      sql = date_range_clause(db_table, db_field, Date.today, Date.today)
     when "w"
       from = l(:general_first_day_of_week) == '7' ?
       # week starts on sunday
       ((Date.today.cwday == 7) ? Time.now.at_beginning_of_day : Time.now.at_beginning_of_week - 1.day) :
         # week starts on monday (Rails default)
         Time.now.at_beginning_of_week
-      sql = "#{db_table}.#{db_field} BETWEEN '%s' AND '%s'" % [connection.quoted_date(from), connection.quoted_date(from + 7.days)]
+      sql = "#{db_table}.#{db_field} BETWEEN '%s' AND '%s'" % [from, from + 7.day]
     when "~"
-      sql = "#{db_table}.#{db_field} LIKE '%#{connection.quote_string(value.first)}%'"
+      sql = "#{db_table}.#{db_field} LIKE '%#{connection.quote_string(value)}%'"
     when "!~"
-      sql = "#{db_table}.#{db_field} NOT LIKE '%#{connection.quote_string(value.first)}%'"
+      sql = "#{db_table}.#{db_field} NOT LIKE '%#{connection.quote_string(value)}%'"
     end
 
     return sql
@@ -595,10 +604,10 @@ class Query < ActiveRecord::Base
   def date_range_clause(table, field, from, to)
     s = []
     if from
-      s << ("#{table}.#{field} > '%s'" % [connection.quoted_date((Date.yesterday + from).to_time.end_of_day)])
+      s << ("#{table}.#{field} >= '%s'" % from)
     end
     if to
-      s << ("#{table}.#{field} <= '%s'" % [connection.quoted_date((Date.today + to).to_time.end_of_day)])
+      s << ("#{table}.#{field} <= '%s'" % to)
     end
     s.join(' AND ')
   end

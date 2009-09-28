@@ -559,7 +559,9 @@ label_filter_plural: Filtres
 label_equals: égal
 label_not_equals: différent
 label_in_less_than: dans moins de
+label_in_less_than_date: avant le
 label_in_more_than: dans plus de
+label_in_more_than_date: après le
 label_in: dans
 label_today: aujourd'hui
 label_all_time: toute la période
@@ -573,7 +575,10 @@ label_this_year: cette année
 label_date_range: Période
 label_less_than_ago: il y a moins de
 label_more_than_ago: il y a plus de
+label_less_than_ago_date: apres le
+label_more_than_ago_date: avant le
 label_ago: il y a
+label_ago_date: le
 label_contains: contient
 label_not_contains: ne contient pas
 label_day_plural: jours

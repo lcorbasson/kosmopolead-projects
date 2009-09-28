@@ -20,7 +20,10 @@
 <p>
   <label><%= l(:label_author) %></label>
   <%= text_field_tag("field_autocomplete_author","#{@project.author.name if @project.author}") %><%= f.hidden_field :author_id, :class=>"ac_input"%>
-  <%#= f.select :author_id,  @users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %>
+
+</p>
+<p id="list_partners">
+  
 </p>
 <p>
   <label><%= l(:label_builder) %></label>

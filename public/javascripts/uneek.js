@@ -206,29 +206,40 @@ function sector_activity_show(t){
 }
 
 function initialize_autocomplete_author_project(project){    
-    jQuery("#field_autocomplete_author").autocomplete("/projects/"+project+"/list_members/",{
+    jQuery("#field_autocomplete_author").autocomplete("/projects/list_members_community/",{
         matchContains: false
    });
      jQuery("#field_autocomplete_author").result(function(event, data, formatted) {
-        jQuery("#project_author_id").val(data[1]);
+        jQuery("#project_author_id").val(data[1]);         
+        user_id = jQuery("#project_author_id").val();
+         jQuery.ajax({
+                type: "get",
+                url: "projects/list_partners?user_id="+user_id,
+                success: function(msg){
+                    eval(msg)  ;
+                }
+            });
     });
     jQuery("#field_autocomplete_author").change(function() {
         jQuery("#project_author_id").val(jQuery("#field_autocomplete_author").val());
+       
     });
 
 }
 
 function initialize_autocomplete_watcher_project(project){
-    jQuery("#field_autocomplete_watcher").autocomplete("/projects/"+project+"/list_members/",{
+    jQuery("#field_autocomplete_watcher").autocomplete("/projects/list_members_community/",{
         matchContains: false
    });
      jQuery("#field_autocomplete_watcher").result(function(event, data, formatted) {
         jQuery("#project_watcher_id").val(data[1]);
+
+
     });
 }
 
 function initialize_autocomplete_builder_project(project){
-    jQuery("#field_autocomplete_builder").autocomplete("/projects/"+project+"/list_members/",{
+    jQuery("#field_autocomplete_builder").autocomplete("/projects/list_members_community/",{
         matchContains: false
    });
    jQuery("#field_autocomplete_builder").result(function(event, data, formatted) {

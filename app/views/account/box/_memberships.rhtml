@@ -1,0 +1,6 @@
+<ul>
+  <% for membership in memberships %>
+      <li><%= link_to_remote h(membership.project.name), :url=>project_path(membership.project),:method=>:get %>
+      (<%=h membership.role.name %>, <%= format_date(membership.created_on) %>)</li>
+  <% end %>
+</ul>

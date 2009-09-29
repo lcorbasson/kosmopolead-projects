@@ -176,7 +176,7 @@ module ApplicationHelper
   def authoring(created, author, options={})
     time_tag = @project.nil? ? content_tag('acronym', distance_of_time_in_words(Time.now, created), :title => format_time(created)) :
                                link_to(distance_of_time_in_words(Time.now, created), 
-                                       {:controller => 'projects', :action => 'activity', :id => @project, :from => created.to_date},
+                                       activity_project_path(@project, :from => created.to_date),
                                        :title => format_time(created))
     author_tag = (author.is_a?(User) && !author.anonymous?) ? link_to(h(author), :controller => 'account', :action => 'show', :id => author) : h(author || 'Anonymous')
     l(options[:label] || :label_added_time_by, author_tag, time_tag)
@@ -837,7 +837,7 @@ module ApplicationHelper
     html += "#{javascript_tag("jQuery().ready(function() {jQuery('.box_header .icon_visu').tooltip({bodyHandler: function() {return jQuery(this).attr('name');},showURL: false })});")}"
   end
 
-  def profile_box(title,content)
+  def profile_project_box(title,content)
     link = link_to_remote "#{image_tag('/images/edit.png')}",
                          { :url => { :controller => 'projects', :action => 'edit_part_profile', :project_id => @project.id},
                            :method => 'get',
@@ -848,6 +848,12 @@ module ApplicationHelper
     content_tag(:div,
       content_tag(:div,content_tag(:div,title,:class=>"left",:style=>"max-width:90%;")+content_tag(:div,link,:class=>"links_edit_box")+content_tag(:div,"",:class=>"clearer"),:class=>'profile_header')+
       content_tag(:div,content,:class=>'profile_content'),:class=>"profile editable_box",:style=>"max-width:100%;")
+  end
+
+  def profile_box(title,content)    
+    content_tag(:div,
+      content_tag(:div,content_tag(:div,title,:class=>"left",:style=>"max-width:90%;")+content_tag(:div,"",:class=>"clearer"),:class=>'profile_header')+
+      content_tag(:div,content,:class=>'profile_content'),:class=>"profile",:style=>"max-width:100%;")
   end
 
 

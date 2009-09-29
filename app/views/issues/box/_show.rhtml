@@ -2,7 +2,7 @@
         <%= avatar(issue.author, :size => "64") %>    
         <%  if issue.created_on != issue.updated_on %>
         <p class="author" style="color:#6AC500;margin-left:10px;font-weight:bold;">
-        <%#= authoring issue.created_on, issue.author %>.
+        <%= authoring issue.created_on, issue.author %>.
         <%= l(:label_updated_time, distance_of_time_in_words(Time.now, issue.updated_on)) + '.'  %>
         </p>
 <% end %>
@@ -39,7 +39,7 @@
 <tr>
 <% n = 0 -%>
 <% issue.custom_field_values.each do |value| -%>
-    <td valign="top"><b><%=h value.custom_field.name %>:</b></td><td valign="top"><%= simple_format(h(show_value(value))) %></td>
+    <td valign="top" style="padding:5px;"><b><%=h value.custom_field.name %>:</b></td><td valign="top"><%= simple_format(h(show_value(value))) %></td>
 <% n = n + 1
    if (n > 1)
         n = 0 %>

@@ -412,6 +412,7 @@ class ProjectsController < ApplicationController
   end
 
   def activity
+    
     @days = Setting.activity_days_default.to_i
 
     if params[:from]
@@ -591,7 +592,7 @@ private
     else
       @project = Project.find_by_identifier(params[:id])
     end
-    authorize
+   
   rescue ActiveRecord::RecordNotFound
     render_404
   end

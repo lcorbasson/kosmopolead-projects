@@ -67,12 +67,15 @@
     <p> <label><%= l(:label_done_ratio) %></label><%= f.select :done_ratio, ((0..10).to_a.collect {|r| ["#{r*10} %", r*10] }) %></p>
     </div>
       <div class="clearer"></div>
+      <p>
       <label><%= l(:label_description) %></label>
       <%= f.text_area :description,
         :cols => 60,
         :rows => (@issue.description.blank? ? 10 : [[10, @issue.description.length / 50].max, 100].min),
         :accesskey => accesskey(:edit),
         :class => 'wiki-edit' %>
+      </p>
+      <p>
    <label><%= l(:label_notes) %> </label>
     <%= text_area_tag 'notes', @notes, :cols => 60, :rows => 10, :class => 'wiki-edit' %>
     <%= wikitoolbar_for 'notes' %>
@@ -81,9 +84,9 @@
     <% if @issue.type == "ISSUE" %>
       <p><%=l(:label_attachment_plural)%><br /><%= render :partial => 'attachments/form' %></p>
     <% end %>
- 
+ </p>
     </div>
-    
+    <%= render :partial => 'form_custom_fields' %>
     <%= f.hidden_field :lock_version %>
     <div class="buttons right">
       <%= submit_tag l(:button_submit),:class=>"button btn_blue corner-all" %>

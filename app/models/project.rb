@@ -313,7 +313,7 @@ class Project < ActiveRecord::Base
   
   # Returns an auto-generated project identifier based on the last identifier used
   def self.next_identifier
-    p = Project.find(:first, :order => 'created_on DESC')
+    p = Project.find(:first, :order => 'id DESC')
     p.nil? ? nil : p.identifier.to_s.succ
   end
 

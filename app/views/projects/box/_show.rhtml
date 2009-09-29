@@ -9,8 +9,6 @@
   <% unless project.custom_field_values.empty? %>
     <%= render :partial => 'projects/show/custom_fields', :locals=>{:project=>project} %>
   <% end %>
-
-
   <div class="editable_box">
       <div class="links_edit_box" >        
         <%= toggle_link image_tag('/images/add.png'), 'new-relation-form'%>
@@ -18,10 +16,6 @@
       <%= grey_title("#{l(:label_related_project)}") %>
       <%= grey_box("#{render:partial=>'projects/relations'}", "project_relations") %>
   </div>
-
-
-
-
 </div>
 
 <div class="profilecontentright">

@@ -565,7 +565,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
           format.js {
             render(:update) {|page|
-              page.replace_html "member_users", content_tag('select', options_from_collection_for_select(@partner.members, 'id', 'name'), :id => 'user_id', :name => 'user_id')
+              page.replace_html "member_users", content_tag('select', options_from_collection_for_select(@partner.members, 'id', 'name'), :id => 'member_user_id', :name => 'member[user_id]')
 
               }
           }

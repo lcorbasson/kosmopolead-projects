@@ -1,7 +1,7 @@
 <% selected_tab = params[:tab] ? params[:tab].to_s : project_tabs.first[:name] %>
 <div class="profilecontentleft">
   <div id="profile_project">
-    <%= profile_box("PROJET #{project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>project}}") %>
+    <%= profile_project_box("PROJET #{project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>project}}") %>
   </div>
   <span class="grey_title" style="float:left;margin-right:20px;"> Avancement du projet :</span><%= progress_bar([project.completed_percent, 100], :width => '40%', :legend => ('%0.0f%' % project.completed_percent)) %>
 <br/><br/>

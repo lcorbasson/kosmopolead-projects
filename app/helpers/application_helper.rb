@@ -176,7 +176,7 @@ module ApplicationHelper
   def authoring(created, author, options={})
     time_tag = @project.nil? ? content_tag('acronym', distance_of_time_in_words(Time.now, created), :title => format_time(created)) :
                                link_to(distance_of_time_in_words(Time.now, created), 
-                                       {:controller => 'projects', :action => 'activity', :id => @project, :from => created.to_date},
+                                       activity_project_path(@project, :from => created.to_date),
                                        :title => format_time(created))
     author_tag = (author.is_a?(User) && !author.anonymous?) ? link_to(h(author), :controller => 'account', :action => 'show', :id => author) : h(author || 'Anonymous')
     l(options[:label] || :label_added_time_by, author_tag, time_tag)
@@ -214,6 +214,7 @@ module ApplicationHelper
     html << link_to_remote(('&#171; ' + l(:label_previous)),
                             {:update => 'content_wrapper',
                              :url => url_param.merge(page_param => paginator.current.previous),
+                             :method=>:get,
                              :complete => 'window.scrollTo(0,0)'},
                             {:href => url_for(:params => url_param.merge(page_param => paginator.current.previous))}) + ' ' if paginator.current.previous
 
@@ -221,6 +222,7 @@ module ApplicationHelper
       link_to_remote(n.to_s,
                       {:url => {:params => url_param.merge(page_param => n)},
                        :update => 'content_wrapper',
+                       :method=>:get,
                        :complete => 'window.scrollTo(0,0)'},
                       {:href => url_for(:params => url_param.merge(page_param => n))})
     end || '')
@@ -228,6 +230,7 @@ module ApplicationHelper
     html << ' ' + link_to_remote((l(:label_next) + ' &#187;'),
                                  {:update => 'content_wrapper',
                                   :url => url_param.merge(page_param => paginator.current.next),
+                                  :method=>:get,
                                   :complete => 'window.scrollTo(0,0)'},
                                  {:href => url_for(:params => url_param.merge(page_param => paginator.current.next))}) if paginator.current.next
 
@@ -243,7 +246,7 @@ module ApplicationHelper
     url_param.clear if url_param.has_key?(:set_filter)
 
     links = Setting.per_page_options_array.collect do |n|
-      n == selected ? n : link_to_remote(n, {:update => "content_wrapper", :url => params.dup.merge(:per_page => n)},
+      n == selected ? n : link_to_remote(n, {:update => "content_wrapper", :url => params.dup.merge(:per_page => n),:method=>:get},
                                             {:href => url_for(url_param.merge(:per_page => n))})
     end
     links.size > 1 ? l(:label_display_per_page, links.join(', ')) : nil
@@ -683,41 +686,6 @@ module ApplicationHelper
   end
 
 
-#  def init_tree_table(issues, query)
-#    issues.collect do |issue|
-#      if issue.parent_id.nil?
-#        ret = "<tr id='#{issue.id}' class='hascontextmenu #{cycle('odd', 'even')}'>"
-#        ret += '<td><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
-#        ret += '<td><img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
-#        ret += '<td class="checkbox">' + "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
-#        ret += '<td>' + "#{issue.id}" + '</td>'
-#        query.columns.each do |column|
-#          ret += "#{content_tag 'td', column_content(column, issue), :class => column.name}"
-#        end
-#        ret += '</tr>'
-#        ret += "#{tree_table(issue.children, 1, '', query)}"
-#      end
-#    end
-#  end
-#
-#  def tree_table(tab_issue, padding, parent_class, query)
-#    padding += 1
-#    tab_issue.collect do |issue|
-#      class_tr = "#{parent_class}" + " tree_class_parent_#{issue.parent_id}"
-#        ret = '<tr id='"#{issue.id}"' value="' + "#{issue.parent_id}" + '" class="' + "#{class_tr}" + " hascontextmenu #{cycle('odd', 'even')}" +'" style="display:none;" >'
-#        ret += '<td style="padding-left:' + "#{padding}" + 'em;" ><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
-#        ret += '<td style="padding-left:' + "#{padding}" + 'em;" ><img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
-#        ret += '<td class="checkbox">' + "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
-#        ret += '<td>' + "#{issue.id}" + '</td>'
-#        query.columns.each do |column|
-#            ret += "#{content_tag 'td', column_content(column, issue), :class => column.name}"
-#          end
-#        ret += '</tr>'
-#        ret += "#{tree_table(issue.children, padding, class_tr, query) if issue.children.size > 0}"
-#    end
-#  end
-
-
   def init_tree_table(issues, padding, parent_class,   query)
     padding += 1
     issues.collect do |issue|
@@ -834,7 +802,7 @@ module ApplicationHelper
     html += "#{javascript_tag("jQuery().ready(function() {jQuery('.box_header .icon_visu').tooltip({bodyHandler: function() {return jQuery(this).attr('name');},showURL: false })});")}"
   end
 
-  def profile_box(title,content)
+  def profile_project_box(title,content)
     link = link_to_remote "#{image_tag('/images/edit.png')}",
                          { :url => { :controller => 'projects', :action => 'edit_part_profile', :project_id => @project.id},
                            :method => 'get',
@@ -845,6 +813,12 @@ module ApplicationHelper
     content_tag(:div,
       content_tag(:div,content_tag(:div,title,:class=>"left",:style=>"max-width:90%;")+content_tag(:div,link,:class=>"links_edit_box")+content_tag(:div,"",:class=>"clearer"),:class=>'profile_header')+
       content_tag(:div,content,:class=>'profile_content'),:class=>"profile editable_box",:style=>"max-width:100%;")
+  end
+
+  def profile_box(title,content)    
+    content_tag(:div,
+      content_tag(:div,content_tag(:div,title,:class=>"left",:style=>"max-width:90%;")+content_tag(:div,"",:class=>"clearer"),:class=>'profile_header')+
+      content_tag(:div,content,:class=>'profile_content'),:class=>"profile",:style=>"max-width:100%;")
   end
 
 

@@ -34,7 +34,7 @@ module CustomFieldsHelper
     case custom_field.field_format
     when "date"
       if read_only
-        custom_value.value.is_a?(Integer)|| custom_value.value.is_a?(FalseClass) ? "" : "<p>#{custom_value.value}</p>"
+        custom_value.value.is_a?(Integer)|| custom_value.value.is_a?(FalseClass) ? "" : "<p>#{format_date(custom_value.value)}</p>"
       else
         text_field_tag(field_name, custom_value.value.is_a?(Integer)|| custom_value.value.is_a?(FalseClass) ? "" : custom_value.value, :id => field_id, :size => 10, :readonly => read_only,:class=>"ui-datepicker") +
         initialize_datepicker()

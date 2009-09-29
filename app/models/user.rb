@@ -217,7 +217,7 @@ class User < ActiveRecord::Base
   # Return user's role for project
   def role_for_project(project)
     # No role on archived projects
-    return nil unless project && project.active?
+    return nil unless project
     if logged?
       # Find project membership
       membership = memberships.detect {|m| m.project_id == project.id}

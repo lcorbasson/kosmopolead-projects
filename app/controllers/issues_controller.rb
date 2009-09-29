@@ -77,17 +77,16 @@ class IssuesController < ApplicationController
                            :limit  =>  limit,
                            :offset =>  @issue_pages.current.offset
       respond_to do |format|
-        format.html { render :template => 'issues/index.rhtml', :layout => !request.xhr? }
+        format.html { }
         format.atom { render_feed(@issues, :title => "#{@project || Setting.app_title}: #{l(:label_issue_plural)}") }
         format.csv  { send_data(issues_to_csv(@issues, @project).read, :type => 'text/csv; header=present', :filename => 'export.csv') }
         format.pdf  { send_data(issues_to_pdf(@issues, @project), :type => 'application/pdf', :filename => 'export.pdf') }
         format.js  {
           render:update do |page|
             if !params[:set_filter]
-             page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'issues/index', :locals=>{:project=>@project})}');"
-             page << "jQuery('#project_author').html('#{escape_javascript(render:partial=>'projects/author', :locals=>{:project=>@project})}');"
+             page.replace_html "content_wrapper", :partial => 'issues/index', :locals=>{:project=>@project}
+             page.replace_html "project_author", :partial => 'projects/author', :locals=>{:project=>@project}
             else
-              #page.replace_html "custom_fields", :partial => 'issues/list', :locals => {:issues => @issues, :query => @query}
               page.replace_html "list_issues", :partial => 'issues/list', :locals => {:issues => @issues, :query => @query}
             end
           end
@@ -229,13 +228,15 @@ class IssuesController < ApplicationController
           }
       end
     end
+    # Save custom fields
+     @issue.save_custom_field_values
     if params[:issue].is_a?(Hash)
       @issue.attributes = params[:issue]
       @issue.watcher_user_ids = params[:issue]['watcher_user_ids'] if User.current.allowed_to?(:add_issue_watchers, @project)
     end
     @issue.author = User.current
     @priorities = Enumeration::get_values('IPRI')    
-  
+  @project.attributes = params[:project]
           find_info_issue        
           if @issue.save
             @file_attachment = FileAttachment.new

@@ -12,7 +12,7 @@
       <div class="add-member">
           <% if Partner.all.size>0 %>
             <%= l(:label_partner) %>:
-            <%= text_field_tag("field_autocomplete_partner") %><%= hidden_field_tag "partner_id", :class=>"ac_input"%>
+            <%= text_field_tag("field_autocomplete_partner") %><%= hidden_field_tag "partner_id", "",:class=>"ac_input"%>
             <%#= select_tag :partner_id, "<option value=""></option>"+options_for_select(@project.community.partners.collect {|p| [p.name, p.id]}) %>
             <%#= observe_field :partner_id,:url =>  new_project_member_path(@project,:change=>true),:method=>:get,:with => "Form.serialize('update-members-form')" %>
           <% end %>

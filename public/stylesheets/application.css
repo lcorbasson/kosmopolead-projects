@@ -170,6 +170,9 @@ body {
   font-weight: bold;
 }
 
+#places_wrapper ul li.community_menu_item a:link,
+#places_wrapper ul li.community_menu_item a:visited{padding-left:12px;}
+
 #places_wrapper ul li a:link,
 #places_wrapper ul li a:visited  {
   display: block;
@@ -181,6 +184,7 @@ body {
   color: #ffffff;
   background-color: #190f06;
 }
+
 
 #places_wrapper ul li.community_menu_item a:link,
 #places_wrapper ul li.community_menu_item a:visited  {
@@ -389,6 +393,7 @@ table p {margin:0;}
     padding:5px;
     margin-top:20px;
     background:#fff;
+    font-size:10px;
 }
 .sidebar_box a {color:#505050;font-weight:bold;}
 

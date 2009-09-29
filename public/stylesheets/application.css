@@ -302,7 +302,7 @@ p {
 .clearer:after{ content: "."; display: block; height: 0; clear: both; visibility: hidden; }
 
 /***** Links *****/
-a, a:link, a:visited{text-decoration: none; }
+a, a:link, a:visited{ color: #333333; text-decoration: none; }
 a:hover, a:active{text-decoration: none;color:#009EEE;}
 a img{ border: 0; }
 

@@ -686,41 +686,6 @@ module ApplicationHelper
   end
 
 
-#  def init_tree_table(issues, query)
-#    issues.collect do |issue|
-#      if issue.parent_id.nil?
-#        ret = "<tr id='#{issue.id}' class='hascontextmenu #{cycle('odd', 'even')}'>"
-#        ret += '<td><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
-#        ret += '<td><img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
-#        ret += '<td class="checkbox">' + "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
-#        ret += '<td>' + "#{issue.id}" + '</td>'
-#        query.columns.each do |column|
-#          ret += "#{content_tag 'td', column_content(column, issue), :class => column.name}"
-#        end
-#        ret += '</tr>'
-#        ret += "#{tree_table(issue.children, 1, '', query)}"
-#      end
-#    end
-#  end
-#
-#  def tree_table(tab_issue, padding, parent_class, query)
-#    padding += 1
-#    tab_issue.collect do |issue|
-#      class_tr = "#{parent_class}" + " tree_class_parent_#{issue.parent_id}"
-#        ret = '<tr id='"#{issue.id}"' value="' + "#{issue.parent_id}" + '" class="' + "#{class_tr}" + " hascontextmenu #{cycle('odd', 'even')}" +'" style="display:none;" >'
-#        ret += '<td style="padding-left:' + "#{padding}" + 'em;" ><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
-#        ret += '<td style="padding-left:' + "#{padding}" + 'em;" ><img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
-#        ret += '<td class="checkbox">' + "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
-#        ret += '<td>' + "#{issue.id}" + '</td>'
-#        query.columns.each do |column|
-#            ret += "#{content_tag 'td', column_content(column, issue), :class => column.name}"
-#          end
-#        ret += '</tr>'
-#        ret += "#{tree_table(issue.children, padding, class_tr, query) if issue.children.size > 0}"
-#    end
-#  end
-
-
   def init_tree_table(issues, padding, parent_class,   query)
     padding += 1
     issues.collect do |issue|

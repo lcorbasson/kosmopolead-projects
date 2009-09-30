@@ -1094,6 +1094,7 @@ height:17px;
 .user_thumbnail .name a,.user_thumbnail .name {text-decoration:none;font-weight:bold;color:#009EEE;}
 .thumbnail_infos {padding-left:5px;}
 .file_thumbnail .filename {color:#009EEE;font-weight:bold;}
+.role_user {margin-top:5px;}
 
 /* Blocks*/
 .box_header .icon {height:16px;width:16px;margin-right:5px;}

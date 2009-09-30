@@ -86,7 +86,7 @@ class Project < ActiveRecord::Base
   validates_numericality_of :project_cost, :estimated_time, :allow_nil => true
   
   before_destroy :delete_all_members
-  after_create :unarchived
+#  before_save :unarchived
   after_save :create_gallery
 
   named_scope :has_module, lambda { |mod| { :conditions => ["#{Project.table_name}.id IN (SELECT em.project_id FROM #{EnabledModule.table_name} em WHERE em.name=?)", mod.to_s] } }

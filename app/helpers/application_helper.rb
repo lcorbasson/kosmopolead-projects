@@ -768,9 +768,10 @@ module ApplicationHelper
 
   def member_thumbnail(user,member)
     name = content_tag(:p,(user && !user.anonymous?) ? link_to(user.name, :controller => 'account', :action => 'show', :id => user) : 'Anonymous',:class=>"name")   
+    role = content_tag(:p, user.role_for_project(@project).name,:class=>"role_user")
     thumbnail = content_tag(:li,
       content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=> project_member_path(@project,member) ,:method=>:delete,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
-      name,:class=>"user_thumbnail thumbnail editable_box")
+      name+role,:class=>"user_thumbnail thumbnail editable_box")
   end
 
 

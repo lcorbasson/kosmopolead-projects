@@ -7,8 +7,19 @@
       <p><label><%= l(:label_parent) %></label> <%= f.select :parent_id, (@root_projects.collect {|p| [p.acronym, p.id]}), { :include_blank => true } %></p>
       <p><label><%= l(:label_support_by) %></label><%= text_field_tag("field_autocomplete_author","#{@project.author.name if @project.author}") %><%= f.hidden_field :author_id, :class=>"ac_input"%> <%#= f.select :author_id,  @project.community.users.collect { |u|  [u.name, u.id]}, {:include_blank => true} %></p>
       <p id="list_partners">
-        <% if @project.author %>
-          <label><%= l(:label_partner) %></label><%= select_tag "partner_id", options_for_select(@project.author.partnerships.collect { |ps| [ps.partner.name,ps.partner.id]},(@project.project_partners.collect {|pp| pp.partner} &@project.author.partnerships.collect {|ps| ps.partner}).first.id) %>
+        <% if @project.author && @project.author.partnerships && @project.project_partners %>
+          <%  intersect =  (@project.project_partners.collect {|pp| pp.partner} & @project.author.partnerships.collect {|ps| ps.partner}) %>
+          <% unless !intersect %>
+            <%  selected = "" %>
+          <% else %>
+            <%  selected = intersect %>
+          <% end %>
+          <label><%= l(:label_partner) %></label>
+          <%= select_tag "partner_id",
+            options_for_select(
+                @project.author.partnerships.collect { |ps| [ps.partner.name,ps.partner.id]}<<["",""],
+                selected
+          ) %>
         <% end %>
       </p>
       <p><label><%= l(:label_watched_by) %></label><%= text_field_tag("field_autocomplete_watcher","#{@project.watcher.name if @project.watcher}") %><%= f.hidden_field :watcher_id, :class=>"ac_input"%></p>

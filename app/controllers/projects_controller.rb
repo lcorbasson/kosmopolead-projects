@@ -279,7 +279,7 @@ class ProjectsController < ApplicationController
               page << "jQuery('.project_tags').html('#{escape_javascript(render:partial=>'projects/box/tags')}');"
             when "summary"              
               @users = User.all
-              if params[:partner_id]
+              if !params[:partner_id].blank?
                 @partner = ProjectPartner.create(:project_id=>@project.id,:partner_id=>params[:partner_id])
               end
               page << "jQuery('#profile_project').html('#{escape_javascript(profile_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"

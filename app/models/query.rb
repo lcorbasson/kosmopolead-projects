@@ -24,8 +24,6 @@ class QueryColumn
     self.sortable = options[:sortable]
     self.default_order = options[:default_order]
   end
-
-
   
   def caption
     set_language_if_valid(User.current.language)
@@ -406,6 +404,8 @@ class Query < ActiveRecord::Base
     else
       filters_clauses.join(' AND ')
     end
+
+    puts "**************ISSUES : #{sql}"
   end
 
 
@@ -445,6 +445,7 @@ class Query < ActiveRecord::Base
        sql << ')'
      
        filters_clauses << sql
+       p "*******************************#{sql}"
     end
     filters_clauses.join(' AND ')   
   end
@@ -479,32 +480,52 @@ class Query < ActiveRecord::Base
     when "<t-"
       sql = date_range_clause(db_table, db_field, nil, value)
     when "t-"
-       sql = date_range_clause(db_table, db_field, value, (Date.parse(value.first.delete("&quot;")) + 1).strftime("%Y-%m-%d") )
+      unless is_custom_filter
+        sql = date_range_clause(db_table, db_field, value, (Date.parse(value.first.delete("&quot;")) + 1).strftime("%Y-%m-%d"))
+      else
+        sql = date_range_clause_custom_field(db_table, db_field, value, field)
+      end
     when ">t+"
-      sql = date_range_clause(db_table, db_field, value, nil)
+      unless is_custom_filter
+        sql = date_range_clause(db_table, db_field, value, nil)
+      else
+        sql = date_range_clause_custom_field(db_table, db_field, value, field)
+      end
     when "<t+"
-      sql = date_range_clause(db_table, db_field, nil, value)
+      unless is_custom_filter
+        sql = date_range_clause(db_table, db_field, nil, value)
+      else
+        sql = date_range_clause_custom_field(db_table, db_field, value, field)
+      end
     when "t+"
       sql = date_range_clause(db_table, db_field, value, value)
     when "t"
-      sql = date_range_clause(db_table, db_field, Date.today, Date.today + 1)
+      unless is_custom_filter
+        sql = date_range_clause(db_table, db_field, Date.today, Date.today + 1)
+      else
+        sql = date_range_clause_custom_field(db_table, db_field, value, field)
+      end
     when "w"
-      from = l(:general_first_day_of_week) == '7' ?
-      # week starts on sunday
-      ((Date.today.cwday == 7) ? Time.now.at_beginning_of_day : Time.now.at_beginning_of_week - 1.day) :
-        # week starts on monday (Rails default)
-        Date.today.at_beginning_of_week
-      sql = "#{db_table}.#{db_field} BETWEEN '%s' AND '%s'" % [from, from + 7.day]
+      unless is_custom_filter
+        from = l(:general_first_day_of_week) == '7' ?
+        # week starts on sunday
+        ((Date.today.cwday == 7) ? Time.now.at_beginning_of_day : Time.now.at_beginning_of_week - 1.day) :
+          # week starts on monday (Rails default)
+          Date.today.at_beginning_of_week
+        sql = "#{db_table}.#{db_field} BETWEEN '%s' AND '%s'" % [from, from + 7.day]
+      else
+        sql = date_range_clause_custom_field(db_table, db_field, value, field)
+      end
     when "~"
       sql = "#{db_table}.#{db_field} LIKE '%#{connection.quote_string(value.first)}%'"
     when "!~"
       sql = "#{db_table}.#{db_field} NOT LIKE '%#{connection.quote_string(value.first)}%'"
     end
+  
     return sql
   end
 
-
-  def sql_for_field_projects(field, value, db_table, db_field, is_custom_filter)
+  def sql_for_field_projects(field, value, db_table, db_field, is_custom_filter) 
     sql = ''
     case operator_for field
     when "="      
@@ -526,35 +547,29 @@ class Query < ActiveRecord::Base
     when "c"
       sql = "#{Project.table_name}.status=0" if field == "status"
     when ">t-"
-      sql = date_range_clause(db_table, db_field, value, nil)
+      sql = date_range_clause_custom_field(db_table, db_field, value, field)
     when "<t-"
-      sql = date_range_clause(db_table, db_field, nil, value)
+      sql = date_range_clause_custom_field(db_table, db_field,value, field)
     when "t-"
-      sql = date_range_clause(db_table, db_field, value, (Date.parse(value.first.delete("&quot;")) + 1).strftime("%Y-%m-%d") )
+      sql = date_range_clause_custom_field(db_table, db_field, value, field)
     when ">t+"
-      sql = date_range_clause(db_table, db_field, value, nil)
+      sql = date_range_clause_custom_field(db_table, db_field, value, field)
     when "<t+"
-      sql = date_range_clause(db_table, db_field, nil, value)
+      sql = date_range_clause_custom_field(db_table, db_field, value, field)
     when "t+"
-      sql = date_range_clause(db_table, db_field, value, value)
+      sql = date_range_clause_custom_field(db_table, db_field, value, field)
     when "t"
-      sql = date_range_clause(db_table, db_field, Date.today, Date.today)
+      sql = date_range_clause_custom_field(db_table, db_field, value, field)
     when "w"
-      from = l(:general_first_day_of_week) == '7' ?
-      # week starts on sunday
-      ((Date.today.cwday == 7) ? Time.now.at_beginning_of_day : Time.now.at_beginning_of_week - 1.day) :
-        # week starts on monday (Rails default)
-        Time.now.at_beginning_of_week
-      sql = "#{db_table}.#{db_field} BETWEEN '%s' AND '%s'" % [from, from + 7.day]
+      sql = date_range_clause_custom_field(db_table, db_field, value, field)
     when "~"
       sql = "#{db_table}.#{db_field} LIKE '%#{connection.quote_string(value)}%'"
     when "!~"
       sql = "#{db_table}.#{db_field} NOT LIKE '%#{connection.quote_string(value)}%'"
     end
-
+  
     return sql
   end
-
   
   def add_custom_fields_filters(custom_fields)
     @available_filters ||= {}
@@ -601,14 +616,51 @@ class Query < ActiveRecord::Base
   end
   
   # Returns a SQL clause for a date or datetime field.
-  def date_range_clause(table, field, from, to)
+  def date_range_clause(table, field, from, to,yaml = false)
     s = []
-    if from
-      s << ("#{table}.#{field} >= '%s'" % from)
-    end
-    if to
-      s << ("#{table}.#{field} <= '%s'" % to)
-    end
+     if yaml
+      if from
+        s << ("#{table}.#{field} > '%s'" % "--- #{from}")
+      end
+      if to
+        s << ("#{table}.#{field} < '%s'" % "--- #{to}")
+      end
+     else
+        if from
+        s << ("#{table}.#{field} > '%s'" % from)
+      end
+      if to
+        s << ("#{table}.#{field} < '%s'" % to)
+      end
+     end
     s.join(' AND ')
   end
+
+  def date_range_clause_custom_field(table, db_field, from, field)
+    s = []
+
+    case operator_for field
+      when "t-"
+        s << ("#{table}.#{db_field} >= '%s'" % "--- #{from}")
+        s << ("#{table}.#{db_field} > '%s'" % "--- #{(Date.parse(from.first.delete("&quot;")) + 1).strftime("%Y-%m-%d")}")
+      when ">t+"
+        s << ("#{table}.#{db_field} > '%s'" % "--- #{from}")
+      when "<t+"
+        s << ("#{table}.#{db_field} < '%s'" % "--- #{from}")
+      when "t"
+        s << ("#{table}.#{db_field} >= '%s'" % "--- #{Date.today.strftime("%Y-%m-%d")}")
+        s << ("#{table}.#{db_field} < '%s'" % "--- #{(Date.today+1).strftime("%Y-%m-%d")}")
+      when "w"
+        from = l(:general_first_day_of_week) == '7' ?
+        # week starts on sunday
+        ((Date.today.cwday == 7) ? Time.now.at_beginning_of_day : Time.now.at_beginning_of_week - 1.day) :
+          # week starts on monday (Rails default)
+          Time.now.at_beginning_of_week
+        s << "#{table}.#{db_field} BETWEEN '%s' AND '%s'" % ["--- #{from.strftime('%Y-%m-%d')}", "--- #{(from + 7.day).strftime('%Y-%m-%d')}"]
+    end
+     
+    s.join(' AND ')
+  
+  end
+
 end

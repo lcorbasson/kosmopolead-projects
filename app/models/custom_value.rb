@@ -19,6 +19,7 @@ class CustomValue < ActiveRecord::Base
   belongs_to :custom_field
   belongs_to :customized, :polymorphic => true
   serialize :value
+ 
 
   def after_initialize
     if custom_field && new_record? && (customized_type.blank? || (customized && customized.new_record?))
@@ -30,6 +31,8 @@ class CustomValue < ActiveRecord::Base
   def true?
     self.value == '1'
   end
+
+ 
   
 protected
   def validate
@@ -53,4 +56,14 @@ protected
       end
     end
   end
+
+
+#  def save
+#     custom_field = CustomField.find(self.custom_field_id)
+#    if custom_field.field_format.eql?("date")
+#      self.value = YAML.load("--- 2009-10-30")
+#    end
+#    super.save
+#  end
+
 end

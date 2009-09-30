@@ -170,6 +170,9 @@ body {
   font-weight: bold;
 }
 
+#places_wrapper ul li.community_menu_item a:link,
+#places_wrapper ul li.community_menu_item a:visited{padding-left:12px;}
+
 #places_wrapper ul li a:link,
 #places_wrapper ul li a:visited  {
   display: block;
@@ -181,6 +184,7 @@ body {
   color: #ffffff;
   background-color: #190f06;
 }
+
 
 #places_wrapper ul li.community_menu_item a:link,
 #places_wrapper ul li.community_menu_item a:visited  {
@@ -389,6 +393,7 @@ table p {margin:0;}
     padding:5px;
     margin-top:20px;
     background:#fff;
+    font-size:10px;
 }
 .sidebar_box a {color:#505050;font-weight:bold;}
 
@@ -1089,6 +1094,7 @@ height:17px;
 .user_thumbnail .name a,.user_thumbnail .name {text-decoration:none;font-weight:bold;color:#009EEE;}
 .thumbnail_infos {padding-left:5px;}
 .file_thumbnail .filename {color:#009EEE;font-weight:bold;}
+.role_user {margin-top:5px;}
 
 /* Blocks*/
 .box_header .icon {height:16px;width:16px;margin-right:5px;}

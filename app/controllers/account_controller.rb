@@ -29,7 +29,7 @@ class AccountController < ApplicationController
 
     # show only public projects and private projects that the logged in user is also a member of
     @memberships = @user.memberships.select do |membership|
-      membership.project.is_public? || (User.current.member_of?(membership.project))
+      User.current.member_of?(membership.project)
     end
 
     events = Redmine::Activity::Fetcher.new(User.current, :author => @user).events(nil, nil, :limit => 10)
@@ -75,6 +75,8 @@ class AccountController < ApplicationController
     cookies.delete :autologin
     Token.delete_all(["user_id = ? AND action = ?", User.current.id, 'autologin']) if User.current.logged?
     self.logged_user = nil
+    clear_community_context
+    session[:project] = nil
     flash[:notice] = l(:notice_logout_succesful)
     redirect_to home_url
   end

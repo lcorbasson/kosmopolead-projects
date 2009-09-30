@@ -1,7 +1,7 @@
 <% selected_tab = params[:tab] ? params[:tab].to_s : project_tabs.first[:name] %>
 <div class="profilecontentleft">
   <div id="profile_project">
-    <%= profile_box("PROJET #{project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>project}}") %>
+    <%= profile_project_box("PROJET #{project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>project}}") %>
   </div>
   <span class="grey_title" style="float:left;margin-right:20px;"> Avancement du projet :</span><%= progress_bar([project.completed_percent, 100], :width => '40%', :legend => ('%0.0f%' % project.completed_percent)) %>
 <br/><br/>
@@ -9,8 +9,6 @@
   <% unless project.custom_field_values.empty? %>
     <%= render :partial => 'projects/show/custom_fields', :locals=>{:project=>project} %>
   <% end %>
-
-
   <div class="editable_box">
       <div class="links_edit_box" >        
         <%= toggle_link image_tag('/images/add.png'), 'new-relation-form'%>
@@ -18,10 +16,6 @@
       <%= grey_title("#{l(:label_related_project)}") %>
       <%= grey_box("#{render:partial=>'projects/relations'}", "project_relations") %>
   </div>
-
-
-
-
 </div>
 
 <div class="profilecontentright">

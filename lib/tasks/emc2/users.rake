@@ -1,13 +1,13 @@
 # EMC2 Tasks
 namespace :emc2 do
   
-  # Create users from emc2_export.csv file
+  # Create users from emc2_users.csv file
   task :create_users => :environment do
     # Chargement de la librairie FasterCSV
     require 'fastercsv'
     # Definition du file path
-    users_file = "#{RAILS_ROOT}/lib/tasks/emc2/data/emc2_users.csv"
-    @@passwd_users_file = "#{RAILS_ROOT}/lib/tasks/emc2/data/emc2_password_users.csv"
+    users_file = "#{RAILS_ROOT}/lib/tasks/emc2/emc2_users.csv"
+    @@passwd_users_file = "#{RAILS_ROOT}/lib/tasks/emc2/emc2_password_users.csv"
 
     # Verification de l existance du fichier
     unless File.exist?(users_file)
@@ -51,7 +51,7 @@ namespace :emc2 do
   # Fonctions
 
   # Creation d un utilisateur
-  def create_single_user(lastname, firstname, mail)
+  def create_single_user(lastname, firstname, mail, file = @@passwd_users_file)
     result = nil
 
     # Verification de la presence des champs
@@ -80,7 +80,7 @@ namespace :emc2 do
         result = user_obj
 
         # Ecriture des mots de passe
-        FasterCSV.open(@@passwd_users_file, "a") do |csv|
+        FasterCSV.open(file, "a") do |csv|
           csv << [user_obj.login, password]
         end
       end
@@ -105,7 +105,7 @@ namespace :emc2 do
   end
 
   def remove_special_accent(string)
-    '' if !string
+    return '' unless string
     
     string = string.downcase
     string = string.gsub(/[éèëêÈÉ]/, 'e')

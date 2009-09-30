@@ -176,7 +176,7 @@ module ApplicationHelper
   def authoring(created, author, options={})
     time_tag = @project.nil? ? content_tag('acronym', distance_of_time_in_words(Time.now, created), :title => format_time(created)) :
                                link_to(distance_of_time_in_words(Time.now, created), 
-                                       {:controller => 'projects', :action => 'activity', :id => @project, :from => created.to_date},
+                                       activity_project_path(@project, :from => created.to_date),
                                        :title => format_time(created))
     author_tag = (author.is_a?(User) && !author.anonymous?) ? link_to(h(author), :controller => 'account', :action => 'show', :id => author) : h(author || 'Anonymous')
     l(options[:label] || :label_added_time_by, author_tag, time_tag)
@@ -686,41 +686,6 @@ module ApplicationHelper
   end
 
 
-#  def init_tree_table(issues, query)
-#    issues.collect do |issue|
-#      if issue.parent_id.nil?
-#        ret = "<tr id='#{issue.id}' class='hascontextmenu #{cycle('odd', 'even')}'>"
-#        ret += '<td><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
-#        ret += '<td><img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
-#        ret += '<td class="checkbox">' + "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
-#        ret += '<td>' + "#{issue.id}" + '</td>'
-#        query.columns.each do |column|
-#          ret += "#{content_tag 'td', column_content(column, issue), :class => column.name}"
-#        end
-#        ret += '</tr>'
-#        ret += "#{tree_table(issue.children, 1, '', query)}"
-#      end
-#    end
-#  end
-#
-#  def tree_table(tab_issue, padding, parent_class, query)
-#    padding += 1
-#    tab_issue.collect do |issue|
-#      class_tr = "#{parent_class}" + " tree_class_parent_#{issue.parent_id}"
-#        ret = '<tr id='"#{issue.id}"' value="' + "#{issue.parent_id}" + '" class="' + "#{class_tr}" + " hascontextmenu #{cycle('odd', 'even')}" +'" style="display:none;" >'
-#        ret += '<td style="padding-left:' + "#{padding}" + 'em;" ><img class="tree_img" src="/images/plus.png" onClick="showChildrenIssue(' + "#{issue.id}" + ')" />' if issue.children.size > 0
-#        ret += '<td style="padding-left:' + "#{padding}" + 'em;" ><img class="tree_img" src="/images/moins.png" />' if issue.children.size == 0
-#        ret += '<td class="checkbox">' + "#{check_box_tag("ids[]", issue.id, false, :id => nil)}" + '</td>'
-#        ret += '<td>' + "#{issue.id}" + '</td>'
-#        query.columns.each do |column|
-#            ret += "#{content_tag 'td', column_content(column, issue), :class => column.name}"
-#          end
-#        ret += '</tr>'
-#        ret += "#{tree_table(issue.children, padding, class_tr, query) if issue.children.size > 0}"
-#    end
-#  end
-
-
   def init_tree_table(issues, padding, parent_class,   query)
     padding += 1
     issues.collect do |issue|
@@ -803,9 +768,10 @@ module ApplicationHelper
 
   def member_thumbnail(user,member)
     name = content_tag(:p,(user && !user.anonymous?) ? link_to(user.name, :controller => 'account', :action => 'show', :id => user) : 'Anonymous',:class=>"name")   
+    role = content_tag(:p, user.role_for_project(@project).name,:class=>"role_user")
     thumbnail = content_tag(:li,
       content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=> project_member_path(@project,member) ,:method=>:delete,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
-      name,:class=>"user_thumbnail thumbnail editable_box")
+      name+role,:class=>"user_thumbnail thumbnail editable_box")
   end
 
 
@@ -837,7 +803,7 @@ module ApplicationHelper
     html += "#{javascript_tag("jQuery().ready(function() {jQuery('.box_header .icon_visu').tooltip({bodyHandler: function() {return jQuery(this).attr('name');},showURL: false })});")}"
   end
 
-  def profile_box(title,content)
+  def profile_project_box(title,content)
     link = link_to_remote "#{image_tag('/images/edit.png')}",
                          { :url => { :controller => 'projects', :action => 'edit_part_profile', :project_id => @project.id},
                            :method => 'get',
@@ -848,6 +814,12 @@ module ApplicationHelper
     content_tag(:div,
       content_tag(:div,content_tag(:div,title,:class=>"left",:style=>"max-width:90%;")+content_tag(:div,link,:class=>"links_edit_box")+content_tag(:div,"",:class=>"clearer"),:class=>'profile_header')+
       content_tag(:div,content,:class=>'profile_content'),:class=>"profile editable_box",:style=>"max-width:100%;")
+  end
+
+  def profile_box(title,content)    
+    content_tag(:div,
+      content_tag(:div,content_tag(:div,title,:class=>"left",:style=>"max-width:90%;")+content_tag(:div,"",:class=>"clearer"),:class=>'profile_header')+
+      content_tag(:div,content,:class=>'profile_content'),:class=>"profile",:style=>"max-width:100%;")
   end
 
 

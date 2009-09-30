@@ -86,6 +86,7 @@ class Project < ActiveRecord::Base
   validates_numericality_of :project_cost, :estimated_time, :allow_nil => true
   
   before_destroy :delete_all_members
+#  before_save :unarchived
   after_save :create_gallery
 
   named_scope :has_module, lambda { |mod| { :conditions => ["#{Project.table_name}.id IN (SELECT em.project_id FROM #{EnabledModule.table_name} em WHERE em.name=?)", mod.to_s] } }
@@ -234,6 +235,10 @@ class Project < ActiveRecord::Base
     return false if parent && !parent.active?
     update_attribute :archived, false
   end
+
+  def unarchived
+    self.archived = false
+  end
   
   def active_children
     children.select {|child| child.active?}
@@ -313,7 +318,7 @@ class Project < ActiveRecord::Base
   
   # Returns an auto-generated project identifier based on the last identifier used
   def self.next_identifier
-    p = Project.find(:first, :order => 'created_on DESC')
+    p = Project.find(:first, :order => 'id DESC')
     p.nil? ? nil : p.identifier.to_s.succ
   end
 

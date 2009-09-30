@@ -279,7 +279,7 @@ class ProjectsController < ApplicationController
               page << "jQuery('.project_tags').html('#{escape_javascript(render:partial=>'projects/box/tags')}');"
             when "summary"              
               @users = User.all
-              if params[:partner_id]
+              if !params[:partner_id].blank?
                 @partner = ProjectPartner.create(:project_id=>@project.id,:partner_id=>params[:partner_id])
               end
               page << "jQuery('#profile_project').html('#{escape_javascript(profile_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
@@ -412,6 +412,7 @@ class ProjectsController < ApplicationController
   end
 
   def activity
+    
     @days = Setting.activity_days_default.to_i
 
     if params[:from]
@@ -564,7 +565,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
           format.js {
             render(:update) {|page|
-              page.replace_html "member_users", content_tag('select', options_from_collection_for_select(@partner.members, 'id', 'name'), :id => 'user_id', :name => 'user_id')
+              page.replace_html "member_users", content_tag('select', options_from_collection_for_select(@partner.members, 'id', 'name'), :id => 'member_user_id', :name => 'member[user_id]')
 
               }
           }
@@ -591,7 +592,7 @@ private
     else
       @project = Project.find_by_identifier(params[:id])
     end
-    authorize
+   
   rescue ActiveRecord::RecordNotFound
     render_404
   end

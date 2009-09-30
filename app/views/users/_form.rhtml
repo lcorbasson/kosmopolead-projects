@@ -2,15 +2,15 @@
 
 <!--[form:user]-->
 <span class="tabular">
-  <p><%= f.text_field :login, :required => true, :size => 25  %></p>
-  <p><%= f.text_field :firstname, :required => true %></p>
-  <p><%= f.text_field :lastname, :required => true %></p>
-  <p><%= f.text_field :mail, :required => true %></p>
-  <p><%= f.select :language, lang_options_for_select %></p>
+  <p><label><%= l(:field_login) %></label><%= f.text_field :login, :required => true, :size => 25  %></p>
+  <p><label><%= l(:field_firstname) %></label><%= f.text_field :firstname, :required => true %></p>
+  <p><label><%= l(:field_lastname) %></label><%= f.text_field :lastname, :required => true %></p>
+  <p><label><%= l(:field_mail) %></label><%= f.text_field :mail, :required => true %></p>
+  <p><label><%= l(:field_language) %></label><%= f.select :language, lang_options_for_select %></p>
   <p><label><%= l(:label_partners) %></label><%= select_tag "partner[]", options_for_select(@partners.collect {|p| [p.name, p.id]},@user.partnerships.collect { |ps| ps.partner.id}   ),
             :multiple => true,:style=>"width:200px"  %></p>
 
-  <p><%= f.check_box :admin, :disabled => (@user == User.current) %></p>
+  <p><label><%= l(:field_admin) %></label><%= f.check_box :admin, :disabled => (@user == User.current) %></p>
   <%= call_hook(:view_users_form, :user => @user, :form => f) %>
 
   <h3><%=l(:label_authentication)%></h3>

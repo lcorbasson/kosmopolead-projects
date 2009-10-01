@@ -497,7 +497,8 @@ class ProjectsController < ApplicationController
         conditions = @query.statement_projects
 
         @projects = Project.find :all,                             
-                             :conditions => "#{conditions}"
+                             :conditions => "#{conditions}",
+                             :order => 'acronym'
 
         @project = @projects.first unless @projects.nil?
         @relation= ProjectRelation.new
@@ -525,8 +526,6 @@ class ProjectsController < ApplicationController
               page<<"jQuery('#sidebar_projects').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
               page<<"jQuery('#sidebar_new').html('#{escape_javascript(render:partial=>'projects/sidebar_new')}');"
               page<<"jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project,:show_filters=>true})}');"
-
-
               }
           }
         end

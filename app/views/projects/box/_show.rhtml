@@ -1,106 +1,110 @@
-<% selected_tab = params[:tab] ? params[:tab].to_s : project_tabs.first[:name] %>
-<div class="profilecontentleft">
-  <div id="profile_project">
-    <%= profile_project_box("PROJET #{project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>project}}") %>
-  </div>
-  <span class="grey_title" style="float:left;margin-right:20px;"> Avancement du projet :</span><%= progress_bar([project.completed_percent, 100], :width => '40%', :legend => ('%0.0f%' % project.completed_percent)) %>
-<br/><br/>
-
-  <% unless project.custom_field_values.empty? %>
-    <%= render :partial => 'projects/show/custom_fields', :locals=>{:project=>project} %>
-  <% end %>
-  <div class="editable_box">
-      <div class="links_edit_box" >        
-        <%= toggle_link image_tag('/images/add.png'), 'new-relation-form'%>
-      </div>
-      <%= grey_title("#{l(:label_related_project)}") %>
-      <%= grey_box("#{render:partial=>'projects/relations'}", "project_relations") %>
-  </div>
-</div>
-
-<div class="profilecontentright">
-        <div id="tabs">
-          <ul id="tabs_members">
-              <li><a href="#projects_partners"><%= l(:label_partners) %></a></li>
-              <li><a href="#projects_members"><%= l(:label_members) %></a></li>
-          </ul>
-          <div id="projects_partners">
-              <%= render :partial=>"projects/show/partners" %>
-          </div>
-          <div id="projects_members">            
-              <%= render :partial=>"projects/show/members" %>       
-          </div>
-           <div class="clearer"></div>
-           <div id="members-form">
-              <%= render :partial=>"members/form" %>
-           </div>
-      </div>
-
-    <div class="editable_box">
-      <div class="links_edit_box" >
-        <%#= toggle_link image_tag("/images/edit.png"), 'update-description-form',{:second_element=>"description"}%>
-        <%= link_to_remote "#{image_tag('/images/edit.png')}",
-                         { :url => { :controller => 'projects', :action => 'edit_part_description', :project_id => project.id},
-                           :method => 'get',
-                          
-                           :with=>'toggle_description()'
-                         } %>
-      </div>
-      <%= grey_title("DESCRIPTION DU PROJET") %>
-      <%= grey_box("#{render:partial=>'projects/box/description', :locals=>{:project=>project}}", "project_description") %>
+<% if @project %>
+  <% selected_tab = params[:tab] ? params[:tab].to_s : project_tabs.first[:name] %>
+  <div class="profilecontentleft">
+    <div id="profile_project">
+      <%= profile_project_box("PROJET #{project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>project}}") %>
     </div>
+    <span class="grey_title" style="float:left;margin-right:20px;"> Avancement du projet :</span><%= progress_bar([project.completed_percent, 100], :width => '40%', :legend => ('%0.0f%' % project.completed_percent)) %>
+  <br/><br/>
+
+    <% unless project.custom_field_values.empty? %>
+      <%= render :partial => 'projects/show/custom_fields', :locals=>{:project=>project} %>
+    <% end %>
+    <div class="editable_box">
+        <div class="links_edit_box" >
+          <%= toggle_link image_tag('/images/add.png'), 'new-relation-form'%>
+        </div>
+        <%= grey_title("#{l(:label_related_project)}") %>
+        <%= grey_box("#{render:partial=>'projects/relations'}", "project_relations") %>
+    </div>
+  </div>
+
+  <div class="profilecontentright">
+          <div id="tabs">
+            <ul id="tabs_members">
+                <li><a href="#projects_partners"><%= l(:label_partners) %></a></li>
+                <li><a href="#projects_members"><%= l(:label_members) %></a></li>
+            </ul>
+            <div id="projects_partners">
+                <%= render :partial=>"projects/show/partners" %>
+            </div>
+            <div id="projects_members">
+                <%= render :partial=>"projects/show/members" %>
+            </div>
+             <div class="clearer"></div>
+             <div id="members-form">
+                <%= render :partial=>"members/form" %>
+             </div>
+        </div>
 
       <div class="editable_box">
-      <div class="links_edit_box">
-          <%= toggle_link image_tag("/images/edit.png"), 'update-tags-form',{:second_element=>"project_tags"} %>
+        <div class="links_edit_box" >
+          <%#= toggle_link image_tag("/images/edit.png"), 'update-description-form',{:second_element=>"description"}%>
+          <%= link_to_remote "#{image_tag('/images/edit.png')}",
+                           { :url => { :controller => 'projects', :action => 'edit_part_description', :project_id => project.id},
+                             :method => 'get',
+
+                             :with=>'toggle_description()'
+                           } %>
+        </div>
+        <%= grey_title("DESCRIPTION DU PROJET") %>
+        <%= grey_box("#{render:partial=>'projects/box/description', :locals=>{:project=>project}}", "project_description") %>
       </div>
-      <%= grey_title("MOTS CLES") %>
-      <%= grey_box("#{render:partial=>'projects/box/tags', :locals=>{:project=>project}}", "project_tags") %>
+
+        <div class="editable_box">
+        <div class="links_edit_box">
+            <%= toggle_link image_tag("/images/edit.png"), 'update-tags-form',{:second_element=>"project_tags"} %>
+        </div>
+        <%= grey_title("MOTS CLES") %>
+        <%= grey_box("#{render:partial=>'projects/box/tags', :locals=>{:project=>project}}", "project_tags") %>
+    </div>
+
+
   </div>
-    
-
-</div>
-<div class="clearer"></div>
-
-<div class="tabs inside_tabs">
-  <ul>
-  <% project_tabs.each do |tab| -%>
-      <li><%= link_to l(tab[:label]), { :tab => tab[:name] },
-                                      :id => "tab-#{tab[:name]}",
-                                      :class => (tab[:name] != selected_tab ? nil : 'selected'),
-                                      :onclick => "showTab('#{tab[:name]}'); this.blur(); return false;" %></li>
-  <% end -%>
-  </ul>
   <div class="clearer"></div>
-</div>
-<% project_tabs.each do |tab| -%>
-<%= content_tag('div', render(:partial => tab[:partial],:locals=>{:project=>project}),
-                       :id => "tab-content-#{tab[:name]}",
-                       :style => (tab[:name] != selected_tab ? 'display:none' : nil),
-                       :class => 'tab-content') %>
-<% end -%>
 
-<%= javascript_tag("jQuery('#tabs').tabs({selected:1});jQuery('.more_infos').tabs({selected:1});") %>
+  <div class="tabs inside_tabs">
+    <ul>
+    <% project_tabs.each do |tab| -%>
+        <li><%= link_to l(tab[:label]), { :tab => tab[:name] },
+                                        :id => "tab-#{tab[:name]}",
+                                        :class => (tab[:name] != selected_tab ? nil : 'selected'),
+                                        :onclick => "showTab('#{tab[:name]}'); this.blur(); return false;" %></li>
+    <% end -%>
+    </ul>
+    <div class="clearer"></div>
+  </div>
+  <% project_tabs.each do |tab| -%>
+  <%= content_tag('div', render(:partial => tab[:partial],:locals=>{:project=>project}),
+                         :id => "tab-content-#{tab[:name]}",
+                         :style => (tab[:name] != selected_tab ? 'display:none' : nil),
+                         :class => 'tab-content') %>
+  <% end -%>
 
-<% content_for :header_tags do %>
-  <%= auto_discovery_link_tag(:atom, {:action => 'activity', :id => project, :format => 'atom', :key => User.current.rss_key}) %>
+  <%= javascript_tag("jQuery('#tabs').tabs({selected:1});jQuery('.more_infos').tabs({selected:1});") %>
+
+  <% content_for :header_tags do %>
+    <%= auto_discovery_link_tag(:atom, {:action => 'activity', :id => project, :format => 'atom', :key => User.current.rss_key}) %>
+  <% end %>
+  <%= javascript_tag("activeProjectMenu('#{project.id}')") %>
+  <% html_title(l(:label_overview)) -%>
+
+  <script>
+    function toggle_description(){
+      $("project-description-bloc").toggle();
+    }
+
+     function toggle_profile(){
+      $("project_infos").toggle();
+    }
+
+     function clear_form(){
+      jQuery("#description").html('');
+    }
+  </script>
+<% else %>
+  Aucun projet à visualiser
 <% end %>
-<%= javascript_tag("activeProjectMenu('#{project.id}')") %>
-<% html_title(l(:label_overview)) -%>
 
-<script>
-  function toggle_description(){
-    $("project-description-bloc").toggle();
-  }
-
-   function toggle_profile(){
-    $("project_infos").toggle();
-  }
-
-   function clear_form(){
-    jQuery("#description").html('');
-  }
-</script>
-  
 
 

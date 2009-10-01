@@ -189,7 +189,7 @@ class Query < ActiveRecord::Base
       user_values += project.users.sort.collect{|s| [s.name, s.id.to_s] }
     else
       # members of the user's projects
-      user_values += User.current.projects.collect(&:users).flatten.uniq.sort.collect{|s| [s.name, s.id.to_s] }
+      user_values += User.current.projects.sort.collect(&:users).flatten.uniq.sort.collect{|s| [s.name, s.id.to_s] }
     end
     @available_filters["assigned_to_id"] = { :type => :list, :order => 4, :values => user_values } unless user_values.empty?
     @available_filters["author_id"] = { :type => :list, :order => 5, :values => user_values } unless user_values.empty?
@@ -238,10 +238,10 @@ class Query < ActiveRecord::Base
     end
 
     @available_filters_projects = {
-      "status_id" => { :type => :list_status, :order => 1, :values => project_statuses.collect{|s| [s.status_label, s.id.to_s] } },
-      "designer_id" => { :type => :list, :order => 1, :values => users.collect{|u| [u.name, u.id.to_s] }},
-      "author_id" => { :type => :list, :order => 1, :values => users.collect{|u| [u.name, u.id.to_s] }},
-      "watcher_id" => { :type => :list, :order => 1, :values => users.collect{|u| [u.name, u.id.to_s] }}
+      "status_id" => { :type => :list_status, :order => 1, :values => project_statuses.sort.collect{|s| [s.status_label, s.id.to_s] } },
+      "designer_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
+      "author_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
+      "watcher_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }}
     }
 
     add_custom_fields_filters_projects(custom_fields)

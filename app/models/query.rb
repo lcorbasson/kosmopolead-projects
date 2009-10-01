@@ -399,13 +399,11 @@ class Query < ActiveRecord::Base
       sql << ')'
       filters_clauses << sql
     end
-    if self.query_type == "issue"
-      (filters_clauses << project_statement).join(' AND ')
-    else
+    
       filters_clauses.join(' AND ')
-    end
+ 
 
-    puts "**************ISSUES : #{sql}"
+   
   end
 
 
@@ -641,14 +639,14 @@ class Query < ActiveRecord::Base
 
     case operator_for field
       when "t-"
-        s << ("#{table}.#{db_field} >= '%s'" % "--- #{from}")
-        s << ("#{table}.#{db_field} > '%s'" % "--- #{(Date.parse(from.first.delete("&quot;")) + 1).strftime("%Y-%m-%d")}")
+        s << ("#{table}.#{db_field} > '%s'" % "--- #{(Date.parse(from.first.delete("&quot;")) - 1).strftime("%Y-%m-%d")}")
+        s << ("#{table}.#{db_field} < '%s'" % "--- #{(Date.parse(from.first.delete("&quot;")) + 1).strftime("%Y-%m-%d")}")
       when ">t+"
         s << ("#{table}.#{db_field} > '%s'" % "--- #{from}")
       when "<t+"
         s << ("#{table}.#{db_field} < '%s'" % "--- #{from}")
       when "t"
-        s << ("#{table}.#{db_field} >= '%s'" % "--- #{Date.today.strftime("%Y-%m-%d")}")
+        s << ("#{table}.#{db_field} > '%s'" % "--- #{(Date.today-1).strftime("%Y-%m-%d")}")
         s << ("#{table}.#{db_field} < '%s'" % "--- #{(Date.today+1).strftime("%Y-%m-%d")}")
       when "w"
         from = l(:general_first_day_of_week) == '7' ?
@@ -658,7 +656,7 @@ class Query < ActiveRecord::Base
           Time.now.at_beginning_of_week
         s << "#{table}.#{db_field} BETWEEN '%s' AND '%s'" % ["--- #{from.strftime('%Y-%m-%d')}", "--- #{(from + 7.day).strftime('%Y-%m-%d')}"]
     end
-     
+    s << ("#{table}.#{db_field} is not null")
     s.join(' AND ')
   
   end

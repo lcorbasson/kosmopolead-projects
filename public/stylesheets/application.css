@@ -1099,7 +1099,7 @@ height:17px;
 /* Blocks*/
 .box_header .icon {height:16px;width:16px;margin-right:5px;}
 .box_title a {color:#009EEE;}
-.box_title {font-size:12px;padding-top:3px;float:left}
+.box_title {font-size:11px;padding-top:3px;float:left}
 .box_links {float:right;margin-right: 5px;}
 .box_links a {font-size:10px;}
 .box_links a:hover {color:#009EEE;}
@@ -1142,7 +1142,7 @@ height:17px;
 
 /*Profile*/
 .profile {color:#fff;background:#382D24;-moz-border-radius:5px;margin-bottom:10px;}
-.profile_header {padding:5px 0 5px 5px;border-bottom:1px solid black;color:#9E836F;font-weight:bold;font-size:14px;}
+.profile_header {min-height:20px;padding:5px 0 5px 5px;border-bottom:1px solid black;color:#fff;font-weight:bold;font-size:11px;}
 .profile_content{margin:5px;padding:5px;}
 .profilecontentleft {margin:5px;float:left;width:40%;}
 .profilecontentright {float:right;width:55%;margin:5px;}
@@ -1258,3 +1258,5 @@ vertical-align:middle;cursor:pointer;}
 
 #role_form .fieldset {margin-left:10px;margin-right:10px;}
 .check_all_links {margin-left:10px;margin-bottom:10px;}
+
+#project_relations a{text-decoration:underline;color:#009EEE;}

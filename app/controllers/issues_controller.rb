@@ -72,7 +72,7 @@ class IssuesController < ApplicationController
       @issue_count = Issue.count(:include => [:status, :project], :conditions => @query.statement)
       @issue_pages = Paginator.new self, @issue_count, limit, params['page']
       @issues = Issue.find :all, :order => sort_clause,
-                          :include => [ :parent, :status, :tracker, :project, :priority],
+                           :include => [ :parent, :status, :tracker, :project, :priority],
                            :conditions => "#{'('+@query.statement+')'+' and ' if !@query.statement.blank?} issues.parent_id is NULL" ,
                            :limit  =>  limit,
                            :offset =>  @issue_pages.current.offset

@@ -83,7 +83,9 @@ class User < ActiveRecord::Base
   end
 
   def after_save
-    CommunityMembership.create(:community_id=>Community.current.id,:user_id=>self.id)
+    unless login.eql?("admin")
+      CommunityMembership.create(:community_id=>Community.current.id,:user_id=>self.id)
+    end
   end
   
   def reload(*args)

@@ -81,6 +81,10 @@ class User < ActiveRecord::Base
     # update hashed_password if password was set
     self.hashed_password = User.hash_password(self.password) if self.password
   end
+
+  def after_save
+    CommunityMembership.create(:community_id=>Community.current.id,:user_id=>self.id)
+  end
   
   def reload(*args)
     @name = nil

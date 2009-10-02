@@ -243,9 +243,9 @@ class Query < ActiveRecord::Base
       "status_id" => { :type => :list_status, :order => 1, :values => project_statuses.collect{|s| [s.status_label, s.id.to_s] } },
       "designer_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
       "author_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
-      "watcher_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }}
-#      "members" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
-#      "partners" => { :type => :list, :order => 1, :values => partners.sort.collect{|u| [u.name, u.id.to_s] }}
+      "watcher_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
+      "members" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }}
+      #"partners" => { :type => :list, :order => 1, :values => partners.sort.collect{|u| [u.name, u.id.to_s] }}
     }
 
     add_custom_fields_filters_projects(custom_fields)
@@ -432,21 +432,27 @@ class Query < ActiveRecord::Base
          if (field == "status_id")
             db_table = ProjectStatus.table_name
            sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{db_table} ON #{db_table}.id=#{Project.table_name}.status_id WHERE #{Project.table_name}.status_id=#{v}"
-         else
+
+         elsif(field == "members")
+            sql << "projects.archived=false AND projects.id IN (SELECT project_id FROM members WHERE user_id=#{v})"
+        elsif (field == "partners")
+          sql << "projects.archived=false AND projects.id IN (SELECT project_id FROM members WHERE user_id=#{v})"
+        else
             db_table = Project.table_name
 
          end
-         if (field != "status_id")
+         if (field != "status_id" && field != "members")
             sql << '('
          end
       end
-     if (field != "status_id")
+     if (field != "status_id" && field != "members")
         sql = sql + sql_for_field_projects(field, v, db_table, db_field, is_custom_filter)
      end
-    
+     if (field != "members")
        sql << ')'
-     
+     end
        filters_clauses << sql
+       puts "------------------------ #{sql}"
     end
     filters_clauses.join(' AND ')   
   end
@@ -573,8 +579,6 @@ class Query < ActiveRecord::Base
       sql = "#{db_table}.#{db_field} LIKE '%#{connection.quote_string(value)}%'"
     when "!~"
       sql = "#{db_table}.#{db_field} NOT LIKE '%#{connection.quote_string(value)}%'"
-#    when "member"
-#      sql = date_range_clause_custom_field(db_table, db_field, value, field)
     end
     return sql
   end
@@ -665,8 +669,6 @@ class Query < ActiveRecord::Base
           # week starts on monday (Rails default)
           Time.now.at_beginning_of_week
         s << "#{table}.#{db_field} BETWEEN '%s' AND '%s'" % ["--- #{from.strftime('%Y-%m-%d')}", "--- #{(from + 7.day).strftime('%Y-%m-%d')}"]
-#      when "member"
-#        s << ("#{table}.#{db_field} = #{from}")
     end
     s << ("#{table}.#{db_field} is not null")
     s.join(' AND ')

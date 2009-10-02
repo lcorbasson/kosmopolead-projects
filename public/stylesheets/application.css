@@ -1258,3 +1258,5 @@ vertical-align:middle;cursor:pointer;}
 
 #role_form .fieldset {margin-left:10px;margin-right:10px;}
 .check_all_links {margin-left:10px;margin-bottom:10px;}
+
+#project_relations a{text-decoration:underline;color:#009EEE;}

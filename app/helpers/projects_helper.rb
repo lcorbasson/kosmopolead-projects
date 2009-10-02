@@ -148,4 +148,9 @@ module ProjectsHelper
     export.rewind
     export
   end
+
+  def refresh_title(project)
+    html = "jQuery('.box_title').html('PROJET - #{project.acronym}');"
+    html += "jQuery('.projects_list #projects_id_#{project.id} a').html('#{project.acronym}');"
+  end
 end

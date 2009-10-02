@@ -1142,7 +1142,7 @@ height:17px;
 
 /*Profile*/
 .profile {color:#fff;background:#382D24;-moz-border-radius:5px;margin-bottom:10px;}
-.profile_header {padding:5px 0 5px 5px;border-bottom:1px solid black;color:#fff;font-weight:bold;font-size:11px;}
+.profile_header {min-height:20px;padding:5px 0 5px 5px;border-bottom:1px solid black;color:#fff;font-weight:bold;font-size:11px;}
 .profile_content{margin:5px;padding:5px;}
 .profilecontentleft {margin:5px;float:left;width:40%;}
 .profilecontentright {float:right;width:55%;margin:5px;}

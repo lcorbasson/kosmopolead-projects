@@ -267,7 +267,7 @@ class ProjectsController < ApplicationController
       format.js {
         render(:update) {|page|
           case params[:part]
-            when "description"             
+            when "description"   
               page << "jQuery('.project_description').html('#{escape_javascript(render:partial=>'projects/box/description',:locals=>{:project=>@project})}');"
             when "tags"
               @project.tag_list = ''
@@ -282,7 +282,8 @@ class ProjectsController < ApplicationController
               if !params[:partner_id].blank?
                 @partner = ProjectPartner.create(:project_id=>@project.id,:partner_id=>params[:partner_id])
               end
-              page << "jQuery('#profile_project').html('#{escape_javascript(profile_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
+              page << refresh_title(@project);
+              page << "jQuery('#profile_project').html('#{escape_javascript(profile_project_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
             when "synthesis"              
               page.replace_html "tab-content-synthesis", :partial => 'projects/show/synthesis',:locals=>{:project=>@project}
             when "custom_fields"                

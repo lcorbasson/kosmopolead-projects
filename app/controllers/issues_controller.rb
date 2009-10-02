@@ -236,13 +236,20 @@ class IssuesController < ApplicationController
     end
     @issue.author = User.current
     @priorities = Enumeration::get_values('IPRI')    
-  @project.attributes = params[:project]
+    @project.attributes = params[:project]
           find_info_issue        
           if @issue.save
-            @file_attachment = FileAttachment.new
+              @file_attachment = FileAttachment.new
               @file_attachment.container_type="issue"
               @file_attachment.container_id = @issue.id
               find_info_project  if @issue.is_stage?
+               # La tache est assignee
+               if params[:assigned_to_id]
+                 create_assignments(params[:assigned_to_id])
+               else
+                 # La tache n est pas assignee
+                Assignment.delete(@issue)
+              end
             find_info_project  if @issue.is_stage?
             respond_to do |format|
                 format.js {
@@ -250,6 +257,7 @@ class IssuesController < ApplicationController
                      if @issue.is_stage?
                        page.replace_html "content_wrapper", :partial => 'projects/show',:locals=>{:project=>@project}
                      else
+                      
                        page.replace_html "content_wrapper", :partial => 'show'
                      end
                      page << display_message_error(l(:notice_successful_create), "fieldNotice")
@@ -295,7 +303,7 @@ class IssuesController < ApplicationController
       @project = @issue.project
       @file_attachment = FileAttachment.new
       @file_attachment.container_type="issue"
-      @file_attachment.container_id = @issue.id
+      @file_attachment.container_id = @issue.id      
         respond_to do |format|
           format.html {}
           format.js {

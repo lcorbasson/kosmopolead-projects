@@ -66,7 +66,7 @@ class Project < ActiveRecord::Base
                           :join_table => "#{table_name_prefix}custom_fields_projects#{table_name_suffix}",
                           :association_foreign_key => 'custom_field_id'
                           
-  acts_as_tree :order => "name", :counter_cache => true
+  acts_as_tree :order => "name", :counter_cache => true,:foreign_key=>"parent_id"
 
   acts_as_customizable
   acts_as_searchable :columns => ['name', 'description'], :project_key => 'id', :permission => nil

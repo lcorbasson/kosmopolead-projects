@@ -72,7 +72,7 @@ class IssuesController < ApplicationController
       @issue_count = Issue.count(:include => [:status, :project], :conditions => @query.statement)
       @issue_pages = Paginator.new self, @issue_count, limit, params['page']
       @issues = Issue.find :all, :order => sort_clause,
-                          
+                           :include => [ :parent, :status, :tracker, :project, :priority],
                            :conditions => "#{'('+@query.statement+')'+' and ' if !@query.statement.blank?} issues.parent_id is NULL" ,
                            :limit  =>  limit,
                            :offset =>  @issue_pages.current.offset
@@ -236,20 +236,27 @@ class IssuesController < ApplicationController
     end
     @issue.author = User.current
     @priorities = Enumeration::get_values('IPRI')    
-  @project.attributes = params[:project]
+    @project.attributes = params[:project]
           find_info_issue        
           if @issue.save
-            @file_attachment = FileAttachment.new
+              @file_attachment = FileAttachment.new
               @file_attachment.container_type="issue"
               @file_attachment.container_id = @issue.id
               find_info_project  if @issue.is_stage?
+               # La tache est assignee
+           if params[:assigned_to_id]
+             create_assignments(params[:assigned_to_id])
+           else
+             # La tache n est pas assignee
+            Assignment.delete(@issue)
+          end
             find_info_project  if @issue.is_stage?
             respond_to do |format|
                 format.js {
                   render:update do |page|
                      if @issue.is_stage?
                        page.replace_html "content_wrapper", :partial => 'projects/show',:locals=>{:project=>@project}
-                     else
+                     else                     
                        page.replace_html "content_wrapper", :partial => 'show'
                      end
                      page << display_message_error(l(:notice_successful_create), "fieldNotice")
@@ -295,7 +302,7 @@ class IssuesController < ApplicationController
       @project = @issue.project
       @file_attachment = FileAttachment.new
       @file_attachment.container_type="issue"
-      @file_attachment.container_id = @issue.id
+      @file_attachment.container_id = @issue.id      
         respond_to do |format|
           format.html {}
           format.js {
@@ -509,15 +516,15 @@ class IssuesController < ApplicationController
       else
         # Issues that have start and due dates
         events += Issue.find(:all,
-                             :order => "start_date, due_date",
-                             :include => [:tracker, :status, :assigned_to, :priority, :project],
-                             :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (due_date>=? and due_date<=?) or (start_date<? and due_date>?)) and start_date is not null and due_date is not null) AND #{Issue.table_name}.parent_id is null", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
+                             :order => "#{Issue.table_name}.start_date, #{Issue.table_name}.due_date",
+                             :include => [:tracker, :status,  :priority, :project],
+                             :conditions => ["(#{@query.statement}) AND (((#{Issue.table_name}.start_date>=? and #{Issue.table_name}.start_date<=?) or (#{Issue.table_name}.due_date>=? and #{Issue.table_name}.due_date<=?) or (#{Issue.table_name}.start_date<? and #{Issue.table_name}.due_date>?)) and #{Issue.table_name}.start_date is not null and #{Issue.table_name}.due_date is not null) AND #{Issue.table_name}.parent_id is null", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
                              )
         # Issues that don't have a due date but that are assigned to a version with a date
         events += Issue.find(:all,
-                             :order => "start_date, effective_date",
-                             :include => [:tracker, :status, :assigned_to, :priority, :project, :fixed_version],
-                             :conditions => ["(#{@query.statement}) AND (((start_date>=? and start_date<=?) or (effective_date>=? and effective_date<=?) or (start_date<? and effective_date>?)) and start_date is not null and due_date is null and effective_date is not null) AND #{Issue.table_name}.parent_id is null", @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to, @gantt.date_from, @gantt.date_to]
+                             :order => "#{Issue.table_name}.start_date",
+                             :include => [:tracker, :status,  :priority, :project],
+                             :conditions => ["(#{@query.statement}) AND (((#{Issue.table_name}.start_date>=? and #{Issue.table_name}.start_date<=?)) and #{Issue.table_name}.start_date is not null and #{Issue.table_name}.due_date is null) AND #{Issue.table_name}.parent_id is null", @gantt.date_from, @gantt.date_to]
                              )
         # Versions
         events += Version.find(:all, :include => :project,

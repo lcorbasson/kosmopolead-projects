@@ -334,27 +334,10 @@ class Query < ActiveRecord::Base
   
   def project_statement
     project_clauses = []
-    if project && !@project.active_children.empty?
-      ids = [project.id]
-      if has_filter?("subproject_id")
-        case operator_for("subproject_id")
-        when '='
-          # include the selected subprojects
-          ids += values_for("subproject_id").each(&:to_i)
-        when '!*'
-          # main project only
-        else
-          # all subprojects
-          ids += project.child_ids
-        end
-      elsif Setting.display_subprojects_issues?
-        ids += project.child_ids
-      end
-      project_clauses << "#{Project.table_name}.id IN (%s)" % ids.join(',')
-    elsif project
-      project_clauses << "#{Project.table_name}.id = %d" % project.id
-    end
-    project_clauses <<  Project.allowed_to_condition(User.current, :view_issues)
+
+    project_clauses << "#{Project.table_name}.id = %d" % project.id
+
+   
     project_clauses.join(' AND ')
   end
 
@@ -403,8 +386,15 @@ class Query < ActiveRecord::Base
       sql << ')'
       filters_clauses << sql
     end
-    
+
+
+    if self.query_type == "issue"
+      (filters_clauses << project_statement).join(' AND ')
+    else
       filters_clauses.join(' AND ')
+    end
+
+     
  
 
    

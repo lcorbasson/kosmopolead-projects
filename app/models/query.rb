@@ -231,10 +231,12 @@ class Query < ActiveRecord::Base
       users = Community.current.users
       project_statuses = Community.current.project_statuses
       custom_fields = Community.current.project_custom_fields
+      partners = Community.current.partners
     else
       users = User.current.communities.collect(&:users).flatten.uniq
       project_statuses = User.current.communities.collect(&:project_statuses).flatten.uniq
       custom_fields = User.current.communities.collect(&:project_custom_fields).flatten.uniq
+      partners = User.current.communities.collect(&:project_custom_fields).flatten.uniq
     end
 
     @available_filters_projects = {
@@ -242,6 +244,8 @@ class Query < ActiveRecord::Base
       "designer_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
       "author_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
       "watcher_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }}
+#      "members" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
+#      "partners" => { :type => :list, :order => 1, :values => partners.sort.collect{|u| [u.name, u.id.to_s] }}
     }
 
     add_custom_fields_filters_projects(custom_fields)
@@ -443,7 +447,6 @@ class Query < ActiveRecord::Base
        sql << ')'
      
        filters_clauses << sql
-       p "*******************************#{sql}"
     end
     filters_clauses.join(' AND ')   
   end
@@ -523,7 +526,13 @@ class Query < ActiveRecord::Base
     return sql
   end
 
-  def sql_for_field_projects(field, value, db_table, db_field, is_custom_filter) 
+  def sql_for_field_projects(field, value, db_table, db_field, is_custom_filter)
+    puts "------------- Field #{field}"
+    puts "------------- Value #{value}"
+    puts "------------- db_table #{db_table}"
+    puts "------------- db_field #{db_field}"
+    puts "------------- is_custom_filter #{is_custom_filter}"
+
     sql = ''
     case operator_for field
     when "="      
@@ -564,8 +573,9 @@ class Query < ActiveRecord::Base
       sql = "#{db_table}.#{db_field} LIKE '%#{connection.quote_string(value)}%'"
     when "!~"
       sql = "#{db_table}.#{db_field} NOT LIKE '%#{connection.quote_string(value)}%'"
+#    when "member"
+#      sql = date_range_clause_custom_field(db_table, db_field, value, field)
     end
-  
     return sql
   end
   
@@ -655,10 +665,11 @@ class Query < ActiveRecord::Base
           # week starts on monday (Rails default)
           Time.now.at_beginning_of_week
         s << "#{table}.#{db_field} BETWEEN '%s' AND '%s'" % ["--- #{from.strftime('%Y-%m-%d')}", "--- #{(from + 7.day).strftime('%Y-%m-%d')}"]
+#      when "member"
+#        s << ("#{table}.#{db_field} = #{from}")
     end
     s << ("#{table}.#{db_field} is not null")
     s.join(' AND ')
-  
   end
 
 end

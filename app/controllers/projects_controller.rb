@@ -662,7 +662,7 @@ private
 
 
   def find_root_projects
-    @root_projects = current_community ? current_community.projects.all(:order => 'name') : Project.all(:order => 'name')
+    @root_projects = current_community ? current_community.projects.all(:order => 'acronym') : Project.all(:order => 'acronym')
   end
 
   def show_funding 

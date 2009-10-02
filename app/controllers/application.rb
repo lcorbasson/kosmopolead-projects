@@ -263,7 +263,7 @@ class ApplicationController < ActionController::Base
     if session[:query_projects]
       query = session[:query_projects]
       conditions = query.statement_projects
-      @projects = Project.all(:conditions => "#{conditions}", :order => 'acronym')
+      @projects = Project.all(:include => :parent,:conditions => "#{conditions}", :order => 'acronym')
     else
 #      raise "#{current_community.id}"
       @projects = Project.find :all,

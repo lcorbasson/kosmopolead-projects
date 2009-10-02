@@ -24,7 +24,7 @@ class ProjectsController < ApplicationController
   menu_item :files, :only => [:list_files, :add_file]
   menu_item :settings, :only => :settings
 
-  before_filter :construct_menu
+  before_filter :construct_menu,:except=>:add
 
   before_filter :find_root_projects
   before_filter :find_project, :except => [ :tags_json, :index, :list, :add, :activity,:update_left_menu ]
@@ -141,6 +141,7 @@ class ProjectsController < ApplicationController
         end
         completed_percent
         find_gallery
+        construct_menu
         session[:project] = @project
         flash[:notice] = l(:notice_successful_create)
         respond_to do |format|

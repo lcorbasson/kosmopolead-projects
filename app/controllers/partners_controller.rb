@@ -45,5 +45,15 @@ class PartnersController < ApplicationController
   
   end
 
+  def destroy
+    @partner = @community.partners.find(params[:id])
+    if @partner.destroy
+      flash[:notice] = l(:notice_successful_destroy)      
+    else
+      flash[:error] = l(:error_can_t_do)
+    end
+    redirect_to :action => 'index'
+  end
+
 
 end

@@ -124,9 +124,10 @@ class User < ActiveRecord::Base
   # Return user's full name for display
   def name(formatter = nil)
     if formatter
-      eval('"' + (USER_FORMATS[formatter] || USER_FORMATS[:firstname_lastname]) + '"')
+      eval('"' + (USER_FORMATS[formatter] || USER_FORMATS[:lastname_firstname]) + '"')
     else
-      @name ||= eval('"' + (USER_FORMATS[Setting.user_format] || USER_FORMATS[:firstname_lastname]) + '"')
+      #@name ||= eval('"' + (USER_FORMATS[Setting.user_format] || USER_FORMATS[:lastname_firstname]) + '"')
+      @name ||= eval('"' + (USER_FORMATS[:lastname_firstname]) + '"')
     end
   end
   

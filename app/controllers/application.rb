@@ -263,17 +263,17 @@ class ApplicationController < ActionController::Base
     if session[:query_projects]
       query = session[:query_projects]
       conditions = query.statement_projects
-      @projects = Project.all(:include => :parent,:conditions => "#{conditions}", :order => 'acronym')
+      @projects = Project.all(:include => :parent,:conditions => "#{conditions}", :order => "#{Project.table_name}.acronym")
     else
 #      raise "#{current_community.id}"
       @projects = Project.find :all,
                             :conditions => Project.visible_by(User.current, current_community),
                             :include => :parent,
-                            :order => 'acronym'
+                            :order => "#{Project.table_name}.acronym"
     end
     # projet en session
     if session[:project] and not current_community
-       @project = Project.find(session[:project].id, :order => 'acronym') || @projects.first
+       @project = Project.find(session[:project].id, :order => "#{Project.table_name}.acronym") || @projects.first
     else
         @project = @projects.first
     end

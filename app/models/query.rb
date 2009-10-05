@@ -415,7 +415,6 @@ class Query < ActiveRecord::Base
          if (field == "status_id")
             db_table = ProjectStatus.table_name
            sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{db_table} ON #{db_table}.id=#{Project.table_name}.status_id WHERE #{Project.table_name}.status_id=#{v}"
-
          elsif(field == "members")
            if ((operator_for field).to_s == '=')
               sql << "projects.archived=false AND projects.id IN (SELECT project_id FROM members WHERE user_id=#{v})"

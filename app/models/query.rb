@@ -236,7 +236,7 @@ class Query < ActiveRecord::Base
       users = User.current.communities.collect(&:users).flatten.uniq
       project_statuses = User.current.communities.collect(&:project_statuses).flatten.uniq
       custom_fields = User.current.communities.collect(&:project_custom_fields).flatten.uniq
-      partners = User.current.communities.collect(&:project_custom_fields).flatten.uniq
+      partners = User.current.communities.collect(&:partners).flatten.uniq
     end
 
     @available_filters_projects = {
@@ -244,8 +244,8 @@ class Query < ActiveRecord::Base
       "designer_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
       "author_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
       "watcher_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
-      "members" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }}
-      #"partners" => { :type => :list, :order => 1, :values => partners.sort.collect{|u| [u.name, u.id.to_s] }}
+      "members" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
+      "partners" => { :type => :list, :order => 1, :values => partners.collect{|u| [u.name, u.id.to_s] }}
     }
 
     add_custom_fields_filters_projects(custom_fields)
@@ -386,18 +386,11 @@ class Query < ActiveRecord::Base
       sql << ')'
       filters_clauses << sql
     end
-
-
     if self.query_type == "issue"
       (filters_clauses << project_statement).join(' AND ')
     else
       filters_clauses.join(' AND ')
     end
-
-     
- 
-
-   
   end
 
 
@@ -424,21 +417,29 @@ class Query < ActiveRecord::Base
            sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{db_table} ON #{db_table}.id=#{Project.table_name}.status_id WHERE #{Project.table_name}.status_id=#{v}"
 
          elsif(field == "members")
-            sql << "projects.archived=false AND projects.id IN (SELECT project_id FROM members WHERE user_id=#{v})"
-        elsif (field == "partners")
-          sql << "projects.archived=false AND projects.id IN (SELECT project_id FROM members WHERE user_id=#{v})"
-        else
+           if ((operator_for field).to_s == '=')
+              sql << "projects.archived=false AND projects.id IN (SELECT project_id FROM members WHERE user_id=#{v})"
+           else
+              sql << "projects.archived=false AND projects.id NOT IN (SELECT project_id FROM members WHERE user_id=#{v})"
+           end
+         elsif (field == "partners")
+           if ((operator_for field).to_s == '=')
+              sql << "projects.archived=false AND projects.id IN (SELECT project_id FROM project_partners WHERE partner_id=#{v})"
+           else
+              sql << "projects.archived=false AND projects.id NOT IN (SELECT project_id FROM project_partners WHERE partner_id=#{v})"
+           end
+         else
             db_table = Project.table_name
 
          end
-         if (field != "status_id" && field != "members")
+         if (field != "status_id" && field != "members" && field != "partners")
             sql << '('
          end
       end
-     if (field != "status_id" && field != "members")
+     if (field != "status_id" && field != "members" && field != "partners")
         sql = sql + sql_for_field_projects(field, v, db_table, db_field, is_custom_filter)
      end
-     if (field != "members")
+     if (field != "members" && field != "partners")
        sql << ')'
      end
        filters_clauses << sql
@@ -523,12 +524,6 @@ class Query < ActiveRecord::Base
   end
 
   def sql_for_field_projects(field, value, db_table, db_field, is_custom_filter)
-    puts "------------- Field #{field}"
-    puts "------------- Value #{value}"
-    puts "------------- db_table #{db_table}"
-    puts "------------- db_field #{db_field}"
-    puts "------------- is_custom_filter #{is_custom_filter}"
-
     sql = ''
     case operator_for field
     when "="      

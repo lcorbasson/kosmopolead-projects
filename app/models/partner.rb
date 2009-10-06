@@ -19,5 +19,6 @@ class Partner < ActiveRecord::Base
   has_many :members, :through => :partnerships, :source => :user
 
   belongs_to :community
+  has_one :project
 
 end

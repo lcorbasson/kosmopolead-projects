@@ -128,8 +128,8 @@ class ProjectsController < ApplicationController
         @users = User.all
         @file_attachment = FileAttachment.new(:container_type=>"project",:container_id=>@project.id)
         @roles = Role.find :all, :order => 'builtin, position'
-        if params[:partner_id]
-          @partner = ProjectPartner.create(:project_id=>@project.id,:partner_id=>params[:partner_id])
+        if @project.partner_id
+          ProjectPartner.create(:project_id => @project.id,:partner_id => @project.partner_id)
         end
         retrieve_query
         if @query.valid?
@@ -280,9 +280,6 @@ class ProjectsController < ApplicationController
               page << "jQuery('.project_tags').html('#{escape_javascript(render:partial=>'projects/box/tags')}');"
             when "summary"              
               @users = User.all
-              if !params[:partner_id].blank?
-                @partner = ProjectPartner.create(:project_id=>@project.id,:partner_id=>params[:partner_id])
-              end
               page << refresh_title(@project);
               page << "jQuery('#profile_project').html('#{escape_javascript(profile_project_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
             when "synthesis"              
@@ -296,7 +293,14 @@ class ProjectsController < ApplicationController
             page << display_message_error(@project, "fieldError")
           end
           page << "Element.scrollTo('errorExplanation');"
-      }
+          
+          if @project.partner_id
+            if ProjectPartner.all(:conditions => {:project_id => @project.id, :partner_id => @project.partner_id}).length == 0
+               ProjectPartner.create(:project_id => @project.id, :partner_id => @project.partner_id)
+               page.replace_html "projects_partners", :partial => 'projects/show/partners', :locals=>{:project=>@project}
+            end
+          end
+        }
       }
     end
   end

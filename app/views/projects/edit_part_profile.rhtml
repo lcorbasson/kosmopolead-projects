@@ -15,11 +15,9 @@
             <%  selected = intersect %>
           <% end %>
           <label><%= l(:label_partner) %></label>
-          <%= select_tag "partner_id",
-            options_for_select(
-                @project.author.partnerships.collect { |ps| [ps.partner.name,ps.partner.id]}<<["",""],
-                selected
-          ) %>
+          <%= f.select "partner_id",
+                (@project.author.partnerships.collect { |ps| [ps.partner.name,ps.partner.id]})
+          %>
         <% end %>
       </p>
       <p><label><%= l(:label_watched_by) %></label><%= text_field_tag("field_autocomplete_watcher","#{@project.watcher.name if @project.watcher}") %><%= f.hidden_field :watcher_id, :class=>"ac_input"%></p>

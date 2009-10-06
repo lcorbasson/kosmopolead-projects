@@ -94,6 +94,8 @@ class Project < ActiveRecord::Base
   named_scope :visible, :conditions => {:archived => false}
   named_scope :public, :conditions => {:is_public => true}
 
+  after_create :add_member
+  
   def identifier=(identifier)
     super unless identifier_frozen?
   end
@@ -390,7 +392,9 @@ class Project < ActiveRecord::Base
      return @completed_percent
    end
 
-
+  def add_member
+    Member.create(:user_id => author_id, :project_id => id, :role_id => "#{Role.default.id}")
+  end
   
 
 protected

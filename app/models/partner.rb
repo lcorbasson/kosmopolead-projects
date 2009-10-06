@@ -2,7 +2,6 @@ class Partner < ActiveRecord::Base
 
   # -- paperclip
 
-
    has_attached_file :logo,
     :path => ":rails_root/public#{PaperclipUneek::PAPERCLIP_URL}",
     :url => PaperclipUneek::PAPERCLIP_URL,

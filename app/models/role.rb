@@ -49,6 +49,15 @@ class Role < ActiveRecord::Base
   validates_length_of :name, :maximum => 30
   validates_format_of :name, :with => /^[\w\s\'\-]*$/i
 
+  def after_save
+    Role.update_all("is_default=#{connection.quoted_false}", ['id <> ?', id]) if self.is_default?
+  end
+
+  # Returns the default status for new issues
+  def self.default
+    find(:first, :conditions =>["is_default=?", true])
+  end
+  
   def permissions
     read_attribute(:permissions) || []
   end

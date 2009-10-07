@@ -105,7 +105,8 @@ class Query < ActiveRecord::Base
 #                                 :string => [ "=", "~", "!", "!~" ],
 #                                 :text => [  "~", "!~" ],
 #                                 :integer => [ "=", ">=", "<=", "!*", "*" ] }
-  @@operators_by_filter_type = { :list => [ "=", "!" ],
+  @@operators_by_filter_type = { :list_equal => ["="],
+                                 :list => [ "=", "!" ],
                                  :list_status => [ "=", "!", "*" ],
                                  :list_optional => [ "=", "!", "!*", "*" ],
                                  :list_multiple => [ "=", "!", "!*", "*" ],
@@ -245,7 +246,9 @@ class Query < ActiveRecord::Base
       "author_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
       "watcher_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
       "members" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
-      "partners" => { :type => :list, :order => 1, :values => partners.collect{|u| [u.name, u.id.to_s] }}
+      "partners" => { :type => :list, :order => 1, :values => partners.collect{|u| [u.name, u.id.to_s] }},
+      "tag" => { :type => :list_equal, :order => 5, :values => Community.current.projects.collect{|p| p.tags.each {|t|[t.name, t.id] }}.flatten  }
+
     }
 
     add_custom_fields_filters_projects(custom_fields)
@@ -428,14 +431,28 @@ class Query < ActiveRecord::Base
               sql << "projects.archived=false AND projects.id NOT IN (SELECT project_id FROM project_partners WHERE partner_id=#{v})"
            end
          else
-            db_table = Project.table_name
-
+            if (field == "tag")
+              sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{Tagging.table_name} ON #{Tagging.table_name}.taggable_id=#{Project.table_name}.id AND #{Tagging.table_name}.taggable_type='Project' LEFT OUTER JOIN #{Tag.table_name} ON #{Tag.table_name}.id = #{Tagging.table_name}.tag_id WHERE #{Tag.table_name}.name IN (#{v.collect{|val| "'#{connection.quote_string(val)}'"}.join(",")})"
+            else
+              db_table = Project.table_name
+            end
          end
+<<<<<<< HEAD:app/models/query.rb
          if (field != "status_id" && field != "members" && field != "partners")
+=======
+         
+
+         if (field != "status_id" && field != "tag")
+>>>>>>> tags_filters:app/models/query.rb
             sql << '('
          end
+         
       end
+<<<<<<< HEAD:app/models/query.rb
      if (field != "status_id" && field != "members" && field != "partners")
+=======
+     if (field != "status_id" && field != "tag")
+>>>>>>> tags_filters:app/models/query.rb
         sql = sql + sql_for_field_projects(field, v, db_table, db_field, is_custom_filter)
      end
      if (field != "members" && field != "partners")

@@ -248,7 +248,6 @@ class Query < ActiveRecord::Base
       "members" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
       "partners" => { :type => :list, :order => 1, :values => partners.collect{|u| [u.name, u.id.to_s] }},
       "tag" => { :type => :list_equal, :order => 5, :values => Community.current.projects.collect{|p| p.tags.each {|t|[t.name, t.id] }}.flatten  }
-
     }
 
     add_custom_fields_filters_projects(custom_fields)
@@ -438,20 +437,36 @@ class Query < ActiveRecord::Base
             end
          end
 <<<<<<< HEAD:app/models/query.rb
+<<<<<<< HEAD:app/models/query.rb
          if (field != "status_id" && field != "members" && field != "partners")
 =======
          
 
          if (field != "status_id" && field != "tag")
 >>>>>>> tags_filters:app/models/query.rb
+=======
+         
+
+         if (field != "status_id" && field != "tag")
+=======
+         if (field != "status_id" && field != "members" && field != "partners")
+>>>>>>> 783cf1963f3ab25ead7f2f1e49923a6f631bcf97:app/models/query.rb
+>>>>>>> tags_filters:app/models/query.rb
             sql << '('
          end
          
       end
 <<<<<<< HEAD:app/models/query.rb
+<<<<<<< HEAD:app/models/query.rb
      if (field != "status_id" && field != "members" && field != "partners")
 =======
      if (field != "status_id" && field != "tag")
+>>>>>>> tags_filters:app/models/query.rb
+=======
+     if (field != "status_id" && field != "tag")
+=======
+     if (field != "status_id" && field != "members" && field != "partners")
+>>>>>>> 783cf1963f3ab25ead7f2f1e49923a6f631bcf97:app/models/query.rb
 >>>>>>> tags_filters:app/models/query.rb
         sql = sql + sql_for_field_projects(field, v, db_table, db_field, is_custom_filter)
      end

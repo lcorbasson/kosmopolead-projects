@@ -26,7 +26,7 @@
     </tbody>
   </table>
 
-  <p class="pagination"><%= pagination_links_full @project_pages, @project_count %></p>
+  <p class="pagination"><%= pagination_links_full @project_pages, @project_count, :update =>false %></p>
 <% else %>
   <p><i><%=l(:label_no_data)%></i></p>
 <% end %>

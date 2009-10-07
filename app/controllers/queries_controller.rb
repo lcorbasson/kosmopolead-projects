@@ -129,14 +129,11 @@ class QueriesController < ApplicationController
                            :limit  =>  limit,
                            :offset =>  @project_pages.current.offset
       respond_to do |format|
-         format.html { }       
+        #format.html {}
         format.csv  { send_data(projects_to_csv(@projects, @query).read, :type => 'text/csv; header=present', :filename => "#{@query.name}.csv") }
         format.pdf  { send_data(projects_to_pdf(@projects, @query), :type => 'application/pdf', :filename => "#{@query.name}.pdf") }
         format.js {
-        render:update do |page|
-            page << "jQuery('#projects_list').html('#{escape_javascript(render:partial=>'projects/index')}');"
-           
-          end
+          render(:update) {|page| page.replace_html "projects_list", :partial => 'projects/index'}
         }
       end
     else

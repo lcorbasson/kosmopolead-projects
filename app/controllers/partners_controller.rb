@@ -19,18 +19,19 @@ class PartnersController < ApplicationController
     @partners = @community.partners.all :order => sort_clause,
 						:limit  =>  @partner_pages.items_per_page,
 						:offset =>  @partner_pages.current.offset
+    render :layout => false if request.xhr?
   end
 
-  def add
-    if request.get?
-      @partner = Partner.new()
-    else
-      @partner = @community.partners.build(params[:partner])
-      if @partner.save      
-        flash[:notice] = l(:notice_successful_create)
-        redirect_to :action => 'index'
-      end
-    end 
+  def new
+    @partner = Partner.new()
+  end
+
+  def create
+    @partner = @community.partners.build(params[:partner])
+    if @partner.save
+      flash[:notice] = l(:notice_successful_create)
+      redirect_to :action => 'index'
+    end
   end
 
   def edit
@@ -43,6 +44,16 @@ class PartnersController < ApplicationController
       end
     end
   
+  end
+
+  def destroy
+    @partner = @community.partners.find(params[:id])
+    if @partner.destroy
+      flash[:notice] = l(:notice_successful_destroy)      
+    else
+      flash[:error] = l(:error_can_t_do)
+    end
+    redirect_to :action => 'index'
   end
 
 

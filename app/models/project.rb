@@ -55,6 +55,7 @@ class Project < ActiveRecord::Base
   has_many :issues,:dependent=>:delete_all
   has_many :stages,:class_name=>"Issue",:foreign_key=>"issue_types_id",:include=>[:type],:conditions=>["#{IssueType.table_name}.name='STAGE'"]
   has_many :file_attachments,:as=>:container,:conditions=>["container_type = ?", "project"],:dependent => :destroy
+  belongs_to :partner
 
   belongs_to :community
   belongs_to :activity_sector
@@ -66,7 +67,7 @@ class Project < ActiveRecord::Base
                           :join_table => "#{table_name_prefix}custom_fields_projects#{table_name_suffix}",
                           :association_foreign_key => 'custom_field_id'
                           
-  acts_as_tree :order => "name", :counter_cache => true
+  acts_as_tree :order => "name", :counter_cache => true,:foreign_key=>"parent_id"
 
   acts_as_customizable
   acts_as_searchable :columns => ['name', 'description'], :project_key => 'id', :permission => nil
@@ -86,13 +87,21 @@ class Project < ActiveRecord::Base
   validates_numericality_of :project_cost, :estimated_time, :allow_nil => true
   
   before_destroy :delete_all_members
-  after_create :unarchived
+#  before_save :unarchived
   after_save :create_gallery
 
   named_scope :has_module, lambda { |mod| { :conditions => ["#{Project.table_name}.id IN (SELECT em.project_id FROM #{EnabledModule.table_name} em WHERE em.name=?)", mod.to_s] } }
 
   named_scope :visible, :conditions => {:archived => false}
   named_scope :public, :conditions => {:is_public => true}
+
+  after_create :add_member
+
+  validate :role_default
+
+  def role_default
+    errors.add_to_base("Il n'y a pas de role par default. Admin => Roles et permissions") if Role.default.nil?
+  end
 
   def identifier=(identifier)
     super unless identifier_frozen?
@@ -318,7 +327,7 @@ class Project < ActiveRecord::Base
   
   # Returns an auto-generated project identifier based on the last identifier used
   def self.next_identifier
-    p = Project.find(:first, :order => 'created_on DESC')
+    p = Project.find(:first, :order => 'id DESC')
     p.nil? ? nil : p.identifier.to_s.succ
   end
 
@@ -390,7 +399,14 @@ class Project < ActiveRecord::Base
      return @completed_percent
    end
 
-
+  def add_member
+    unless author_id.nil? && id.nil?
+      unless Role.default.nil?
+        Member.create(:user_id => author_id, :project_id => id, :role_id => "#{Role.default.id}")
+        puts "partner_id = #{partner_id} #{partner_id.nil?}"
+      end
+    end
+  end
   
 
 protected

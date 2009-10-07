@@ -7,6 +7,5 @@
 public/picts
 tmp/
 log/*
-lib/tasks/emc2/data/emc2_users.csv
-lib/tasks/emc2/data/emc2_password_users.csv
+lib/tasks/emc2/*.csv
 

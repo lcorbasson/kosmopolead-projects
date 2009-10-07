@@ -33,7 +33,7 @@ class MembersController < ApplicationController
 
 
   def create    
-      @project.members << Member.new(:role_id=>params[:member][:role_id],:user_id=>params[:user_id])
+      @project.members << Member.new(:role_id=>params[:member][:role_id],:user_id=>params[:member][:user_id])
       @project.save
       @project.reload
       @members = @project.members

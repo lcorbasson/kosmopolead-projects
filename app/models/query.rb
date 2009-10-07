@@ -24,8 +24,6 @@ class QueryColumn
     self.sortable = options[:sortable]
     self.default_order = options[:default_order]
   end
-
-
   
   def caption
     set_language_if_valid(User.current.language)
@@ -192,7 +190,7 @@ class Query < ActiveRecord::Base
       user_values += project.users.sort.collect{|s| [s.name, s.id.to_s] }
     else
       # members of the user's projects
-      user_values += User.current.projects.collect(&:users).flatten.uniq.sort.collect{|s| [s.name, s.id.to_s] }
+      user_values += User.current.projects.sort.collect(&:users).flatten.uniq.sort.collect{|s| [s.name, s.id.to_s] }
     end
     @available_filters["assigned_to_id"] = { :type => :list, :order => 4, :values => user_values } unless user_values.empty?
     @available_filters["author_id"] = { :type => :list, :order => 5, :values => user_values } unless user_values.empty?
@@ -234,18 +232,24 @@ class Query < ActiveRecord::Base
       users = Community.current.users
       project_statuses = Community.current.project_statuses
       custom_fields = Community.current.project_custom_fields
+      partners = Community.current.partners
     else
       users = User.current.communities.collect(&:users).flatten.uniq
       project_statuses = User.current.communities.collect(&:project_statuses).flatten.uniq
       custom_fields = User.current.communities.collect(&:project_custom_fields).flatten.uniq
+      partners = User.current.communities.collect(&:partners).flatten.uniq
     end
 
     @available_filters_projects = {
       "status_id" => { :type => :list_status, :order => 1, :values => project_statuses.collect{|s| [s.status_label, s.id.to_s] } },
+
       "designer_id" => { :type => :list, :order => 2, :values => users.collect{|u| [u.name, u.id.to_s] }},
       "author_id" => { :type => :list, :order => 3, :values => users.collect{|u| [u.name, u.id.to_s] }},
       "watcher_id" => { :type => :list, :order => 4, :values => users.collect{|u| [u.name, u.id.to_s] }},
-      "tag" => { :type => :list_equal, :order => 5, :values => Community.current.projects.collect{|p| p.tags.each {|t|[t.name, t.id] }}.flatten  }
+      "tag" => { :type => :list_equal, :order => 5, :values => Community.current.projects.collect{|p| p.tags.each {|t|[t.name, t.id] }}.flatten  },
+      "members" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
+      "partners" => { :type => :list, :order => 1, :values => partners.collect{|u| [u.name, u.id.to_s] }}
+
     }
 
     add_custom_fields_filters_projects(custom_fields)
@@ -334,27 +338,10 @@ class Query < ActiveRecord::Base
   
   def project_statement
     project_clauses = []
-    if project && !@project.active_children.empty?
-      ids = [project.id]
-      if has_filter?("subproject_id")
-        case operator_for("subproject_id")
-        when '='
-          # include the selected subprojects
-          ids += values_for("subproject_id").each(&:to_i)
-        when '!*'
-          # main project only
-        else
-          # all subprojects
-          ids += project.child_ids
-        end
-      elsif Setting.display_subprojects_issues?
-        ids += project.child_ids
-      end
-      project_clauses << "#{Project.table_name}.id IN (%s)" % ids.join(',')
-    elsif project
-      project_clauses << "#{Project.table_name}.id = %d" % project.id
-    end
-    project_clauses <<  Project.allowed_to_condition(User.current, :view_issues)
+
+    project_clauses << "#{Project.table_name}.id = %d" % project.id
+
+   
     project_clauses.join(' AND ')
   end
 
@@ -432,6 +419,18 @@ class Query < ActiveRecord::Base
          if (field == "status_id")
             db_table = ProjectStatus.table_name
            sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{db_table} ON #{db_table}.id=#{Project.table_name}.status_id WHERE #{Project.table_name}.status_id=#{v}"
+         elsif(field == "members")
+           if ((operator_for field).to_s == '=')
+              sql << "projects.archived=false AND projects.id IN (SELECT project_id FROM members WHERE user_id=#{v})"
+           else
+              sql << "projects.archived=false AND projects.id NOT IN (SELECT project_id FROM members WHERE user_id=#{v})"
+           end
+         elsif (field == "partners")
+           if ((operator_for field).to_s == '=')
+              sql << "projects.archived=false AND projects.id IN (SELECT project_id FROM project_partners WHERE partner_id=#{v})"
+           else
+              sql << "projects.archived=false AND projects.id NOT IN (SELECT project_id FROM project_partners WHERE partner_id=#{v})"
+           end
          else
             if (field == "tag")
               sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{Tagging.table_name} ON #{Tagging.table_name}.taggable_id=#{Project.table_name}.id AND #{Tagging.table_name}.taggable_type='Project' LEFT OUTER JOIN #{Tag.table_name} ON #{Tag.table_name}.id = #{Tagging.table_name}.tag_id WHERE #{Tag.table_name}.name IN (#{v.collect{|val| "'#{connection.quote_string(val)}'"}.join(",")})"
@@ -439,20 +438,29 @@ class Query < ActiveRecord::Base
               db_table = Project.table_name
             end
          end
+<<<<<<< HEAD:app/models/query.rb
          
 
          if (field != "status_id" && field != "tag")
+=======
+         if (field != "status_id" && field != "members" && field != "partners")
+>>>>>>> 783cf1963f3ab25ead7f2f1e49923a6f631bcf97:app/models/query.rb
             sql << '('
          end
          
       end
+<<<<<<< HEAD:app/models/query.rb
      if (field != "status_id" && field != "tag")
+=======
+     if (field != "status_id" && field != "members" && field != "partners")
+>>>>>>> 783cf1963f3ab25ead7f2f1e49923a6f631bcf97:app/models/query.rb
         sql = sql + sql_for_field_projects(field, v, db_table, db_field, is_custom_filter)
      end
-    
+     if (field != "members" && field != "partners")
        sql << ')'
-     
+     end
        filters_clauses << sql
+       puts "------------------------ #{sql}"
     end
     filters_clauses.join(' AND ')   
   end
@@ -487,30 +495,50 @@ class Query < ActiveRecord::Base
     when "<t-"
       sql = date_range_clause(db_table, db_field, nil, value)
     when "t-"
-       sql = date_range_clause(db_table, db_field, value, (Date.parse(value.first.delete("&quot;")) + 1).strftime("%Y-%m-%d") )
+      unless is_custom_filter
+        sql = date_range_clause(db_table, db_field, value, (Date.parse(value.first.delete("&quot;")) + 1).strftime("%Y-%m-%d"))
+      else
+        sql = date_range_clause_custom_field(db_table, db_field, value, field)
+      end
     when ">t+"
-      sql = date_range_clause(db_table, db_field, value, nil)
+      unless is_custom_filter
+        sql = date_range_clause(db_table, db_field, value, nil)
+      else
+        sql = date_range_clause_custom_field(db_table, db_field, value, field)
+      end
     when "<t+"
-      sql = date_range_clause(db_table, db_field, nil, value)
+      unless is_custom_filter
+        sql = date_range_clause(db_table, db_field, nil, value)
+      else
+        sql = date_range_clause_custom_field(db_table, db_field, value, field)
+      end
     when "t+"
       sql = date_range_clause(db_table, db_field, value, value)
     when "t"
-      sql = date_range_clause(db_table, db_field, Date.today, Date.today + 1)
+      unless is_custom_filter
+        sql = date_range_clause(db_table, db_field, Date.today, Date.today + 1)
+      else
+        sql = date_range_clause_custom_field(db_table, db_field, value, field)
+      end
     when "w"
-      from = l(:general_first_day_of_week) == '7' ?
-      # week starts on sunday
-      ((Date.today.cwday == 7) ? Time.now.at_beginning_of_day : Time.now.at_beginning_of_week - 1.day) :
-        # week starts on monday (Rails default)
-        Date.today.at_beginning_of_week
-      sql = "#{db_table}.#{db_field} BETWEEN '%s' AND '%s'" % [from, from + 7.day]
+      unless is_custom_filter
+        from = l(:general_first_day_of_week) == '7' ?
+        # week starts on sunday
+        ((Date.today.cwday == 7) ? Time.now.at_beginning_of_day : Time.now.at_beginning_of_week - 1.day) :
+          # week starts on monday (Rails default)
+          Date.today.at_beginning_of_week
+        sql = "#{db_table}.#{db_field} BETWEEN '%s' AND '%s'" % [from, from + 7.day]
+      else
+        sql = date_range_clause_custom_field(db_table, db_field, value, field)
+      end
     when "~"
       sql = "#{db_table}.#{db_field} LIKE '%#{connection.quote_string(value.first)}%'"
     when "!~"
       sql = "#{db_table}.#{db_field} NOT LIKE '%#{connection.quote_string(value.first)}%'"
     end
+  
     return sql
   end
-
 
   def sql_for_field_projects(field, value, db_table, db_field, is_custom_filter)
     sql = ''
@@ -534,35 +562,28 @@ class Query < ActiveRecord::Base
     when "c"
       sql = "#{Project.table_name}.status=0" if field == "status"
     when ">t-"
-      sql = date_range_clause(db_table, db_field, value, nil)
+      sql = date_range_clause_custom_field(db_table, db_field, value, field)
     when "<t-"
-      sql = date_range_clause(db_table, db_field, nil, value)
+      sql = date_range_clause_custom_field(db_table, db_field,value, field)
     when "t-"
-      sql = date_range_clause(db_table, db_field, value, (Date.parse(value.first.delete("&quot;")) + 1).strftime("%Y-%m-%d") )
+      sql = date_range_clause_custom_field(db_table, db_field, value, field)
     when ">t+"
-      sql = date_range_clause(db_table, db_field, value, nil)
+      sql = date_range_clause_custom_field(db_table, db_field, value, field)
     when "<t+"
-      sql = date_range_clause(db_table, db_field, nil, value)
+      sql = date_range_clause_custom_field(db_table, db_field, value, field)
     when "t+"
-      sql = date_range_clause(db_table, db_field, value, value)
+      sql = date_range_clause_custom_field(db_table, db_field, value, field)
     when "t"
-      sql = date_range_clause(db_table, db_field, Date.today, Date.today)
+      sql = date_range_clause_custom_field(db_table, db_field, value, field)
     when "w"
-      from = l(:general_first_day_of_week) == '7' ?
-      # week starts on sunday
-      ((Date.today.cwday == 7) ? Time.now.at_beginning_of_day : Time.now.at_beginning_of_week - 1.day) :
-        # week starts on monday (Rails default)
-        Time.now.at_beginning_of_week
-      sql = "#{db_table}.#{db_field} BETWEEN '%s' AND '%s'" % [from, from + 7.day]
+      sql = date_range_clause_custom_field(db_table, db_field, value, field)
     when "~"
       sql = "#{db_table}.#{db_field} LIKE '%#{connection.quote_string(value)}%'"
     when "!~"
       sql = "#{db_table}.#{db_field} NOT LIKE '%#{connection.quote_string(value)}%'"
     end
-
     return sql
   end
-
   
   def add_custom_fields_filters(custom_fields)
     @available_filters ||= {}
@@ -609,14 +630,50 @@ class Query < ActiveRecord::Base
   end
   
   # Returns a SQL clause for a date or datetime field.
-  def date_range_clause(table, field, from, to)
+  def date_range_clause(table, field, from, to,yaml = false)
     s = []
-    if from
-      s << ("#{table}.#{field} >= '%s'" % from)
-    end
-    if to
-      s << ("#{table}.#{field} <= '%s'" % to)
-    end
+     if yaml
+      if from
+        s << ("#{table}.#{field} > '%s'" % "--- #{from}")
+      end
+      if to
+        s << ("#{table}.#{field} < '%s'" % "--- #{to}")
+      end
+     else
+        if from
+        s << ("#{table}.#{field} > '%s'" % from)
+      end
+      if to
+        s << ("#{table}.#{field} < '%s'" % to)
+      end
+     end
     s.join(' AND ')
   end
+
+  def date_range_clause_custom_field(table, db_field, from, field)
+    s = []
+
+    case operator_for field
+      when "t-"
+        s << ("#{table}.#{db_field} > '%s'" % "--- #{(Date.parse(from.first.delete("&quot;")) - 1).strftime("%Y-%m-%d")}")
+        s << ("#{table}.#{db_field} < '%s'" % "--- #{(Date.parse(from.first.delete("&quot;")) + 1).strftime("%Y-%m-%d")}")
+      when ">t+"
+        s << ("#{table}.#{db_field} > '%s'" % "--- #{from}")
+      when "<t+"
+        s << ("#{table}.#{db_field} < '%s'" % "--- #{from}")
+      when "t"
+        s << ("#{table}.#{db_field} > '%s'" % "--- #{(Date.today-1).strftime("%Y-%m-%d")}")
+        s << ("#{table}.#{db_field} < '%s'" % "--- #{(Date.today+1).strftime("%Y-%m-%d")}")
+      when "w"
+        from = l(:general_first_day_of_week) == '7' ?
+        # week starts on sunday
+        ((Date.today.cwday == 7) ? Time.now.at_beginning_of_day : Time.now.at_beginning_of_week - 1.day) :
+          # week starts on monday (Rails default)
+          Time.now.at_beginning_of_week
+        s << "#{table}.#{db_field} BETWEEN '%s' AND '%s'" % ["--- #{from.strftime('%Y-%m-%d')}", "--- #{(from + 7.day).strftime('%Y-%m-%d')}"]
+    end
+    s << ("#{table}.#{db_field} is not null")
+    s.join(' AND ')
+  end
+
 end

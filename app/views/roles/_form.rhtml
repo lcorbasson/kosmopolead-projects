@@ -8,7 +8,8 @@
 <p><label><%= l(:label_copy_workflow_from) %></label>
 <%= select_tag(:copy_workflow_from, content_tag("option") + options_from_collection_for_select(@roles, :id, :name)) %></p>
 <% end %>
-
+<p><label for="role_is_default"><%=l(:field_is_default)%></label>
+<%= check_box 'role', 'is_default' %></p>
 <% end %>
 
 <h3><%= l(:label_permissions) %></h3>

@@ -89,7 +89,7 @@ notice_account_pending: "Votre compte a été créé et attend l'approbation de 
 notice_default_data_loaded: Paramétrage par défaut chargé avec succès.
 notice_unable_delete_version: Impossible de supprimer cette version.
 notice_account_created: Le compte a bien été crée
-unable_to_delete_project_status: Une erreur est survenue lors d ela suppression du statut de projet
+unable_to_delete_project_status: Une erreur est survenue lors de la suppression du statut de projet
 cant_delete_project_status_because_relations: Vous ne pouvez pas supprimer ce statut de projet puisqu'il existe des projets ayant ce statut
 
 error_no_tracker: " Aucun traqueur n'est associé à ce projet. Veuillez vérifier les paramètres du projet."
@@ -216,6 +216,9 @@ field_comments_sorting: Afficher les commentaires
 field_parent_title: Page parent
 field_designer: Monté par
 field_watcher: Suivi par
+field_partner: Comme partenaire
+field_members: Ayant pour membre
+field_partners: Ayant pour partenaire
 field_project_cost: Cout du projet
 field_estimated_time: Temps estimé
 field_sector: Secteur d'activité
@@ -387,6 +390,7 @@ label_assigned_to: Assignée à
 label_file: Fichier
 label_notes: Notes
 label_partner: Partenaire
+label_structure: Structure
 label_name: Nom
 label_logo: Logo
 label_partner_edit: Edition d'un partenaire

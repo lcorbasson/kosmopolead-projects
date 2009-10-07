@@ -75,6 +75,8 @@ class AccountController < ApplicationController
     cookies.delete :autologin
     Token.delete_all(["user_id = ? AND action = ?", User.current.id, 'autologin']) if User.current.logged?
     self.logged_user = nil
+    clear_community_context
+    session[:project] = nil
     flash[:notice] = l(:notice_logout_succesful)
     redirect_to home_url
   end

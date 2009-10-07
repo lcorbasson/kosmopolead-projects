@@ -81,6 +81,12 @@ class User < ActiveRecord::Base
     # update hashed_password if password was set
     self.hashed_password = User.hash_password(self.password) if self.password
   end
+
+  def after_save
+    unless login.eql?("admin")
+      CommunityMembership.create(:community_id=>Community.current.id,:user_id=>self.id)
+    end
+  end
   
   def reload(*args)
     @name = nil
@@ -124,9 +130,10 @@ class User < ActiveRecord::Base
   # Return user's full name for display
   def name(formatter = nil)
     if formatter
-      eval('"' + (USER_FORMATS[formatter] || USER_FORMATS[:firstname_lastname]) + '"')
+      eval('"' + (USER_FORMATS[formatter] || USER_FORMATS[:lastname_firstname]) + '"')
     else
-      @name ||= eval('"' + (USER_FORMATS[Setting.user_format] || USER_FORMATS[:firstname_lastname]) + '"')
+      #@name ||= eval('"' + (USER_FORMATS[Setting.user_format] || USER_FORMATS[:lastname_firstname]) + '"')
+      @name ||= eval('"' + (USER_FORMATS[:lastname_firstname]) + '"')
     end
   end
   

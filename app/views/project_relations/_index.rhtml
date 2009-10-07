@@ -14,8 +14,8 @@
 
             <td><%= l(relation.label_for(@project)) %>
              
-                <%= h(relation.other_project(@project).project) + ' - ' if Setting.cross_project_issue_relations? %> </td>
-            <td><%=h relation.other_project(@project).acronym %></td>
+                <%= link_to_remote(relation.other_project(@project).project,:url=>project_path(relation.other_project(@project)),:method=>:get) + ' - ' if Setting.cross_project_issue_relations? %> </td>
+            <td><%=link_to_remote(relation.other_project(@project).acronym,:url=>project_path(relation.other_project(@project)),:method=>:get) %></td>
 
 
             <td><%= link_to_remote(image_tag('delete.png'), { :url => {:controller => 'project_relations', :action => 'destroy', :project_id => @project, :id => relation},

@@ -759,18 +759,25 @@ module ApplicationHelper
   end
 
   def partner_thumbnail(partner,partner_project)
-    name = content_tag(:p,partner.name,:class=>"name")
-    thumbnail = content_tag(:li,
+    if partner.logo.url == ""
+      name = content_tag(:p,partner.name,:class=>"name")
+      thumbnail = content_tag(:li,
       content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=> project_project_partner_path(@project,partner_project),:method=>:delete,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
-      tag("img", { :src => partner.logo.url(:thumb) ,:class=>"left"})+
-        name,:class=>"user_thumbnail thumbnail editable_box")
+      tag("img", { :src => partner.logo.url(:thumb) ,:class=>"left"}) + name, :class=>"user_thumbnail thumbnail editable_box")
+    else
+      name = content_tag(:p,partner.name,:class=>"name")
+      thumbnail = content_tag(:li,
+      content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=> project_project_partner_path(@project,partner_project),:method=>:delete,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
+      name, :class=>"user_thumbnail thumbnail editable_box")
+    end
   end
 
   def member_thumbnail(user,member)
     name = content_tag(:p,(user && !user.anonymous?) ? link_to(user.name, :controller => 'account', :action => 'show', :id => user) : 'Anonymous',:class=>"name")   
+    role = content_tag(:p, user.role_for_project(@project).name,:class=>"role_user")
     thumbnail = content_tag(:li,
       content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=> project_member_path(@project,member) ,:method=>:delete,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
-      name,:class=>"user_thumbnail thumbnail editable_box")
+      name+role,:class=>"user_thumbnail thumbnail editable_box")
   end
 
 

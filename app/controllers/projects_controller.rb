@@ -24,7 +24,7 @@ class ProjectsController < ApplicationController
   menu_item :files, :only => [:list_files, :add_file]
   menu_item :settings, :only => :settings
 
-  before_filter :construct_menu
+  before_filter :construct_menu,:except=>:add
 
   before_filter :find_root_projects
   before_filter :find_project, :except => [ :tags_json, :index, :list, :add, :activity,:update_left_menu ]
@@ -128,8 +128,8 @@ class ProjectsController < ApplicationController
         @users = User.all
         @file_attachment = FileAttachment.new(:container_type=>"project",:container_id=>@project.id)
         @roles = Role.find :all, :order => 'builtin, position'
-        if params[:partner_id]
-          @partner = ProjectPartner.create(:project_id=>@project.id,:partner_id=>params[:partner_id])
+        if @project.partner_id
+          ProjectPartner.create(:project_id => @project.id,:partner_id => @project.partner_id)
         end
         retrieve_query
         if @query.valid?
@@ -141,6 +141,7 @@ class ProjectsController < ApplicationController
         end
         completed_percent
         find_gallery
+        construct_menu
         session[:project] = @project
         flash[:notice] = l(:notice_successful_create)
         respond_to do |format|
@@ -267,7 +268,7 @@ class ProjectsController < ApplicationController
       format.js {
         render(:update) {|page|
           case params[:part]
-            when "description"             
+            when "description"   
               page << "jQuery('.project_description').html('#{escape_javascript(render:partial=>'projects/box/description',:locals=>{:project=>@project})}');"
             when "tags"
               @project.tag_list = ''
@@ -279,10 +280,8 @@ class ProjectsController < ApplicationController
               page << "jQuery('.project_tags').html('#{escape_javascript(render:partial=>'projects/box/tags')}');"
             when "summary"              
               @users = User.all
-              if params[:partner_id]
-                @partner = ProjectPartner.create(:project_id=>@project.id,:partner_id=>params[:partner_id])
-              end
-              page << "jQuery('#profile_project').html('#{escape_javascript(profile_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
+              page << refresh_title(@project);
+              page << "jQuery('#profile_project').html('#{escape_javascript(profile_project_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
             when "synthesis"              
               page.replace_html "tab-content-synthesis", :partial => 'projects/show/synthesis',:locals=>{:project=>@project}
             when "custom_fields"                
@@ -294,7 +293,14 @@ class ProjectsController < ApplicationController
             page << display_message_error(@project, "fieldError")
           end
           page << "Element.scrollTo('errorExplanation');"
-      }
+          
+          if @project.partner_id
+            if ProjectPartner.all(:conditions => {:project_id => @project.id, :partner_id => @project.partner_id}).length == 0
+               ProjectPartner.create(:project_id => @project.id, :partner_id => @project.partner_id)
+               page.replace_html "projects_partners", :partial => 'projects/show/partners', :locals=>{:project=>@project}
+            end
+          end
+        }
       }
     end
   end
@@ -497,7 +503,8 @@ class ProjectsController < ApplicationController
         conditions = @query.statement_projects
 
         @projects = Project.find :all,                             
-                             :conditions => "#{conditions}"
+                             :conditions => "#{conditions}",
+                             :order => 'acronym'
 
         @project = @projects.first unless @projects.nil?
         @relation= ProjectRelation.new
@@ -525,8 +532,6 @@ class ProjectsController < ApplicationController
               page<<"jQuery('#sidebar_projects').html('#{escape_javascript(render:partial=>'projects/projects_menu')}');"
               page<<"jQuery('#sidebar_new').html('#{escape_javascript(render:partial=>'projects/sidebar_new')}');"
               page<<"jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project,:show_filters=>true})}');"
-
-
               }
           }
         end
@@ -547,9 +552,8 @@ class ProjectsController < ApplicationController
       respond_to do |format|
           format.js {
             render(:update) {|page|
-              page.replace_html "list_partners", content_tag('label',l(:label_partner))+content_tag('select', options_from_collection_for_select(@partners, 'id', 'name'), :id => 'partner_id', :name => 'partner_id')
-              
-              }
+              page.replace_html "list_partners", content_tag('label',l(:label_partner))+content_tag('select', options_from_collection_for_select(@partners, 'id', 'name'), :id => 'project_partner_id', :name => 'project[partner_id]')
+            }
           }
      end
   end
@@ -565,7 +569,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
           format.js {
             render(:update) {|page|
-              page.replace_html "member_users", content_tag('select', options_from_collection_for_select(@partner.members, 'id', 'name'), :id => 'user_id', :name => 'user_id')
+              page.replace_html "member_users", content_tag('select', options_from_collection_for_select(@partner.members, 'id', 'name'), :id => 'member_user_id', :name => 'member[user_id]')
 
               }
           }
@@ -663,7 +667,7 @@ private
 
 
   def find_root_projects
-    @root_projects = current_community ? current_community.projects.all(:order => 'name') : Project.all(:order => 'name')
+    @root_projects = current_community ? current_community.projects.all(:order => 'acronym') : Project.all(:order => 'acronym')
   end
 
   def show_funding 

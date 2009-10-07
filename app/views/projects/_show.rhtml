@@ -49,13 +49,15 @@
       ["<span class='visu'>Visualisation</span>",
         "#{link_to_remote(image_tag('visu_profile_on.png'),{:url=>project_path(project),:method=>:get},:class=>'icon_visu',:name=>'Aperçu')}",
         "#{link_to_remote(image_tag('visu_calendar_off.png'),{:url=>calendar_project_issues_path(project),:method=>:get},:class=>'icon_visu',:name=>'Calendar') }",
-       "#{link_to_remote(image_tag('visu_gantt_off.png'),{:url=> gantt_project_issues_path(project),:method=>:get}, :class=>'icon_visu',:name=>'Gantt')}",
-       "#{link_to_remote(image_tag('visu_list_off.png'),{:url=> project_issues_path(project),:method=>:get}, :class=>'icon_visu ',:name=>'Liste')}"
+        "#{link_to_remote(image_tag('visu_gantt_off.png'),{:url=> gantt_project_issues_path(project),:method=>:get}, :class=>'icon_visu',:name=>'Gantt')}",
+        "#{link_to_remote(image_tag('visu_list_off.png'),{:url=> project_issues_path(project),:method=>:get}, :class=>'icon_visu ',:name=>'Liste')}"
       ]
   ) %>
 
-  <%= initialize_icons_tooltip() %>
+  
+  
 <% else %>
   Aucun projet ne correspond à votre sélection
 <%= javascript_tag("jQuery().ready(function() {initialize_toggle('filter');});") %>
 <% end %>
+

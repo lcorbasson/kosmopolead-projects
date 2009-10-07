@@ -15,7 +15,7 @@
             <%  selected = intersect %>
           <% end %>
           <label><%= l(:label_partner) %></label>
-          <%= f.select "partner_id",
+          <%= f.select :partner_id,
                 (@project.author.partnerships.collect { |ps| [ps.partner.name,ps.partner.id]})
           %>
         <% end %>

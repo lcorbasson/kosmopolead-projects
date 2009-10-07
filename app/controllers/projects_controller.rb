@@ -552,9 +552,8 @@ class ProjectsController < ApplicationController
       respond_to do |format|
           format.js {
             render(:update) {|page|
-              page.replace_html "list_partners", content_tag('label',l(:label_partner))+content_tag('select', options_from_collection_for_select(@partners, 'id', 'name'), :id => 'partner_id', :name => 'partner_id')
-              
-              }
+              page.replace_html "list_partners", content_tag('label',l(:label_partner))+content_tag('select', options_from_collection_for_select(@partners, 'id', 'name'), :id => 'project_partner_id', :name => 'project[partner_id]')
+            }
           }
      end
   end

@@ -96,7 +96,13 @@ class Project < ActiveRecord::Base
   named_scope :public, :conditions => {:is_public => true}
 
   after_create :add_member
-  
+
+  validate :role_default
+
+  def role_default
+    errors.add_to_base("Il n'y a pas de role par default. Admin => Roles et permissions") if Role.default.nil?
+  end
+
   def identifier=(identifier)
     super unless identifier_frozen?
   end
@@ -394,7 +400,12 @@ class Project < ActiveRecord::Base
    end
 
   def add_member
-    Member.create(:user_id => author_id, :project_id => id, :role_id => "#{Role.default.id}")
+    unless author_id.nil? && id.nil?
+      unless Role.default.nil?
+        Member.create(:user_id => author_id, :project_id => id, :role_id => "#{Role.default.id}")
+        puts "partner_id = #{partner_id} #{partner_id.nil?}"
+      end
+    end
   end
   
 

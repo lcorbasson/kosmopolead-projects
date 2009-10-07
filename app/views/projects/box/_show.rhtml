@@ -20,7 +20,7 @@
   </div>
 
   <div class="profilecontentright">
-          <div id="tabs">
+          <div id="tabs_members_and_partners">
             <ul id="tabs_members">
                 <li><a href="#projects_partners"><%= l(:label_partners) %></a></li>
                 <li><a href="#projects_members"><%= l(:label_members) %></a></li>
@@ -81,7 +81,7 @@
                          :class => 'tab-content') %>
   <% end -%>
 
-  <%= javascript_tag("jQuery('#tabs').tabs({selected:1});jQuery('.more_infos').tabs({selected:1});") %>
+  
 
   <% content_for :header_tags do %>
     <%= auto_discovery_link_tag(:atom, {:action => 'activity', :id => project, :format => 'atom', :key => User.current.rss_key}) %>
@@ -106,5 +106,7 @@
   Aucun projet à visualiser
 <% end %>
 
+<%= javascript_tag("jQuery().ready(function() {jQuery('#tabs_members_and_partners').tabs({selected:1});});") %>
+<%= initialize_icons_tooltip() %>
 
 

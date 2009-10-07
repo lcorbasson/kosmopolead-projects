@@ -254,8 +254,8 @@ class IssuesController < ApplicationController
             respond_to do |format|
                 format.js {
                   render:update do |page|
-                     if @issue.is_stage?
-                       page.replace_html "content_wrapper", :partial => 'projects/show',:locals=>{:project=>@project}
+                     if @issue.is_stage?                     
+                       page << "jQuery('#content_wrapper').html('#{escape_javascript(render:partial=>'projects/show', :locals=>{:project=>@project})}');"
                      else                     
                        page.replace_html "content_wrapper", :partial => 'show'
                      end

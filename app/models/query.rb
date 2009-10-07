@@ -107,7 +107,8 @@ class Query < ActiveRecord::Base
 #                                 :string => [ "=", "~", "!", "!~" ],
 #                                 :text => [  "~", "!~" ],
 #                                 :integer => [ "=", ">=", "<=", "!*", "*" ] }
-  @@operators_by_filter_type = { :list => [ "=", "!" ],
+  @@operators_by_filter_type = { :list_equal => ["="],
+                                 :list => [ "=", "!" ],
                                  :list_status => [ "=", "!", "*" ],
                                  :list_optional => [ "=", "!", "!*", "*" ],
                                  :list_multiple => [ "=", "!", "!*", "*" ],
@@ -241,9 +242,10 @@ class Query < ActiveRecord::Base
 
     @available_filters_projects = {
       "status_id" => { :type => :list_status, :order => 1, :values => project_statuses.collect{|s| [s.status_label, s.id.to_s] } },
-      "designer_id" => { :type => :list, :order => 1, :values => users.collect{|u| [u.name, u.id.to_s] }},
-      "author_id" => { :type => :list, :order => 1, :values => users.collect{|u| [u.name, u.id.to_s] }},
-      "watcher_id" => { :type => :list, :order => 1, :values => users.collect{|u| [u.name, u.id.to_s] }}
+      "designer_id" => { :type => :list, :order => 2, :values => users.collect{|u| [u.name, u.id.to_s] }},
+      "author_id" => { :type => :list, :order => 3, :values => users.collect{|u| [u.name, u.id.to_s] }},
+      "watcher_id" => { :type => :list, :order => 4, :values => users.collect{|u| [u.name, u.id.to_s] }},
+      "tag" => { :type => :list_equal, :order => 5, :values => Community.current.projects.collect{|p| p.tags.each {|t|[t.name, t.id] }}.flatten  }
     }
 
     add_custom_fields_filters_projects(custom_fields)
@@ -431,14 +433,20 @@ class Query < ActiveRecord::Base
             db_table = ProjectStatus.table_name
            sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{db_table} ON #{db_table}.id=#{Project.table_name}.status_id WHERE #{Project.table_name}.status_id=#{v}"
          else
-            db_table = Project.table_name
-
+            if (field == "tag")
+              sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{Tagging.table_name} ON #{Tagging.table_name}.taggable_id=#{Project.table_name}.id AND #{Tagging.table_name}.taggable_type='Project' LEFT OUTER JOIN #{Tag.table_name} ON #{Tag.table_name}.id = #{Tagging.table_name}.tag_id WHERE #{Tag.table_name}.name IN (#{v.collect{|val| "'#{connection.quote_string(val)}'"}.join(",")})"
+            else
+              db_table = Project.table_name
+            end
          end
-         if (field != "status_id")
+         
+
+         if (field != "status_id" && field != "tag")
             sql << '('
          end
+         
       end
-     if (field != "status_id")
+     if (field != "status_id" && field != "tag")
         sql = sql + sql_for_field_projects(field, v, db_table, db_field, is_custom_filter)
      end
     

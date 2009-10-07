@@ -436,45 +436,21 @@ class Query < ActiveRecord::Base
               db_table = Project.table_name
             end
          end
-<<<<<<< HEAD:app/models/query.rb
-<<<<<<< HEAD:app/models/query.rb
-         if (field != "status_id" && field != "members" && field != "partners")
-=======
-         
 
-         if (field != "status_id" && field != "tag")
->>>>>>> tags_filters:app/models/query.rb
-=======
-         
+         if (field != "status_id" && field != "members" && field != "partners" && field != "tag")
 
-         if (field != "status_id" && field != "tag")
-=======
-         if (field != "status_id" && field != "members" && field != "partners")
->>>>>>> 783cf1963f3ab25ead7f2f1e49923a6f631bcf97:app/models/query.rb
->>>>>>> tags_filters:app/models/query.rb
             sql << '('
          end
          
       end
-<<<<<<< HEAD:app/models/query.rb
-<<<<<<< HEAD:app/models/query.rb
-     if (field != "status_id" && field != "members" && field != "partners")
-=======
-     if (field != "status_id" && field != "tag")
->>>>>>> tags_filters:app/models/query.rb
-=======
-     if (field != "status_id" && field != "tag")
-=======
-     if (field != "status_id" && field != "members" && field != "partners")
->>>>>>> 783cf1963f3ab25ead7f2f1e49923a6f631bcf97:app/models/query.rb
->>>>>>> tags_filters:app/models/query.rb
+
+     if (field != "status_id" && field != "members" && field != "partners" && field != "tag")
         sql = sql + sql_for_field_projects(field, v, db_table, db_field, is_custom_filter)
      end
      if (field != "members" && field != "partners")
        sql << ')'
      end
-       filters_clauses << sql
-       puts "------------------------ #{sql}"
+       filters_clauses << sql       
     end
     filters_clauses.join(' AND ')   
   end

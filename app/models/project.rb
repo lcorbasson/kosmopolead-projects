@@ -100,7 +100,9 @@ class Project < ActiveRecord::Base
   validate :role_default
 
   def role_default
-    errors.add_to_base("Il n'y a pas de role par default. Admin => Roles et permissions") if Role.default.nil?
+    if author_id
+      errors.add_to_base("Il n'y a pas de role par default. Admin => Roles et permissions") if Role.default.nil?
+    end
   end
 
   def identifier=(identifier)

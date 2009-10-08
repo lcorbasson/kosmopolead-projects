@@ -259,6 +259,7 @@ class Query < ActiveRecord::Base
         end
       end
     end
+    funding_lines = projects.collect{|p| p.funding_lines}.flatten
     
     @available_filters_projects = {
       "status_id" => { :type => :list_status, :order => 1, :values => project_statuses.collect{|s| [s.status_label, s.id.to_s] } },
@@ -267,7 +268,12 @@ class Query < ActiveRecord::Base
       "watcher_id" => { :type => :list_equal, :order => 4, :values => watchers.sort.collect{|w| [w.name, w.id.to_s]}.uniq},
       "members" => { :type => :list_equal, :order => 5, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
       "partners" => { :type => :list_equal, :order => 6, :values => partners.collect{|u| [u.name, u.id.to_s] }},
-      "tag" => { :type => :list_equal, :order => 7, :values => tags.collect{|t| [t.name, t.id]} }
+      "tag" => { :type => :list_equal, :order => 7, :values => tags.collect{|t| [t.name, t.id]} },
+      "aap" => { :type => :list_equal, :order => 8, :values => funding_lines.delete_if{|x| x.aap.nil?}.collect{|fl| [fl.aap, fl.aap]}.uniq.sort },
+      "backer" => { :type => :list_equal, :order => 9, :values => funding_lines.delete_if{|x| x.backer.nil?}.collect{|fl| [fl.backer, fl.backer]}.uniq.sort },
+      "backer_correspondent" => { :type => :list_equal, :order => 10, :values => funding_lines.delete_if{|x| x.backer_correspondent.nil?}.collect{|fl| [fl.backer_correspondent, fl.backer_correspondent]}.uniq.sort },
+      "funding_type" => { :type => :list_equal, :order => 11, :values => funding_lines.delete_if{|x| x.funding_type.nil?}.collect{|fl| [fl.funding_type, fl.funding_type] unless fl.funding_type.nil?}.uniq.sort },
+      "beneficiary" => { :type => :list_equal, :order => 12, :values => funding_lines.delete_if{|x| x.beneficiary.nil?}.collect{|fl| [fl.beneficiary, fl.beneficiary]}.uniq.sort }
     }
 
     add_custom_fields_filters_projects(custom_fields)
@@ -434,40 +440,48 @@ class Query < ActiveRecord::Base
 
       else
          db_field = field
-         if (field == "status_id")
+        case field
+          when "status_id"
             db_table = ProjectStatus.table_name
-           sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{db_table} ON #{db_table}.id=#{Project.table_name}.status_id WHERE #{Project.table_name}.status_id=#{v}"
-         elsif(field == "members")
-           if ((operator_for field).to_s == '=')
+            sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{db_table} ON #{db_table}.id=#{Project.table_name}.status_id WHERE #{Project.table_name}.status_id=#{v}"
+          when "members"
+            if ((operator_for field).to_s == '=')
               sql << "projects.archived=false AND projects.id IN (SELECT project_id FROM members WHERE #{v.map{|value| "user_id = #{value}"}.join(' OR ')})"
            else
               sql << "projects.archived=false AND projects.id NOT IN (SELECT project_id FROM members WHERE #{v.map{|value| "user_id = #{value}"}.join(' OR ')})"
            end
-         elsif (field == "partners")
-           if ((operator_for field).to_s == '=')
+          when "partners"
+            if ((operator_for field).to_s == '=')
               sql << "projects.archived=false AND projects.id IN (SELECT project_id FROM project_partners WHERE #{v.map{|value| "partner_id = #{value}"}.join(' OR ')})"
-           else
-              sql << "projects.archived=false AND projects.id NOT IN (SELECT project_id FROM project_partners WHERE #{v.map{|value| "partner_id = #{value}"}.join(' OR ')})"
-           end
-         else
-            if (field == "tag")
-              sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{Tagging.table_name} ON #{Tagging.table_name}.taggable_id=#{Project.table_name}.id AND #{Tagging.table_name}.taggable_type='Project' LEFT OUTER JOIN #{Tag.table_name} ON #{Tag.table_name}.id = #{Tagging.table_name}.tag_id WHERE #{Tag.table_name}.id IN (#{v.collect{|val| "'#{connection.quote_string(val)}'"}.join(",")})"
             else
-              db_table = Project.table_name
+              sql << "projects.archived=false AND projects.id NOT IN (SELECT project_id FROM project_partners WHERE #{v.map{|value| "partner_id = #{value}"}.join(' OR ')})"
             end
-         end
+          when "tag"
+             sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{Tagging.table_name} ON #{Tagging.table_name}.taggable_id=#{Project.table_name}.id AND #{Tagging.table_name}.taggable_type='Project' LEFT OUTER JOIN #{Tag.table_name} ON #{Tag.table_name}.id = #{Tagging.table_name}.tag_id WHERE #{Tag.table_name}.id IN (#{v.collect{|val| "'#{connection.quote_string(val)}'"}.join(",")})"
+          when "aap"
+             sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{FundingLine.table_name} ON #{FundingLine.table_name}.project_id=#{Project.table_name}.id WHERE aap IN (#{v.collect{|val| "'#{connection.quote_string(val)}'"}.join(",")})"
+          when "backer"
+            sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{FundingLine.table_name} ON #{FundingLine.table_name}.project_id=#{Project.table_name}.id WHERE backer IN (#{v.collect{|val| "'#{connection.quote_string(val)}'"}.join(",")})"
+          when "backer_correspondent"
+            sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{FundingLine.table_name} ON #{FundingLine.table_name}.project_id=#{Project.table_name}.id WHERE backer_correspondent IN (#{v.collect{|val| "'#{connection.quote_string(val)}'"}.join(",")})"
+         when "funding_type"
+            sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{FundingLine.table_name} ON #{FundingLine.table_name}.project_id=#{Project.table_name}.id WHERE funding_type IN (#{v.collect{|val| "'#{connection.quote_string(val)}'"}.join(",")})"
+         when "beneficiary"
+            sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{FundingLine.table_name} ON #{FundingLine.table_name}.project_id=#{Project.table_name}.id WHERE beneficiary IN (#{v.collect{|val| "'#{connection.quote_string(val)}'"}.join(",")})"
+         else
+            db_table = Project.table_name
+        end
 
-         if (field != "status_id" && field != "members" && field != "partners" && field != "tag")
-
+         if (field != "status_id" && field != "members" && field != "partners" && field != "tag" && field != "aap" && field != "backer" && field != "backer_correspondent" && field != "beneficiary" && field != "funding_type")
             sql << '('
          end
          
       end
 
-     if (field != "status_id" && field != "members" && field != "partners" && field != "tag")
+     if (field != "status_id" && field != "members" && field != "partners" && field != "tag" && field != "aap" && field != "backer" && field != "backer_correspondent" && field != "beneficiary" && field != "funding_type")
         sql = sql + sql_for_field_projects(field, v, db_table, db_field, is_custom_filter)
      end
-     if (field != "members" && field != "partners")
+     if (field != "members" && field != "partners" )
        sql << ')'
      end
        filters_clauses << sql       

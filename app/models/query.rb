@@ -233,21 +233,29 @@ class Query < ActiveRecord::Base
       project_statuses = Community.current.project_statuses
       custom_fields = Community.current.project_custom_fields
       partners = Community.current.partners
+      projects = Community.current.projects
     else
       users = User.current.communities.collect(&:users).flatten.uniq
       project_statuses = User.current.communities.collect(&:project_statuses).flatten.uniq
       custom_fields = User.current.communities.collect(&:project_custom_fields).flatten.uniq
       partners = User.current.communities.collect(&:partners).flatten.uniq
+      projects = User.current.communities.collect(&:projects).flatten.uniq
     end
+    designers = []
+    watchers = []
+    authors = []
+    projects.each {|p| designers << p.designer unless p.designer.nil?}
+    projects.each {|p| watchers << p.watcher unless p.watcher.nil?}
+    projects.each {|p| authors << p.author unless p.author.nil?}
 
     @available_filters_projects = {
       "status_id" => { :type => :list_status, :order => 1, :values => project_statuses.collect{|s| [s.status_label, s.id.to_s] } },
-      "designer_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
-      "author_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
-      "watcher_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
-      "members" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
-      "partners" => { :type => :list, :order => 1, :values => partners.collect{|u| [u.name, u.id.to_s] }},
-      "tag" => { :type => :list_equal, :order => 5, :values => Community.current.projects.collect{|p| p.tags.each {|t|[t.name, t.id] }}.flatten.uniq  }
+      "designer_id" => { :type => :list_equal, :order => 3, :values => designers.sort.collect{|d| [d.name,d.id]}.uniq},
+      "author_id" => { :type => :list_equal, :order => 2, :values => authors.sort.collect{|a| [a.name, a.id.to_s]}.uniq},
+      "watcher_id" => { :type => :list_equal, :order => 4, :values => watchers.sort.collect{|w| [w.name, w.id.to_s]}.uniq},
+      "members" => { :type => :list_equal, :order => 5, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
+      "partners" => { :type => :list_equal, :order => 6, :values => partners.collect{|u| [u.name, u.id.to_s] }},
+      "tag" => { :type => :list_equal, :order => 7, :values => projects.collect{|p| p.tags.each {|t|[t.name, t.id] }}.flatten.uniq  }
     }
 
     add_custom_fields_filters_projects(custom_fields)

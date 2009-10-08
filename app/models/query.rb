@@ -267,7 +267,7 @@ class Query < ActiveRecord::Base
       "watcher_id" => { :type => :list_equal, :order => 4, :values => watchers.sort.collect{|w| [w.name, w.id.to_s]}.uniq},
       "members" => { :type => :list_equal, :order => 5, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
       "partners" => { :type => :list_equal, :order => 6, :values => partners.collect{|u| [u.name, u.id.to_s] }},
-      "tag" => { :type => :list_equal, :order => 7, :values => tags.collect{|t| [t.name, t.id]}.uniq  }
+      "tag" => { :type => :list_equal, :order => 7, :values => tags.collect{|t| [t.name, t.id]} }
     }
 
     add_custom_fields_filters_projects(custom_fields)

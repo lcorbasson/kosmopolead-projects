@@ -105,7 +105,7 @@ class Query < ActiveRecord::Base
 #                                 :string => [ "=", "~", "!", "!~" ],
 #                                 :text => [  "~", "!~" ],
 #                                 :integer => [ "=", ">=", "<=", "!*", "*" ] }
-  @@operators_by_filter_type = { :list_equal => ["="],
+  @@operators_by_filter_type = { :list_equal => ["=", "!"],
                                  :list => [ "=", "!" ],
                                  :list_status => [ "=", "!", "*" ],
                                  :list_optional => [ "=", "!", "!*", "*" ],
@@ -439,15 +439,15 @@ class Query < ActiveRecord::Base
            sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{db_table} ON #{db_table}.id=#{Project.table_name}.status_id WHERE #{Project.table_name}.status_id=#{v}"
          elsif(field == "members")
            if ((operator_for field).to_s == '=')
-              sql << "projects.archived=false AND projects.id IN (SELECT project_id FROM members WHERE user_id=#{v})"
+              sql << "projects.archived=false AND projects.id IN (SELECT project_id FROM members WHERE #{v.map{|value| "user_id = #{value}"}.join(' OR ')})"
            else
-              sql << "projects.archived=false AND projects.id NOT IN (SELECT project_id FROM members WHERE user_id=#{v})"
+              sql << "projects.archived=false AND projects.id NOT IN (SELECT project_id FROM members WHERE #{v.map{|value| "user_id = #{value}"}.join(' OR ')})"
            end
          elsif (field == "partners")
            if ((operator_for field).to_s == '=')
-              sql << "projects.archived=false AND projects.id IN (SELECT project_id FROM project_partners WHERE partner_id=#{v})"
+              sql << "projects.archived=false AND projects.id IN (SELECT project_id FROM project_partners WHERE #{v.map{|value| "partner_id = #{value}"}.join(' OR ')})"
            else
-              sql << "projects.archived=false AND projects.id NOT IN (SELECT project_id FROM project_partners WHERE partner_id=#{v})"
+              sql << "projects.archived=false AND projects.id NOT IN (SELECT project_id FROM project_partners WHERE #{v.map{|value| "partner_id = #{value}"}.join(' OR ')})"
            end
          else
             if (field == "tag")
@@ -553,8 +553,9 @@ class Query < ActiveRecord::Base
   def sql_for_field_projects(field, value, db_table, db_field, is_custom_filter)
     sql = ''
     case operator_for field
-    when "="      
-          sql = "#{db_table}.#{db_field} IN (" + value.collect{|val| "'#{connection.quote_string(val)}'"}.join(",") + ")"
+    when "="
+      puts "________________________________________koko__________________________________________"
+      sql = "#{db_table}.#{db_field} IN (" + value.collect{|val| "'#{connection.quote_string(val)}'"}.join(",") + ")"
     when "!"
       sql = "(#{db_table}.#{db_field} IS NULL OR #{db_table}.#{db_field} NOT IN (" + value.collect{|val| "'#{connection.quote_string(val)}'"}.join(",") + "))"
     when "!*"

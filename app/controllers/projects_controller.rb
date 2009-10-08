@@ -293,13 +293,19 @@ class ProjectsController < ApplicationController
             page << display_message_error(@project, "fieldError")
           end
           page << "Element.scrollTo('errorExplanation');"
-          
+          if @project.author_id
+            if Member.all(:conditions => {:user_id => @project.author_id, :project_id => @project.id}).length == 0
+              Member.create(:user_id => @project.author_id, :project_id => @project.id, :role_id => Role.default.id)
+              page.replace_html "projects_members", :partial => 'projects/show/members', :locals=>{:project=>@project}
+            end
+          end
           if @project.partner_id
             if ProjectPartner.all(:conditions => {:project_id => @project.id, :partner_id => @project.partner_id}).length == 0
                ProjectPartner.create(:project_id => @project.id, :partner_id => @project.partner_id)
                page.replace_html "projects_partners", :partial => 'projects/show/partners', :locals=>{:project=>@project}
             end
           end
+
         }
       }
     end

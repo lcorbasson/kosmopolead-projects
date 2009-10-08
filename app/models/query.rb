@@ -247,7 +247,7 @@ class Query < ActiveRecord::Base
       "watcher_id" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
       "members" => { :type => :list, :order => 1, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
       "partners" => { :type => :list, :order => 1, :values => partners.collect{|u| [u.name, u.id.to_s] }},
-      "tag" => { :type => :list_equal, :order => 5, :values => Community.current.projects.collect{|p| p.tags.each {|t|[t.name, t.id] }}.flatten  }
+      "tag" => { :type => :list_equal, :order => 5, :values => Community.current.projects.collect{|p| p.tags.each {|t|[t.name, t.id] }}.flatten.uniq  }
     }
 
     add_custom_fields_filters_projects(custom_fields)

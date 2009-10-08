@@ -262,7 +262,8 @@ class ProjectsController < ApplicationController
 
   def update
     @project = Project.find_by_identifier(params[:id])
-    
+    puts "-----------  #{@project.members.collect{|u| u.user.id} }  #{ @project.author_id}"
+    puts "----- #{@project.members.include?(@project.author)}"
     @project.update_attributes(params[:project])
     respond_to do |format|
       format.js {
@@ -282,7 +283,19 @@ class ProjectsController < ApplicationController
               @users = User.all
               page << refresh_title(@project);
               page << "jQuery('#profile_project').html('#{escape_javascript(profile_project_box("PROJET #{@project.name.upcase}","#{render:partial=>'projects/box/profile',:locals=>{:project=>@project}}"))}');"
-            when "synthesis"              
+              if @project.author_id
+                unless @project.members.collect(&:user).include?(@project.author)
+                  @project.members << Member.new(:user_id => @project.author_id, :role_id => Role.default.id)
+                  page.replace_html "projects_members", :partial => 'projects/show/members', :locals=>{:project=>@project}
+                end
+              end
+              if @project.partner_id
+                unless @project.partners.include?(@project.partner)
+                  @project.project_partners << ProjectPartner.new(:partner_id => @project.partner_id)
+                   page.replace_html "projects_partners", :partial => 'projects/show/partners', :locals=>{:project=>@project}
+                end
+              end
+            when "synthesis"
               page.replace_html "tab-content-synthesis", :partial => 'projects/show/synthesis',:locals=>{:project=>@project}
             when "custom_fields"                
               page.replace_html "custom_fields", :partial => 'projects/show/custom_fields',:locals=>{:project=>@project}
@@ -293,19 +306,6 @@ class ProjectsController < ApplicationController
             page << display_message_error(@project, "fieldError")
           end
           page << "Element.scrollTo('errorExplanation');"
-          if @project.author_id
-            if Member.all(:conditions => {:user_id => @project.author_id, :project_id => @project.id}).length == 0
-              Member.create(:user_id => @project.author_id, :project_id => @project.id, :role_id => Role.default.id)
-              page.replace_html "projects_members", :partial => 'projects/show/members', :locals=>{:project=>@project}
-            end
-          end
-          if @project.partner_id
-            if ProjectPartner.all(:conditions => {:project_id => @project.id, :partner_id => @project.partner_id}).length == 0
-               ProjectPartner.create(:project_id => @project.id, :partner_id => @project.partner_id)
-               page.replace_html "projects_partners", :partial => 'projects/show/partners', :locals=>{:project=>@project}
-            end
-          end
-
         }
       }
     end

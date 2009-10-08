@@ -84,6 +84,25 @@ class FundingLinesController < ApplicationController
     end
   end
 
+  def render_data_uses
+    @funding_lines = FundingLine.find(:all, :conditions=>["project_id in (?) AND #{params[:field]} LIKE ?",current_community.projects.collect(&:id),"%#{params[:q]}%"])
+    case params[:field]      
+      when "aap"        
+        @datas = @funding_lines.collect {|fl| fl.aap }.uniq
+      when "backer"
+        @datas = @funding_lines.collect {|fl| fl.backer }.uniq
+      when "backer_correspondent"
+        @datas = @funding_lines.collect {|fl| fl.backer_correspondent }.uniq
+      when "beneficiary"
+        @datas = @funding_lines.collect {|fl| fl.beneficiary }.uniq
+      when "funding_type"
+        @datas = @funding_lines.collect {|fl| fl.funding_type }.uniq
+    end
+    render :layout=>false
+ 
+  end
+
+
   private
 
   def show_funding

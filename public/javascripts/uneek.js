@@ -268,5 +268,10 @@ function initialize_autocomplete_partner_project(project){
         jQuery("#partner_id").val(jQuery("#field_autocomplete_partner").val());
 
     });
+};
 
+function initialize_autocomplete_funding(label,field){
+    jQuery("#"+field).autocomplete("/funding_lines/render_data_uses?field="+label,{
+          matchContains: false
+    });
 }

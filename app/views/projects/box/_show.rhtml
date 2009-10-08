@@ -105,7 +105,8 @@
 <% else %>
   Aucun projet à visualiser
 <% end %>
-
+<%= javascript_include_tag("jquery-ui/autocomplete/jquery.autocomplete") %>
+<%= stylesheet_link_tag("jquery/autocomplete/jquery.autocomplete") %>
 <%= javascript_tag("jQuery().ready(function() {jQuery('#tabs_members_and_partners').tabs({selected:1});});") %>
 <%= initialize_icons_tooltip() %>
 

@@ -2,5 +2,6 @@
     <div class="links_edit_box">
         <%= toggle_link "#{image_tag('/images/add.png')}","funding-line-form",:second_element=>"funding_lines_index" %>
      </div>
+    
       <%= render :partial=>"funding_lines/index",:locals=>{:funding_lines=>@funding_lines} %>
 </div>

@@ -1,8 +1,6 @@
 <div id="project_tags">
   <% if @project.tag_list.size>0 %>
-    <% @project.tag_list.each do |tag| %>
-      <%= tag %>
-    <% end %>
+    <%= @project.tag_list.join(', ') %>
   <% else %>
        <div class="emptymessage">
             <p><%= l(:project_add_tag) %>

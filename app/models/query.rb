@@ -243,14 +243,23 @@ class Query < ActiveRecord::Base
     end
     designers = []
     watchers = []
-    authors = []    
+    authors = []
+    tags = []
     projects.each  do |p|
-        designers << p.designer unless p.designer.nil?
-        watchers << p.watcher unless p.watcher.nil?
-        authors << p.author unless p.author.nil?       
+      designers << p.designer unless p.designer.nil?
+      watchers << p.watcher unless p.watcher.nil?
+      authors << p.author unless p.author.nil?
+      p.tags.each do |tag|
+        exist = false
+        tags.each do |t|         
+            exist = true if t.name.eql?(tag.name)
+        end
+        if !exist
+          tags << tag
+        end
+      end
     end
-   
-
+    
     @available_filters_projects = {
       "status_id" => { :type => :list_status, :order => 1, :values => project_statuses.collect{|s| [s.status_label, s.id.to_s] } },
       "designer_id" => { :type => :list_equal, :order => 3, :values => designers.sort.collect{|d| [d.name,d.id]}.uniq},
@@ -258,7 +267,7 @@ class Query < ActiveRecord::Base
       "watcher_id" => { :type => :list_equal, :order => 4, :values => watchers.sort.collect{|w| [w.name, w.id.to_s]}.uniq},
       "members" => { :type => :list_equal, :order => 5, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
       "partners" => { :type => :list_equal, :order => 6, :values => partners.collect{|u| [u.name, u.id.to_s] }},
-      "tag" => { :type => :list_equal, :order => 7, :values => projects.collect{|p| p.tags.each {|t|[t.name, t.id] }}.uniq  }
+      "tag" => { :type => :list_equal, :order => 7, :values => tags.collect{|t| [t.name, t.id]}.uniq  }
     }
 
     add_custom_fields_filters_projects(custom_fields)

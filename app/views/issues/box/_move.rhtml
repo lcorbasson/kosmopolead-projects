@@ -5,7 +5,7 @@
 <div class="tabular">
 <p><label for="new_project_id"><%=l(:field_project)%> :</label>
 <%= select_tag "new_project_id",
-               options_from_collection_for_select(@allowed_projects, 'id', 'name', @target_project.id) %></p>
+               options_from_collection_for_select(@allowed_projects, 'id', 'acronym', @target_project.id) %></p>
 
 <p><label for="new_tracker_id"><%=l(:field_tracker)%> :</label>
 <%= select_tag "new_tracker_id", "<option value=\"\">#{l(:label_no_change_option)}</option>" + options_from_collection_for_select(@trackers, "id", "name") %></p>

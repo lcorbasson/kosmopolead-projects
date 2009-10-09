@@ -3,18 +3,17 @@
     <%=l(:label_member_plural)%>
   </div>
   <div class="box_content members">
-    <% members = Member.find(:all,
-                             :conditions => Project.visible_by(User.current), #"#{Project.visible_by(User.current)} AND #{Project.table_name}.id = #{Member.table_name}.project_id",
-                             :joins => [:project])
-                           %>
-    <% if members && members.any? %>
+    <% projects = Project.find(:all,:conditions=>Project.visible_by(User.current)) %>
+    <% users = projects.collect{|p| p.members}.flatten.collect(&:user).uniq.flatten %>
+
+    <% if users && users.any? %>
           <table class="list members">           
               <tbody>
-                <% for member in members %>
-                  <tr id="issue-<%= member.user..id %>" class="<%= cycle('odd', 'even') %>">
+                <% for user in users %>
+                  <tr id="issue-<%= user.id %>" class="<%= cycle('odd', 'even') %>">
                       <td class="identity">
                         <div class="name">
-                          <%= link_to_user member.user %>
+                          <%= link_to_user user %>
                         </div>
                       </td>
                     

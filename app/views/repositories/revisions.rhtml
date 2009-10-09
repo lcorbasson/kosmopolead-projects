@@ -9,7 +9,7 @@
 
 <%= render :partial => 'revisions', :locals => {:project => @project, :path => '', :revisions => @changesets, :entry => nil }%>
 
-<p class="pagination"><%= pagination_links_full @changeset_pages,@changeset_count %></p>
+<p class="pagination"><%= pagination_links_full @changeset_pages,@changeset_count, :update => true  %></p>
 
 <% content_for :header_tags do %>
 <%= stylesheet_link_tag "scm" %>

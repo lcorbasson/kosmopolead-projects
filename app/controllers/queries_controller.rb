@@ -133,7 +133,7 @@ class QueriesController < ApplicationController
         format.csv  { send_data(projects_to_csv(@projects, @query).read, :type => 'text/csv; header=present', :filename => "#{@query.name}.csv") }
         format.pdf  { send_data(projects_to_pdf(@projects, @query), :type => 'application/pdf', :filename => "#{@query.name}.pdf") }
         format.js {
-          render(:update) {|page| page.replace_html "projects_list", :partial => 'projects/index'}
+          render(:update) {|page| page.replace_html "projects_list", :partial => 'projects/index', :locals => {:query => @query}}
         }
       end
     else

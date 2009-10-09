@@ -54,7 +54,7 @@
   <% end %>
   </tbody>
 </table>
-<p class="pagination"><%= pagination_links_full @topic_pages, @topic_count %></p>
+<p class="pagination"><%= pagination_links_full @topic_pages, @topic_count, :update => true  %></p>
 <% else %>
 <p class="nodata"><%= l(:label_no_data) %></p>
 <% end %>

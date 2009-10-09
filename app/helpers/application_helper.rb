@@ -208,7 +208,10 @@ module ApplicationHelper
     page_param = options.delete(:page_param) || :page
     url_param = params.dup
     # don't reuse params if filters are present
-    url_param.clear if url_param.has_key?(:set_filter)
+
+    if options[:update]
+      url_param.clear if url_param.has_key?(:set_filter)
+    end
 
     html = ''
    
@@ -237,7 +240,7 @@ module ApplicationHelper
                                        {:href => url_for(:params => url_param.merge(page_param => paginator.current.next))}) if paginator.current.next
 
           unless count.nil?
-            html << [" (#{paginator.current.first_item}-#{paginator.current.last_item}/#{count})", per_page_links(paginator.items_per_page)].compact.join(' | ')
+            html << [" (#{paginator.current.first_item}-#{paginator.current.last_item}/#{count})", per_page_links(paginator.items_per_page, :update => options[:update])].compact.join(' | ' )
           end
    
 

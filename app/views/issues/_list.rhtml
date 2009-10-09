@@ -17,7 +17,7 @@
           <%= init_tree_table(@issues, 1, '', query) %>
       </tbody>
     </table>
-    <p class="pagination"><%= pagination_links_full @issue_pages, @issue_count %></p>
+    <p class="pagination"><%= pagination_links_full @issue_pages, @issue_count, :update => true  %></p>
   <% end -%>
 <% else %>
  <div class="no-data">

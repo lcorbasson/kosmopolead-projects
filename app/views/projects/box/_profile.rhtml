@@ -1,10 +1,7 @@
 <div id="project_infos">
   <div  id="infos_project">
     <% if  project.author %>
-      <label><%= l(:label_support_by) %></label> <%= project.author.name %><%= " - #{partner_project(project)}" unless partner_project(project).nil? %><br/>
-    <% end %>
-    <% if project.partner %>
-      <label><%= l(:label_structure) %></label> <%= project.partner.name %><br/>
+      <label><%= l(:label_support_by) %></label> <%= project.author.name %> - <%= project.partner.name unless project.partner.nil?%><br/>
     <% end %>
     <% if  project.watcher %>
        <label><%= l(:label_watched_by) %></label> <%= project.watcher.name %><br/>

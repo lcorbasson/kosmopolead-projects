@@ -49,7 +49,7 @@
   </tbody>
 </table>
 
-<p class="pagination"><%= pagination_links_full @project_pages, @project_count %></p>
+<p class="pagination"><%= pagination_links_full @project_pages, @project_count, :update => true  %></p>
 
 <% html_title(l(:label_project_plural)) -%>
   <%= javascript_tag("initialize_toggle('filter');") %>

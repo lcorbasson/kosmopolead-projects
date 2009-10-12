@@ -1128,7 +1128,7 @@ height:17px;
 /*Notifications*/
 .no-data {padding:10px;}
 #tabs_members li a {font-weight:bold;}
-#projects_members .thumbnail,#projects_partners .thumbnail{float:right;}
+#projects_members .thumbnail,#projects_partners .thumbnail{float:left;}
 /*Widget*/
 #list-bottom {width:100%;}
 #list-bottom td {width:32%;}

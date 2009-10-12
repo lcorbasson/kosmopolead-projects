@@ -5,7 +5,7 @@ class Community < ActiveRecord::Base
   has_many :custom_fields
   has_many :project_custom_fields, :class_name => 'CustomField', :conditions => {:type => 'ProjectCustomField'}
   has_many :project_relation_types
-  has_many :projects
+  has_many :projects, :order=>["acronym ASC"]
   has_many :queries
   has_many :partners
   has_many :activity_sectors

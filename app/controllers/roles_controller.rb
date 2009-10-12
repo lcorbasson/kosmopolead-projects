@@ -61,7 +61,7 @@ class RolesController < ApplicationController
     @role.destroy
     redirect_to :action => 'list'
   rescue
-    flash[:error] = 'This role is in use and can not be deleted.'
+    flash[:error] = 'Ce rôle est utilisé et ne peut donc pas être supprimé'
     redirect_to :action => 'index'
   end
   

@@ -261,9 +261,7 @@ class ProjectsController < ApplicationController
 
 
   def update
-    @project = Project.find_by_identifier(params[:id])
-    puts "-----------  #{@project.members.collect{|u| u.user.id} }  #{ @project.author_id}"
-    puts "----- #{@project.members.include?(@project.author)}"
+    @project = Project.find_by_identifier(params[:id])    
     @project.update_attributes(params[:project])
     respond_to do |format|
       format.js {
@@ -295,6 +293,7 @@ class ProjectsController < ApplicationController
                    page.replace_html "projects_partners", :partial => 'projects/show/partners', :locals=>{:project=>@project}
                 end
               end
+              page.replace_html "project_author", :partial =>"projects/author",:locals=>{:project=>@project}
             when "synthesis"
               page.replace_html "tab-content-synthesis", :partial => 'projects/show/synthesis',:locals=>{:project=>@project}
             when "custom_fields"                

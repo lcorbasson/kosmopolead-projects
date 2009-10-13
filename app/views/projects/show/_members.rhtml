@@ -2,7 +2,7 @@
     <div class="links_edit_box">
       <%= toggle_link image_tag("/images/add.png"), 'update-members-form'%>
     </div>
-    <%= render :partial=>"members/index",:locals=>{:members=>@project.members.find(:all, :include => [:role, :user]).sort} %>
+    <%= render :partial=>"members/index",:locals=>{:members=>@project.members} %>
     <div class="clearer"></div>
 </div>
 

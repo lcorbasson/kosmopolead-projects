@@ -26,10 +26,10 @@ class Project < ActiveRecord::Base
 
 
   belongs_to :status,:class_name=>"ProjectStatus", :foreign_key=>"status_id"
-  has_many :project_partners
-  has_many :partners, :through => :project_partners, :dependent => :destroy
+  has_many :project_partners, :include => :partner, :order=> ["#{Partner.table_name}.name"]
+  has_many :partners, :through => :project_partners,:order=>["#{Partner.table_name}.name"], :dependent => :destroy
   belongs_to :time_unit, :foreign_key=>"time_units_id"
-  has_many :members, :include => :user, :conditions => "#{User.table_name}.status=#{User::STATUS_ACTIVE}"
+  has_many :members, :include => [:user, :role], :conditions => "#{User.table_name}.status=#{User::STATUS_ACTIVE}", :order=>["#{Role.table_name}.name ASC, #{User.table_name}.lastname ASC"]
   has_many :users, :through => :members
   has_many :enabled_modules, :dependent => :delete_all
   has_and_belongs_to_many :trackers, :order => "#{Tracker.table_name}.position"

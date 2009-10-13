@@ -1,28 +1,19 @@
 <h3><%= @query.name  if @query and @query.name!= "_" %></h3>
 <% if @projects.size>0 %>
   <table class="list" <%= "id='result_query'" if @query %> >
-    <thead><tr>
-      <%= sort_header_tag('name', :caption => l(:label_project)) %>     
-      <th><%=l(:label_subproject_plural)%></th>
-      <th><%=l(:label_author)%></th>
-      <th><%=l(:label_watcher)%></th>
-      <th><%=l(:label_designer)%></th>
-      <th><%=l(:label_estimated_time)%></th>
-      <%= sort_header_tag('created_on', :caption => l(:field_created_on), :default_order => 'desc') %>      
-    </tr></thead>
+    <thead>
+      <% query.columns_project.each do |column| %>
+            <%= column_header(column) %>
+      <% end %>
+    </thead>
     <tbody>
-  <% for project in @projects %>
-    <tr class="<%= cycle("even", "odd") %>">
-      <td><%= h(project.name) %></td>     
-      <td align="center"><%= project.children.size %></td>
-      <td align="center"><%= project.author.name unless !project.author %></td>
-      <td align="center"><%= project.watcher.name unless !project.watcher %></td>
-      <td align="center"><%= project.designer.name unless !project.designer %></td>
-      <td align="center"><%= project.estimated_time unless !project.estimated_time %> <%= l("#{project.time_unit.label}") unless !project.estimated_time%></td>
-           <td align="center"><%= format_date(project.created_on) %></td>
-    
-    </tr>
-  <% end %>
+      <% for project in @projects %>
+        <tr class="<%= cycle("even", "odd") %>">
+          <%  query.columns_project.each do |column| %>
+            <%= content_tag 'td', column_content_project(column, project)%>
+          <% end %>
+        </tr>
+      <% end %>
     </tbody>
   </table>
 

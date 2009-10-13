@@ -132,4 +132,13 @@ class UsersController < ApplicationController
     Member.find(params[:membership_id]).destroy if request.post?
     redirect_to :action => 'edit', :id => @user, :tab => 'memberships'
   end
+
+  def change_filter_bloc_state
+    # Save filter_div parameters as user preference
+    if (User.current.logged?)
+      User.current.pref[:filter_state] = !User.current.pref[:filter_state]
+      User.current.preference.save
+    end
+    render :text => true
+  end
 end

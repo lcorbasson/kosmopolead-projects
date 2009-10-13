@@ -407,7 +407,7 @@ class Project < ActiveRecord::Base
       end
     end
   end
-  
+   
 
 protected
   def validate

@@ -1,3 +1,8 @@
+/* Change the preference of the user for bloc filter */
+function change_state_filter(id){
+    jQuery.get("/users/change_filter_bloc_state/"+id);
+}
+
 jQuery().ready(function() {
 
     jQuery("#communities_button").click(function() {

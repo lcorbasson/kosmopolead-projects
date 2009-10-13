@@ -153,4 +153,13 @@ module ProjectsHelper
     html = "jQuery('.box_title').html('PROJET - #{project.acronym}');"
     html += "jQuery('.projects_list #projects_id_#{project.id} a').html('#{project.acronym}');"
   end
+
+#  def filter_state()
+#    # Save filter_div parameters as user preference
+#    if (User.current.logged?)
+#      User.current.pref[:filter_state] = !User.current.pref[:filter_state]
+#      User.current.preference.save
+#    end
+#  end
+  
 end

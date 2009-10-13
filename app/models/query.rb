@@ -568,7 +568,6 @@ class Query < ActiveRecord::Base
     sql = ''
     case operator_for field
     when "="
-      puts "________________________________________koko__________________________________________"
       sql = "#{db_table}.#{db_field} IN (" + value.collect{|val| "'#{connection.quote_string(val)}'"}.join(",") + ")"
     when "!"
       sql = "(#{db_table}.#{db_field} IS NULL OR #{db_table}.#{db_field} NOT IN (" + value.collect{|val| "'#{connection.quote_string(val)}'"}.join(",") + "))"

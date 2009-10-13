@@ -281,12 +281,12 @@ class Query < ActiveRecord::Base
     
     @available_filters_projects = {
       "status_id" => { :type => :list_status, :order => 1, :values => project_statuses.collect{|s| [s.status_label, s.id.to_s] } },
-      "designer_id" => { :type => :list_equal, :order => 3, :values => designers.sort.collect{|d| [d.name,d.id]}.uniq},
+      "designer_id" => { :type => :list_equal, :order => 3, :values => designers.sort.collect{|d| [d.name,d.id.to_s]}.uniq},
       "author_id" => { :type => :list_equal, :order => 2, :values => authors.sort.collect{|a| [a.name, a.id.to_s]}.uniq},
       "watcher_id" => { :type => :list_equal, :order => 4, :values => watchers.sort.collect{|w| [w.name, w.id.to_s]}.uniq},
       "members" => { :type => :list_equal, :order => 5, :values => users.sort.collect{|u| [u.name, u.id.to_s] }},
       "partners" => { :type => :list_equal, :order => 6, :values => partners.collect{|u| [u.name, u.id.to_s] }},
-      "tag" => { :type => :list_equal, :order => 7, :values => tags.collect{|t| [t.name, t.id]} },
+      "tag" => { :type => :list_equal, :order => 7, :values => tags.collect{|t| [t.name, t.id.to_s]} },
       "aap" => { :type => :list_equal, :order => 8, :values => funding_lines.delete_if{|x| x.aap.nil?}.collect{|fl| [fl.aap, fl.aap]}.uniq.sort },
       "backer" => { :type => :list_equal, :order => 9, :values => funding_lines.delete_if{|x| x.backer.nil?}.collect{|fl| [fl.backer, fl.backer]}.uniq.sort },
       "backer_correspondent" => { :type => :list_equal, :order => 10, :values => funding_lines.delete_if{|x| x.backer_correspondent.nil?}.collect{|fl| [fl.backer_correspondent, fl.backer_correspondent]}.uniq.sort },

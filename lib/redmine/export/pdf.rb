@@ -475,11 +475,10 @@ module Redmine
 
         # headers
         pdf.SetFontStyle('B',10)
-        pdf.SetFillColor(230, 230, 230)      
-        pdf.Cell(30, row_height, l(:field_project), 0, 0, 'L', 1)
-        pdf.Cell(30, row_height, l(:field_author), 0, 0, 'L', 1)
-        pdf.Cell(30, row_height, l(:field_watched_by), 0, 0, 'L', 1)
-        pdf.Cell(40, row_height, l(:field_designed_by), 0, 0, 'L', 1)
+        pdf.SetFillColor(230, 230, 230)
+        query.columns_project.each do |column|
+            pdf.Cell(30, row_height, l(column.name), 0, 0, 'L', 1)
+        end
         custom_fields = ProjectCustomField.all
         custom_fields.each {|f|pdf.Cell(40, row_height, f.name, 0, 0, 'L', 1)}
         pdf.Line(10, pdf.GetY, 287, pdf.GetY)
@@ -490,11 +489,40 @@ module Redmine
         # rows
         pdf.SetFontStyle('',9)
         pdf.SetFillColor(255, 255, 255)
-        projects.each do |project|        
-          pdf.Cell(30, row_height, project.name, 0, 0, 'L', 1)
-          pdf.Cell(30, row_height, project.author ? project.author.name : "", 0, 0, 'L', 1)
-          pdf.Cell(30, row_height, project.watcher ? project.watcher.name : "", 0, 0, 'L', 1)
-          pdf.Cell(40, row_height, project.designer ? project.designer.name : "", 0, 0, 'L', 1)
+        projects.each do |project|
+         query.columns_project.each do |column|
+            if column.is_a?(QueryCustomFieldColumn)
+               cv = project.custom_values.detect {|v| v.custom_field_id == column.custom_field.id}
+               v = show_value(cv)
+            else
+              value = project.send(column.name)
+              if value.is_a?(Date)
+                v = format_date(value)
+              elsif value.is_a?(Time)
+                v = format_time(value)
+              else
+                case column.name                 
+                  when :status
+                    v = h(project.status.status_label)
+                  when :author
+                     v = project.author ? h(project.author.name) : ""
+                  when :watcher
+                     v = project.watcher ? h(project.watcher.name) : ""
+                  when :designer
+                    v = project.designer ? h(project.designer.name) : ""
+                  when :designer
+                    v = h(project.estimated_time)+h(project.time_unit.label)
+                  else
+                    v = h(value)
+                 end
+              end
+            end
+            pdf.Cell(30, row_height, v, 0, 0, 'L', 1)
+          end
+
+
+
+         
           custom_fields.each {|f| pdf.Cell(40, row_height, show_value(project.custom_value_for(f)), 0, 0, 'L', 1)}
           pdf.Ln
           pdf.Line(10, pdf.GetY, 287, pdf.GetY)

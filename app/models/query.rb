@@ -496,7 +496,10 @@ class Query < ActiveRecord::Base
               sql << "projects.archived=false AND projects.id NOT IN (SELECT project_id FROM project_partners WHERE #{v.map{|value| "partner_id = #{value}"}.join(' OR ')})"
             end
           when "tag"
-             sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{Tagging.table_name} ON #{Tagging.table_name}.taggable_id=#{Project.table_name}.id AND #{Tagging.table_name}.taggable_type='Project' LEFT OUTER JOIN #{Tag.table_name} ON #{Tag.table_name}.id = #{Tagging.table_name}.tag_id WHERE #{Tag.table_name}.id IN (#{v.collect{|val| "'#{connection.quote_string(val)}'"}.join(",")})"
+              sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{Tagging.table_name} ON #{Tagging.table_name}.taggable_id=#{Project.table_name}.id AND #{Tagging.table_name}.taggable_type='Project' LEFT OUTER JOIN #{Tag.table_name} ON #{Tag.table_name}.id = #{Tagging.table_name}.tag_id WHERE #{v.map{|value| "tag_id = #{value}"}.join(' OR ')})"
+             #sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{Tagging.table_name} ON #{Tagging.table_name}.taggable_id=#{Project.table_name}.id AND #{Tagging.table_name}.taggable_type='Project' LEFT OUTER JOIN #{Tag.table_name} ON #{Tag.table_name}.id = #{Tagging.table_name}.tag_id WHERE #{Tag.table_name}.id IN (#{v.collect{|val| "'#{connection.quote_string(val)}'"}.join(",")})"
+
+            puts "----- #{sql}"
           when "aap"
              sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{FundingLine.table_name} ON #{FundingLine.table_name}.project_id=#{Project.table_name}.id WHERE aap IN (#{v.collect{|val| "'#{connection.quote_string(val)}'"}.join(",")})"
           when "backer"
@@ -511,16 +514,16 @@ class Query < ActiveRecord::Base
             db_table = Project.table_name
         end
 
-         if (field != "status_id" && field != "members" && field != "partners" && field != "tag" && field != "aap" && field != "backer" && field != "backer_correspondent" && field != "beneficiary" && field != "funding_type")
+         if (field != "status_id" && field != "members" && field != "partners" && field != "tag" && field != "aap" && field != "backer" && field != "backer_correspondent" && field != "beneficiary" && field != "funding_type" && field != "tag")
             sql << '('
          end
          
       end
 
-     if (field != "status_id" && field != "members" && field != "partners" && field != "tag" && field != "aap" && field != "backer" && field != "backer_correspondent" && field != "beneficiary" && field != "funding_type")
+     if (field != "status_id" && field != "members" && field != "partners" && field != "tag" && field != "aap" && field != "backer" && field != "backer_correspondent" && field != "beneficiary" && field != "funding_type" && field != "tag")
         sql = sql + sql_for_field_projects(field, v, db_table, db_field, is_custom_filter)
      end
-     if (field != "members" && field != "partners" )
+     if (field != "members" && field != "partners" && field != "tag")
        sql << ')'
      end
        filters_clauses << sql       

@@ -121,8 +121,17 @@ issue_list_default_columns:
   - updated_on
 display_subprojects_issues:
   default: 1
+project_list_default_columns:
+  serialized: true
+  default:
+  - name
+  - subprojects
+  - author_id
+  - watcher_id
+  - designer_id
+  - created_on
 default_projects_public:
-  default: 1
+  default: 0
 sequential_project_identifiers:
   default: 0
 # encodings used to convert repository files content to UTF-8

@@ -138,6 +138,24 @@ class Query < ActiveRecord::Base
     QueryIssueTypeColumn.new(:issue_type, :sortable => "#{IssueType.table_name}.name", :default_order => 'desc'),
   ]
   cattr_reader :available_columns
+
+
+  @@available_columns_project = [
+    QueryColumn.new(:name, :sortable => "#{Project.table_name}.name"),
+    QueryColumn.new(:acronym, :sortable => "#{Project.table_name}.acronym"),
+    QueryColumn.new(:identifier, :sortable => "#{Project.table_name}.identifier"),
+    QueryColumn.new(:status, :sortable => "#{ProjectStatus.table_name}.status_label"),
+    QueryColumn.new(:estimated_time, :sortable => "#{Project.table_name}.estimated_time"),
+    QueryColumn.new(:author, :sortable => "#{User.table_name}.lastname"),
+    QueryColumn.new(:watcher, :sortable => "#{User.table_name}.lastname"),
+    QueryColumn.new(:designer, :sortable => "#{User.table_name}.lastname"),
+    QueryColumn.new(:project_cost, :sortable => "#{Project.table_name}.project_cost"),
+    QueryColumn.new(:created_on, :sortable => "#{Project.table_name}.created_on", :default_order => 'desc')
+   
+  ]
+  cattr_reader :available_columns_project
+
+
   
   def initialize(attributes = nil)
     super attributes
@@ -331,6 +349,14 @@ class Query < ActiveRecord::Base
 
 
   end
+
+  def available_columns_project
+    return @available_columns_project if @available_columns_project
+    @available_columns_project = Query.available_columns_project
+    @available_columns_project += (Community.current.project_custom_fields.collect {|cf| QueryCustomFieldColumn.new(cf) })
+
+
+  end
   
   def columns
     if has_default_columns?
@@ -343,6 +369,19 @@ class Query < ActiveRecord::Base
       column_names.collect {|name| available_columns.find {|col| col.name == name}}.compact
     end
   end
+
+  def columns_project
+    if has_default_columns?
+      available_columns_project.select do |c|
+        # Adds the project column by default for cross-project lists
+        Setting.project_list_default_columns.include?(c.name.to_s) || (c.name == :project && project.nil?)
+      end
+    else
+      # preserve the column_names order
+      column_names.collect {|name| available_columns.find {|col| col.name == name}}.compact
+    end
+  end
+
   
   def column_names=(names)
     names = names.select {|n| n.is_a?(Symbol) || !n.blank? } if names

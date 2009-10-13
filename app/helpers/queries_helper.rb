@@ -63,4 +63,37 @@ module QueriesHelper
       end
     end
   end
+
+
+   def column_content_project(column, project)
+    if column.is_a?(QueryCustomFieldColumn)
+      cv = project.custom_values.detect {|v| v.custom_field_id == column.custom_field.id}
+      show_value(cv)
+    else     
+        value = project.send(column.name)
+        if value.is_a?(Date)
+          format_date(value)
+        elsif value.is_a?(Time)
+          format_time(value)
+        else
+          case column.name
+            when :name
+              link_to(h(value), project_path(project))
+            when :status
+              h(project.status.status_label)
+            when :author
+               project.author ? h(project.author.name) : ""
+            when :watcher
+              project.watcher ? h(project.watcher.name) : ""
+            when :designer
+              project.designer ? h(project.designer.name) : ""
+            when :designer
+              h(project.estimated_time)+h(project.time_unit.label)
+            else
+              h(value)
+           end
+        end
+    end   
+  end
+
 end

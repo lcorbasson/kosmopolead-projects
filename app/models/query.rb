@@ -497,9 +497,6 @@ class Query < ActiveRecord::Base
             end
           when "tag"
               sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{Tagging.table_name} ON #{Tagging.table_name}.taggable_id=#{Project.table_name}.id AND #{Tagging.table_name}.taggable_type='Project' LEFT OUTER JOIN #{Tag.table_name} ON #{Tag.table_name}.id = #{Tagging.table_name}.tag_id WHERE #{v.map{|value| "tag_id = #{value}"}.join(' OR ')})"
-             #sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{Tagging.table_name} ON #{Tagging.table_name}.taggable_id=#{Project.table_name}.id AND #{Tagging.table_name}.taggable_type='Project' LEFT OUTER JOIN #{Tag.table_name} ON #{Tag.table_name}.id = #{Tagging.table_name}.tag_id WHERE #{Tag.table_name}.id IN (#{v.collect{|val| "'#{connection.quote_string(val)}'"}.join(",")})"
-
-            puts "----- #{sql}"
           when "aap"
              sql << "#{Project.table_name}.id IN (SELECT #{Project.table_name}.id FROM #{Project.table_name} LEFT OUTER JOIN #{FundingLine.table_name} ON #{FundingLine.table_name}.project_id=#{Project.table_name}.id WHERE aap IN (#{v.collect{|val| "'#{connection.quote_string(val)}'"}.join(",")})"
           when "backer"

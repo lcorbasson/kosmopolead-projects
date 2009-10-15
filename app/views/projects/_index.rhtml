@@ -25,4 +25,5 @@
 <%= l(:label_export_to) %>
 <span><%= link_to 'CSV', {:format => 'csv'}, :class => 'csv' %></span>
 <span><%= link_to 'PDF',:controller => 'queries', :action => 'projects',  :query_id => @query,:format=>'pdf', :class => 'pdf' %></span>
+<span><%= link_to 'CSV',:controller => 'queries', :action => 'projects',  :query_id => @query,:format=>'csv', :class => 'csv', :set_filter => 1 %></span>
 </p>

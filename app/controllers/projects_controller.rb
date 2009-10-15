@@ -399,6 +399,7 @@ class ProjectsController < ApplicationController
   def list_files
     sort_init 'filename', 'asc'
     sort_update 'filename' => "#{FileAttachment.table_name}.filename",
+                'acronym' => "#{FileAttachment.table_name}.acronym",
                 'created_on' => "#{FileAttachment.table_name}.created_on",
                 'size' => "#{FileAttachment.table_name}.filesize",
                 'downloads' => "#{FileAttachment.table_name}.downloads"

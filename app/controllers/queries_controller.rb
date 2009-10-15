@@ -113,7 +113,17 @@ class QueriesController < ApplicationController
   def projects   
     retrieve_query
     sort_init "#{Project.table_name}.name", 'desc'
-    sort_update ({"name"=>"#{Project.table_name}.name","created_on"=>"#{Project.table_name}.created_on"})
+    sort_update ({"name"=>"#{Project.table_name}.name", 
+        "acronym"=>"#{Project.table_name}.acronym",
+        "created_on"=>"#{Project.table_name}.created_on",
+        "identifier"=>"#{Project.table_name}.identifier",
+        "estimated_time"=>"#{Project.table_name}.estimated_time",
+        "project_cost"=>"#{Project.table_name}.project_cost",
+        "status"=>"#{ProjectStatus.table_name}.status_label",
+        "author"=>"#{User.table_name}.lastname",
+        "watcher"=>"#{User.table_name}.lastname",
+        "designer"=>"#{User.table_name}.lastname"
+      })
     
 
 
@@ -124,12 +134,15 @@ class QueriesController < ApplicationController
       @project_count = Project.count( :conditions => conditions)
       @project_pages = Paginator.new self, @project_count, limit, params['page']
       @projects = Project.find :all, :order => sort_clause,
-                           :include => [ :parent],
+                           :include => [ :parent, :author, :status, :watcher, :designer],
                            :conditions => conditions,
                            :limit  =>  limit,
                            :offset =>  @project_pages.current.offset
+
       respond_to do |format|
         #format.html {}
+#        format.csv  { send_data(projects_to_csv(Project.find(:all, :include => [:parent], :conditions => Query.find(session[:query]).statement_projects), @query).read, :type => 'text/csv; header=present', :filename => "#{@query.name}.csv") }
+
         format.csv  { send_data(projects_to_csv(@projects, @query).read, :type => 'text/csv; header=present', :filename => "#{@query.name}.csv") }
         format.pdf  { send_data(projects_to_pdf(@projects, @query), :type => 'application/pdf', :filename => "#{@query.name}.pdf") }
         format.js {
@@ -180,13 +193,12 @@ private
             @query.add_short_filter(field, params[field]) if params[field]
           end
         end
+        session[:query] = {:project_id => @query.project_id, :filters => @query.filters}
         
       else
         @query = Query.new(:name => "_")
         @query.query_type = "project"
-        @query.available_filters_projects.keys.each do |field|
-          @query.add_short_filter(field, params[field]) if params[field]
-        end
+        @query[:filters] = session[:query][:filters]
       end
     end
   end

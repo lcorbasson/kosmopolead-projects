@@ -769,12 +769,12 @@ module ApplicationHelper
 
   def partner_thumbnail(partner,partner_project)
     unless partner.logo_file_name.nil?
-      name = content_tag(:p,partner.name,:class=>"name")
+      name = content_tag(:p,truncate(partner.name, 15),:class=>"name icon_visu", :name => partner.name)
       thumbnail = content_tag(:li,
       content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=> project_project_partner_path(@project,partner_project),:method=>:delete,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
       tag("img", { :src => partner.logo.url(:thumb) ,:class=>"left"}) + name, :class=>"user_thumbnail thumbnail editable_box")
     else
-      name = content_tag(:p,partner.name,:class=>"name")
+      name = content_tag(:p,truncate(partner.name, 15),:class=>"name icon_visu", :name => partner.name)
       thumbnail = content_tag(:li,
       content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=> project_project_partner_path(@project,partner_project),:method=>:delete,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
       name, :class=>"user_thumbnail thumbnail editable_box")
@@ -782,8 +782,8 @@ module ApplicationHelper
   end
 
   def member_thumbnail(user,member)
-    name = content_tag(:p,(user && !user.anonymous?) ? link_to(user.name, :controller => 'account', :action => 'show', :id => user) : 'Anonymous',:class=>"name")   
-    role = content_tag(:p, user.role_for_project(@project).name,:class=>"role_user")
+    name = content_tag(:p,(user && !user.anonymous?) ? link_to("#{truncate(user.name, 15)}", account_path(user), :class => "icon_visu", :name=>"#{user.name}") : 'Anonymous',:class=>"name")
+    role = content_tag(:p, "#{truncate(user.role_for_project(@project).name, 30)}",:class=>"role_user icon_visu", :name => "#{user.role_for_project(@project).name}")
     thumbnail = content_tag(:li,
       content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=> project_member_path(@project,member) ,:method=>:delete,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
       name+role,:class=>"user_thumbnail thumbnail editable_box")
@@ -815,7 +815,7 @@ module ApplicationHelper
 
   def initialize_icons_tooltip()
     html = "#{javascript_include_tag("jquery/jquery.tooltip.js")}"
-    html += "#{javascript_tag("jQuery().ready(function() {jQuery('.box_header .icon_visu').tooltip({bodyHandler: function() {return jQuery(this).attr('name');},showURL: false })});")}"
+    html += "#{javascript_tag("jQuery().ready(function() {jQuery('.icon_visu').tooltip({bodyHandler: function() {return jQuery(this).attr('name');},showURL: false })});")}"
   end
 
   def profile_project_box(title,content)

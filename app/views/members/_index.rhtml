@@ -4,7 +4,7 @@
           <%= member_thumbnail(member.user,member) %>
       <% end %>
     </ul>
-   <% else %>
+<% else %>
     <div class="emptymessage">
         <p><%= l(:project_add_member) %>
         <%= toggle_link image_tag("/images/add.png"), 'update-members-form'%></p>

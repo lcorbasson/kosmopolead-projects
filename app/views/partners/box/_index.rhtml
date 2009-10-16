@@ -8,7 +8,7 @@
   <tbody>
 <% for partner in @partners -%>
   <tr class="partner <%= cycle("even", "odd") %>">
-    <td width="80px" style="text-align:center;"><%=   image_tag(partner.logo.url(:thumb)) unless partner.logo.nil? %></td>
+    <td width="80px" style="text-align:center;"><%= image_tag(partner.logo.url(:thumb)) unless partner.logo_file_name.nil? %></td>
 	<td class="partnername"><%= link_to "#{partner.name}", :action => 'edit', :id => partner %></td>
 	<td class="created_on" align="center"><%= format_time(partner.created_at) %></td>
   <td align="center" style="width:10%">

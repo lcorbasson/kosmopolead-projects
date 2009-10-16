@@ -768,7 +768,7 @@ module ApplicationHelper
   end
 
   def partner_thumbnail(partner,partner_project)
-    if partner.logo.url == ""
+    unless partner.logo_file_name.nil?
       name = content_tag(:p,partner.name,:class=>"name")
       thumbnail = content_tag(:li,
       content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=> project_project_partner_path(@project,partner_project),:method=>:delete,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+

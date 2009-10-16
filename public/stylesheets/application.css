@@ -1087,6 +1087,7 @@ height:17px;
 
 }
 /* Thumbnails */
+.thumbnail {font-size:11px;}
 .thumbnail p {margin:0;}
 .thumbnail_infos a {text-decoration:none;color:#009EEE;font-weight:bold;}
 .thumbnail {padding:5px;-moz-border-radius:5px;list-style:none;background:transparent url(/images/bg_thumbnail.png) repeat-x;height:35px;width:140px;border:1px solid #DDDDDD;float:left;margin:5px 5px 0 0;}

@@ -566,7 +566,7 @@ class ProjectsController < ApplicationController
 
   def list_partners_community
       @community = current_community
-      @partners = @community.partners
+      @partners = @community.partners.like("#{params[:q]}%")
       render :layout=>false
   end
 

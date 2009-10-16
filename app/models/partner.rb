@@ -13,6 +13,8 @@ class Partner < ActiveRecord::Base
 
  
   validates_presence_of :name
+  named_scope :like, lambda { |like| { :conditions => ["#{Partner.table_name}.name LIKE ?",like] } }
+
 
   has_many :partnerships, :dependent => :destroy
   has_many :members, :through => :partnerships, :source => :user

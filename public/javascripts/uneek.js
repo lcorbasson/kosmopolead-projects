@@ -255,9 +255,7 @@ function initialize_autocomplete_designer_project(project){
 
 
 function initialize_autocomplete_partner_project(project){
-    jQuery("#field_autocomplete_partner").autocomplete("/projects/list_partners_community/",{
-        matchContains: false
-   });
+    jQuery("#field_autocomplete_partner").autocomplete("/projects/list_partners_community/");
      jQuery("#field_autocomplete_partner").result(function(event, data, formatted) {
         jQuery("#partner_id").val(data[1]);
         partner_id = jQuery("#partner_id").val();

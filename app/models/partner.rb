@@ -14,7 +14,6 @@ class Partner < ActiveRecord::Base
  
   validates_presence_of :name
 
-
   has_many :partnerships, :dependent => :destroy
   has_many :members, :through => :partnerships, :source => :user
 

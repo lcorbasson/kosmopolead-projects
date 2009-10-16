@@ -8,4 +8,5 @@ public/picts
 tmp/
 log/*
 lib/tasks/emc2/*.csv
+lib/tasks/emc2/icons
 

@@ -116,12 +116,12 @@ mail_body_reminder: "%d demande(s) qui vous sont assignées arrivent à échéan
 gui_validation_error: 1 erreur
 gui_validation_error_plural: %d erreurs
 
-field_aap: Ayant l'AAP
-field_backer: Financé par
-field_backer_correspondent: Ayant le correspondant financeur
-field_beneficiary: Ayant pour bénéficiaire
-field_funding_type: Ayant un financement de type
-field_tag: Contenant le mot clé
+field_aap: Financement - AAP
+field_backer: Financement - Financeur
+field_backer_correspondent: Financement - Correspondant financeur
+field_beneficiary: Financement - Bénéficiaire
+field_funding_type: Financement - Type
+field_tag: Mot clé
 field_reciprocity: Réciproque
 field_issue_types: Type de demande
 field_resources: Ressources nécessaires
@@ -222,8 +222,8 @@ field_parent_title: Page parent
 field_designer: Monté par
 field_watcher: Suivi par
 field_partner: Comme partenaire
-field_members: Ayant pour membre
-field_partners: Ayant pour partenaire
+field_members: Membre
+field_partners: Partenaire
 field_project_cost: Cout du projet
 field_estimated_time: Temps estimé
 field_sector: Secteur d'activité

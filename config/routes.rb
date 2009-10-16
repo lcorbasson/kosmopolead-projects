@@ -23,6 +23,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'watchers',:controller=>'watchers'
   map.resources :partners
   map.connect 'partners/:id/:action', :controller => 'partners'
+  map.resources :account
   #map.resources :user, :member => {:change_filter_bloc_state => :get}
 
   map.resources :projects,:member=>{:activity=>:get},:collection=>{:list_partnerships=>:get,:list_partners_community=>:get,:list_partners=>:get,:list_members_community=>:get,:refresh_menu=>:get,:add_version=>:get,:show_funding=>:get,:add=>:get,:settings=>:get, :edit_part_description => :get, :edit_part_synthesis => :get,:edit_part_profile=>:get} do |project|

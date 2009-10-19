@@ -5,8 +5,6 @@
    members = @project.members.all(:include => [:role, :user]).sort %>
 
 
-
-
 <% remote_form_for  [@project,@member],:html=>{:style=>"#{'display:none;' if !display}",:id=>"update-members-form"} do |f| %>
       <h3><%= l(:label_new_member) %></h3>
       <div class="add-member">

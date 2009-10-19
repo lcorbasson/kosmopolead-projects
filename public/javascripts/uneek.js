@@ -277,4 +277,4 @@ function initialize_autocomplete_funding(label,field){
     jQuery("#"+field).autocomplete("/funding_lines/render_data_uses?field="+label,{
           matchContains: false
     });
-}
+};

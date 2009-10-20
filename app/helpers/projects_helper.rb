@@ -125,7 +125,7 @@ module ProjectsHelper
                   l(:field_description),
                   l(:field_author),
                   l(:field_watched_by),
-                  l(:field_buid_by),
+                  l(:field_build_by),
                   l(:field_acronym),
                   l(:field_identifier),
                   l(:field_status),

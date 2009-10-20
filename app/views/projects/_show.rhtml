@@ -41,7 +41,7 @@
   <% if project.parent %>
       <%  title = "projet - #{project.parent.acronym} - #{project.acronym}"  %>
   <% else %>
-      <%  title = "projet - #{project.acronym}"  %>
+      <%  title = "projet - #{link_to_project project }"  %>
   <% end %>
 
   <%= box(

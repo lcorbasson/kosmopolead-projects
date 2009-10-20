@@ -129,6 +129,7 @@ field_acronym: Acronyme
 field_time_units: Unité de temps
 field_designed_by: Monté par
 field_watched_by: Suivi par
+field_build_by: crée par
 field_name: Nom
 field_description: Description
 field_summary: Résumé
@@ -388,7 +389,7 @@ label_acronym: Acronyme
 label_identifier: Identifiant
 label_author: Porteur
 label_designer: Monté par
-label_watcher: Suivi par
+label_build_by: Crée par
 label_cost: Coût
 label_sector: Secteur d'activité
 label_is_public: Public

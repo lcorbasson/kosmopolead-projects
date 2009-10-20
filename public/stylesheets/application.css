@@ -1034,7 +1034,7 @@ h2 img { vertical-align:middle; }
 
 /*.projects_children_list{background:url(../images/pointilles_vertical.png) repeat-y 4px 30px;}*/
 .projects_children_list li,.projects_children_list ul{margin-top:5px;margin-bottom:5px;}
-.projects_list {/*background:url(../images/pointilles_vertical.png) repeat-y 24px 30px;*/max-height:200px;overflow:auto;padding-left:20px;}
+.projects_list {/*background:url(../images/pointilles_vertical.png) repeat-y 24px 30px;*/max-height:200px;overflow:auto;}
 .projects_list li {margin-top:5px;margin-bottom:5px;font-weight:bold;/*background:url(../images/pointilles_horizontal.png) repeat-x 5px 8px*/}
 .projects_list a {margin-left:5px;color:#505050;}
 .projects_list a.active {color:#009EEE;}

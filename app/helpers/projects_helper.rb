@@ -125,7 +125,13 @@ module ProjectsHelper
                   l(:field_description),
                   l(:field_author),
                   l(:field_watched_by),
-                  l(:field_buid_by)
+                  l(:field_buid_by),
+                  l(:field_acronym),
+                  l(:field_identifier),
+                  l(:field_status),
+                  l(:field_estimated_time),
+                  l(:field_project_cost),
+                  l(:field_sector)
                   ]
       # Export project custom fields if project is given
       # otherwise export custom fields marked as "For all projects"
@@ -139,7 +145,12 @@ module ProjectsHelper
                   project.description,
                   project.author ? project.author.name : "",
                   project.watcher ? project.watcher.name : "",
-                  project.designer ? project.designer.name : ""
+                  project.designer ? project.designer.name : "",
+                  project.acronym ? project.acronym : "",
+                  project.identifier ? project.identifier : "",
+                  project.estimated_time ? "#{project.estimated_time} #{project.time_unit.label}": "",
+                  project.project_cost ? project.project_cost : "",
+                  project.sector ? project.sector : ""
                   ]
         custom_fields.each {|f| fields << show_value(project.custom_value_for(f)) }      
         csv << fields.collect {|c| begin; ic.iconv(c.to_s); rescue; c.to_s; end }

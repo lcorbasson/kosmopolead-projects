@@ -228,7 +228,6 @@ class ProjectsController < ApplicationController
           end
       }
     end
-
   end
 
   def settings

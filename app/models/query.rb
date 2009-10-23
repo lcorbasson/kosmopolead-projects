@@ -534,7 +534,6 @@ class Query < ActiveRecord::Base
      end
        filters_clauses << sql       
     end
-    p "******* #{filters_clauses}"
     filters_clauses.join(' AND ')   
   end
   
@@ -733,11 +732,11 @@ class Query < ActiveRecord::Base
     case operator_for field
       when "t-"
         s << ("#{table}.#{db_field} > '%s'" % "--- #{(Date.parse(from.first.delete("&quot;")) - 1).strftime("%Y-%m-%d")}")
-        s << ("#{table}.#{db_field} < '%s'" % "--- #{(Date.parse(from.first.delete("&quot;")) + 1).strftime("%Y-%m-%d")}")
+        s << ("#{table}.#{db_field} < '%s'" % "--- #{(Date.parse(from.first.delete("&quot;"))).strftime("%Y-%m-%d")}")
       when ">t+"
         s << ("#{table}.#{db_field} > '%s'" % "--- #{from}")
       when "<t+"
-        s << ("#{table}.#{db_field} < '%s'" % "--- #{from}")
+        s << ("#{table}.#{db_field} < '%s'" % "--- #{(Date.parse(from.first.delete("&quot;")) - 1).strftime("%Y-%m-%d")}")
       when "t"
         s << ("#{table}.#{db_field} > '%s'" % "--- #{(Date.today-1).strftime("%Y-%m-%d")}")
         s << ("#{table}.#{db_field} < '%s'" % "--- #{(Date.today+1).strftime("%Y-%m-%d")}")
@@ -757,12 +756,9 @@ class Query < ActiveRecord::Base
     s = []
     case operator_for field
       when "<t+>t+"
-         s << ("#{table}.#{db_field} < '--- #{(Date.parse(from[0].to_s) - 1).strftime("%Y-%m-%d")}' OR #{table}.#{db_field} > '--- #{(Date.parse(from[1].to_s) + 1).strftime("%Y-%m-%d")}'")
-#         s << ("#{table}.#{db_field} > '%s'" % "--- #{(Date.parse(from[1].to_s) + 1).strftime("%Y-%m-%d")}")
+         s << ("#{table}.#{db_field} < '--- #{(Date.parse(from[0].to_s) - 1 ).strftime("%Y-%m-%d")}' OR #{table}.#{db_field} > '--- #{(Date.parse(from[1].to_s) + 1).strftime("%Y-%m-%d")}'")
       when ">t+<t+"
-        puts " lplplpl ------------ #{from}"
-         s << ("#{table}.#{db_field} > '--- #{(Date.parse(from[0].to_s) - 1).strftime("%Y-%m-%d")}' AND #{table}.#{db_field} < '--- #{(Date.parse(from[1].to_s) + 1).strftime("%Y-%m-%d")}'")
-#         s << ("#{table}.#{db_field} < '%s'" % "--- #{(Date.parse(from[1].to_s) + 1).strftime("%Y-%m-%d")}")
+         s << ("#{table}.#{db_field} > '--- #{(Date.parse(from[0].to_s) - 1).strftime("%Y-%m-%d")}' AND #{table}.#{db_field} < '--- #{(Date.parse(from[1].to_s)).strftime("%Y-%m-%d")}'")
     end
     s << ("#{table}.#{db_field} is not null")
     s.join(' AND ')

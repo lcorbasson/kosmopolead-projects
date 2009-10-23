@@ -54,8 +54,6 @@ class QueryIssueTypeColumn < QueryColumn
     self.name = name
     self.sortable = false   
   end
-
-  
 end
 
 
@@ -83,6 +81,8 @@ class Query < ActiveRecord::Base
                   ">="   => '>=',
                   "<="   => '<=',
                   "<t+" => :label_in_less_than_date,
+                  ">t+<t+" => :label_between,
+                  "<t+>t+" => :label_not_between,
                   ">t+" => :label_in_more_than_date,
                   "t+"  => :label_in,
                   "t"   => :label_today,
@@ -111,7 +111,7 @@ class Query < ActiveRecord::Base
                                  :list_optional => [ "=", "!", "!*", "*" ],
                                  :list_multiple => [ "=", "!", "!*", "*" ],
                                  :list_subprojects => [ "*", "!*", "=" ],
-                                 :date => [ "<t+", ">t+", "t", "w", "t-" ],
+                                 :date => [ "<t+", ">t+", "t", "w", "t-", ">t+<t+", "<t+>t+"],
                                  :date_past => [ ">t-", "<t-", "t-", "t", "w" ],
                                  :string => [ "=", "~", "!", "!~" ],
                                  :text => [  "~", "!~" ],
@@ -151,7 +151,6 @@ class Query < ActiveRecord::Base
     QueryColumn.new(:designer, :sortable => "#{User.table_name}.lastname"),
     QueryColumn.new(:project_cost, :sortable => "#{Project.table_name}.project_cost"),
     QueryColumn.new(:created_on, :sortable => "#{Project.table_name}.created_on", :default_order => 'desc')
-   
   ]
   cattr_reader :available_columns_project
 
@@ -331,8 +330,18 @@ class Query < ActiveRecord::Base
   end
   
   def values_for(field)
-    has_filter?(field) ? filters[field][:values] : nil
+   
+      has_filter?(field) ? filters[field][:values] : nil
   end
+
+  def second_values_for(field)
+    has_filter?(field) ? filters[field][:values][1] : nil
+  end
+
+  def first_values_for(field)
+    has_filter?(field) ? filters[field][:values][0] : nil
+  end
+ 
   
   def label_for(field)
     label = available_filters[field][:name] if available_filters.has_key?(field)
@@ -525,6 +534,7 @@ class Query < ActiveRecord::Base
      end
        filters_clauses << sql       
     end
+    p "******* #{filters_clauses}"
     filters_clauses.join(' AND ')   
   end
   
@@ -644,6 +654,10 @@ class Query < ActiveRecord::Base
       sql = "#{db_table}.#{db_field} LIKE '%#{connection.quote_string(value)}%'"
     when "!~"
       sql = "#{db_table}.#{db_field} NOT LIKE '%#{connection.quote_string(value)}%'"
+    when ">t+<t+"
+      sql = date_range_clause_custom_field_by_two_date(db_table, db_field, value, field)
+    when "<t+>t+"
+      sql = date_range_clause_custom_field_by_two_date(db_table, db_field, value, field)
     end
     return sql
   end
@@ -739,4 +753,18 @@ class Query < ActiveRecord::Base
     s.join(' AND ')
   end
 
+  def date_range_clause_custom_field_by_two_date(table, db_field, from, field)
+    s = []
+    case operator_for field
+      when "<t+>t+"
+         s << ("#{table}.#{db_field} < '--- #{(Date.parse(from[0].to_s) - 1).strftime("%Y-%m-%d")}' OR #{table}.#{db_field} > '--- #{(Date.parse(from[1].to_s) + 1).strftime("%Y-%m-%d")}'")
+#         s << ("#{table}.#{db_field} > '%s'" % "--- #{(Date.parse(from[1].to_s) + 1).strftime("%Y-%m-%d")}")
+      when ">t+<t+"
+        puts " lplplpl ------------ #{from}"
+         s << ("#{table}.#{db_field} > '--- #{(Date.parse(from[0].to_s) - 1).strftime("%Y-%m-%d")}' AND #{table}.#{db_field} < '--- #{(Date.parse(from[1].to_s) + 1).strftime("%Y-%m-%d")}'")
+#         s << ("#{table}.#{db_field} < '%s'" % "--- #{(Date.parse(from[1].to_s) + 1).strftime("%Y-%m-%d")}")
+    end
+    s << ("#{table}.#{db_field} is not null")
+    s.join(' AND ')
+  end
 end

@@ -30,6 +30,20 @@ function toggle_filter(field) {
 function toggle_operator(field) {
   operator = $("operators_" + field);
   switch (operator.value) {
+    case ">t+<t+":    
+      jQuery("#date_field2_"+field).removeClass("hidden");
+      jQuery("#date_field2_"+field).addClass("display");
+      Element.show("div_values_" + field);
+
+      
+        break;
+    case "<t+>t+":
+      jQuery("#date_field2_"+field).removeClass("hidden");
+      jQuery("#date_field2_"+field).addClass("display");
+      Element.show("div_values_" + field);
+
+
+        break;
     case "!*":
     case "*":
     case "t":
@@ -50,6 +64,15 @@ function toggle_multi_select(field) {
         select.multiple = false;
     } else {
         select.multiple = true;
+    }
+}
+
+function add2field(t){
+    if (t.value == ">t+<t+" || t.value == "<t+>t+"){       
+      jQuery(".date_field_2").css("display", "block"); 
+    }
+    else{
+      jQuery(".date_field_2").hide();
     }
 }
 </script>
@@ -73,20 +96,21 @@ function toggle_multi_select(field) {
         <label for="cb_<%= field %>"><%= filter[1][:name] || l(("field_"+field.to_s.gsub(/\_id$/, "")).to_sym) %></label>
     </td>
     <td style="width:150px;">
-        <%= select_tag "operators[#{field}]", options_for_select(operators_for_select(options[:type]), query.operator_for(field)), :id => "operators_#{field}", :onchange => "toggle_operator('#{field}');", :class => "select-small", :style => "vertical-align: top;" %>
+        <%= select_tag "operators[#{field}]", options_for_select(operators_for_select(options[:type]), query.operator_for(field)), :id => "operators_#{field}", :onchange => "toggle_operator('#{field}');add2field(this);", :class => "select-small select_filter", :style => "vertical-align: top;" %>
     </td>
     <td>    
-    <div id="div_values_<%= field %>" style="display:none;">    
+    <div id="div_values_<%= field %>" style="display:none;">
     <% case options[:type] 
     when :list, :list_optional, :list_status, :list_subprojects,:list_multiple, :list_equal %>
         <select <%= "multiple=true" if query.values_for(field) and query.values_for(field).length > 1 %> name="values[<%= field %>][]" id="values_<%= field %>" class="select-small" style="vertical-align: top;">
-          
           <%= options_for_select options[:values], query.values_for(field) %>
         </select>
         <%= link_to_function image_tag('bullet_toggle_plus.png'), "toggle_multi_select('#{field}');", :style => "vertical-align: bottom;" %>
-    <% when :date, :date_past %>
-        <%= text_field_tag "values[#{field}][]", query.values_for(field), :id => "values_#{field}", :size => 10, :class => "ui-datepicker" %>
-    <% when :string, :text %>
+    <% when :date %>
+        <%= text_field_tag "values[#{field}][]", query.first_values_for(field), :id => "values_#{field}", :size => 10, :class => "ui-datepicker" %>
+      <div class="date_field_2 hidden"  id="date_field2_<%= field %>"><%= text_field_tag "values[#{field}][]", query.second_values_for(field), :id => "values_#{field}_2", :size => 10, :class => "ui-datepicker" %></div>
+  
+   <% when :string, :text %>
         <%= text_field_tag "values[#{field}][]", query.values_for(field), :id => "values_#{field}", :size => 30, :class => "select-small" %>
     <% when :integer %>
         <%= text_field_tag "values[#{field}][]", query.values_for(field), :id => "values_#{field}", :size => 3, :class => "select-small" %>

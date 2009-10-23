@@ -333,6 +333,8 @@ legend_issue_in_late: Retard
 legend_issue_done: Réalisé
 legend_issue_todo: A faire
 
+label_between: Comprise entre
+label_not_between: Non comprise dans
 label_change_password: Modification du mot de passe
 label_spent_on: Date
 label_hours: Temps

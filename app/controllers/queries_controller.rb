@@ -113,7 +113,13 @@ class QueriesController < ApplicationController
   def projects   
     retrieve_query
     sort_init "#{Project.table_name}.name", 'desc'
-    sort_update ({"name"=>"#{Project.table_name}.name", 
+
+    array_pcf = {}
+    ProjectCustomField.all.each do |pcf|
+     array_pcf["cf_#{pcf.id}"] = "#{CustomValue.table_name}.value"
+    end
+    
+    sort_update ({"name"=>"#{Project.table_name}.name",
         "acronym"=>"#{Project.table_name}.acronym",
         "created_on"=>"#{Project.table_name}.created_on",
         "identifier"=>"#{Project.table_name}.identifier",
@@ -123,9 +129,7 @@ class QueriesController < ApplicationController
         "author"=>"#{User.table_name}.lastname",
         "watcher"=>"#{User.table_name}.lastname",
         "designer"=>"#{User.table_name}.lastname"
-      })
-    
-
+      }.merge(array_pcf))
 
     if @query.valid?
       limit = per_page_option     
@@ -134,7 +138,7 @@ class QueriesController < ApplicationController
       @project_count = Project.count( :conditions => conditions)
       @project_pages = Paginator.new self, @project_count, limit, params['page']
       @projects = Project.find :all, :order => sort_clause,
-                           :include => [ :parent, :author, :status, :watcher, :designer],
+                           :include => [ :parent, :author, :status, :watcher, :designer, :project_custom_fields, :custom_values],
                            :conditions => conditions,
                            :limit  =>  limit,
                            :offset =>  @project_pages.current.offset

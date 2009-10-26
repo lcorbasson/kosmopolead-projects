@@ -82,8 +82,9 @@ class User < ActiveRecord::Base
     self.hashed_password = User.hash_password(self.password) if self.password
   end
 
-  def after_save
-    unless login.eql?("admin")
+  
+  def after_create
+     unless login.eql?("admin")
       CommunityMembership.create(:community_id=>Community.current.id,:user_id=>self.id)
     end
   end

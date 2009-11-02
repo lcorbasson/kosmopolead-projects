@@ -80,7 +80,7 @@ sort_header_tag(column.name.to_s, :caption => column.caption,
         else
           case column.name
             when :name
-              link_to(h(value), project_path(project))
+              link_to_remote(h(value), :url => project_path(project), :method => :get)
             when :status
               h(project.status.status_label)
             when :author

@@ -112,7 +112,7 @@ class ProjectsController < ApplicationController
       @project.attributes = params[:project]
       @project.archived = false
       @project.enabled_module_names = params[:enabled_modules]
-      @project.community = current_community
+      @project.community = current_community     
       if @project.save
         @trackers = @project.rolled_up_trackers
         @users = User.all
@@ -179,10 +179,10 @@ class ProjectsController < ApplicationController
       redirect_to_project_menu_item(@project, params[:jump]) && return
     end
 
-    if !params[:id]
-      @project = @projects.first
-    else
-      find_project
+    if !params[:id]   
+        @project = @projects.first 
+    else      
+        find_project     
     end
     @allowed_statuses = IssueStatus.all
     @relation = ProjectRelation.new

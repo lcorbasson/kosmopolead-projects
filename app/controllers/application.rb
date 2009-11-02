@@ -272,8 +272,8 @@ class ApplicationController < ActionController::Base
                             :order => "#{Project.table_name}.acronym"
     end
     # projet en session
-    if session[:project]
-       @project = Project.find(session[:project].id) 
+    if session[:project] and not current_community
+       @project = Project.find(session[:project].id, :order => "#{Project.table_name}.acronym") || @projects.first
     else
         @project = @projects.first
     end

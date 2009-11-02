@@ -23,6 +23,8 @@ class QueriesController < ApplicationController
   before_filter :find_queries, :only => [:projects,:index]
   before_filter :find_optional_project, :only => [:edit,:new,:index]
 
+  before_filter :construct_menu
+
  
  
   helper :custom_fields

@@ -115,6 +115,8 @@ namespace :emc2 do
     string = string.gsub(/[ïî]/, 'i')
     string = string.gsub(/[çÇ]/, 'c')
     string = string.gsub(/[\s']/, '')
+    string = string.gsub(/[\s]/, '')
+    string = string.gsub(/[ ]/, '')
     string
   end
 

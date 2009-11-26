@@ -67,8 +67,8 @@ class User < ActiveRecord::Base
 #  validates_length_of :login, :maximum => 30
   validates_format_of :firstname, :lastname, :with => /^[\w\s\'\-\.]*$/i
 #  validates_length_of :firstname, :lastname, :maximum => 30
-  validates_format_of :mail, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, :allow_nil => true
-  validates_length_of :mail, :maximum => 60, :allow_nil => true
+#  validates_format_of :mail, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, :allow_nil => true
+#  validates_length_of :mail, :maximum => 60, :allow_nil => true
   validates_length_of :password, :minimum => 4, :allow_nil => true
   validates_confirmation_of :password, :allow_nil => true
 
@@ -83,11 +83,11 @@ class User < ActiveRecord::Base
   end
 
   
-  def after_create
-     unless login.eql?("admin")
-      CommunityMembership.create(:community_id=>Community.current.id,:user_id=>self.id)
-    end
-  end
+#  def after_create
+#     unless login.eql?("admin")
+#      CommunityMembership.create(:community_id=>Community.current.id,:user_id=>self.id)
+#    end
+#  end
   
   def reload(*args)
     @name = nil

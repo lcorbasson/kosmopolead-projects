@@ -33,8 +33,10 @@ namespace :emc2 do
     # Definition de la communaute
     emc2 = Community.find_or_create_by_name('EMC2')
 
+    partners = emc2.partners.select{ |p| ProjectPartner.find_by_partner_id(p.id)}.collect(&:id).flatten.compact
+
     # Suppression des partners inactive pour la communaute EMC2
-    emc2.partners.all(:conditions => ["partners.id not in (?)", Partner.all(:conditions => {:id => Partnership.all.collect(&:partner_id)})]).select{ |u| u.destroy}
+    emc2.partners.all(:conditions => ["partners.id not in (?)", partners]).select{ |u| u.destroy}
   end
 
 end

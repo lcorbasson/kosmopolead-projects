@@ -11,13 +11,28 @@ namespace :emc2 do
     puts "   Import des contacts CRM dans PROJECTS..."
     Rake::Task['emc2:uptodate_users'].invoke
   end
+
+  # Bootstrap CRM into projects
+  task :bootstrap_crm_into_projects_with_purge => :environment do
+    # Purge des associations Accounts // Contacts
+    puts "   Purge des associations Accounts / Contacts ..."
+    Partnership.all.each(&:destroy)
+
+    # Import des accounts CRM dans Projects
+    puts "   Import des accounts CRM dans PROJECTS ..."
+    Rake::Task['emc2:uptodate_partners'].invoke
+
+    # Import des contacts CRM dans PROJECTS
+    puts "   Import des contacts CRM dans PROJECTS..."
+    Rake::Task['emc2:uptodate_users'].invoke
+  end
   
   # Create partners from csv file
   task :uptodate_partners => :environment do
     require 'fastercsv'
 
     # Definition du file path
-    crm_account = "#{RAILS_ROOT}/lib/tasks/emc2/uptodate/accounts-261109.csv"
+    crm_account = "#{RAILS_ROOT}/lib/tasks/emc2/uptodate/accounts-151209.csv"
 
     # Recuperation ou creation de la communaute EMC2 sur Kosmopolead-CRM
     emc2 = Community.find_or_create_by_name("EMC2")
@@ -42,7 +57,7 @@ namespace :emc2 do
     require 'fastercsv'
 
     # Definition du file path
-    crm_users = "#{RAILS_ROOT}/lib/tasks/emc2/uptodate/accounts-contacts-261109.csv"
+    crm_users = "#{RAILS_ROOT}/lib/tasks/emc2/uptodate/account-contacts-151209.csv"
 
     # Recuperation ou creation de la communaute EMC2 sur Kosmopolead-CRM
     emc2 = Community.find_or_create_by_name("EMC2")

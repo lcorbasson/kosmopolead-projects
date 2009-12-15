@@ -768,16 +768,18 @@ module ApplicationHelper
   end
 
   def partner_thumbnail(partner,partner_project)
-    unless partner.logo_file_name.nil?
-      name = content_tag(:p,truncate(partner.name, 15),:class=>"name icon_visu", :name => partner.name)
-      thumbnail = content_tag(:li,
-      content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=> project_project_partner_path(@project,partner_project),:method=>:delete,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
-      tag("img", { :src => partner.logo.url(:thumb) ,:class=>"left"}) + name, :class=>"user_thumbnail thumbnail editable_box")
-    else
-      name = content_tag(:p,truncate(partner.name, 15),:class=>"name icon_visu", :name => partner.name)
-      thumbnail = content_tag(:li,
-      content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=> project_project_partner_path(@project,partner_project),:method=>:delete,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
-      name, :class=>"user_thumbnail thumbnail editable_box")
+    unless partner.nil?
+      unless partner.logo_file_name.nil?
+        name = content_tag(:p,truncate(partner.name, 15),:class=>"name icon_visu", :name => partner.name)
+        thumbnail = content_tag(:li,
+        content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=> project_project_partner_path(@project,partner_project),:method=>:delete,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
+        tag("img", { :src => partner.logo.url(:thumb) ,:class=>"left"}) + name, :class=>"user_thumbnail thumbnail editable_box")
+      else
+        name = content_tag(:p,truncate(partner.name, 15),:class=>"name icon_visu", :name => partner.name)
+        thumbnail = content_tag(:li,
+        content_tag(:div,link_to_remote("#{image_tag('/images/delete.png')}",{:url=> project_project_partner_path(@project,partner_project),:method=>:delete,:confirm=>'Etes-vous sûr ?'}),:class=>"links_edit_box")+
+        name, :class=>"user_thumbnail thumbnail editable_box")
+      end
     end
   end
 
